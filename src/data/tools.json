@@ -1,0 +1,172 @@
+{
+  "tools": [
+    {
+      "id": "json-formatter",
+      "name": "JSON Formatter",
+      "description": "Format, validate, and beautify JSON data with syntax highlighting",
+      "category": "formatting",
+      "icon": "FileJson",
+      "featured": true,
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["json", "format", "validate", "pretty", "beautify"]
+    },
+    {
+      "id": "case-converter",
+      "name": "Case Converter",
+      "description": "Convert text between different case formats: uppercase, lowercase, camelCase, PascalCase, snake_case, and more",
+      "category": "text",
+      "icon": "Type",
+      "featured": true,
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["case", "convert", "uppercase", "lowercase", "camel", "snake", "pascal"]
+    },
+    {
+      "id": "word-counter",
+      "name": "Word Counter",
+      "description": "Count words, characters, paragraphs, and reading time",
+      "category": "text",
+      "icon": "Calculator",
+      "inputs": ["text"],
+      "outputs": ["data"],
+      "keywords": ["word", "count", "character", "paragraph", "reading", "time"]
+    },
+    {
+      "id": "text-diff",
+      "name": "Text Diff Viewer",
+      "description": "Compare two text inputs and highlight differences",
+      "category": "text",
+      "icon": "Diff",
+      "inputs": ["text", "text"],
+      "outputs": ["visual"],
+      "keywords": ["diff", "compare", "difference", "text", "changes"]
+    },
+    {
+      "id": "duplicate-remover",
+      "name": "Duplicate Lines Remover",
+      "description": "Remove duplicate lines from text while preserving order",
+      "category": "text",
+      "icon": "Copy",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["duplicate", "remove", "lines", "unique", "clean"]
+    },
+    {
+      "id": "line-break-remover",
+      "name": "Line Break Remover",
+      "description": "Remove line breaks and join text into a single line",
+      "category": "text",
+      "icon": "WrapText",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["line", "break", "remove", "join", "single"]
+    },
+    {
+      "id": "text-replacer",
+      "name": "Text Replacer",
+      "description": "Find and replace text with support for regex patterns",
+      "category": "text",
+      "icon": "Replace",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["replace", "find", "regex", "substitute", "search"]
+    },
+    {
+      "id": "slug-converter",
+      "name": "Text to Slug Converter",
+      "description": "Convert text to URL-friendly slugs",
+      "category": "text",
+      "icon": "Link",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["slug", "url", "friendly", "convert", "dash"]
+    },
+    {
+      "id": "json-stringify",
+      "name": "JSON.stringify",
+      "description": "Convert JavaScript objects to JSON strings",
+      "category": "formatting",
+      "icon": "Code",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["json", "stringify", "object", "string", "javascript"]
+    },
+    {
+      "id": "json-parse",
+      "name": "JSON.parse",
+      "description": "Parse JSON strings into readable format",
+      "category": "formatting",
+      "icon": "FileCode",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["json", "parse", "string", "object", "javascript"]
+    },
+    {
+      "id": "html-formatter",
+      "name": "HTML Formatter",
+      "description": "Format and beautify HTML code with proper indentation",
+      "category": "formatting",
+      "icon": "FileCode2",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["html", "format", "beautify", "indent", "code"]
+    },
+    {
+      "id": "sql-formatter",
+      "name": "SQL Formatter",
+      "description": "Format and beautify SQL queries with syntax highlighting",
+      "category": "formatting",
+      "icon": "Database",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["sql", "format", "query", "database", "beautify"]
+    },
+    {
+      "id": "regex-tester",
+      "name": "Regex Tester",
+      "description": "Test regular expressions with live matching and explanations",
+      "category": "development",
+      "icon": "Search",
+      "inputs": ["text", "text"],
+      "outputs": ["visual"],
+      "keywords": ["regex", "regular", "expression", "test", "match", "pattern"]
+    },
+    {
+      "id": "encryption-tool",
+      "name": "Encryption/Decryption",
+      "description": "Encrypt and decrypt text using various algorithms (AES, DES) with custom keys",
+      "category": "security",
+      "icon": "Lock",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["encrypt", "decrypt", "aes", "des", "security", "key", "algorithm"]
+    }
+  ],
+  "categories": [
+    {
+      "id": "text",
+      "name": "Text Processing",
+      "description": "Tools for manipulating and processing text data",
+      "color": "blue"
+    },
+    {
+      "id": "formatting",
+      "name": "Code Formatting",
+      "description": "Format and beautify code in various languages",
+      "color": "green"
+    },
+    {
+      "id": "development",
+      "name": "Development",
+      "description": "Developer-focused utilities and helpers",
+      "color": "purple"
+    },
+    {
+      "id": "security",
+      "name": "Security",
+      "description": "Encryption, hashing, and security tools",
+      "color": "red"
+    }
+  ]
+}
