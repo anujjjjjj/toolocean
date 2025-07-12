@@ -1,0 +1,198 @@
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Copy, Download } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+export function HtmlFormatterTool() {
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState("");
+  const [indentSize, setIndentSize] = useState("2");
+  const { toast } = useToast();
+
+  const formatHtml = () => {
+    if (!input.trim()) {
+      setOutput("");
+      return;
+    }
+
+    try {
+      const indent = parseInt(indentSize);
+      const formatted = formatHtmlString(input, indent);
+      setOutput(formatted);
+    } catch (err) {
+      setOutput(input); // Return original if formatting fails
+    }
+  };
+
+  const minifyHtml = () => {
+    if (!input.trim()) {
+      setOutput("");
+      return;
+    }
+
+    const minified = input
+      .replace(/>\s+</g, '><') // Remove whitespace between tags
+      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+      .trim();
+    
+    setOutput(minified);
+  };
+
+  const formatHtmlString = (html: string, indentSize: number): string => {
+    const tab = ' '.repeat(indentSize);
+    let result = '';
+    let indent = 0;
+    let inTag = false;
+    let tagName = '';
+    
+    // Self-closing tags
+    const selfClosing = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
+    
+    for (let i = 0; i < html.length; i++) {
+      const char = html[i];
+      
+      if (char === '<') {
+        if (result.trim() && !inTag) {
+          result += '\n' + tab.repeat(indent);
+        }
+        inTag = true;
+        tagName = '';
+        result += char;
+      } else if (char === '>') {
+        inTag = false;
+        result += char;
+        
+        // Check if it's a closing tag
+        if (tagName.startsWith('/')) {
+          indent = Math.max(0, indent - 1);
+          result += '\n' + tab.repeat(indent);
+        } else if (!selfClosing.includes(tagName.toLowerCase()) && !tagName.endsWith('/')) {
+          // Opening tag
+          indent++;
+          result += '\n' + tab.repeat(indent);
+        } else {
+          // Self-closing tag
+          result += '\n' + tab.repeat(indent);
+        }
+      } else if (inTag && char !== ' ') {
+        tagName += char;
+        result += char;
+      } else {
+        result += char;
+      }
+    }
+    
+    return result.trim();
+  };
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(output);
+      toast({
+        title: "Copied to clipboard",
+        description: "HTML has been copied to your clipboard",
+      });
+    } catch (err) {
+      toast({
+        title: "Failed to copy",
+        description: "Could not copy to clipboard",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const downloadHtml = () => {
+    if (!output) return;
+    
+    const blob = new Blob([output], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'formatted.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <div className="grid lg:grid-cols-2 gap-6">
+      {/* Input Panel */}
+      <Card>
+        <CardHeader>
+          <CardTitle>HTML Input</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Textarea
+            placeholder="Paste your HTML code here..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            className="min-h-[300px] font-mono text-sm"
+          />
+
+          <div className="flex gap-2">
+            <Select value={indentSize} onValueChange={setIndentSize}>
+              <SelectTrigger className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="2">2 spaces</SelectItem>
+                <SelectItem value="4">4 spaces</SelectItem>
+                <SelectItem value="8">8 spaces</SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <Button onClick={formatHtml} className="flex-1">
+              Format
+            </Button>
+            <Button onClick={minifyHtml} variant="outline">
+              Minify
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Output Panel */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between">
+            Formatted HTML
+            {output && (
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={copyToClipboard}>
+                  <Copy className="h-4 w-4 mr-2" />
+                  Copy
+                </Button>
+                <Button variant="outline" size="sm" onClick={downloadHtml}>
+                  <Download className="h-4 w-4 mr-2" />
+                  Download
+                </Button>
+              </div>
+            )}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Textarea
+            value={output}
+            readOnly
+            placeholder="Formatted HTML will appear here..."
+            className="min-h-[300px] font-mono text-sm bg-muted/50"
+          />
+          
+          {output && (
+            <div className="mt-4 text-sm text-muted-foreground">
+              <div className="flex justify-between">
+                <span>Characters: {output.length.toLocaleString()}</span>
+                <span>Lines: {output.split('\n').length}</span>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

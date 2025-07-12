@@ -6,6 +6,20 @@ import { Copy, Download, Share, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import * as Icons from "lucide-react";
 import { LucideIcon } from "lucide-react";
+import { JsonFormatterTool } from './implementations/JsonFormatterTool';
+import { CaseConverterTool } from './implementations/CaseConverterTool';
+import { WordCounterTool } from './implementations/WordCounterTool';
+import { TextDiffTool } from './implementations/TextDiffTool';
+import { DuplicateRemoverTool } from './implementations/DuplicateRemoverTool';
+import { LineBreakRemoverTool } from './implementations/LineBreakRemoverTool';
+import { TextReplacerTool } from './implementations/TextReplacerTool';
+import { SlugConverterTool } from './implementations/SlugConverterTool';
+import { JsonStringifyTool } from './implementations/JsonStringifyTool';
+import { JsonParseTool } from './implementations/JsonParseTool';
+import { HtmlFormatterTool } from './implementations/HtmlFormatterTool';
+import { SqlFormatterTool } from './implementations/SqlFormatterTool';
+import { RegexTesterTool } from './implementations/RegexTesterTool';
+import { EncryptionTool } from './implementations/EncryptionTool';
 
 interface Tool {
   id: string;
@@ -96,6 +110,41 @@ export function ToolRunner({
     return colors[category] || "bg-gray-500/10 text-gray-700 dark:text-gray-300";
   };
 
+  const getToolComponent = (toolId: string) => {
+    switch (toolId) {
+      case 'json-formatter':
+        return <JsonFormatterTool />;
+      case 'case-converter':
+        return <CaseConverterTool />;
+      case 'word-counter':
+        return <WordCounterTool />;
+      case 'text-diff':
+        return <TextDiffTool />;
+      case 'duplicate-remover':
+        return <DuplicateRemoverTool />;
+      case 'line-break-remover':
+        return <LineBreakRemoverTool />;
+      case 'text-replacer':
+        return <TextReplacerTool />;
+      case 'slug-converter':
+        return <SlugConverterTool />;
+      case 'json-stringify':
+        return <JsonStringifyTool />;
+      case 'json-parse':
+        return <JsonParseTool />;
+      case 'html-formatter':
+        return <HtmlFormatterTool />;
+      case 'sql-formatter':
+        return <SqlFormatterTool />;
+      case 'regex-tester':
+        return <RegexTesterTool />;
+      case 'encryption-tool':
+        return <EncryptionTool />;
+      default:
+        return children;
+    }
+  };
+
   return (
     <div className={`max-w-6xl mx-auto space-y-6 ${className}`}>
       {/* Tool Header */}
@@ -140,7 +189,7 @@ export function ToolRunner({
 
       {/* Tool Interface */}
       <div className="min-h-[400px]">
-        {children}
+        {getToolComponent(tool.id)}
       </div>
 
       {/* Output Actions */}
