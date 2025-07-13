@@ -141,6 +141,316 @@
       "inputs": ["text"],
       "outputs": ["text"],
       "keywords": ["encrypt", "decrypt", "aes", "des", "security", "key", "algorithm"]
+    },
+    {
+      "id": "csv-json-converter",
+      "name": "CSV ⇄ JSON Converter",
+      "description": "Convert between CSV and JSON formats with customizable delimiters",
+      "category": "data-converters",
+      "icon": "FileSpreadsheet",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["csv", "json", "convert", "delimiter", "data"]
+    },
+    {
+      "id": "yaml-json-converter",
+      "name": "YAML ⇄ JSON Converter",
+      "description": "Convert between YAML and JSON formats with validation",
+      "category": "data-converters",
+      "icon": "FileText",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["yaml", "json", "convert", "format", "data"]
+    },
+    {
+      "id": "xml-json-converter",
+      "name": "XML ⇄ JSON Converter",
+      "description": "Convert between XML and JSON formats with attribute handling",
+      "category": "data-converters",
+      "icon": "FileCode",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["xml", "json", "convert", "format", "data"]
+    },
+    {
+      "id": "json-schema-validator",
+      "name": "JSON Schema Validator",
+      "description": "Validate JSON data against JSON Schema with detailed error reporting",
+      "category": "data-converters",
+      "icon": "CheckCircle",
+      "inputs": ["text", "text"],
+      "outputs": ["visual"],
+      "keywords": ["json", "schema", "validate", "error", "validation"]
+    },
+    {
+      "id": "json-merger",
+      "name": "JSON Merger",
+      "description": "Merge multiple JSON objects with conflict resolution options",
+      "category": "data-converters",
+      "icon": "Merge",
+      "inputs": ["text", "text"],
+      "outputs": ["text"],
+      "keywords": ["json", "merge", "combine", "object", "conflict"]
+    },
+    {
+      "id": "json-flattener",
+      "name": "JSON Flattener/Unflattener",
+      "description": "Flatten nested JSON objects or unflatten dot-notation objects",
+      "category": "data-converters",
+      "icon": "Layers",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["json", "flatten", "unflatten", "nested", "dot-notation"]
+    },
+    {
+      "id": "css-minifier",
+      "name": "CSS Minifier/Beautifier",
+      "description": "Minify or beautify CSS code with compression options",
+      "category": "frontend",
+      "icon": "Paintbrush",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["css", "minify", "beautify", "compress", "format"]
+    },
+    {
+      "id": "html-jsx-converter",
+      "name": "HTML to JSX Converter",
+      "description": "Convert HTML to JSX with proper attribute transformations",
+      "category": "frontend",
+      "icon": "Code2",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["html", "jsx", "react", "convert", "transform"]
+    },
+    {
+      "id": "color-converter",
+      "name": "Color Picker/Converter",
+      "description": "Convert between HEX, RGB, HSL color formats with live preview",
+      "category": "frontend",
+      "icon": "Palette",
+      "inputs": ["text"],
+      "outputs": ["visual"],
+      "keywords": ["color", "hex", "rgb", "hsl", "picker", "convert"]
+    },
+    {
+      "id": "gradient-generator",
+      "name": "Gradient Generator",
+      "description": "Generate CSS gradients with live preview and multiple color stops",
+      "category": "frontend",
+      "icon": "Rainbow",
+      "inputs": ["visual"],
+      "outputs": ["text"],
+      "keywords": ["gradient", "css", "linear", "radial", "color", "generator"]
+    },
+    {
+      "id": "box-shadow-generator",
+      "name": "Box Shadow Generator",
+      "description": "Generate CSS box-shadow with live preview and multiple shadows",
+      "category": "frontend",
+      "icon": "Square",
+      "inputs": ["visual"],
+      "outputs": ["text"],
+      "keywords": ["box-shadow", "css", "shadow", "generator", "preview"]
+    },
+    {
+      "id": "hash-generator",
+      "name": "Hash Generator",
+      "description": "Generate MD5, SHA1, SHA256 hashes from text input",
+      "category": "security",
+      "icon": "Hash",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["hash", "md5", "sha1", "sha256", "checksum", "digest"]
+    },
+    {
+      "id": "password-generator",
+      "name": "Password Generator",
+      "description": "Generate secure passwords with customizable length and character sets",
+      "category": "security",
+      "icon": "Key",
+      "inputs": ["visual"],
+      "outputs": ["text"],
+      "keywords": ["password", "generate", "secure", "random", "strength"]
+    },
+    {
+      "id": "uuid-generator",
+      "name": "UUID Generator",
+      "description": "Generate UUIDs (v1, v4) with bulk generation options",
+      "category": "security",
+      "icon": "Fingerprint",
+      "inputs": ["visual"],
+      "outputs": ["text"],
+      "keywords": ["uuid", "guid", "generate", "unique", "identifier"]
+    },
+    {
+      "id": "env-formatter",
+      "name": ".env File Formatter",
+      "description": "Format and validate .env files with syntax highlighting",
+      "category": "security",
+      "icon": "Settings",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["env", "environment", "format", "variables", "config"]
+    },
+    {
+      "id": "jwt-decoder",
+      "name": "JWT Decoder",
+      "description": "Decode and validate JWT tokens with header and payload inspection",
+      "category": "security",
+      "icon": "Shield",
+      "inputs": ["text"],
+      "outputs": ["visual"],
+      "keywords": ["jwt", "token", "decode", "json", "web", "auth"]
+    },
+    {
+      "id": "fake-data-generator",
+      "name": "Fake Data Generator",
+      "description": "Generate realistic fake data for testing (names, emails, addresses, etc.)",
+      "category": "testing",
+      "icon": "Users",
+      "inputs": ["visual"],
+      "outputs": ["text"],
+      "keywords": ["fake", "data", "generator", "mock", "testing", "random"]
+    },
+    {
+      "id": "http-request-composer",
+      "name": "HTTP Request Composer",
+      "description": "Compose and test HTTP requests with headers and body data",
+      "category": "testing",
+      "icon": "Send",
+      "inputs": ["visual"],
+      "outputs": ["text"],
+      "keywords": ["http", "request", "api", "postman", "rest", "test"]
+    },
+    {
+      "id": "user-agent-generator",
+      "name": "User-Agent Generator",
+      "description": "Generate browser user-agent strings for different browsers and devices",
+      "category": "testing",
+      "icon": "Globe",
+      "inputs": ["visual"],
+      "outputs": ["text"],
+      "keywords": ["user-agent", "browser", "device", "generate", "string"]
+    },
+    {
+      "id": "timestamp-converter",
+      "name": "Epoch/Timestamp Converter",
+      "description": "Convert between epoch timestamps and human-readable dates",
+      "category": "testing",
+      "icon": "Clock",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["epoch", "timestamp", "unix", "date", "convert", "time"]
+    },
+    {
+      "id": "ip-address-tool",
+      "name": "IP Address Tool",
+      "description": "Detect your IP address and get information about any IP address",
+      "category": "testing",
+      "icon": "MapPin",
+      "inputs": ["text"],
+      "outputs": ["visual"],
+      "keywords": ["ip", "address", "location", "detect", "info", "geolocation"]
+    },
+    {
+      "id": "gitignore-generator",
+      "name": ".gitignore Generator",
+      "description": "Generate .gitignore files for different programming languages and frameworks",
+      "category": "devops",
+      "icon": "GitBranch",
+      "inputs": ["visual"],
+      "outputs": ["text"],
+      "keywords": ["gitignore", "git", "ignore", "template", "generate"]
+    },
+    {
+      "id": "dockerfile-formatter",
+      "name": "Dockerfile Formatter/Linter",
+      "description": "Format and lint Dockerfile with best practices suggestions",
+      "category": "devops",
+      "icon": "Container",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["dockerfile", "docker", "format", "lint", "container"]
+    },
+    {
+      "id": "yaml-formatter",
+      "name": "YAML Formatter",
+      "description": "Format and validate YAML files with syntax highlighting",
+      "category": "devops",
+      "icon": "FileText",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["yaml", "format", "validate", "indent", "syntax"]
+    },
+    {
+      "id": "nginx-config-generator",
+      "name": "NGINX Config Generator",
+      "description": "Generate NGINX configuration files for common use cases",
+      "category": "devops",
+      "icon": "Server",
+      "inputs": ["visual"],
+      "outputs": ["text"],
+      "keywords": ["nginx", "config", "generate", "server", "proxy"]
+    },
+    {
+      "id": "cron-expression-builder",
+      "name": "Cron Expression Builder",
+      "description": "Build cron expressions with natural language explanations",
+      "category": "devops",
+      "icon": "Calendar",
+      "inputs": ["visual"],
+      "outputs": ["text"],
+      "keywords": ["cron", "schedule", "expression", "build", "time"]
+    },
+    {
+      "id": "regex-generator",
+      "name": "Regex Generator",
+      "description": "Generate regular expressions from natural language descriptions",
+      "category": "ai-tools",
+      "icon": "Wand2",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["regex", "generate", "ai", "natural", "language", "pattern"]
+    },
+    {
+      "id": "code-explainer",
+      "name": "Code Explainer",
+      "description": "Explain any code snippet in plain English with AI assistance",
+      "category": "ai-tools",
+      "icon": "MessageCircle",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["code", "explain", "ai", "analyze", "understand"]
+    },
+    {
+      "id": "prompt-optimizer",
+      "name": "GPT Prompt Optimizer",
+      "description": "Optimize and improve AI prompts for better results",
+      "category": "ai-tools",
+      "icon": "Lightbulb",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["prompt", "optimize", "gpt", "ai", "improve", "rewrite"]
+    },
+    {
+      "id": "markdown-summarizer",
+      "name": "AI Markdown Summarizer",
+      "description": "Summarize markdown documents using AI with key points extraction",
+      "category": "ai-tools",
+      "icon": "FileText",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["markdown", "summarize", "ai", "summary", "extract"]
+    },
+    {
+      "id": "json-fixer",
+      "name": "Fix my JSON",
+      "description": "Auto-fix broken JSON and show what was changed",
+      "category": "ai-tools",
+      "icon": "Wrench",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["json", "fix", "repair", "auto", "broken", "correct"]
     }
   ],
   "categories": [
@@ -167,6 +477,36 @@
       "name": "Security",
       "description": "Encryption, hashing, and security tools",
       "color": "red"
+    },
+    {
+      "id": "data-converters",
+      "name": "Data & Format Converters",
+      "description": "Convert between different data formats and structures",
+      "color": "emerald"
+    },
+    {
+      "id": "frontend",
+      "name": "Frontend & Styling",
+      "description": "Tools for frontend development and CSS styling",
+      "color": "pink"
+    },
+    {
+      "id": "testing",
+      "name": "Testing & API Tools",
+      "description": "Tools for testing, API development, and data generation",
+      "color": "orange"
+    },
+    {
+      "id": "devops",
+      "name": "DevOps & Infrastructure",
+      "description": "Configuration and infrastructure management tools",
+      "color": "cyan"
+    },
+    {
+      "id": "ai-tools",
+      "name": "AI-Powered Tools",
+      "description": "AI-assisted tools for code analysis and optimization",
+      "color": "violet"
     }
   ]
 }

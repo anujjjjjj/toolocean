@@ -9,6 +9,12 @@ import toolsData from "@/data/tools.json";
 // Import tool components
 import { JsonFormatterTool } from "@/components/tools/implementations/JsonFormatterTool";
 import { CaseConverterTool } from "@/components/tools/implementations/CaseConverterTool";
+import { CsvJsonConverterTool } from "@/components/tools/implementations/CsvJsonConverterTool";
+import { YamlJsonConverterTool } from "@/components/tools/implementations/YamlJsonConverterTool";
+import { XmlJsonConverterTool } from "@/components/tools/implementations/XmlJsonConverterTool";
+import { JsonSchemaValidatorTool } from "@/components/tools/implementations/JsonSchemaValidatorTool";
+import { JsonMergerTool } from "@/components/tools/implementations/JsonMergerTool";
+import { JsonFlattenerTool } from "@/components/tools/implementations/JsonFlattenerTool";
 
 const ToolPage = () => {
   const { toolId } = useParams<{ toolId: string }>();
@@ -33,6 +39,18 @@ const ToolPage = () => {
         return <JsonFormatterTool />;
       case "case-converter":
         return <CaseConverterTool />;
+      case "csv-json-converter":
+        return <CsvJsonConverterTool />;
+      case "yaml-json-converter":
+        return <YamlJsonConverterTool />;
+      case "xml-json-converter":
+        return <XmlJsonConverterTool />;
+      case "json-schema-validator":
+        return <JsonSchemaValidatorTool />;
+      case "json-merger":
+        return <JsonMergerTool />;
+      case "json-flattener":
+        return <JsonFlattenerTool />;
       default:
         return (
           <div className="text-center py-12">
