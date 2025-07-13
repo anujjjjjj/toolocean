@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from "react";
 import { ToolCard } from "./ToolCard";
 import { Button } from "@/components/ui/button";
@@ -43,6 +44,26 @@ export function ToolGrid({ searchQuery, onAddToWorkflow, showWorkflowButtons = f
       return 0;
     });
   }, [searchQuery, selectedCategory]);
+
+  // Group tools by category for organized display
+  const toolsByCategory = useMemo(() => {
+    const grouped: { [key: string]: typeof tools } = {};
+    
+    // If there's a search query or category filter, don't group
+    if (searchQuery.trim() || selectedCategory) {
+      return null;
+    }
+
+    categories.forEach(category => {
+      grouped[category.id] = tools.filter(tool => tool.category === category.id);
+    });
+
+    return grouped;
+  }, [searchQuery, selectedCategory]);
+
+  const getCategoryName = (categoryId: string) => {
+    return categories.find(cat => cat.id === categoryId)?.name || categoryId;
+  };
 
   return (
     <div className="space-y-6">
@@ -108,22 +129,58 @@ export function ToolGrid({ searchQuery, onAddToWorkflow, showWorkflowButtons = f
         </div>
       )}
 
-      {/* Tools Grid */}
+      {/* Tools Display - Either grouped by category or flat list */}
       {filteredTools.length > 0 ? (
-        <div className={
-          viewMode === "grid" 
-            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" 
-            : "space-y-4"
-        }>
-          {filteredTools.map(tool => (
-            <ToolCard
-              key={tool.id}
-              tool={tool}
-              onAddToWorkflow={onAddToWorkflow}
-              showWorkflowButton={showWorkflowButtons}
-            />
-          ))}
-        </div>
+        toolsByCategory ? (
+          // Grouped by categories
+          <div className="space-y-8">
+            {Object.entries(toolsByCategory).map(([categoryId, categoryTools]) => (
+              categoryTools.length > 0 && (
+                <div key={categoryId} className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-xl font-semibold capitalize">
+                      {getCategoryName(categoryId)} Tools
+                    </h3>
+                    <Badge variant="outline" className="h-6">
+                      {categoryTools.length}
+                    </Badge>
+                  </div>
+                  
+                  <div className={
+                    viewMode === "grid" 
+                      ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" 
+                      : "space-y-4"
+                  }>
+                    {categoryTools.map(tool => (
+                      <ToolCard
+                        key={tool.id}
+                        tool={tool}
+                        onAddToWorkflow={onAddToWorkflow}
+                        showWorkflowButton={showWorkflowButtons}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )
+            ))}
+          </div>
+        ) : (
+          // Flat list (when searching or filtering)
+          <div className={
+            viewMode === "grid" 
+              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" 
+              : "space-y-4"
+          }>
+            {filteredTools.map(tool => (
+              <ToolCard
+                key={tool.id}
+                tool={tool}
+                onAddToWorkflow={onAddToWorkflow}
+                showWorkflowButton={showWorkflowButtons}
+              />
+            ))}
+          </div>
+        )
       ) : (
         <div className="text-center py-12">
           <Filter className="h-12 w-12 text-muted-foreground mx-auto mb-4" />

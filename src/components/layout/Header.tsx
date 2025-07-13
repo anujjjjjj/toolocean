@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
   onSearch: (query: string) => void;
@@ -12,6 +13,7 @@ interface HeaderProps {
 
 export function Header({ onSearch, searchQuery, onOpenCommandPalette }: HeaderProps) {
   const [darkMode, setDarkMode] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const isDark = document.documentElement.classList.contains('dark');
@@ -35,7 +37,10 @@ export function Header({ onSearch, searchQuery, onOpenCommandPalette }: HeaderPr
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-sm">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
-        <div className="flex items-center space-x-3">
+        <div 
+          className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity"
+          onClick={() => navigate("/")}
+        >
           <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center shadow-glow">
             <span className="text-white font-bold text-sm">🌊</span>
           </div>

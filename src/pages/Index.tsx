@@ -1,6 +1,8 @@
+
 import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { ToolGrid } from "@/components/tools/ToolGrid";
+import { CommandPalette } from "@/components/layout/CommandPalette";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,11 +11,38 @@ import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const navigate = useNavigate();
+
+  // Handle Cmd+K / Ctrl+K
+  useState(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setCommandPaletteOpen(true);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  });
+
+  const handleOpenCommandPalette = () => {
+    setCommandPaletteOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
-      <Header onSearch={setSearchQuery} searchQuery={searchQuery} />
+      <Header 
+        onSearch={setSearchQuery} 
+        searchQuery={searchQuery}
+        onOpenCommandPalette={handleOpenCommandPalette}
+      />
+      
+      <CommandPalette 
+        open={commandPaletteOpen} 
+        onOpenChange={setCommandPaletteOpen} 
+      />
       
       <main className="container mx-auto px-4 py-8 space-y-12">
         {/* Hero Section */}

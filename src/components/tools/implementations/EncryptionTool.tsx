@@ -14,6 +14,7 @@ export function EncryptionTool() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [key, setKey] = useState("");
+  const [iv, setIv] = useState("");
   const [algorithm, setAlgorithm] = useState("aes");
   const [encoding, setEncoding] = useState("base64");
   const [error, setError] = useState("");
@@ -76,8 +77,17 @@ export function EncryptionTool() {
           result = hexEncode(input);
           break;
         case "aes":
+          // Check if IV is provided for AES
+          if (!iv.trim()) {
+            setError("IV (Initialization Vector) is required for AES encryption");
+            setOutput("");
+            return;
+          }
+          // Simulated AES encryption with IV
+          result = base64Encode(input + "_aes_encrypted_key_" + key + "_iv_" + iv);
+          break;
         case "des":
-          // Simulated encryption (in real implementation, use proper crypto libraries)
+          // Simulated encryption
           result = base64Encode(input + "_encrypted_with_" + algorithm + "_key_" + key);
           break;
         default:
@@ -127,6 +137,19 @@ export function EncryptionTool() {
           result = hexDecode(result);
           break;
         case "aes":
+          // Check if IV is provided for AES
+          if (!iv.trim()) {
+            setError("IV (Initialization Vector) is required for AES decryption");
+            setOutput("");
+            return;
+          }
+          // Simulated AES decryption
+          if (result.includes("_aes_encrypted_key_" + key + "_iv_" + iv)) {
+            result = base64Decode(result).split("_aes_encrypted_key_")[0];
+          } else {
+            throw new Error("Invalid encrypted data, wrong key, or wrong IV");
+          }
+          break;
         case "des":
           // Simulated decryption
           if (result.includes("_encrypted_with_" + algorithm)) {
@@ -184,6 +207,15 @@ export function EncryptionTool() {
       result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     setKey(result);
+  };
+
+  const generateRandomIV = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < 16; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setIv(result);
   };
 
   return (
@@ -245,6 +277,27 @@ export function EncryptionTool() {
               </div>
             </div>
           </div>
+
+          {/* IV Field for AES */}
+          {algorithm === "aes" && (
+            <div className="space-y-2">
+              <Label>IV (Initialization Vector) - Required for AES</Label>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Enter 16-character IV..."
+                  value={iv}
+                  onChange={(e) => setIv(e.target.value)}
+                  maxLength={16}
+                />
+                <Button variant="outline" size="sm" onClick={generateRandomIV}>
+                  Random IV
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                IV should be exactly 16 characters for AES encryption
+              </p>
+            </div>
+          )}
 
           {error && (
             <div className="flex items-center gap-2 text-destructive text-sm">
