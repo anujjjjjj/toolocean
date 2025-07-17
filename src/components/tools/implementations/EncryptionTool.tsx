@@ -284,10 +284,10 @@ export function EncryptionTool() {
               <Label>IV (Initialization Vector) - Required for AES</Label>
               <div className="flex gap-2">
                 <Input
-                  placeholder="Enter 16-character IV..."
+                  placeholder="Enter IV (16+ characters)..."
                   value={iv}
                   onChange={(e) => setIv(e.target.value)}
-                  maxLength={16}
+                  minLength={16}
                 />
                 <Button variant="outline" size="sm" onClick={generateRandomIV}>
                   Random IV

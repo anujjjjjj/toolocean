@@ -58,7 +58,7 @@ const Index = () => {
             <div className="flex flex-wrap justify-center gap-4 mb-8">
               <Badge variant="outline" className="px-4 py-2 text-sm">
                 <Zap className="h-4 w-4 mr-2" />
-                14 Tools Available
+                31 Tools Available
               </Badge>
               <Badge variant="outline" className="px-4 py-2 text-sm">
                 <Workflow className="h-4 w-4 mr-2" />
@@ -82,11 +82,11 @@ const Index = () => {
               >
                 Explore Tools
               </Button>
-              <Button 
+                <Button 
                 variant="outline" 
                 size="lg" 
                 className="text-lg px-8"
-                onClick={() => navigate('/workflows')}
+                onClick={() => navigate('/workflow-builder')}
               >
                 Create Workflow
               </Button>
@@ -160,11 +160,10 @@ const Index = () => {
               </CardHeader>
               <CardContent>
                 <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => navigate('/workflows')}
+                  className="w-full bg-gradient-primary hover:bg-gradient-ocean"
+                  onClick={() => navigate('/workflow-builder')}
                 >
-                  Coming Soon
+                  Build Workflow
                 </Button>
               </CardContent>
             </Card>
