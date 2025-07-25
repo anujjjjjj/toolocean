@@ -1,10 +1,11 @@
+
 import { useState, useEffect } from 'react';
 
 export interface HistoryItem {
   id: string;
+  action: string;
   toolSlug: string;
-  input: string;
-  output: string;
+  data: any;
   timestamp: number;
 }
 
@@ -22,12 +23,12 @@ export const useHistory = () => {
     }
   }, []);
 
-  const addToHistory = (toolSlug: string, input: string, output: string) => {
+  const addToHistory = (action: string, toolSlug: string, data: any) => {
     const item: HistoryItem = {
       id: Date.now().toString(),
+      action,
       toolSlug,
-      input,
-      output,
+      data,
       timestamp: Date.now()
     };
 
