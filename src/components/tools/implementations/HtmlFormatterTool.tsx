@@ -1,92 +1,96 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Copy, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useHistory } from "@/hooks/useHistory";
 
 export function HtmlFormatterTool() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
+  const [mode, setMode] = useState("beautify");
   const [indentSize, setIndentSize] = useState("2");
   const { toast } = useToast();
+  const { addToHistory } = useHistory();
 
-  const formatHtml = () => {
+  const beautifyHTML = (html: string, indent: string): string => {
+    let result = '';
+    let indentLevel = 0;
+    const indentStr = indent === 'tab' ? '\t' : ' '.repeat(parseInt(indent));
+    
+    // Remove extra whitespace
+    html = html.replace(/\s+/g, ' ').trim();
+    
+    // Split by tags
+    const tokens = html.split(/(<[^>]*>)/);
+    
+    for (const token of tokens) {
+      if (token.trim() === '') continue;
+      
+      if (token.startsWith('<')) {
+        if (token.startsWith('</')) {
+          // Closing tag
+          indentLevel--;
+          result += indentStr.repeat(Math.max(0, indentLevel)) + token + '\n';
+        } else if (token.endsWith('/>')) {
+          // Self-closing tag
+          result += indentStr.repeat(indentLevel) + token + '\n';
+        } else {
+          // Opening tag
+          result += indentStr.repeat(indentLevel) + token + '\n';
+          indentLevel++;
+        }
+      } else {
+        // Text content
+        if (token.trim()) {
+          result += indentStr.repeat(indentLevel) + token.trim() + '\n';
+        }
+      }
+    }
+    
+    return result.trim();
+  };
+
+  const minifyHTML = (html: string): string => {
+    return html
+      .replace(/\s+/g, ' ')
+      .replace(/>\s+</g, '><')
+      .replace(/^\s+|\s+$/g, '');
+  };
+
+  const formatHTML = () => {
     if (!input.trim()) {
       setOutput("");
       return;
     }
 
     try {
-      const indent = parseInt(indentSize);
-      const formatted = formatHtmlString(input, indent);
-      setOutput(formatted);
-    } catch (err) {
-      setOutput(input); // Return original if formatting fails
-    }
-  };
+      const result = mode === "beautify" ? beautifyHTML(input, indentSize) : minifyHTML(input);
+      setOutput(result);
 
-  const minifyHtml = () => {
-    if (!input.trim()) {
-      setOutput("");
-      return;
-    }
+      // Add to history
+      addToHistory({
+        toolId: 'html-formatter',
+        input,
+        output: result,
+        timestamp: new Date(),
+        metadata: { mode, indentSize }
+      });
 
-    const minified = input
-      .replace(/>\s+</g, '><') // Remove whitespace between tags
-      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
-      .trim();
-    
-    setOutput(minified);
-  };
-
-  const formatHtmlString = (html: string, indentSize: number): string => {
-    const tab = ' '.repeat(indentSize);
-    let result = '';
-    let indent = 0;
-    let inTag = false;
-    let tagName = '';
-    
-    // Self-closing tags
-    const selfClosing = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
-    
-    for (let i = 0; i < html.length; i++) {
-      const char = html[i];
-      
-      if (char === '<') {
-        if (result.trim() && !inTag) {
-          result += '\n' + tab.repeat(indent);
-        }
-        inTag = true;
-        tagName = '';
-        result += char;
-      } else if (char === '>') {
-        inTag = false;
-        result += char;
-        
-        // Check if it's a closing tag
-        if (tagName.startsWith('/')) {
-          indent = Math.max(0, indent - 1);
-          result += '\n' + tab.repeat(indent);
-        } else if (!selfClosing.includes(tagName.toLowerCase()) && !tagName.endsWith('/')) {
-          // Opening tag
-          indent++;
-          result += '\n' + tab.repeat(indent);
-        } else {
-          // Self-closing tag
-          result += '\n' + tab.repeat(indent);
-        }
-      } else if (inTag && char !== ' ') {
-        tagName += char;
-        result += char;
-      } else {
-        result += char;
-      }
+      toast({
+        title: "Success",
+        description: `HTML ${mode === "beautify" ? "beautified" : "minified"} successfully`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to format HTML",
+        variant: "destructive",
+      });
     }
-    
-    return result.trim();
   };
 
   const copyToClipboard = async () => {
@@ -105,7 +109,7 @@ export function HtmlFormatterTool() {
     }
   };
 
-  const downloadHtml = () => {
+  const downloadHTML = () => {
     if (!output) return;
     
     const blob = new Blob([output], { type: 'text/html' });
@@ -121,42 +125,50 @@ export function HtmlFormatterTool() {
 
   return (
     <div className="grid lg:grid-cols-2 gap-6">
-      {/* Input Panel */}
       <Card>
         <CardHeader>
           <CardTitle>HTML Input</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <Textarea
-            placeholder="Paste your HTML code here..."
+            placeholder="Paste your HTML here..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             className="min-h-[300px] font-mono text-sm"
           />
-
+          
           <div className="flex gap-2">
-            <Select value={indentSize} onValueChange={setIndentSize}>
+            <Select value={mode} onValueChange={setMode}>
               <SelectTrigger className="w-32">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="2">2 spaces</SelectItem>
-                <SelectItem value="4">4 spaces</SelectItem>
-                <SelectItem value="8">8 spaces</SelectItem>
+                <SelectItem value="beautify">Beautify</SelectItem>
+                <SelectItem value="minify">Minify</SelectItem>
               </SelectContent>
             </Select>
             
-            <Button onClick={formatHtml} className="flex-1">
-              Format
-            </Button>
-            <Button onClick={minifyHtml} variant="outline">
-              Minify
+            {mode === "beautify" && (
+              <Select value={indentSize} onValueChange={setIndentSize}>
+                <SelectTrigger className="w-32">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="2">2 spaces</SelectItem>
+                  <SelectItem value="4">4 spaces</SelectItem>
+                  <SelectItem value="8">8 spaces</SelectItem>
+                  <SelectItem value="tab">Tab</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+            
+            <Button onClick={formatHTML} className="flex-1">
+              Format HTML
             </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* Output Panel */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
@@ -167,7 +179,7 @@ export function HtmlFormatterTool() {
                   <Copy className="h-4 w-4 mr-2" />
                   Copy
                 </Button>
-                <Button variant="outline" size="sm" onClick={downloadHtml}>
+                <Button variant="outline" size="sm" onClick={downloadHTML}>
                   <Download className="h-4 w-4 mr-2" />
                   Download
                 </Button>

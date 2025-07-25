@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,13 +8,15 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Copy, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useHistory } from "@/hooks/useHistory";
 
 export function DuplicateRemoverTool() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [caseSensitive, setCaseSensitive] = useState(true);
-  const [trimLines, setTrimLines] = useState(true);
+  const [preserveOrder, setPreserveOrder] = useState(true);
   const { toast } = useToast();
+  const { addToHistory } = useHistory();
 
   const removeDuplicates = () => {
     if (!input.trim()) {
@@ -22,27 +25,42 @@ export function DuplicateRemoverTool() {
     }
 
     const lines = input.split('\n');
-    const seen = new Set();
-    const result = [];
-    let duplicatesCount = 0;
+    let unique: string[];
 
-    for (const line of lines) {
-      const processedLine = trimLines ? line.trim() : line;
-      const keyLine = caseSensitive ? processedLine : processedLine.toLowerCase();
-      
-      if (!seen.has(keyLine)) {
-        seen.add(keyLine);
-        result.push(line);
-      } else {
-        duplicatesCount++;
+    if (preserveOrder) {
+      const seen = new Set<string>();
+      unique = lines.filter(line => {
+        const key = caseSensitive ? line : line.toLowerCase();
+        if (seen.has(key)) {
+          return false;
+        }
+        seen.add(key);
+        return true;
+      });
+    } else {
+      const uniqueSet = new Set(lines.map(line => caseSensitive ? line : line.toLowerCase()));
+      unique = Array.from(uniqueSet);
+      if (!caseSensitive) {
+        unique = unique.map(line => 
+          lines.find(original => original.toLowerCase() === line) || line
+        );
       }
     }
 
-    setOutput(result.join('\n'));
-    
-    toast({
-      title: "Duplicates removed",
-      description: `Removed ${duplicatesCount} duplicate lines`,
+    const result = unique.join('\n');
+    setOutput(result);
+
+    // Add to history
+    addToHistory({
+      toolId: 'duplicate-remover',
+      input,
+      output: result,
+      timestamp: new Date(),
+      metadata: { 
+        originalLines: lines.length,
+        uniqueLines: unique.length,
+        duplicatesRemoved: lines.length - unique.length
+      }
     });
   };
 
@@ -69,7 +87,7 @@ export function DuplicateRemoverTool() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'deduplicated.txt';
+    a.download = 'unique-lines.txt';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -77,15 +95,14 @@ export function DuplicateRemoverTool() {
   };
 
   const inputLines = input.split('\n').length;
-  const outputLines = output.split('\n').filter(line => line.trim()).length;
-  const removedLines = inputLines - outputLines;
+  const outputLines = output.split('\n').length;
+  const duplicatesRemoved = inputLines - outputLines;
 
   return (
     <div className="grid lg:grid-cols-2 gap-6">
-      {/* Input Panel */}
       <Card>
         <CardHeader>
-          <CardTitle>Input Text</CardTitle>
+          <CardTitle>Text with Duplicates</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <Textarea
@@ -107,11 +124,11 @@ export function DuplicateRemoverTool() {
             
             <div className="flex items-center space-x-2">
               <Switch
-                id="trim-lines"
-                checked={trimLines}
-                onCheckedChange={setTrimLines}
+                id="preserve-order"
+                checked={preserveOrder}
+                onCheckedChange={setPreserveOrder}
               />
-              <Label htmlFor="trim-lines">Trim whitespace</Label>
+              <Label htmlFor="preserve-order">Preserve original order</Label>
             </div>
           </div>
 
@@ -121,13 +138,12 @@ export function DuplicateRemoverTool() {
 
           {input && (
             <div className="text-sm text-muted-foreground">
-              <Badge variant="outline">{inputLines} total lines</Badge>
+              <Badge variant="outline">{inputLines} lines</Badge>
             </div>
           )}
         </CardContent>
       </Card>
 
-      {/* Output Panel */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
@@ -157,9 +173,7 @@ export function DuplicateRemoverTool() {
           {output && (
             <div className="mt-4 flex gap-4 text-sm text-muted-foreground">
               <Badge variant="outline">{outputLines} unique lines</Badge>
-              <Badge variant="outline" className="text-red-600">
-                {removedLines} duplicates removed
-              </Badge>
+              <Badge variant="destructive">{duplicatesRemoved} duplicates removed</Badge>
             </div>
           )}
         </CardContent>

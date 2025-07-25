@@ -1,20 +1,12 @@
+
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { ToolRunner } from "@/components/tools/ToolRunner";
 import { Header } from "@/components/layout/Header";
+import { componentRegistry } from "@/lib/toolRegistry";
 import toolsData from "@/data/tools.json";
-
-// Import tool components
-import { JsonFormatterTool } from "@/components/tools/implementations/JsonFormatterTool";
-import { CaseConverterTool } from "@/components/tools/implementations/CaseConverterTool";
-import { CsvJsonConverterTool } from "@/components/tools/implementations/CsvJsonConverterTool";
-import { YamlJsonConverterTool } from "@/components/tools/implementations/YamlJsonConverterTool";
-import { XmlJsonConverterTool } from "@/components/tools/implementations/XmlJsonConverterTool";
-import { JsonSchemaValidatorTool } from "@/components/tools/implementations/JsonSchemaValidatorTool";
-import { JsonMergerTool } from "@/components/tools/implementations/JsonMergerTool";
-import { JsonFlattenerTool } from "@/components/tools/implementations/JsonFlattenerTool";
 
 const ToolPage = () => {
   const { toolId } = useParams<{ toolId: string }>();
@@ -34,33 +26,20 @@ const ToolPage = () => {
   }
 
   const renderToolComponent = () => {
-    switch (tool.id) {
-      case "json-formatter":
-        return <JsonFormatterTool />;
-      case "case-converter":
-        return <CaseConverterTool />;
-      case "csv-json-converter":
-        return <CsvJsonConverterTool />;
-      case "yaml-json-converter":
-        return <YamlJsonConverterTool />;
-      case "xml-json-converter":
-        return <XmlJsonConverterTool />;
-      case "json-schema-validator":
-        return <JsonSchemaValidatorTool />;
-      case "json-merger":
-        return <JsonMergerTool />;
-      case "json-flattener":
-        return <JsonFlattenerTool />;
-      default:
-        return (
-          <div className="text-center py-12">
-            <h3 className="text-lg font-semibold mb-2">Tool Coming Soon</h3>
-            <p className="text-muted-foreground">
-              {tool.name} is not yet implemented. Check back later!
-            </p>
-          </div>
-        );
+    const ToolComponent = componentRegistry[tool.id];
+    
+    if (ToolComponent) {
+      return <ToolComponent />;
     }
+
+    return (
+      <div className="text-center py-12">
+        <h3 className="text-lg font-semibold mb-2">Tool Coming Soon</h3>
+        <p className="text-muted-foreground">
+          {tool.name} is not yet implemented. Check back later!
+        </p>
+      </div>
+    );
   };
 
   return (

@@ -1,78 +1,101 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Copy, Download, AlertCircle } from "lucide-react";
+import { Copy, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useHistory } from "@/hooks/useHistory";
 
 export function TextReplacerTool() {
   const [input, setInput] = useState("");
-  const [output, setOutput] = useState("");
-  const [searchText, setSearchText] = useState("");
+  const [findText, setFindText] = useState("");
   const [replaceText, setReplaceText] = useState("");
-  const [useRegex, setUseRegex] = useState(false);
+  const [output, setOutput] = useState("");
   const [caseSensitive, setCaseSensitive] = useState(false);
-  const [globalReplace, setGlobalReplace] = useState(true);
-  const [error, setError] = useState("");
+  const [useRegex, setUseRegex] = useState(false);
+  const [replaceAll, setReplaceAll] = useState(true);
   const { toast } = useToast();
+  const { addToHistory } = useHistory();
 
   const performReplace = () => {
-    if (!input || !searchText) {
-      setOutput(input);
-      setError("");
+    if (!input.trim() || !findText) {
+      setOutput("");
       return;
     }
 
     try {
       let result = input;
-      let matchCount = 0;
+      let replacements = 0;
 
       if (useRegex) {
-        const flags = `${globalReplace ? 'g' : ''}${caseSensitive ? '' : 'i'}`;
-        const regex = new RegExp(searchText, flags);
-        
-        // Count matches first
-        const matches = input.match(regex);
-        matchCount = matches ? matches.length : 0;
-        
+        const flags = caseSensitive ? 'g' : 'gi';
+        const regex = new RegExp(findText, replaceAll ? flags : flags.replace('g', ''));
+        const matches = input.match(new RegExp(findText, flags));
+        replacements = matches ? matches.length : 0;
         result = input.replace(regex, replaceText);
       } else {
-        if (globalReplace) {
-          const searchRegex = new RegExp(
-            searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
-            caseSensitive ? 'g' : 'gi'
-          );
-          const matches = input.match(searchRegex);
-          matchCount = matches ? matches.length : 0;
-          result = input.replace(searchRegex, replaceText);
+        const searchValue = caseSensitive ? findText : findText.toLowerCase();
+        const textToSearch = caseSensitive ? input : input.toLowerCase();
+        
+        if (replaceAll) {
+          let startIndex = 0;
+          result = input;
+          
+          while (true) {
+            const index = textToSearch.indexOf(searchValue, startIndex);
+            if (index === -1) break;
+            
+            result = result.substring(0, index) + replaceText + result.substring(index + findText.length);
+            startIndex = index + replaceText.length;
+            replacements++;
+            
+            // Update textToSearch to reflect the new text
+            const newTextToSearch = caseSensitive ? result : result.toLowerCase();
+            if (newTextToSearch !== textToSearch) {
+              break; // Prevent infinite loop
+            }
+          }
         } else {
-          const searchRegex = new RegExp(
-            searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
-            caseSensitive ? '' : 'i'
-          );
-          if (searchRegex.test(input)) {
-            matchCount = 1;
-            result = input.replace(searchRegex, replaceText);
+          const index = textToSearch.indexOf(searchValue);
+          if (index !== -1) {
+            result = input.substring(0, index) + replaceText + input.substring(index + findText.length);
+            replacements = 1;
           }
         }
       }
 
       setOutput(result);
-      setError("");
-      
-      if (matchCount > 0) {
-        toast({
-          title: "Text replaced",
-          description: `Made ${matchCount} replacement${matchCount === 1 ? '' : 's'}`,
-        });
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Invalid regular expression");
-      setOutput("");
+
+      // Add to history
+      addToHistory({
+        toolId: 'text-replacer',
+        input,
+        output: result,
+        timestamp: new Date(),
+        metadata: { 
+          findText,
+          replaceText,
+          replacements,
+          useRegex,
+          caseSensitive
+        }
+      });
+
+      toast({
+        title: "Success",
+        description: `Made ${replacements} replacement${replacements !== 1 ? 's' : ''}`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: useRegex ? "Invalid regular expression" : "Replace operation failed",
+        variant: "destructive",
+      });
     }
   };
 
@@ -108,29 +131,27 @@ export function TextReplacerTool() {
 
   return (
     <div className="space-y-6">
-      {/* Search and Replace Controls */}
       <Card>
         <CardHeader>
           <CardTitle>Find and Replace</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="search">Find</Label>
+            <div>
+              <Label htmlFor="find-text">Find</Label>
               <Input
-                id="search"
-                placeholder="Enter text to find..."
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
+                id="find-text"
+                placeholder="Text to find..."
+                value={findText}
+                onChange={(e) => setFindText(e.target.value)}
                 className="font-mono"
               />
             </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="replace">Replace with</Label>
+            <div>
+              <Label htmlFor="replace-text">Replace with</Label>
               <Input
-                id="replace"
-                placeholder="Enter replacement text..."
+                id="replace-text"
+                placeholder="Replacement text..."
                 value={replaceText}
                 onChange={(e) => setReplaceText(e.target.value)}
                 className="font-mono"
@@ -138,16 +159,7 @@ export function TextReplacerTool() {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-4">
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="regex"
-                checked={useRegex}
-                onCheckedChange={setUseRegex}
-              />
-              <Label htmlFor="regex">Use Regex</Label>
-            </div>
-            
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="flex items-center space-x-2">
               <Switch
                 id="case-sensitive"
@@ -159,28 +171,29 @@ export function TextReplacerTool() {
             
             <div className="flex items-center space-x-2">
               <Switch
-                id="global"
-                checked={globalReplace}
-                onCheckedChange={setGlobalReplace}
+                id="use-regex"
+                checked={useRegex}
+                onCheckedChange={setUseRegex}
               />
-              <Label htmlFor="global">Replace all</Label>
+              <Label htmlFor="use-regex">Use regex</Label>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="replace-all"
+                checked={replaceAll}
+                onCheckedChange={setReplaceAll}
+              />
+              <Label htmlFor="replace-all">Replace all</Label>
             </div>
           </div>
 
-          {error && (
-            <div className="flex items-center gap-2 text-destructive text-sm">
-              <AlertCircle className="h-4 w-4" />
-              {error}
-            </div>
-          )}
-
-          <Button onClick={performReplace} className="w-full" disabled={!searchText}>
-            {globalReplace ? 'Replace All' : 'Replace First'}
+          <Button onClick={performReplace} className="w-full">
+            Replace Text
           </Button>
         </CardContent>
       </Card>
 
-      {/* Input and Output */}
       <div className="grid lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
@@ -188,14 +201,13 @@ export function TextReplacerTool() {
           </CardHeader>
           <CardContent>
             <Textarea
-              placeholder="Enter text to process..."
+              placeholder="Enter your text here..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
               className="min-h-[300px] font-mono text-sm"
             />
-            
             {input && (
-              <div className="mt-4 text-sm text-muted-foreground">
+              <div className="mt-2 text-sm text-muted-foreground">
                 <Badge variant="outline">{input.length} characters</Badge>
               </div>
             )}
@@ -227,9 +239,8 @@ export function TextReplacerTool() {
               placeholder="Replaced text will appear here..."
               className="min-h-[300px] font-mono text-sm bg-muted/50"
             />
-            
             {output && (
-              <div className="mt-4 text-sm text-muted-foreground">
+              <div className="mt-2 text-sm text-muted-foreground">
                 <Badge variant="outline">{output.length} characters</Badge>
               </div>
             )}
