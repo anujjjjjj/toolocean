@@ -1,195 +1,109 @@
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Plus, Play, Trash2, ArrowDown, Save, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Header } from "@/components/layout/Header";
-import { ArrowLeft, Play, Plus, Trash2, Save, Download } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { Workflow, WorkflowStep } from "@/types/workflow";
-import { toolRegistry } from "@/lib/toolRegistry";
 import { useHistory } from "@/hooks/useHistory";
+import { toolRegistry } from "@/lib/toolRegistry";
+
+interface WorkflowStep {
+  id: string;
+  toolId: string;
+  toolName: string;
+  input: string;
+  output?: string;
+  error?: string;
+}
+
+interface Workflow {
+  id: string;
+  name: string;
+  description: string;
+  steps: WorkflowStep[];
+  createdAt: Date;
+}
+
+// Available tools organized by category
+const toolCategories = {
+  "Data & Format Converters": [
+    { id: "json-formatter", name: "JSON Formatter" },
+    { id: "csv-json-converter", name: "CSV to JSON" },
+    { id: "yaml-json-converter", name: "YAML to JSON" },
+    { id: "xml-json-converter", name: "XML to JSON" },
+    { id: "json-stringify", name: "JSON Stringify" },
+    { id: "json-parse", name: "JSON Parse" },
+    { id: "json-fixer", name: "JSON Fixer" },
+    { id: "json-merger", name: "JSON Merger" },
+    { id: "json-flattener", name: "JSON Flattener" },
+    { id: "json-schema-validator", name: "JSON Schema Validator" }
+  ],
+  "Text Processing": [
+    { id: "case-converter", name: "Case Converter" },
+    { id: "word-counter", name: "Word Counter" },
+    { id: "text-diff", name: "Text Diff" },
+    { id: "duplicate-remover", name: "Duplicate Remover" },
+    { id: "line-break-remover", name: "Line Break Remover" },
+    { id: "text-replacer", name: "Text Replacer" },
+    { id: "slug-converter", name: "Slug Converter" }
+  ],
+  "Code Formatters": [
+    { id: "html-formatter", name: "HTML Formatter" },
+    { id: "css-minifier", name: "CSS Formatter" },
+    { id: "sql-formatter", name: "SQL Formatter" },
+    { id: "yaml-formatter", name: "YAML Formatter" },
+    { id: "dockerfile-formatter", name: "Dockerfile Formatter" }
+  ],
+  "Frontend & Styling": [
+    { id: "html-jsx-converter", name: "HTML to JSX" },
+    { id: "color-converter", name: "Color Converter" },
+    { id: "gradient-generator", name: "Gradient Generator" },
+    { id: "box-shadow-generator", name: "Box Shadow Generator" }
+  ],
+  "Security & Hash": [
+    { id: "encryption-tool", name: "Encryption Tool" },
+    { id: "hash-generator", name: "Hash Generator" },
+    { id: "password-generator", name: "Password Generator" },
+    { id: "uuid-generator", name: "UUID Generator" },
+    { id: "jwt-decoder", name: "JWT Decoder" }
+  ],
+  "Testing & API": [
+    { id: "regex-tester", name: "Regex Tester" },
+    { id: "fake-data-generator", name: "Fake Data Generator" },
+    { id: "http-request-composer", name: "HTTP Request Composer" },
+    { id: "user-agent-generator", name: "User Agent Generator" },
+    { id: "timestamp-converter", name: "Timestamp Converter" },
+    { id: "ip-address-tool", name: "IP Address Tool" }
+  ],
+  "DevOps & Config": [
+    { id: "env-formatter", name: "ENV Formatter" },
+    { id: "gitignore-generator", name: "Gitignore Generator" },
+    { id: "nginx-config-generator", name: "NGINX Config Generator" },
+    { id: "cron-expression-builder", name: "Cron Expression Builder" }
+  ],
+  "AI & Advanced": [
+    { id: "regex-generator", name: "Regex Generator" },
+    { id: "code-explainer", name: "Code Explainer" },
+    { id: "prompt-optimizer", name: "Prompt Optimizer" },
+    { id: "markdown-summarizer", name: "Markdown Summarizer" }
+  ]
+};
 
 const WorkflowBuilderPage = () => {
-  const navigate = useNavigate();
+  const [workflows, setWorkflows] = useState<Workflow[]>([]);
+  const [currentWorkflow, setCurrentWorkflow] = useState<Workflow | null>(null);
+  const [workflowName, setWorkflowName] = useState("");
+  const [workflowDescription, setWorkflowDescription] = useState("");
+  const [isExecuting, setIsExecuting] = useState(false);
   const { toast } = useToast();
   const { addToHistory } = useHistory();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [workflowName, setWorkflowName] = useState("");
-  const [input, setInput] = useState("");
-  const [steps, setSteps] = useState<WorkflowStep[]>([]);
-  const [outputs, setOutputs] = useState<string[]>([]);
-  const [isRunning, setIsRunning] = useState(false);
-  const [savedWorkflows, setSavedWorkflows] = useState<Workflow[]>(() => {
-    const saved = localStorage.getItem("toolOcean.workflows");
-    return saved ? JSON.parse(saved) : [];
-  });
 
-  const availableTools = [
-    // Text Processing
-    { slug: "case-converter", name: "Case Converter", category: "text" },
-    { slug: "word-counter", name: "Word Counter", category: "text" },
-    { slug: "text-diff", name: "Text Diff Viewer", category: "text" },
-    { slug: "duplicate-remover", name: "Duplicate Lines Remover", category: "text" },
-    { slug: "line-break-remover", name: "Line Break Remover", category: "text" },
-    { slug: "text-replacer", name: "Text Replacer", category: "text" },
-    { slug: "slug-converter", name: "Text to Slug Converter", category: "text" },
-    
-    // Code Formatting
-    { slug: "json-formatter", name: "JSON Formatter", category: "formatting" },
-    { slug: "json-stringify", name: "JSON.stringify", category: "formatting" },
-    { slug: "json-parse", name: "JSON.parse", category: "formatting" },
-    { slug: "html-formatter", name: "HTML Formatter", category: "formatting" },
-    { slug: "sql-formatter", name: "SQL Formatter", category: "formatting" },
-    
-    // Development
-    { slug: "regex-tester", name: "Regex Tester", category: "development" },
-    
-    // Security
-    { slug: "encryption-tool", name: "Encryption/Decryption", category: "security" },
-    { slug: "hash-generator", name: "Hash Generator", category: "security" },
-    { slug: "password-generator", name: "Password Generator", category: "security" },
-    { slug: "uuid-generator", name: "UUID Generator", category: "security" },
-    { slug: "env-formatter", name: ".env File Formatter", category: "security" },
-    { slug: "jwt-decoder", name: "JWT Decoder", category: "security" },
-    
-    // Data & Format Converters
-    { slug: "csv-json-converter", name: "CSV ⇄ JSON Converter", category: "data-converters" },
-    { slug: "yaml-json-converter", name: "YAML ⇄ JSON Converter", category: "data-converters" },
-    { slug: "xml-json-converter", name: "XML ⇄ JSON Converter", category: "data-converters" },
-    { slug: "json-schema-validator", name: "JSON Schema Validator", category: "data-converters" },
-    { slug: "json-merger", name: "JSON Merger", category: "data-converters" },
-    { slug: "json-flattener", name: "JSON Flattener/Unflattener", category: "data-converters" },
-    
-    // Frontend & Styling
-    { slug: "css-minifier", name: "CSS Minifier/Beautifier", category: "frontend" },
-    { slug: "html-jsx-converter", name: "HTML to JSX Converter", category: "frontend" },
-    { slug: "color-converter", name: "Color Picker/Converter", category: "frontend" },
-    { slug: "gradient-generator", name: "Gradient Generator", category: "frontend" },
-    { slug: "box-shadow-generator", name: "Box Shadow Generator", category: "frontend" },
-    
-    // Testing & API Tools
-    { slug: "fake-data-generator", name: "Fake Data Generator", category: "testing" },
-    { slug: "http-request-composer", name: "HTTP Request Composer", category: "testing" },
-    { slug: "user-agent-generator", name: "User-Agent Generator", category: "testing" },
-    { slug: "timestamp-converter", name: "Epoch/Timestamp Converter", category: "testing" },
-    { slug: "ip-address-tool", name: "IP Address Tool", category: "testing" },
-    
-    // DevOps & Infrastructure
-    { slug: "gitignore-generator", name: ".gitignore Generator", category: "devops" },
-    { slug: "dockerfile-formatter", name: "Dockerfile Formatter/Linter", category: "devops" },
-    { slug: "yaml-formatter", name: "YAML Formatter", category: "devops" },
-    { slug: "nginx-config-generator", name: "NGINX Config Generator", category: "devops" },
-    { slug: "cron-expression-builder", name: "Cron Expression Builder", category: "devops" },
-    
-    // AI-Powered Tools
-    { slug: "regex-generator", name: "Regex Generator", category: "ai-tools" },
-    { slug: "code-explainer", name: "Code Explainer", category: "ai-tools" },
-    { slug: "prompt-optimizer", name: "GPT Prompt Optimizer", category: "ai-tools" },
-    { slug: "markdown-summarizer", name: "AI Markdown Summarizer", category: "ai-tools" },
-    { slug: "json-fixer", name: "Fix my JSON", category: "ai-tools" },
-    
-    // Basic Tools
-    { slug: "base64-encode", name: "Base64 Encode", category: "basic" },
-    { slug: "base64-decode", name: "Base64 Decode", category: "basic" },
-    { slug: "text-uppercase", name: "Uppercase", category: "basic" },
-    { slug: "text-lowercase", name: "Lowercase", category: "basic" },
-  ];
-
-  const addStep = (toolSlug: string) => {
-    const newStep: WorkflowStep = {
-      id: Date.now().toString(),
-      toolSlug,
-    };
-    setSteps([...steps, newStep]);
-  };
-
-  const removeStep = (stepId: string) => {
-    setSteps(steps.filter(step => step.id !== stepId));
-  };
-
-  const moveStep = (stepId: string, direction: 'up' | 'down') => {
-    const index = steps.findIndex(step => step.id === stepId);
-    if (index === -1) return;
-    
-    const newSteps = [...steps];
-    const targetIndex = direction === 'up' ? index - 1 : index + 1;
-    
-    if (targetIndex >= 0 && targetIndex < newSteps.length) {
-      [newSteps[index], newSteps[targetIndex]] = [newSteps[targetIndex], newSteps[index]];
-      setSteps(newSteps);
-    }
-  };
-
-  const runWorkflow = async () => {
-    if (!input.trim()) {
-      toast({
-        title: "Error",
-        description: "Please provide input text",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (steps.length === 0) {
-      toast({
-        title: "Error", 
-        description: "Please add at least one step",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsRunning(true);
-    const stepOutputs: string[] = [];
-    let currentOutput = input;
-
-    try {
-      for (let i = 0; i < steps.length; i++) {
-        const step = steps[i];
-        const tool = toolRegistry[step.toolSlug];
-        
-        if (!tool) {
-          throw new Error(`Tool ${step.toolSlug} not found`);
-        }
-
-        currentOutput = await tool.run(currentOutput);
-        stepOutputs.push(currentOutput);
-      }
-
-      setOutputs(stepOutputs);
-      
-      // Add to history
-      addToHistory({
-        toolId: 'workflow-builder',
-        input,
-        output: stepOutputs[stepOutputs.length - 1],
-        timestamp: new Date(),
-        metadata: {
-          workflowName: workflowName || 'Untitled Workflow',
-          steps: steps.map(step => availableTools.find(t => t.slug === step.toolSlug)?.name || step.toolSlug)
-        }
-      });
-
-      toast({
-        title: "Success",
-        description: "Workflow executed successfully",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Workflow failed",
-        variant: "destructive",
-      });
-    } finally {
-      setIsRunning(false);
-    }
-  };
-
-  const saveWorkflow = () => {
+  const createNewWorkflow = () => {
     if (!workflowName.trim()) {
       toast({
         title: "Error",
@@ -199,287 +113,319 @@ const WorkflowBuilderPage = () => {
       return;
     }
 
-    const workflow: Workflow = {
+    const newWorkflow: Workflow = {
       id: Date.now().toString(),
       name: workflowName,
-      description: `Workflow with ${steps.length} steps`,
-      steps,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      description: workflowDescription,
+      steps: [],
+      createdAt: new Date()
     };
 
-    const updatedWorkflows = [...savedWorkflows, workflow];
-    setSavedWorkflows(updatedWorkflows);
-    localStorage.setItem("toolOcean.workflows", JSON.stringify(updatedWorkflows));
-
+    setCurrentWorkflow(newWorkflow);
+    setWorkflowName("");
+    setWorkflowDescription("");
     toast({
-      title: "Success",
-      description: "Workflow saved successfully",
+      title: "Workflow created",
+      description: `Created workflow "${newWorkflow.name}"`,
     });
   };
 
-  const loadWorkflow = (workflow: Workflow) => {
-    setWorkflowName(workflow.name);
-    setSteps(workflow.steps);
-    setOutputs([]);
-    
-    toast({
-      title: "Success",
-      description: `Loaded workflow: ${workflow.name}`,
+  const addStep = (toolId: string, toolName: string) => {
+    if (!currentWorkflow) return;
+
+    const newStep: WorkflowStep = {
+      id: Date.now().toString(),
+      toolId,
+      toolName,
+      input: "",
+      output: undefined,
+      error: undefined
+    };
+
+    setCurrentWorkflow({
+      ...currentWorkflow,
+      steps: [...currentWorkflow.steps, newStep]
     });
   };
 
-  const exportWorkflow = () => {
-    if (!workflowName.trim() || steps.length === 0) {
+  const updateStepInput = (stepId: string, input: string) => {
+    if (!currentWorkflow) return;
+
+    setCurrentWorkflow({
+      ...currentWorkflow,
+      steps: currentWorkflow.steps.map(step =>
+        step.id === stepId ? { ...step, input } : step
+      )
+    });
+  };
+
+  const removeStep = (stepId: string) => {
+    if (!currentWorkflow) return;
+
+    setCurrentWorkflow({
+      ...currentWorkflow,
+      steps: currentWorkflow.steps.filter(step => step.id !== stepId)
+    });
+  };
+
+  const executeWorkflow = async () => {
+    if (!currentWorkflow || currentWorkflow.steps.length === 0) {
       toast({
         title: "Error",
-        description: "Please create a workflow first",
+        description: "Please add at least one step to the workflow",
         variant: "destructive",
       });
       return;
     }
 
-    const workflow = {
-      name: workflowName,
-      steps: steps.map(step => ({
-        toolSlug: step.toolSlug,
-        toolName: availableTools.find(t => t.slug === step.toolSlug)?.name || step.toolSlug
-      })),
-      createdAt: new Date().toISOString()
-    };
+    setIsExecuting(true);
+    let previousOutput = "";
 
-    const blob = new Blob([JSON.stringify(workflow, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${workflowName.replace(/[^a-zA-Z0-9]/g, '_')}_workflow.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const updatedSteps = [...currentWorkflow.steps];
 
+    for (let i = 0; i < updatedSteps.length; i++) {
+      const step = updatedSteps[i];
+      const input = step.input || previousOutput;
+
+      if (!input.trim()) {
+        step.error = "No input provided";
+        continue;
+      }
+
+      try {
+        const tool = toolRegistry[step.toolId];
+        if (!tool) {
+          step.error = `Tool "${step.toolId}" not found`;
+          continue;
+        }
+
+        const result = await tool.run(input);
+        step.output = result;
+        step.error = undefined;
+        previousOutput = result;
+      } catch (error) {
+        step.error = error instanceof Error ? error.message : "Unknown error";
+        step.output = undefined;
+        break; // Stop execution on error
+      }
+    }
+
+    setCurrentWorkflow({
+      ...currentWorkflow,
+      steps: updatedSteps
+    });
+
+    setIsExecuting(false);
+    addToHistory('execute', 'workflow-builder', { 
+      workflowName: currentWorkflow.name, 
+      stepCount: currentWorkflow.steps.length 
+    });
+    
     toast({
-      title: "Success",
-      description: "Workflow exported successfully",
+      title: "Workflow executed",
+      description: "Check the results in each step",
     });
   };
 
-  const groupedTools = availableTools.reduce((acc, tool) => {
-    if (!acc[tool.category]) {
-      acc[tool.category] = [];
+  const saveWorkflow = () => {
+    if (!currentWorkflow) return;
+
+    const existingIndex = workflows.findIndex(w => w.id === currentWorkflow.id);
+    if (existingIndex >= 0) {
+      const updatedWorkflows = [...workflows];
+      updatedWorkflows[existingIndex] = currentWorkflow;
+      setWorkflows(updatedWorkflows);
+    } else {
+      setWorkflows([...workflows, currentWorkflow]);
     }
-    acc[tool.category].push(tool);
-    return acc;
-  }, {} as Record<string, typeof availableTools>);
+
+    toast({
+      title: "Workflow saved",
+      description: `Saved workflow "${currentWorkflow.name}"`,
+    });
+  };
+
+  const exportWorkflow = () => {
+    if (!currentWorkflow) return;
+
+    const dataStr = JSON.stringify(currentWorkflow, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportFileDefaultName = `workflow-${currentWorkflow.name.replace(/\s+/g, '-').toLowerCase()}.json`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
-      <Header onSearch={setSearchQuery} searchQuery={searchQuery} />
-      
-      <div className="container mx-auto px-4 py-8">
-        <Button
-          variant="ghost"
-          onClick={() => navigate("/")}
-          className="mb-6 hover:bg-muted/80"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Tools
-        </Button>
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Workflow Builder */}
-          <div className="lg:col-span-3 space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Workflow Builder</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Workflow name"
-                    value={workflowName}
-                    onChange={(e) => setWorkflowName(e.target.value)}
-                    className="flex-1"
-                  />
-                  <Button onClick={saveWorkflow} variant="outline">
-                    <Save className="h-4 w-4 mr-2" />
-                    Save
-                  </Button>
-                  <Button onClick={exportWorkflow} variant="outline">
-                    <Download className="h-4 w-4 mr-2" />
-                    Export
-                  </Button>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">Input</label>
-                  <Textarea
-                    placeholder="Enter your input data..."
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    className="h-32"
-                  />
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-medium">Workflow Steps ({steps.length})</h3>
-                    <Select onValueChange={addStep}>
-                      <SelectTrigger className="w-48">
-                        <SelectValue placeholder="Add tool" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Object.entries(groupedTools).map(([category, tools]) => (
-                          <div key={category}>
-                            <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase">
-                              {category.replace('-', ' ')}
-                            </div>
-                            {tools.map((tool) => (
-                              <SelectItem key={tool.slug} value={tool.slug}>
-                                {tool.name}
-                              </SelectItem>
-                            ))}
-                          </div>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {steps.map((step, index) => (
-                    <div key={step.id} className="flex items-center space-x-2 p-3 bg-muted rounded">
-                      <span className="text-sm font-medium">{index + 1}.</span>
-                      <span className="flex-1">
-                        {availableTools.find(t => t.slug === step.toolSlug)?.name || step.toolSlug}
-                      </span>
-                      <div className="flex gap-1">
-                        <Button
-                          onClick={() => moveStep(step.id, 'up')}
-                          variant="ghost"
-                          size="sm"
-                          disabled={index === 0}
-                        >
-                          ↑
-                        </Button>
-                        <Button
-                          onClick={() => moveStep(step.id, 'down')}
-                          variant="ghost"
-                          size="sm"
-                          disabled={index === steps.length - 1}
-                        >
-                          ↓
-                        </Button>
-                        <Button
-                          onClick={() => removeStep(step.id)}
-                          variant="ghost"
-                          size="sm"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <Button 
-                  onClick={runWorkflow} 
-                  disabled={isRunning}
-                  className="w-full"
-                >
-                  <Play className="h-4 w-4 mr-2" />
-                  {isRunning ? "Running..." : "Run Workflow"}
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Results */}
-            {outputs.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Results</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {outputs.map((output, index) => (
-                    <div key={index} className="mb-4">
-                      <label className="block text-sm font-medium mb-2">
-                        Step {index + 1} Output: {availableTools.find(t => t.slug === steps[index]?.toolSlug)?.name}
-                      </label>
-                      <Textarea
-                        value={output}
-                        readOnly
-                        className="h-24 font-mono text-xs"
-                      />
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            )}
+    <div className="container mx-auto p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold">Workflow Builder</h1>
+        {currentWorkflow && (
+          <div className="flex gap-2">
+            <Button onClick={saveWorkflow} variant="outline">
+              <Save className="h-4 w-4 mr-2" />
+              Save
+            </Button>
+            <Button onClick={exportWorkflow} variant="outline">
+              <Download className="h-4 w-4 mr-2" />
+              Export
+            </Button>
+            <Button onClick={executeWorkflow} disabled={isExecuting}>
+              <Play className="h-4 w-4 mr-2" />
+              {isExecuting ? "Executing..." : "Execute"}
+            </Button>
           </div>
+        )}
+      </div>
 
-          {/* Saved Workflows & Tool Library */}
-          <div className="space-y-6">
-            {/* Saved Workflows */}
-            {savedWorkflows.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Saved Workflows</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    {savedWorkflows.map((workflow) => (
+      {!currentWorkflow ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Create New Workflow</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="workflow-name">Workflow Name</Label>
+              <Input
+                id="workflow-name"
+                placeholder="Enter workflow name..."
+                value={workflowName}
+                onChange={(e) => setWorkflowName(e.target.value)}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="workflow-description">Description (optional)</Label>
+              <Textarea
+                id="workflow-description"
+                placeholder="Enter workflow description..."
+                value={workflowDescription}
+                onChange={(e) => setWorkflowDescription(e.target.value)}
+              />
+            </div>
+            
+            <Button onClick={createNewWorkflow} className="w-full">
+              Create Workflow
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid lg:grid-cols-4 gap-6">
+          {/* Tool Selection */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Available Tools</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {Object.entries(toolCategories).map(([category, tools]) => (
+                <div key={category} className="space-y-2">
+                  <h3 className="font-semibold text-sm text-muted-foreground">{category}</h3>
+                  <div className="space-y-1">
+                    {tools.map(tool => (
                       <Button
-                        key={workflow.id}
-                        onClick={() => loadWorkflow(workflow)}
+                        key={tool.id}
                         variant="outline"
-                        className="w-full justify-start text-left"
                         size="sm"
+                        className="w-full justify-start"
+                        onClick={() => addStep(tool.id, tool.name)}
                       >
-                        <div>
-                          <div className="font-medium">{workflow.name}</div>
-                          <div className="text-xs text-muted-foreground">
-                            {workflow.steps.length} steps
-                          </div>
-                        </div>
+                        <Plus className="h-3 w-3 mr-2" />
+                        {tool.name}
                       </Button>
                     ))}
                   </div>
-                </CardContent>
-              </Card>
-            )}
+                </div>
+              ))}
+            </CardContent>
+          </Card>
 
-            {/* Tool Library */}
+          {/* Workflow Steps */}
+          <div className="lg:col-span-3 space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Tool Library ({availableTools.length})</CardTitle>
+                <CardTitle className="flex items-center justify-between">
+                  {currentWorkflow.name}
+                  <Badge variant="outline">{currentWorkflow.steps.length} steps</Badge>
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {Object.entries(groupedTools).map(([category, tools]) => (
-                    <div key={category}>
-                      <h3 className="text-sm font-medium mb-2 capitalize">
-                        {category.replace('-', ' ')} ({tools.length})
-                      </h3>
-                      <div className="space-y-1">
-                        {tools.map((tool) => (
-                          <Button
-                            key={tool.slug}
-                            onClick={() => addStep(tool.slug)}
-                            variant="outline"
-                            className="w-full justify-start text-xs"
-                            size="sm"
-                          >
-                            <Plus className="h-3 w-3 mr-2" />
-                            {tool.name}
-                          </Button>
-                        ))}
+                {currentWorkflow.description && (
+                  <p className="text-muted-foreground mb-4">{currentWorkflow.description}</p>
+                )}
+                
+                {currentWorkflow.steps.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No steps added yet. Select tools from the left panel to add steps.
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {currentWorkflow.steps.map((step, index) => (
+                      <div key={step.id} className="relative">
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="flex items-center justify-between text-sm">
+                              <div className="flex items-center gap-2">
+                                <Badge variant="outline">{index + 1}</Badge>
+                                {step.toolName}
+                              </div>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => removeStep(step.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <div className="space-y-2">
+                              <Label>Input</Label>
+                              <Textarea
+                                placeholder={index === 0 ? "Enter initial input..." : "Will use output from previous step"}
+                                value={step.input}
+                                onChange={(e) => updateStepInput(step.id, e.target.value)}
+                                className="text-sm"
+                                rows={3}
+                              />
+                            </div>
+                            
+                            {step.output && (
+                              <div className="space-y-2">
+                                <Label>Output</Label>
+                                <Textarea
+                                  value={step.output}
+                                  readOnly
+                                  className="text-sm bg-muted/50"
+                                  rows={3}
+                                />
+                              </div>
+                            )}
+                            
+                            {step.error && (
+                              <div className="text-destructive text-sm p-2 bg-destructive/10 rounded">
+                                Error: {step.error}
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                        
+                        {index < currentWorkflow.steps.length - 1 && (
+                          <div className="flex justify-center py-2">
+                            <ArrowDown className="h-4 w-4 text-muted-foreground" />
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

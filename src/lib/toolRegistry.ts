@@ -29,20 +29,20 @@ import { PasswordGeneratorTool } from "@/components/tools/implementations/Passwo
 import { UuidGeneratorTool } from "@/components/tools/implementations/UuidGeneratorTool";
 import { EnvFormatterTool } from "@/components/tools/implementations/EnvFormatterTool";
 import { JwtDecoderTool } from "@/components/tools/implementations/JwtDecoderTool";
-import { FakeDataGeneratorTool } from "@/components/tools/implementations/FakeDataGeneratorTool";
-import { HttpRequestComposerTool } from "@/components/tools/implementations/HttpRequestComposerTool";
-import { UserAgentGeneratorTool } from "@/components/tools/implementations/UserAgentGeneratorTool";
-import { TimestampConverterTool } from "@/components/tools/implementations/TimestampConverterTool";
-import { IpAddressTool } from "@/components/tools/implementations/IpAddressTool";
-import { GitignoreGeneratorTool } from "@/components/tools/implementations/GitignoreGeneratorTool";
-import { DockerfileFormatterTool } from "@/components/tools/implementations/DockerfileFormatterTool";
-import { YamlFormatterTool } from "@/components/tools/implementations/YamlFormatterTool";
-import { NginxConfigGeneratorTool } from "@/components/tools/implementations/NginxConfigGeneratorTool";
-import { CronExpressionBuilderTool } from "@/components/tools/implementations/CronExpressionBuilderTool";
-import { RegexGeneratorTool } from "@/components/tools/implementations/RegexGeneratorTool";
-import { CodeExplainerTool } from "@/components/tools/implementations/CodeExplainerTool";
-import { PromptOptimizerTool } from "@/components/tools/implementations/PromptOptimizerTool";
-import { MarkdownSummarizerTool } from "@/components/tools/implementations/MarkdownSummarizerTool";
+import FakeDataGeneratorTool from "@/components/tools/implementations/FakeDataGeneratorTool";
+import HttpRequestComposerTool from "@/components/tools/implementations/HttpRequestComposerTool";
+import UserAgentGeneratorTool from "@/components/tools/implementations/UserAgentGeneratorTool";
+import TimestampConverterTool from "@/components/tools/implementations/TimestampConverterTool";
+import IpAddressTool from "@/components/tools/implementations/IpAddressTool";
+import GitignoreGeneratorTool from "@/components/tools/implementations/GitignoreGeneratorTool";
+import DockerfileFormatterTool from "@/components/tools/implementations/DockerfileFormatterTool";
+import YamlFormatterTool from "@/components/tools/implementations/YamlFormatterTool";
+import NginxConfigGeneratorTool from "@/components/tools/implementations/NginxConfigGeneratorTool";
+import CronExpressionBuilderTool from "@/components/tools/implementations/CronExpressionBuilderTool";
+import RegexGeneratorTool from "@/components/tools/implementations/RegexGeneratorTool";
+import CodeExplainerTool from "@/components/tools/implementations/CodeExplainerTool";
+import PromptOptimizerTool from "@/components/tools/implementations/PromptOptimizerTool";
+import MarkdownSummarizerTool from "@/components/tools/implementations/MarkdownSummarizerTool";
 import { JsonFixerTool } from "@/components/tools/implementations/JsonFixerTool";
 
 // Tool registry for workflow execution
