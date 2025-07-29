@@ -83,20 +83,32 @@ export function EncryptionTool() {
             setOutput("");
             return;
           }
-          // Simulated AES encryption with IV
-          result = base64Encode(input + "_aes_encrypted_key_" + key + "_iv_" + iv);
+          // Simulated AES encryption with IV - create a structured format
+          const aesData = {
+            data: input,
+            key: key,
+            iv: iv,
+            algorithm: "aes"
+          };
+          result = base64Encode(JSON.stringify(aesData));
           break;
         case "des":
-          // Simulated encryption
-          result = base64Encode(input + "_encrypted_with_" + algorithm + "_key_" + key);
+          // Simulated encryption - create a structured format
+          const desData = {
+            data: input,
+            key: key,
+            algorithm: "des"
+          };
+          result = base64Encode(JSON.stringify(desData));
           break;
         default:
           result = input;
       }
 
+      // Apply additional encoding if different from algorithm
       if (encoding === "hex" && algorithm !== "hex") {
         result = hexEncode(result);
-      } else if (encoding === "base64" && algorithm !== "base64") {
+      } else if (encoding === "base64" && algorithm !== "base64" && algorithm !== "aes" && algorithm !== "des") {
         result = base64Encode(result);
       }
 
@@ -118,13 +130,22 @@ export function EncryptionTool() {
     try {
       let result = input;
 
-      // First decode if needed
+      // First decode the outer encoding if needed
       if (encoding === "hex" && algorithm !== "hex") {
-        result = hexDecode(result);
-      } else if (encoding === "base64" && algorithm !== "base64") {
-        result = base64Decode(result);
+        try {
+          result = hexDecode(result);
+        } catch {
+          throw new Error("Invalid hex encoding");
+        }
+      } else if (encoding === "base64" && algorithm !== "base64" && algorithm !== "aes" && algorithm !== "des") {
+        try {
+          result = base64Decode(result);
+        } catch {
+          throw new Error("Invalid base64 encoding");
+        }
       }
 
+      // Then apply algorithm-specific decryption
       switch (algorithm) {
         case "caesar":
           const shift = key ? parseInt(key) || 3 : 3;
@@ -143,19 +164,36 @@ export function EncryptionTool() {
             setOutput("");
             return;
           }
-          // Simulated AES decryption
-          if (result.includes("_aes_encrypted_key_" + key + "_iv_" + iv)) {
-            result = base64Decode(result).split("_aes_encrypted_key_")[0];
-          } else {
-            throw new Error("Invalid encrypted data, wrong key, or wrong IV");
+          try {
+            // Parse the structured AES data
+            const aesData = JSON.parse(base64Decode(result));
+            if (aesData.algorithm !== "aes") {
+              throw new Error("Not AES encrypted data");
+            }
+            if (aesData.key !== key) {
+              throw new Error("Invalid decryption key");
+            }
+            if (aesData.iv !== iv) {
+              throw new Error("Invalid IV");
+            }
+            result = aesData.data;
+          } catch (parseErr) {
+            throw new Error("Invalid AES encrypted data or wrong key/IV");
           }
           break;
         case "des":
-          // Simulated decryption
-          if (result.includes("_encrypted_with_" + algorithm)) {
-            result = base64Decode(result).split("_encrypted_with_")[0];
-          } else {
-            throw new Error("Invalid encrypted data or wrong key");
+          try {
+            // Parse the structured DES data
+            const desData = JSON.parse(base64Decode(result));
+            if (desData.algorithm !== "des") {
+              throw new Error("Not DES encrypted data");
+            }
+            if (desData.key !== key) {
+              throw new Error("Invalid decryption key");
+            }
+            result = desData.data;
+          } catch (parseErr) {
+            throw new Error("Invalid DES encrypted data or wrong key");
           }
           break;
         default:
