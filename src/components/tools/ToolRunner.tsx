@@ -152,11 +152,11 @@ export function ToolRunner({
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center text-white shadow-glow">
-                <Icon className="h-6 w-6" />
+              <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                <Icon className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <CardTitle className="text-2xl">{tool.name}</CardTitle>
+                <CardTitle className="text-2xl font-heading">{tool.name}</CardTitle>
                 <div className="flex items-center gap-2 mt-1">
                   <Badge 
                     variant="outline" 
@@ -165,7 +165,7 @@ export function ToolRunner({
                     {tool.category}
                   </Badge>
                   {tool.featured && (
-                    <Badge className="bg-gradient-primary">
+                    <Badge className="bg-primary text-primary-foreground">
                       Featured
                     </Badge>
                   )}
@@ -176,7 +176,6 @@ export function ToolRunner({
             {showWorkflowButtons && onAddToWorkflow && output && (
               <Button
                 onClick={() => onAddToWorkflow(tool.id, output)}
-                className="bg-gradient-primary hover:bg-gradient-ocean"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add to Workflow

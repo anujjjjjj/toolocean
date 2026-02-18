@@ -1,16 +1,17 @@
-
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { Header } from "@/components/layout/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Play, Trash2, ArrowDown, Save, Download } from "lucide-react";
+import { Plus, Play, Trash2, ArrowDown, ArrowLeft, Save, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useHistory } from "@/hooks/useHistory";
 import { toolRegistry } from "@/lib/toolRegistry";
+import { getAllToolsForPalette } from "@/lib/allToolsForPalette";
 
 interface WorkflowStep {
   id: string;
@@ -29,72 +30,9 @@ interface Workflow {
   createdAt: Date;
 }
 
-// Available tools organized by category
-const toolCategories = {
-  "Data & Format Converters": [
-    { id: "json-formatter", name: "JSON Formatter" },
-    { id: "csv-json-converter", name: "CSV to JSON" },
-    { id: "yaml-json-converter", name: "YAML to JSON" },
-    { id: "xml-json-converter", name: "XML to JSON" },
-    { id: "json-stringify", name: "JSON Stringify" },
-    { id: "json-parse", name: "JSON Parse" },
-    { id: "json-fixer", name: "JSON Fixer" },
-    { id: "json-merger", name: "JSON Merger" },
-    { id: "json-flattener", name: "JSON Flattener" },
-    { id: "json-schema-validator", name: "JSON Schema Validator" }
-  ],
-  "Text Processing": [
-    { id: "case-converter", name: "Case Converter" },
-    { id: "word-counter", name: "Word Counter" },
-    { id: "text-diff", name: "Text Diff" },
-    { id: "duplicate-remover", name: "Duplicate Remover" },
-    { id: "line-break-remover", name: "Line Break Remover" },
-    { id: "text-replacer", name: "Text Replacer" },
-    { id: "slug-converter", name: "Slug Converter" }
-  ],
-  "Code Formatters": [
-    { id: "html-formatter", name: "HTML Formatter" },
-    { id: "css-minifier", name: "CSS Formatter" },
-    { id: "sql-formatter", name: "SQL Formatter" },
-    { id: "yaml-formatter", name: "YAML Formatter" },
-    { id: "dockerfile-formatter", name: "Dockerfile Formatter" }
-  ],
-  "Frontend & Styling": [
-    { id: "html-jsx-converter", name: "HTML to JSX" },
-    { id: "color-converter", name: "Color Converter" },
-    { id: "gradient-generator", name: "Gradient Generator" },
-    { id: "box-shadow-generator", name: "Box Shadow Generator" }
-  ],
-  "Security & Hash": [
-    { id: "encryption-tool", name: "Encryption Tool" },
-    { id: "hash-generator", name: "Hash Generator" },
-    { id: "password-generator", name: "Password Generator" },
-    { id: "uuid-generator", name: "UUID Generator" },
-    { id: "jwt-decoder", name: "JWT Decoder" }
-  ],
-  "Testing & API": [
-    { id: "regex-tester", name: "Regex Tester" },
-    { id: "fake-data-generator", name: "Fake Data Generator" },
-    { id: "http-request-composer", name: "HTTP Request Composer" },
-    { id: "user-agent-generator", name: "User Agent Generator" },
-    { id: "timestamp-converter", name: "Timestamp Converter" },
-    { id: "ip-address-tool", name: "IP Address Tool" }
-  ],
-  "DevOps & Config": [
-    { id: "env-formatter", name: "ENV Formatter" },
-    { id: "gitignore-generator", name: "Gitignore Generator" },
-    { id: "nginx-config-generator", name: "NGINX Config Generator" },
-    { id: "cron-expression-builder", name: "Cron Expression Builder" }
-  ],
-  "AI & Advanced": [
-    { id: "regex-generator", name: "Regex Generator" },
-    { id: "code-explainer", name: "Code Explainer" },
-    { id: "prompt-optimizer", name: "Prompt Optimizer" },
-    { id: "markdown-summarizer", name: "Markdown Summarizer" }
-  ]
-};
-
 const WorkflowBuilderPage = () => {
+  const navigate = useNavigate();
+  const toolCategories = useMemo(() => getAllToolsForPalette(), []);
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [currentWorkflow, setCurrentWorkflow] = useState<Workflow | null>(null);
   const [workflowName, setWorkflowName] = useState("");
@@ -260,8 +198,20 @@ const WorkflowBuilderPage = () => {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="min-h-screen bg-background">
+      <Header />
+
+      <div className="container mx-auto px-4 py-8 space-y-6">
+        <Button
+          variant="ghost"
+          onClick={() => navigate("/")}
+          className="mb-6 hover:bg-muted/80"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to All Tools
+        </Button>
+
+        <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Workflow Builder</h1>
         {currentWorkflow && (
           <div className="flex gap-2">
@@ -319,8 +269,8 @@ const WorkflowBuilderPage = () => {
             <CardHeader>
               <CardTitle>Available Tools</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              {Object.entries(toolCategories).map(([category, tools]) => (
+            <CardContent className="space-y-4 max-h-[calc(100vh-16rem)] overflow-y-auto">
+              {toolCategories.map(({ category, tools }) => (
                 <div key={category} className="space-y-2">
                   <h3 className="font-semibold text-sm text-muted-foreground">{category}</h3>
                   <div className="space-y-1">
@@ -426,6 +376,7 @@ const WorkflowBuilderPage = () => {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };

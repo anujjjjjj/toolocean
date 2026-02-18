@@ -1,5 +1,3 @@
-
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   CommandDialog,
@@ -9,9 +7,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import * as Icons from "lucide-react";
-import { LucideIcon } from "lucide-react";
-import toolsData from "@/data/tools.json";
+import { getAllToolsForPalette, getIconComponent } from "@/lib/allToolsForPalette";
 
 interface CommandPaletteProps {
   open: boolean;
@@ -20,52 +16,45 @@ interface CommandPaletteProps {
 
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const navigate = useNavigate();
-  const { tools, categories } = toolsData;
+  const toolsByCategory = getAllToolsForPalette();
 
-  const handleSelect = (toolId: string) => {
-    navigate(`/tools/${toolId}`);
+  const handleSelect = (path: string) => {
+    navigate(path);
     onOpenChange(false);
   };
-
-  // Group tools by category
-  const toolsByCategory = categories.map(category => ({
-    ...category,
-    tools: tools.filter(tool => tool.category === category.id)
-  }));
 
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange}>
       <CommandInput placeholder="Search tools..." />
       <CommandList>
         <CommandEmpty>No tools found.</CommandEmpty>
-        
-        {toolsByCategory.map(category => (
-          category.tools.length > 0 && (
-            <CommandGroup key={category.id} heading={category.name}>
-              {category.tools.map(tool => {
-                const IconComponent = (Icons as any)[tool.icon] as LucideIcon;
-                const Icon = IconComponent || Icons.Wrench;
-                
-                return (
-                  <CommandItem
-                    key={tool.id}
-                    value={`${tool.name} ${tool.description} ${tool.keywords.join(' ')}`}
-                    onSelect={() => handleSelect(tool.id)}
-                    className="flex items-center gap-2 cursor-pointer"
-                  >
-                    <Icon className="h-4 w-4" />
-                    <div className="flex flex-col">
-                      <span>{tool.name}</span>
-                      <span className="text-xs text-muted-foreground">
-                        {tool.description}
-                      </span>
-                    </div>
-                  </CommandItem>
-                );
-              })}
-            </CommandGroup>
-          )
-        ))}
+
+        {toolsByCategory.map(
+          ({ category, tools }) =>
+            tools.length > 0 && (
+              <CommandGroup key={category} heading={category}>
+                {tools.map((tool) => {
+                  const Icon = getIconComponent(tool.icon);
+                  const searchValue = `${tool.name} ${tool.description} ${tool.keywords.join(" ")}`;
+
+                  return (
+                    <CommandItem
+                      key={tool.id}
+                      value={searchValue}
+                      onSelect={() => handleSelect(tool.path)}
+                      className="flex items-center gap-3 cursor-pointer py-2.5"
+                    >
+                      <Icon className="h-4 w-4 text-muted-foreground" />
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-sm">{tool.name}</span>
+                        <span className="text-xs text-muted-foreground">{tool.description}</span>
+                      </div>
+                    </CommandItem>
+                  );
+                })}
+              </CommandGroup>
+            )
+        )}
       </CommandList>
     </CommandDialog>
   );

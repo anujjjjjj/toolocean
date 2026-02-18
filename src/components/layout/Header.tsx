@@ -1,19 +1,39 @@
-import { Search, Moon, Sun, Command } from "lucide-react";
+import { Moon, Sun, Waves, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface HeaderProps {
-  onSearch: (query: string) => void;
-  searchQuery: string;
+  onSearch?: (query: string) => void;
+  searchQuery?: string;
   onOpenCommandPalette?: () => void;
+  minimal?: boolean;
 }
 
-export function Header({ onSearch, searchQuery, onOpenCommandPalette }: HeaderProps) {
+// Tool categories configuration - easy to add more
+const toolCategories = [
+  { name: "Dev Tools", path: "/dev-tools" },
+  { name: "PDF Tools", path: "/pdf-tools" },
+  { name: "CSV Tools", path: "/csv-tools" },
+  { name: "Audio Tools", path: "/audio-tools" },
+  { name: "Image Tools", path: "/image-tools" },
+  { name: "Video Tools", path: "/video-tools" },
+  { name: "Spreadsheet", path: "/spreadsheet-tools" },
+  { name: "Compression", path: "/compression-tools" },
+  { name: "Archive", path: "/archive-tools" },
+];
+
+export function Header({ minimal = false }: HeaderProps) {
   const [darkMode, setDarkMode] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const isDark = document.documentElement.classList.contains('dark');
@@ -33,58 +53,103 @@ export function Header({ onSearch, searchQuery, onOpenCommandPalette }: HeaderPr
     document.documentElement.classList.toggle('dark', savedDarkMode);
   }, []);
 
+  const isActive = (path: string) => {
+    if (path === '/dev-tools') {
+      return location.pathname === '/dev-tools' || location.pathname.startsWith('/tools');
+    }
+    if (path === '/pdf-tools') {
+      return location.pathname.startsWith('/pdf-tools');
+    }
+    if (path === '/csv-tools') {
+      return location.pathname.startsWith('/csv-tools');
+    }
+    if (path === '/audio-tools') return location.pathname.startsWith('/audio-tools');
+    if (path === '/image-tools') return location.pathname.startsWith('/image-tools');
+    if (path === '/video-tools') return location.pathname.startsWith('/video-tools');
+    if (path === '/spreadsheet-tools') return location.pathname.startsWith('/spreadsheet-tools');
+    if (path === '/compression-tools') return location.pathname.startsWith('/compression-tools');
+    if (path === '/archive-tools') return location.pathname.startsWith('/archive-tools');
+    return location.pathname === path;
+  };
+
+  const isHomePage = location.pathname === '/';
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-sm">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <div 
-          className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity"
+    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/95 backdrop-blur-sm">
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between gap-4">
+        {/* Logo - Top Left */}
+        <div
+          className="flex items-center space-x-2.5 cursor-pointer hover:opacity-70 transition-opacity shrink-0"
           onClick={() => navigate("/")}
         >
-          <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center shadow-glow">
-            <span className="text-white font-bold text-sm">🌊</span>
-          </div>
-          <div>
-            <h1 className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              ToolOcean
-            </h1>
-            <Badge variant="secondary" className="text-xs h-4 px-1">
-              BETA
-            </Badge>
-          </div>
+          <Waves className="h-5 w-5 text-primary" />
+          <span className="text-lg font-heading font-semibold text-foreground">ToolOcean</span>
         </div>
 
-        {/* Search Bar */}
-        <div className="flex-1 max-w-lg mx-8">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input
-              placeholder="Search tools... (⌘K)"
-              value={searchQuery}
-              onChange={(e) => onSearch(e.target.value)}
-              onFocus={onOpenCommandPalette}
-              className="pl-10 bg-muted/50 border-border/50 focus:bg-background transition-colors"
-            />
-            <kbd className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
-              <Command className="h-3 w-3" />
-              K
-            </kbd>
-          </div>
-        </div>
-
-        {/* Theme Toggle */}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={toggleDarkMode}
-          className="transition-transform hover:scale-110"
+        {/* Center - Subtle tagline (optional) */}
+        <div
+          className="hidden lg:flex items-center justify-center flex-1 cursor-pointer"
+          onClick={() => navigate("/")}
         >
-          {darkMode ? (
-            <Sun className="h-4 w-4" />
-          ) : (
-            <Moon className="h-4 w-4" />
-          )}
-        </Button>
+          <p className="text-xs text-muted-foreground/70">
+            Your data never leaves your browser
+          </p>
+        </div>
+
+        {/* Navigation - Top Right */}
+        <nav className="flex items-center gap-1 shrink-0">
+          {/* Show individual buttons on larger screens */}
+          <div className="hidden md:flex items-center gap-1">
+            {toolCategories.map((category) => (
+              <Button
+                key={category.path}
+                variant={isActive(category.path) ? "default" : "ghost"}
+                size="sm"
+                onClick={() => navigate(category.path)}
+                className={isActive(category.path) ? "" : "text-muted-foreground"}
+              >
+                {category.name}
+              </Button>
+            ))}
+          </div>
+
+          {/* Dropdown menu for smaller screens or when many categories exist */}
+          <div className="md:hidden">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-9">
+                  Tools
+                  <ChevronDown className="ml-1 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                {toolCategories.map((category) => (
+                  <DropdownMenuItem
+                    key={category.path}
+                    onClick={() => navigate(category.path)}
+                    className={isActive(category.path) ? "bg-accent" : ""}
+                  >
+                    {category.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          {/* Theme Toggle */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleDarkMode}
+            className="shrink-0"
+          >
+            {darkMode ? (
+              <Sun className="h-4 w-4" />
+            ) : (
+              <Moon className="h-4 w-4" />
+            )}
+          </Button>
+        </nav>
       </div>
     </header>
   );

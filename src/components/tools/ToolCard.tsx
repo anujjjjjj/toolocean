@@ -43,17 +43,17 @@ export function ToolCard({ tool, onAddToWorkflow, showWorkflowButton = false }: 
   };
 
   return (
-    <Card className="group hover:shadow-elegant transition-all duration-300 hover:-translate-y-1 relative overflow-hidden">
+    <Card className="group hover:shadow-elegant transition-all hover:opacity-90 relative overflow-hidden">
       {tool.featured && (
-        <div className="absolute top-0 right-0 bg-gradient-primary text-white text-xs px-2 py-1 rounded-bl-lg font-medium">
+        <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs px-2 py-1 rounded-bl-lg font-medium">
           Featured
         </div>
       )}
       
       <CardHeader className="pb-3">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-lg bg-gradient-subtle flex items-center justify-center group-hover:bg-gradient-primary group-hover:text-white transition-all duration-300">
-            <Icon className="h-5 w-5" />
+          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
+            <Icon className="h-5 w-5 text-primary" />
           </div>
           <div className="flex-1">
             <CardTitle className="text-lg group-hover:text-primary transition-colors">
@@ -77,7 +77,7 @@ export function ToolCard({ tool, onAddToWorkflow, showWorkflowButton = false }: 
         <div className="flex gap-2">
           <Button 
             onClick={handleOpenTool}
-            className="flex-1 bg-gradient-primary hover:bg-gradient-ocean transition-all duration-300"
+            className="flex-1"
           >
             Open Tool
           </Button>

@@ -139,7 +139,7 @@ export function JsonFormatterTool() {
               </SelectContent>
             </Select>
             
-            <Button onClick={formatJson} className="bg-gradient-primary hover:bg-gradient-ocean">
+            <Button onClick={formatJson}>
               Format
             </Button>
             <Button onClick={minifyJson} variant="outline">

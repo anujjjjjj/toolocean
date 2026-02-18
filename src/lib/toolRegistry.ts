@@ -33,17 +33,11 @@ import FakeDataGeneratorTool from "@/components/tools/implementations/FakeDataGe
 import HttpRequestComposerTool from "@/components/tools/implementations/HttpRequestComposerTool";
 import UserAgentGeneratorTool from "@/components/tools/implementations/UserAgentGeneratorTool";
 import TimestampConverterTool from "@/components/tools/implementations/TimestampConverterTool";
-import IpAddressTool from "@/components/tools/implementations/IpAddressTool";
 import GitignoreGeneratorTool from "@/components/tools/implementations/GitignoreGeneratorTool";
 import DockerfileFormatterTool from "@/components/tools/implementations/DockerfileFormatterTool";
 import { YamlFormatterTool } from "@/components/tools/implementations/YamlFormatterTool";
 import { NginxConfigGeneratorTool } from "@/components/tools/implementations/NginxConfigGeneratorTool";
 import { CronExpressionBuilderTool } from "@/components/tools/implementations/CronExpressionBuilderTool";
-import { RegexGeneratorTool } from "@/components/tools/implementations/RegexGeneratorTool";
-import { CodeExplainerTool } from "@/components/tools/implementations/CodeExplainerTool";
-import { PromptOptimizerTool } from "@/components/tools/implementations/PromptOptimizerTool";
-import { MarkdownSummarizerTool } from "@/components/tools/implementations/MarkdownSummarizerTool";
-import { JsonFixerTool } from "@/components/tools/implementations/JsonFixerTool";
 
 // Tool registry for workflow execution
 export const toolRegistry: Record<string, { run: (input: string) => Promise<string> }> = {
@@ -259,7 +253,7 @@ export const toolRegistry: Record<string, { run: (input: string) => Promise<stri
     run: async (input: string) => {
       const length = parseInt(input) || 12;
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-      return Array.from({length}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+      return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
     }
   },
   "uuid-generator": {
@@ -311,11 +305,6 @@ export const toolRegistry: Record<string, { run: (input: string) => Promise<stri
       return `${date.toISOString()}\n${date.toLocaleString()}`;
     }
   },
-  "ip-address-tool": {
-    run: async (input: string) => {
-      return `IP Information for: ${input}`;
-    }
-  },
   "gitignore-generator": {
     run: async (input: string) => {
       return `# ${input} .gitignore\nnode_modules/\n.env\n*.log\ndist/\nbuild/`;
@@ -347,38 +336,6 @@ export const toolRegistry: Record<string, { run: (input: string) => Promise<stri
       return `0 0 * * * # ${input}`;
     }
   },
-  "regex-generator": {
-    run: async (input: string) => {
-      return `Generated regex for: ${input}`;
-    }
-  },
-  "code-explainer": {
-    run: async (input: string) => {
-      return `Code explanation for: ${input.substring(0, 50)}...`;
-    }
-  },
-  "prompt-optimizer": {
-    run: async (input: string) => {
-      return `Optimized prompt: ${input}`;
-    }
-  },
-  "markdown-summarizer": {
-    run: async (input: string) => {
-      const lines = input.split('\n').filter(line => line.trim());
-      return `Summary: ${lines.length} lines processed`;
-    }
-  },
-  "json-fixer": {
-    run: async (input: string) => {
-      try {
-        const fixed = input.replace(/'/g, '"').replace(/,\s*}/g, '}').replace(/,\s*]/g, ']');
-        JSON.parse(fixed);
-        return fixed;
-      } catch {
-        throw new Error("Could not fix JSON");
-      }
-    }
-  },
   "base64-encode": {
     run: async (input: string) => btoa(input)
   },
@@ -396,7 +353,52 @@ export const toolRegistry: Record<string, { run: (input: string) => Promise<stri
   },
   "text-lowercase": {
     run: async (input: string) => input.toLowerCase()
-  }
+  },
+  // Compression (text-based, workflow-compatible)
+  "gzip-compress": {
+    run: async (input: string) => {
+      const pako = await import("pako");
+      const encoded = new TextEncoder().encode(input);
+      const compressed = pako.gzip(encoded);
+      return btoa(String.fromCharCode(...compressed));
+    }
+  },
+  "gzip-decompress": {
+    run: async (input: string) => {
+      const pako = await import("pako");
+      const binary = atob(input.replace(/\s/g, ""));
+      const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
+      const decompressed = pako.ungzip(bytes);
+      return new TextDecoder().decode(decompressed);
+    }
+  },
+  // File-based tools - require file input, use standalone tools
+  "pdf-merge": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },
+  "pdf-split": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },
+  "pdf-compress": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },
+  "pdf-to-images": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },
+  "images-to-pdf": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },
+  "pdf-rotate": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },
+  "pdf-watermark": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },
+  "pdf-reorder": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },
+  "csv-converter": { run: async () => { throw new Error("This tool requires file input. Use it from CSV tools."); } },
+  "csv-validator": { run: async () => { throw new Error("This tool requires file input. Use it from CSV tools."); } },
+  "csv-merge": { run: async () => { throw new Error("This tool requires file input. Use it from CSV tools."); } },
+  "audio-cutter": { run: async () => { throw new Error("This tool requires file input. Use it from Audio tools."); } },
+  "audio-merge": { run: async () => { throw new Error("This tool requires file input. Use it from Audio tools."); } },
+  "image-resizer": { run: async () => { throw new Error("This tool requires file input. Use it from Image tools."); } },
+  "image-compressor": { run: async () => { throw new Error("This tool requires file input. Use it from Image tools."); } },
+  "image-format-converter": { run: async () => { throw new Error("This tool requires file input. Use it from Image tools."); } },
+  "image-to-base64": { run: async () => { throw new Error("This tool requires file input. Use it from Image tools."); } },
+  "video-thumbnail": { run: async () => { throw new Error("This tool requires file input. Use it from Video tools."); } },
+  "video-trimmer": { run: async () => { throw new Error("This tool requires file input. Use it from Video tools."); } },
+  "video-to-gif": { run: async () => { throw new Error("This tool requires file input. Use it from Video tools."); } },
+  "excel-reader": { run: async () => { throw new Error("This tool requires file input. Use it from Spreadsheet tools."); } },
+  "csv-to-excel": { run: async () => { throw new Error("This tool requires file input. Use it from Spreadsheet tools."); } },
+  "excel-to-csv": { run: async () => { throw new Error("This tool requires file input. Use it from Spreadsheet tools."); } },
+  "zip-extractor": { run: async () => { throw new Error("This tool requires file input. Use it from Archive tools."); } },
+  "zip-creator": { run: async () => { throw new Error("This tool requires file input. Use it from Archive tools."); } },
+  "zip-preview": { run: async () => { throw new Error("This tool requires file input. Use it from Archive tools."); } },
 };
 
 // Component registry for tool page rendering
@@ -435,15 +437,9 @@ export const componentRegistry: Record<string, React.ComponentType<any>> = {
   "http-request-composer": HttpRequestComposerTool,
   "user-agent-generator": UserAgentGeneratorTool,
   "timestamp-converter": TimestampConverterTool,
-  "ip-address-tool": IpAddressTool,
   "gitignore-generator": GitignoreGeneratorTool,
   "dockerfile-formatter": DockerfileFormatterTool,
   "yaml-formatter": YamlFormatterTool,
   "nginx-config-generator": NginxConfigGeneratorTool,
-  "cron-expression-builder": CronExpressionBuilderTool,
-  "regex-generator": RegexGeneratorTool,
-  "code-explainer": CodeExplainerTool,
-  "prompt-optimizer": PromptOptimizerTool,
-  "markdown-summarizer": MarkdownSummarizerTool,
-  "json-fixer": JsonFixerTool
+  "cron-expression-builder": CronExpressionBuilderTool
 };

@@ -7,9 +7,19 @@
       "category": "formatting",
       "icon": "FileJson",
       "featured": true,
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["json", "format", "validate", "pretty", "beautify"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "json",
+        "format",
+        "validate",
+        "pretty",
+        "beautify"
+      ]
     },
     {
       "id": "case-converter",
@@ -18,9 +28,21 @@
       "category": "text",
       "icon": "Type",
       "featured": true,
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["case", "convert", "uppercase", "lowercase", "camel", "snake", "pascal"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "case",
+        "convert",
+        "uppercase",
+        "lowercase",
+        "camel",
+        "snake",
+        "pascal"
+      ]
     },
     {
       "id": "word-counter",
@@ -28,9 +50,20 @@
       "description": "Count words, characters, paragraphs, and reading time",
       "category": "text",
       "icon": "Calculator",
-      "inputs": ["text"],
-      "outputs": ["data"],
-      "keywords": ["word", "count", "character", "paragraph", "reading", "time"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "data"
+      ],
+      "keywords": [
+        "word",
+        "count",
+        "character",
+        "paragraph",
+        "reading",
+        "time"
+      ]
     },
     {
       "id": "text-diff",
@@ -38,9 +71,20 @@
       "description": "Compare two text inputs and highlight differences",
       "category": "text",
       "icon": "Diff",
-      "inputs": ["text", "text"],
-      "outputs": ["visual"],
-      "keywords": ["diff", "compare", "difference", "text", "changes"]
+      "inputs": [
+        "text",
+        "text"
+      ],
+      "outputs": [
+        "visual"
+      ],
+      "keywords": [
+        "diff",
+        "compare",
+        "difference",
+        "text",
+        "changes"
+      ]
     },
     {
       "id": "duplicate-remover",
@@ -48,9 +92,19 @@
       "description": "Remove duplicate lines from text while preserving order",
       "category": "text",
       "icon": "Copy",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["duplicate", "remove", "lines", "unique", "clean"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "duplicate",
+        "remove",
+        "lines",
+        "unique",
+        "clean"
+      ]
     },
     {
       "id": "line-break-remover",
@@ -58,9 +112,19 @@
       "description": "Remove line breaks and join text into a single line",
       "category": "text",
       "icon": "WrapText",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["line", "break", "remove", "join", "single"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "line",
+        "break",
+        "remove",
+        "join",
+        "single"
+      ]
     },
     {
       "id": "text-replacer",
@@ -68,9 +132,19 @@
       "description": "Find and replace text with support for regex patterns",
       "category": "text",
       "icon": "Replace",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["replace", "find", "regex", "substitute", "search"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "replace",
+        "find",
+        "regex",
+        "substitute",
+        "search"
+      ]
     },
     {
       "id": "slug-converter",
@@ -78,9 +152,19 @@
       "description": "Convert text to URL-friendly slugs",
       "category": "text",
       "icon": "Link",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["slug", "url", "friendly", "convert", "dash"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "slug",
+        "url",
+        "friendly",
+        "convert",
+        "dash"
+      ]
     },
     {
       "id": "json-stringify",
@@ -88,9 +172,19 @@
       "description": "Convert JavaScript objects to JSON strings",
       "category": "formatting",
       "icon": "Code",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["json", "stringify", "object", "string", "javascript"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "json",
+        "stringify",
+        "object",
+        "string",
+        "javascript"
+      ]
     },
     {
       "id": "json-parse",
@@ -98,9 +192,19 @@
       "description": "Parse JSON strings into readable format",
       "category": "formatting",
       "icon": "FileCode",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["json", "parse", "string", "object", "javascript"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "json",
+        "parse",
+        "string",
+        "object",
+        "javascript"
+      ]
     },
     {
       "id": "html-formatter",
@@ -108,9 +212,19 @@
       "description": "Format and beautify HTML code with proper indentation",
       "category": "formatting",
       "icon": "FileCode2",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["html", "format", "beautify", "indent", "code"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "html",
+        "format",
+        "beautify",
+        "indent",
+        "code"
+      ]
     },
     {
       "id": "sql-formatter",
@@ -118,9 +232,19 @@
       "description": "Format and beautify SQL queries with syntax highlighting",
       "category": "formatting",
       "icon": "Database",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["sql", "format", "query", "database", "beautify"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "sql",
+        "format",
+        "query",
+        "database",
+        "beautify"
+      ]
     },
     {
       "id": "regex-tester",
@@ -128,9 +252,21 @@
       "description": "Test regular expressions with live matching and explanations",
       "category": "development",
       "icon": "Search",
-      "inputs": ["text", "text"],
-      "outputs": ["visual"],
-      "keywords": ["regex", "regular", "expression", "test", "match", "pattern"]
+      "inputs": [
+        "text",
+        "text"
+      ],
+      "outputs": [
+        "visual"
+      ],
+      "keywords": [
+        "regex",
+        "regular",
+        "expression",
+        "test",
+        "match",
+        "pattern"
+      ]
     },
     {
       "id": "encryption-tool",
@@ -138,9 +274,21 @@
       "description": "Encrypt and decrypt text using various algorithms (AES, DES) with custom keys",
       "category": "security",
       "icon": "Lock",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["encrypt", "decrypt", "aes", "des", "security", "key", "algorithm"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "encrypt",
+        "decrypt",
+        "aes",
+        "des",
+        "security",
+        "key",
+        "algorithm"
+      ]
     },
     {
       "id": "csv-json-converter",
@@ -148,9 +296,19 @@
       "description": "Convert between CSV and JSON formats with customizable delimiters",
       "category": "data-converters",
       "icon": "FileSpreadsheet",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["csv", "json", "convert", "delimiter", "data"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "csv",
+        "json",
+        "convert",
+        "delimiter",
+        "data"
+      ]
     },
     {
       "id": "yaml-json-converter",
@@ -158,9 +316,19 @@
       "description": "Convert between YAML and JSON formats with validation",
       "category": "data-converters",
       "icon": "FileText",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["yaml", "json", "convert", "format", "data"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "yaml",
+        "json",
+        "convert",
+        "format",
+        "data"
+      ]
     },
     {
       "id": "xml-json-converter",
@@ -168,9 +336,19 @@
       "description": "Convert between XML and JSON formats with attribute handling",
       "category": "data-converters",
       "icon": "FileCode",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["xml", "json", "convert", "format", "data"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "xml",
+        "json",
+        "convert",
+        "format",
+        "data"
+      ]
     },
     {
       "id": "json-schema-validator",
@@ -178,9 +356,20 @@
       "description": "Validate JSON data against JSON Schema with detailed error reporting",
       "category": "data-converters",
       "icon": "CheckCircle",
-      "inputs": ["text", "text"],
-      "outputs": ["visual"],
-      "keywords": ["json", "schema", "validate", "error", "validation"]
+      "inputs": [
+        "text",
+        "text"
+      ],
+      "outputs": [
+        "visual"
+      ],
+      "keywords": [
+        "json",
+        "schema",
+        "validate",
+        "error",
+        "validation"
+      ]
     },
     {
       "id": "json-merger",
@@ -188,9 +377,20 @@
       "description": "Merge multiple JSON objects with conflict resolution options",
       "category": "data-converters",
       "icon": "Merge",
-      "inputs": ["text", "text"],
-      "outputs": ["text"],
-      "keywords": ["json", "merge", "combine", "object", "conflict"]
+      "inputs": [
+        "text",
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "json",
+        "merge",
+        "combine",
+        "object",
+        "conflict"
+      ]
     },
     {
       "id": "json-flattener",
@@ -198,9 +398,19 @@
       "description": "Flatten nested JSON objects or unflatten dot-notation objects",
       "category": "data-converters",
       "icon": "Layers",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["json", "flatten", "unflatten", "nested", "dot-notation"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "json",
+        "flatten",
+        "unflatten",
+        "nested",
+        "dot-notation"
+      ]
     },
     {
       "id": "css-minifier",
@@ -208,9 +418,19 @@
       "description": "Minify or beautify CSS code with compression options",
       "category": "frontend",
       "icon": "Paintbrush",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["css", "minify", "beautify", "compress", "format"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "css",
+        "minify",
+        "beautify",
+        "compress",
+        "format"
+      ]
     },
     {
       "id": "html-jsx-converter",
@@ -218,9 +438,19 @@
       "description": "Convert HTML to JSX with proper attribute transformations",
       "category": "frontend",
       "icon": "Code2",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["html", "jsx", "react", "convert", "transform"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "html",
+        "jsx",
+        "react",
+        "convert",
+        "transform"
+      ]
     },
     {
       "id": "color-converter",
@@ -228,9 +458,20 @@
       "description": "Convert between HEX, RGB, HSL color formats with live preview",
       "category": "frontend",
       "icon": "Palette",
-      "inputs": ["text"],
-      "outputs": ["visual"],
-      "keywords": ["color", "hex", "rgb", "hsl", "picker", "convert"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "visual"
+      ],
+      "keywords": [
+        "color",
+        "hex",
+        "rgb",
+        "hsl",
+        "picker",
+        "convert"
+      ]
     },
     {
       "id": "gradient-generator",
@@ -238,9 +479,20 @@
       "description": "Generate CSS gradients with live preview and multiple color stops",
       "category": "frontend",
       "icon": "Rainbow",
-      "inputs": ["visual"],
-      "outputs": ["text"],
-      "keywords": ["gradient", "css", "linear", "radial", "color", "generator"]
+      "inputs": [
+        "visual"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "gradient",
+        "css",
+        "linear",
+        "radial",
+        "color",
+        "generator"
+      ]
     },
     {
       "id": "box-shadow-generator",
@@ -248,9 +500,19 @@
       "description": "Generate CSS box-shadow with live preview and multiple shadows",
       "category": "frontend",
       "icon": "Square",
-      "inputs": ["visual"],
-      "outputs": ["text"],
-      "keywords": ["box-shadow", "css", "shadow", "generator", "preview"]
+      "inputs": [
+        "visual"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "box-shadow",
+        "css",
+        "shadow",
+        "generator",
+        "preview"
+      ]
     },
     {
       "id": "hash-generator",
@@ -258,9 +520,20 @@
       "description": "Generate MD5, SHA1, SHA256 hashes from text input",
       "category": "security",
       "icon": "Hash",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["hash", "md5", "sha1", "sha256", "checksum", "digest"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "hash",
+        "md5",
+        "sha1",
+        "sha256",
+        "checksum",
+        "digest"
+      ]
     },
     {
       "id": "password-generator",
@@ -268,9 +541,19 @@
       "description": "Generate secure passwords with customizable length and character sets",
       "category": "security",
       "icon": "Key",
-      "inputs": ["visual"],
-      "outputs": ["text"],
-      "keywords": ["password", "generate", "secure", "random", "strength"]
+      "inputs": [
+        "visual"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "password",
+        "generate",
+        "secure",
+        "random",
+        "strength"
+      ]
     },
     {
       "id": "uuid-generator",
@@ -278,9 +561,19 @@
       "description": "Generate UUIDs (v1, v4) with bulk generation options",
       "category": "security",
       "icon": "Fingerprint",
-      "inputs": ["visual"],
-      "outputs": ["text"],
-      "keywords": ["uuid", "guid", "generate", "unique", "identifier"]
+      "inputs": [
+        "visual"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "uuid",
+        "guid",
+        "generate",
+        "unique",
+        "identifier"
+      ]
     },
     {
       "id": "env-formatter",
@@ -288,9 +581,19 @@
       "description": "Format and validate .env files with syntax highlighting",
       "category": "security",
       "icon": "Settings",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["env", "environment", "format", "variables", "config"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "env",
+        "environment",
+        "format",
+        "variables",
+        "config"
+      ]
     },
     {
       "id": "jwt-decoder",
@@ -298,9 +601,20 @@
       "description": "Decode and validate JWT tokens with header and payload inspection",
       "category": "security",
       "icon": "Shield",
-      "inputs": ["text"],
-      "outputs": ["visual"],
-      "keywords": ["jwt", "token", "decode", "json", "web", "auth"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "visual"
+      ],
+      "keywords": [
+        "jwt",
+        "token",
+        "decode",
+        "json",
+        "web",
+        "auth"
+      ]
     },
     {
       "id": "fake-data-generator",
@@ -308,9 +622,20 @@
       "description": "Generate realistic fake data for testing (names, emails, addresses, etc.)",
       "category": "testing",
       "icon": "Users",
-      "inputs": ["visual"],
-      "outputs": ["text"],
-      "keywords": ["fake", "data", "generator", "mock", "testing", "random"]
+      "inputs": [
+        "visual"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "fake",
+        "data",
+        "generator",
+        "mock",
+        "testing",
+        "random"
+      ]
     },
     {
       "id": "http-request-composer",
@@ -318,9 +643,20 @@
       "description": "Compose and test HTTP requests with headers and body data",
       "category": "testing",
       "icon": "Send",
-      "inputs": ["visual"],
-      "outputs": ["text"],
-      "keywords": ["http", "request", "api", "postman", "rest", "test"]
+      "inputs": [
+        "visual"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "http",
+        "request",
+        "api",
+        "postman",
+        "rest",
+        "test"
+      ]
     },
     {
       "id": "user-agent-generator",
@@ -328,9 +664,19 @@
       "description": "Generate browser user-agent strings for different browsers and devices",
       "category": "testing",
       "icon": "Globe",
-      "inputs": ["visual"],
-      "outputs": ["text"],
-      "keywords": ["user-agent", "browser", "device", "generate", "string"]
+      "inputs": [
+        "visual"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "user-agent",
+        "browser",
+        "device",
+        "generate",
+        "string"
+      ]
     },
     {
       "id": "timestamp-converter",
@@ -338,19 +684,20 @@
       "description": "Convert between epoch timestamps and human-readable dates",
       "category": "testing",
       "icon": "Clock",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["epoch", "timestamp", "unix", "date", "convert", "time"]
-    },
-    {
-      "id": "ip-address-tool",
-      "name": "IP Address Tool",
-      "description": "Detect your IP address and get information about any IP address",
-      "category": "testing",
-      "icon": "MapPin",
-      "inputs": ["text"],
-      "outputs": ["visual"],
-      "keywords": ["ip", "address", "location", "detect", "info", "geolocation"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "epoch",
+        "timestamp",
+        "unix",
+        "date",
+        "convert",
+        "time"
+      ]
     },
     {
       "id": "gitignore-generator",
@@ -358,9 +705,19 @@
       "description": "Generate .gitignore files for different programming languages and frameworks",
       "category": "devops",
       "icon": "GitBranch",
-      "inputs": ["visual"],
-      "outputs": ["text"],
-      "keywords": ["gitignore", "git", "ignore", "template", "generate"]
+      "inputs": [
+        "visual"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "gitignore",
+        "git",
+        "ignore",
+        "template",
+        "generate"
+      ]
     },
     {
       "id": "dockerfile-formatter",
@@ -368,9 +725,19 @@
       "description": "Format and lint Dockerfile with best practices suggestions",
       "category": "devops",
       "icon": "Container",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["dockerfile", "docker", "format", "lint", "container"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "dockerfile",
+        "docker",
+        "format",
+        "lint",
+        "container"
+      ]
     },
     {
       "id": "yaml-formatter",
@@ -378,9 +745,19 @@
       "description": "Format and validate YAML files with syntax highlighting",
       "category": "devops",
       "icon": "FileText",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["yaml", "format", "validate", "indent", "syntax"]
+      "inputs": [
+        "text"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "yaml",
+        "format",
+        "validate",
+        "indent",
+        "syntax"
+      ]
     },
     {
       "id": "nginx-config-generator",
@@ -388,9 +765,19 @@
       "description": "Generate NGINX configuration files for common use cases",
       "category": "devops",
       "icon": "Server",
-      "inputs": ["visual"],
-      "outputs": ["text"],
-      "keywords": ["nginx", "config", "generate", "server", "proxy"]
+      "inputs": [
+        "visual"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "nginx",
+        "config",
+        "generate",
+        "server",
+        "proxy"
+      ]
     },
     {
       "id": "cron-expression-builder",
@@ -398,59 +785,19 @@
       "description": "Build cron expressions with natural language explanations",
       "category": "devops",
       "icon": "Calendar",
-      "inputs": ["visual"],
-      "outputs": ["text"],
-      "keywords": ["cron", "schedule", "expression", "build", "time"]
-    },
-    {
-      "id": "regex-generator",
-      "name": "Regex Generator",
-      "description": "Generate regular expressions from natural language descriptions",
-      "category": "ai-tools",
-      "icon": "Wand2",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["regex", "generate", "ai", "natural", "language", "pattern"]
-    },
-    {
-      "id": "code-explainer",
-      "name": "Code Explainer",
-      "description": "Explain any code snippet in plain English with AI assistance",
-      "category": "ai-tools",
-      "icon": "MessageCircle",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["code", "explain", "ai", "analyze", "understand"]
-    },
-    {
-      "id": "prompt-optimizer",
-      "name": "GPT Prompt Optimizer",
-      "description": "Optimize and improve AI prompts for better results",
-      "category": "ai-tools",
-      "icon": "Lightbulb",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["prompt", "optimize", "gpt", "ai", "improve", "rewrite"]
-    },
-    {
-      "id": "markdown-summarizer",
-      "name": "AI Markdown Summarizer",
-      "description": "Summarize markdown documents using AI with key points extraction",
-      "category": "ai-tools",
-      "icon": "FileText",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["markdown", "summarize", "ai", "summary", "extract"]
-    },
-    {
-      "id": "json-fixer",
-      "name": "Fix my JSON",
-      "description": "Auto-fix broken JSON and show what was changed",
-      "category": "ai-tools",
-      "icon": "Wrench",
-      "inputs": ["text"],
-      "outputs": ["text"],
-      "keywords": ["json", "fix", "repair", "auto", "broken", "correct"]
+      "inputs": [
+        "visual"
+      ],
+      "outputs": [
+        "text"
+      ],
+      "keywords": [
+        "cron",
+        "schedule",
+        "expression",
+        "build",
+        "time"
+      ]
     }
   ],
   "categories": [
@@ -501,12 +848,6 @@
       "name": "DevOps & Infrastructure",
       "description": "Configuration and infrastructure management tools",
       "color": "cyan"
-    },
-    {
-      "id": "ai-tools",
-      "name": "AI-Powered Tools",
-      "description": "AI-assisted tools for code analysis and optimization",
-      "color": "violet"
     }
   ]
 }

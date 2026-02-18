@@ -9,7 +9,7 @@ const WorkflowPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
+    <div className="min-h-screen bg-background">
       <Header onSearch={setSearchQuery} searchQuery={searchQuery} />
       
       <div className="container mx-auto px-4 py-8">
@@ -17,10 +17,10 @@ const WorkflowPage = () => {
         <Button
           variant="ghost"
           onClick={() => navigate("/")}
-          className="mb-6 hover:bg-muted/80"
+          className="mb-6"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Tools
+          Back to All Tools
         </Button>
 
         {/* Workflow Builder - Coming Soon */}
