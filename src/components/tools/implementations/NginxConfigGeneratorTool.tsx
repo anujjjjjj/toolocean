@@ -364,7 +364,7 @@ server {
             value={output}
             readOnly
             placeholder="Generated NGINX configuration will appear here..."
-            className="min-h-[500px] font-mono text-sm bg-muted/50"
+            className="min-h-[600px] font-mono text-sm bg-muted/50"
           />
           
           {output && (

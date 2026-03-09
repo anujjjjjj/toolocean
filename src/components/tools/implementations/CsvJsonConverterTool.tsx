@@ -227,7 +227,7 @@ export function CsvJsonConverterTool() {
                 : "Paste your JSON array here...\n\nExample:\n[\n  {\"name\": \"John\", \"age\": 30, \"city\": \"New York\"},\n  {\"name\": \"Jane\", \"age\": 25, \"city\": \"Boston\"}\n]"}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="min-h-[300px] font-mono text-sm"
+              className="min-h-[600px] font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -264,7 +264,7 @@ export function CsvJsonConverterTool() {
               value={output}
               readOnly
               placeholder="Converted output will appear here..."
-              className="min-h-[300px] font-mono text-sm bg-muted/50"
+              className="min-h-[600px] font-mono text-sm bg-muted/50"
             />
             
             {output && (

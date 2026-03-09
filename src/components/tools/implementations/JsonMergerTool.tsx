@@ -227,7 +227,7 @@ export function JsonMergerTool() {
               placeholder="Paste your first JSON object here..."
               value={json1}
               onChange={(e) => setJson1(e.target.value)}
-              className="min-h-[300px] font-mono text-sm"
+              className="min-h-[600px] font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -242,7 +242,7 @@ export function JsonMergerTool() {
               placeholder="Paste your second JSON object here..."
               value={json2}
               onChange={(e) => setJson2(e.target.value)}
-              className="min-h-[300px] font-mono text-sm"
+              className="min-h-[600px] font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -279,7 +279,7 @@ export function JsonMergerTool() {
               value={output}
               readOnly
               placeholder="Merged JSON will appear here..."
-              className="min-h-[300px] font-mono text-sm bg-muted/50"
+              className="min-h-[600px] font-mono text-sm bg-muted/50"
             />
             
             {output && (

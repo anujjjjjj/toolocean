@@ -20,10 +20,7 @@ export function ImagesToPdfTool() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
 
-    const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const files = event.target.files;
-        if (!files) return;
-
+    const processFiles = (files: FileList | File[]) => {
         for (const file of Array.from(files)) {
             if (!file.type.startsWith("image/")) {
                 toast({
@@ -44,10 +41,29 @@ export function ImagesToPdfTool() {
 
             setImages((prev) => [...prev, newImage]);
         }
+    };
+
+    const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const files = event.target.files;
+        if (!files) return;
+
+        processFiles(files);
 
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            processFiles(files);
+        }
+    };
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
     };
 
     const removeImage = (id: string) => {
@@ -64,7 +80,7 @@ export function ImagesToPdfTool() {
         setDraggedItem(id);
     };
 
-    const handleDragOver = (e: React.DragEvent, targetId: string) => {
+    const handleImageDragOver = (e: React.DragEvent, targetId: string) => {
         e.preventDefault();
         if (draggedItem === null || draggedItem === targetId) return;
 
@@ -110,8 +126,9 @@ export function ImagesToPdfTool() {
                     // For other formats, try to convert via canvas
                     const img = new window.Image();
                     img.src = imageFile.preview;
-                    await new Promise((resolve) => {
-                        img.onload = resolve;
+                    await new Promise<void>((resolve, reject) => {
+                        img.onload = () => resolve();
+                        img.onerror = () => reject(new Error(`Cannot decode image: ${imageFile.name}. HEIC/AVIF files are not supported in this browser.`));
                     });
 
                     const canvas = document.createElement("canvas");
@@ -157,9 +174,10 @@ export function ImagesToPdfTool() {
             });
         } catch (error) {
             console.error(error);
+            const errorMessage = error instanceof Error ? error.message : "An error occurred while creating the PDF";
             toast({
                 title: "Conversion failed",
-                description: "An error occurred while creating the PDF",
+                description: errorMessage,
                 variant: "destructive",
             });
         } finally {
@@ -175,13 +193,15 @@ export function ImagesToPdfTool() {
                     <div
                         className="flex flex-col items-center justify-center py-10 cursor-pointer"
                         onClick={() => fileInputRef.current?.click()}
+                        onDragOver={handleDragOver}
+                        onDrop={handleDrop}
                     >
                         <div className="w-16 h-16 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center mb-4">
                             <Upload className="h-8 w-8 text-purple-500" />
                         </div>
                         <h3 className="font-semibold text-lg mb-2">Upload Images</h3>
                         <p className="text-muted-foreground text-sm text-center">
-                            Click to select images (JPG, PNG) to combine into a PDF
+                            Click to select or drag and drop images (JPG, PNG) to combine into a PDF
                         </p>
                     </div>
                     <input
@@ -211,7 +231,7 @@ export function ImagesToPdfTool() {
                                     key={image.id}
                                     draggable
                                     onDragStart={() => handleDragStart(image.id)}
-                                    onDragOver={(e) => handleDragOver(e, image.id)}
+                                    onDragOver={(e) => handleImageDragOver(e, image.id)}
                                     onDragEnd={handleDragEnd}
                                     className={`relative group rounded-lg border-2 overflow-hidden cursor-grab ${draggedItem === image.id ? "opacity-50 border-dashed" : "border-transparent"
                                         }`}
@@ -274,7 +294,7 @@ export function ImagesToPdfTool() {
 
             {images.length === 0 && (
                 <div className="text-center text-muted-foreground text-sm">
-                    <p>Drag and drop to reorder images after uploading</p>
+                    <p>Drag and drop images onto the upload area, or drag images to reorder after uploading</p>
                 </div>
             )}
         </div>

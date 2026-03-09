@@ -266,7 +266,7 @@ export function CsvMergeTool() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Textarea value={output} readOnly className="min-h-[200px] font-mono text-sm bg-muted/50" />
+            <Textarea value={output} readOnly className="min-h-[400px] font-mono text-sm bg-muted/50" />
           </CardContent>
         </Card>
       )}

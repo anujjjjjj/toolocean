@@ -86,7 +86,7 @@ Sentences: ${stats.sentences}`;
             placeholder="Enter your text here..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="min-h-[300px]"
+            className="min-h-[600px]"
           />
           <Button onClick={analyzeText} className="w-full">
             Analyze Text

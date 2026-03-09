@@ -131,7 +131,7 @@ export function YamlFormatterTool() {
             placeholder="Paste your YAML here..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="min-h-[400px] font-mono text-sm"
+            className="min-h-[600px] font-mono text-sm"
           />
           
           <div className="flex gap-2 flex-wrap">
@@ -182,7 +182,7 @@ export function YamlFormatterTool() {
             value={output}
             readOnly
             placeholder="Formatted YAML will appear here..."
-            className="min-h-[400px] font-mono text-sm bg-muted/50"
+            className="min-h-[600px] font-mono text-sm bg-muted/50"
           />
           
           {output && (

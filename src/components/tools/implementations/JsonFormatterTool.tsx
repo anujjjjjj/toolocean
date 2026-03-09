@@ -116,7 +116,7 @@ export function JsonFormatterTool() {
             placeholder="Paste your JSON here..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="min-h-[300px] font-mono text-sm"
+            className="min-h-[600px] font-mono text-sm"
           />
           
           {error && (
@@ -181,7 +181,7 @@ export function JsonFormatterTool() {
             value={output}
             readOnly
             placeholder="Formatted JSON will appear here..."
-            className="min-h-[300px] font-mono text-sm bg-muted/50"
+            className="min-h-[600px] font-mono text-sm bg-muted/50"
           />
           
           {output && (

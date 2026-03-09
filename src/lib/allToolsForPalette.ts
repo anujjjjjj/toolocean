@@ -1,3 +1,4 @@
+import React from "react";
 import toolsData from "@/data/tools.json";
 import * as Icons from "lucide-react";
 

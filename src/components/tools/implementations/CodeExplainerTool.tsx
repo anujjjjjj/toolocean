@@ -219,7 +219,7 @@ console.log(result);`,
             placeholder="Paste your code here..."
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            className="min-h-[400px] font-mono text-sm"
+            className="min-h-[600px] font-mono text-sm"
           />
           
           <div className="flex gap-2 justify-between items-center">
@@ -264,7 +264,7 @@ console.log(result);`,
             value={explanation}
             readOnly
             placeholder="Code explanation will appear here after analysis..."
-            className="min-h-[400px] text-sm bg-muted/50"
+            className="min-h-[600px] text-sm bg-muted/50"
           />
           
           {explanation && (

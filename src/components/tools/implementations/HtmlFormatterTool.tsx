@@ -151,7 +151,7 @@ export function HtmlFormatterTool() {
             placeholder="Paste your HTML here..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="min-h-[300px] font-mono text-sm"
+            className="min-h-[600px] font-mono text-sm"
           />
           
           <div className="flex gap-2">
@@ -201,7 +201,7 @@ export function HtmlFormatterTool() {
             value={output}
             readOnly
             placeholder="Formatted HTML will appear here..."
-            className="min-h-[300px] font-mono text-sm bg-muted/50"
+            className="min-h-[600px] font-mono text-sm bg-muted/50"
           />
           
           {output && (

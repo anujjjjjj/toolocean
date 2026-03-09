@@ -94,7 +94,7 @@ export function SlugConverterTool() {
             placeholder="Enter text to convert to slug..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="min-h-[200px] font-mono text-sm"
+            className="min-h-[400px] font-mono text-sm"
           />
           
           <div className="space-y-3">
@@ -149,7 +149,7 @@ export function SlugConverterTool() {
             value={output}
             readOnly
             placeholder="URL slug will appear here..."
-            className="min-h-[200px] font-mono text-sm bg-muted/50"
+            className="min-h-[400px] font-mono text-sm bg-muted/50"
           />
           
           {output && (

@@ -213,7 +213,7 @@ export function XmlJsonConverterTool() {
                 : "Paste your JSON here...\n\nExample:\n{\n  \"person\": {\n    \"name\": \"John Doe\",\n    \"age\": 30,\n    \"address\": {\n      \"@city\": \"New York\",\n      \"street\": \"123 Main St\",\n      \"zip\": 10001\n    },\n    \"hobbies\": {\n      \"hobby\": [\"reading\", \"swimming\"]\n    }\n  }\n}"}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="min-h-[300px] font-mono text-sm"
+              className="min-h-[600px] font-mono text-sm"
             />
             
             {error && (
@@ -257,7 +257,7 @@ export function XmlJsonConverterTool() {
               value={output}
               readOnly
               placeholder="Converted output will appear here..."
-              className="min-h-[300px] font-mono text-sm bg-muted/50"
+              className="min-h-[600px] font-mono text-sm bg-muted/50"
             />
             
             {output && (

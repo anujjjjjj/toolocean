@@ -273,7 +273,7 @@ export function JsonFlattenerTool() {
                 : "Paste your flattened JSON object here...\n\nExample:\n{\n  \"user.name\": \"John\",\n  \"user.address.city\": \"New York\",\n  \"user.hobbies[0]\": \"reading\",\n  \"user.hobbies[1]\": \"coding\"\n}"}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="min-h-[300px] font-mono text-sm"
+              className="min-h-[600px] font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -310,7 +310,7 @@ export function JsonFlattenerTool() {
               value={output}
               readOnly
               placeholder="Processed JSON will appear here..."
-              className="min-h-[300px] font-mono text-sm bg-muted/50"
+              className="min-h-[600px] font-mono text-sm bg-muted/50"
             />
             
             {output && (

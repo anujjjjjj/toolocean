@@ -84,7 +84,7 @@ export function LineBreakRemoverTool() {
             placeholder="Enter multi-line text here..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="min-h-[300px] font-mono text-sm"
+            className="min-h-[600px] font-mono text-sm"
           />
           
           <div className="space-y-3">
@@ -143,7 +143,7 @@ export function LineBreakRemoverTool() {
             value={output}
             readOnly
             placeholder="Single line text will appear here..."
-            className="min-h-[300px] font-mono text-sm bg-muted/50"
+            className="min-h-[600px] font-mono text-sm bg-muted/50"
           />
           
           {output && (

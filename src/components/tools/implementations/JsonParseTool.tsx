@@ -108,7 +108,7 @@ export function JsonParseTool() {
             placeholder='Enter JSON string here, e.g., "{\"name\":\"John\",\"age\":30}"'
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="min-h-[300px] font-mono text-sm"
+            className="min-h-[600px] font-mono text-sm"
           />
           
           {error && (
@@ -161,7 +161,7 @@ export function JsonParseTool() {
             value={output}
             readOnly
             placeholder="Parsed JSON object will appear here..."
-            className="min-h-[300px] font-mono text-sm bg-muted/50"
+            className="min-h-[600px] font-mono text-sm bg-muted/50"
           />
           
           {output && (

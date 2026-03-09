@@ -357,7 +357,7 @@ export function EncryptionTool() {
               placeholder="Enter text to encrypt/decrypt..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="min-h-[300px] font-mono text-sm"
+              className="min-h-[600px] font-mono text-sm"
             />
             
             {input && (
@@ -426,7 +426,7 @@ export function EncryptionTool() {
               value={output}
               readOnly
               placeholder="Result will appear here..."
-              className="min-h-[200px] font-mono text-sm bg-muted/50"
+              className="min-h-[400px] font-mono text-sm bg-muted/50"
             />
             
             {output && (

@@ -93,7 +93,7 @@ export function TextDiffTool() {
               placeholder="Enter original text here..."
               value={text1}
               onChange={(e) => setText1(e.target.value)}
-              className="min-h-[200px] font-mono text-sm"
+              className="min-h-[400px] font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -107,7 +107,7 @@ export function TextDiffTool() {
               placeholder="Enter modified text here..."
               value={text2}
               onChange={(e) => setText2(e.target.value)}
-              className="min-h-[200px] font-mono text-sm"
+              className="min-h-[400px] font-mono text-sm"
             />
           </CardContent>
         </Card>

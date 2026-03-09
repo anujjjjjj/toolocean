@@ -146,7 +146,7 @@ export function CsvValidatorTool() {
               placeholder="Paste your CSV data here...\n\nExample:\nname,age,city\nJohn,30,New York\nJane,25,Boston"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="min-h-[300px] font-mono text-sm"
+              className="min-h-[600px] font-mono text-sm"
             />
           </CardContent>
         </Card>

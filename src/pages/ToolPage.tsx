@@ -1,6 +1,6 @@
 
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { ToolRunner } from "@/components/tools/ToolRunner";
@@ -11,7 +11,6 @@ import toolsData from "@/data/tools.json";
 const ToolPage = () => {
   const { toolId } = useParams<{ toolId: string }>();
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
 
   const tool = toolsData.tools.find(t => t.id === toolId);
 
@@ -44,7 +43,7 @@ const ToolPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header onSearch={setSearchQuery} searchQuery={searchQuery} />
+      <Header />
       
       <div className="container mx-auto px-4 py-8">
         {/* Back Button */}

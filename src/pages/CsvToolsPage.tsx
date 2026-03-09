@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,18 +30,11 @@ const csvTools = [
 ];
 
 const CsvToolsPage = () => {
-  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-
-  const filteredTools = csvTools.filter(
-    (tool) =>
-      tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      tool.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   return (
     <div className="min-h-screen bg-background">
-      <Header onSearch={setSearchQuery} searchQuery={searchQuery} />
+      <Header />
 
       <main className="container mx-auto px-4 py-8 space-y-12">
         <Button variant="ghost" onClick={() => navigate("/")}>
@@ -70,7 +62,7 @@ const CsvToolsPage = () => {
             <p className="text-muted-foreground">Select a tool to get started</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredTools.map((tool) => {
+            {csvTools.map((tool) => {
               const Icon = tool.icon;
               return (
                 <Card

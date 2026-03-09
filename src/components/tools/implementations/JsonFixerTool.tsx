@@ -193,7 +193,7 @@ export function JsonFixerTool() {
             placeholder="Paste your broken JSON here..."
             value={brokenJson}
             onChange={(e) => setBrokenJson(e.target.value)}
-            className="min-h-[400px] font-mono text-sm"
+            className="min-h-[600px] font-mono text-sm"
           />
           
           <div className="flex gap-2 justify-between items-center">
@@ -241,7 +241,7 @@ export function JsonFixerTool() {
             value={fixedJson}
             readOnly
             placeholder="Fixed JSON will appear here..."
-            className="min-h-[400px] font-mono text-sm bg-muted/50"
+            className="min-h-[600px] font-mono text-sm bg-muted/50"
           />
           
           {changes.length > 0 && (

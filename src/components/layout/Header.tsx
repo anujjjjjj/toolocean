@@ -1,4 +1,4 @@
-import { Moon, Sun, Waves, ChevronDown } from "lucide-react";
+import { Moon, Sun, Waves, ChevronDown, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -7,13 +7,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useCommandPalette } from "@/contexts/CommandPaletteContext";
 
 interface HeaderProps {
-  onSearch?: (query: string) => void;
-  searchQuery?: string;
-  onOpenCommandPalette?: () => void;
   minimal?: boolean;
 }
 
@@ -34,6 +37,7 @@ export function Header({ minimal = false }: HeaderProps) {
   const [darkMode, setDarkMode] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { openPalette } = useCommandPalette();
 
   useEffect(() => {
     const isDark = document.documentElement.classList.contains('dark');
@@ -136,12 +140,31 @@ export function Header({ minimal = false }: HeaderProps) {
             </DropdownMenu>
           </div>
 
+          {/* Search Button */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={openPalette}
+                className="shrink-0"
+                aria-label="Search tools"
+              >
+                <Search className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Search tools <span className="text-xs text-muted-foreground">(⌘K)</span></p>
+            </TooltipContent>
+          </Tooltip>
+
           {/* Theme Toggle */}
           <Button
             variant="ghost"
             size="icon"
             onClick={toggleDarkMode}
             className="shrink-0"
+            aria-label="Toggle theme"
           >
             {darkMode ? (
               <Sun className="h-4 w-4" />

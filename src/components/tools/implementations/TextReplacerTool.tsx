@@ -150,7 +150,7 @@ export function TextReplacerTool() {
               placeholder="Enter text to search and replace..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="min-h-[300px]"
+              className="min-h-[600px]"
             />
           </CardContent>
         </Card>
@@ -172,7 +172,7 @@ export function TextReplacerTool() {
               value={output}
               readOnly
               placeholder="Modified text will appear here..."
-              className="min-h-[300px] bg-muted/50"
+              className="min-h-[600px] bg-muted/50"
             />
             
             {output && (

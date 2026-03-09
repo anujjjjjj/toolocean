@@ -14,18 +14,11 @@ const spreadsheetTools = [
 ];
 
 const SpreadsheetToolsPage = () => {
-  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-
-  const filteredTools = spreadsheetTools.filter(
-    (tool) =>
-      tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      tool.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   return (
     <div className="min-h-screen bg-background">
-      <Header onSearch={setSearchQuery} searchQuery={searchQuery} />
+      <Header />
 
       <main className="container mx-auto px-4 py-8 space-y-12">
         <Button variant="ghost" onClick={() => navigate("/")}>
@@ -53,7 +46,7 @@ const SpreadsheetToolsPage = () => {
             <p className="text-muted-foreground">Select a tool to get started</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredTools.map((tool) => {
+            {spreadsheetTools.map((tool) => {
               const Icon = tool.icon;
               return (
                 <Card

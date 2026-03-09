@@ -269,7 +269,7 @@ React provides a powerful foundation for building modern web applications with r
             placeholder="Paste your markdown content here..."
             value={markdown}
             onChange={(e) => setMarkdown(e.target.value)}
-            className="min-h-[400px] font-mono text-sm"
+            className="min-h-[600px] font-mono text-sm"
           />
           
           <div className="flex gap-2 justify-between items-center">
@@ -315,7 +315,7 @@ React provides a powerful foundation for building modern web applications with r
             value={summary}
             readOnly
             placeholder="AI-generated summary will appear here..."
-            className="min-h-[300px] bg-muted/50"
+            className="min-h-[600px] bg-muted/50"
           />
           
           {keyPoints.length > 0 && (

@@ -72,7 +72,7 @@ export function DuplicateRemoverTool() {
             placeholder="Enter text with duplicate lines..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="min-h-[300px]"
+            className="min-h-[600px]"
           />
           
           <div className="space-y-3">
@@ -119,7 +119,7 @@ export function DuplicateRemoverTool() {
             value={output}
             readOnly
             placeholder="Unique lines will appear here..."
-            className="min-h-[300px] bg-muted/50"
+            className="min-h-[600px] bg-muted/50"
           />
           
           {output && (

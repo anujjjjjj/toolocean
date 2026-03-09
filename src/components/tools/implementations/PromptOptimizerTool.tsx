@@ -215,7 +215,7 @@ export function PromptOptimizerTool() {
             placeholder="Enter your AI prompt here..."
             value={originalPrompt}
             onChange={(e) => setOriginalPrompt(e.target.value)}
-            className="min-h-[300px]"
+            className="min-h-[600px]"
           />
           
           <div className="flex gap-2 justify-between items-center">
@@ -260,7 +260,7 @@ export function PromptOptimizerTool() {
             value={optimizedPrompt}
             readOnly
             placeholder="Optimized prompt will appear here..."
-            className="min-h-[300px] bg-muted/50"
+            className="min-h-[600px] bg-muted/50"
           />
           
           {improvements.length > 0 && (

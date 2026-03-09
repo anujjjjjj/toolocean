@@ -158,7 +158,7 @@ export function JsonSchemaValidatorTool() {
               placeholder="Paste your JSON data here..."
               value={jsonData}
               onChange={(e) => setJsonData(e.target.value)}
-              className="min-h-[300px] font-mono text-sm"
+              className="min-h-[600px] font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -173,7 +173,7 @@ export function JsonSchemaValidatorTool() {
               placeholder="Paste your JSON Schema here..."
               value={schema}
               onChange={(e) => setSchema(e.target.value)}
-              className="min-h-[300px] font-mono text-sm"
+              className="min-h-[600px] font-mono text-sm"
             />
           </CardContent>
         </Card>

@@ -198,7 +198,7 @@ export function CsvConverterTool() {
               }
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="min-h-[300px] font-mono text-sm"
+              className="min-h-[600px] font-mono text-sm"
             />
           </CardContent>
         </Card>
@@ -222,7 +222,7 @@ export function CsvConverterTool() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Textarea value={output} readOnly placeholder="Converted output will appear here..." className="min-h-[300px] font-mono text-sm bg-muted/50" />
+            <Textarea value={output} readOnly placeholder="Converted output will appear here..." className="min-h-[600px] font-mono text-sm bg-muted/50" />
             {output && <div className="mt-4 text-sm text-muted-foreground">Characters: {output.length.toLocaleString()}</div>}
           </CardContent>
         </Card>

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -6,11 +5,10 @@ import { useNavigate } from "react-router-dom";
 
 const WorkflowPage = () => {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
 
   return (
     <div className="min-h-screen bg-background">
-      <Header onSearch={setSearchQuery} searchQuery={searchQuery} />
+      <Header />
       
       <div className="container mx-auto px-4 py-8">
         {/* Back Button */}

@@ -1,42 +1,24 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Header } from "@/components/layout/Header";
-import { CommandPalette } from "@/components/layout/CommandPalette";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Search, Waves, Code, FileText, FileSpreadsheet, Music, Workflow, Shield, Zap, Globe, Lock, Image, Video, Archive } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useCommandPalette } from "@/contexts/CommandPaletteContext";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const navigate = useNavigate();
-
-  // Handle Cmd+K / Ctrl+K
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setCommandPaletteOpen(true);
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  const { openPalette } = useCommandPalette();
 
   const handleSearchFocus = () => {
-    setCommandPaletteOpen(true);
+    openPalette();
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
-
-      <CommandPalette
-        open={commandPaletteOpen}
-        onOpenChange={setCommandPaletteOpen}
-      />
 
       <main className="container mx-auto px-4">
         {/* Hero Section - Centered */}

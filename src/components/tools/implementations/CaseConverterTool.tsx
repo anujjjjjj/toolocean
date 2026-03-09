@@ -142,7 +142,7 @@ export function CaseConverterTool() {
             placeholder="Enter text to convert between different cases..."
             value={input}
             onChange={(e) => handleInputChange(e.target.value)}
-            className="min-h-[120px]"
+            className="min-h-[300px]"
           />
           {input && (
             <div className="mt-4 text-sm text-muted-foreground">

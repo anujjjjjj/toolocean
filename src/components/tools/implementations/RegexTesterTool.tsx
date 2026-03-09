@@ -188,7 +188,7 @@ export function RegexTesterTool() {
               placeholder="Enter text to test against..."
               value={testString}
               onChange={(e) => setTestString(e.target.value)}
-              className="min-h-[200px] font-mono text-sm"
+              className="min-h-[400px] font-mono text-sm"
             />
             
             <Button onClick={testRegex} className="w-full">

@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Header } from "@/components/layout/Header";
@@ -15,7 +15,6 @@ const csvToolsData = [
 const CsvToolPage = () => {
   const { toolId } = useParams<{ toolId: string }>();
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
 
   const tool = csvToolsData.find((t) => t.id === toolId);
 
@@ -46,7 +45,7 @@ const CsvToolPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header onSearch={setSearchQuery} searchQuery={searchQuery} />
+      <Header />
 
       <div className="container mx-auto px-4 py-8">
         <Button variant="ghost" onClick={() => navigate("/csv-tools")} className="mb-6">
