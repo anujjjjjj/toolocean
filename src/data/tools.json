@@ -798,6 +798,276 @@
         "build",
         "time"
       ]
+    },
+    {
+      "id": "code-explainer",
+      "name": "Code Explainer",
+      "description": "Explain code snippets in plain English with detailed breakdowns",
+      "category": "development",
+      "icon": "MessageCircle",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["code", "explain", "understand", "analyze", "breakdown"]
+    },
+    {
+      "id": "json-fixer",
+      "name": "JSON Fixer",
+      "description": "Automatically detect and fix common JSON errors like trailing commas and missing quotes",
+      "category": "formatting",
+      "icon": "Wrench",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["json", "fix", "repair", "broken", "error"]
+    },
+    {
+      "id": "ip-address",
+      "name": "IP Address Lookup",
+      "description": "Look up IP address information including location, ISP, and your current IP",
+      "category": "testing",
+      "icon": "Globe",
+      "inputs": ["text"],
+      "outputs": ["visual"],
+      "keywords": ["ip", "address", "lookup", "geolocation", "network"]
+    },
+    {
+      "id": "regex-generator",
+      "name": "Regex Generator",
+      "description": "Generate and test regular expressions with common patterns and real-time matching",
+      "category": "development",
+      "icon": "Wand2",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["regex", "regexp", "pattern", "generate", "match", "test"]
+    },
+    {
+      "id": "url-encoder",
+      "name": "URL Encoder/Decoder",
+      "description": "Encode and decode URLs and URL components — percent-encoding for query strings and paths",
+      "category": "development",
+      "icon": "Link",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["url", "encode", "decode", "percent", "uri", "query"]
+    },
+    {
+      "id": "base64-tool",
+      "name": "Base64 Encoder/Decoder",
+      "description": "Encode text or files to Base64 and decode Base64 back to plain text",
+      "category": "security",
+      "icon": "Binary",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["base64", "encode", "decode", "binary", "atob", "btoa"]
+    },
+    {
+      "id": "html-entity-encoder",
+      "name": "HTML Entity Encoder/Decoder",
+      "description": "Encode special characters to HTML entities and decode HTML entities back to characters",
+      "category": "text",
+      "icon": "Code2",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["html", "entity", "encode", "decode", "escape", "amp", "lt", "gt"]
+    },
+    {
+      "id": "number-base-converter",
+      "name": "Number Base Converter",
+      "description": "Convert numbers between decimal, hexadecimal, binary, and octal bases",
+      "category": "development",
+      "icon": "Hash",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["number", "base", "hex", "binary", "octal", "decimal", "convert"]
+    },
+    {
+      "id": "markdown-preview",
+      "name": "Markdown Preview",
+      "description": "Live Markdown editor with rendered preview — supports GitHub Flavored Markdown",
+      "category": "formatting",
+      "icon": "FileText",
+      "inputs": ["text"],
+      "outputs": ["visual"],
+      "keywords": ["markdown", "preview", "editor", "render", "md", "html"]
+    },
+    {
+      "id": "lorem-ipsum-generator",
+      "name": "Lorem Ipsum Generator",
+      "description": "Generate placeholder text in words, sentences, or paragraphs for design mockups",
+      "category": "text",
+      "icon": "AlignLeft",
+      "inputs": ["visual"],
+      "outputs": ["text"],
+      "keywords": ["lorem", "ipsum", "placeholder", "dummy", "text", "generate"]
+    },
+    {
+      "id": "string-escape",
+      "name": "String Escape/Unescape",
+      "description": "Escape and unescape strings for JSON, JavaScript, HTML, and URL contexts",
+      "category": "text",
+      "icon": "Brackets",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["escape", "unescape", "string", "json", "backslash", "quote"]
+    },
+    {
+      "id": "toml-formatter",
+      "name": "TOML Formatter/Validator",
+      "description": "Format and validate TOML configuration files",
+      "category": "formatting",
+      "icon": "Settings",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["toml", "format", "validate", "config", "configuration"]
+    },
+    {
+      "id": "xml-formatter",
+      "name": "XML Formatter/Minifier",
+      "description": "Format and minify XML documents with syntax validation",
+      "category": "formatting",
+      "icon": "FileCode",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["xml", "format", "minify", "beautify", "pretty"]
+    },
+    {
+      "id": "csv-formatter",
+      "name": "CSV Formatter/Validator",
+      "description": "Validate and reformat CSV files with custom delimiters and preview",
+      "category": "formatting",
+      "icon": "Table",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["csv", "format", "validate", "delimiter", "table"]
+    },
+    {
+      "id": "css-unit-converter",
+      "name": "CSS Unit Converter",
+      "description": "Convert between CSS units: px, rem, em, vw, vh, and pt with configurable base font size",
+      "category": "frontend",
+      "icon": "Ruler",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["css", "unit", "px", "rem", "em", "convert", "responsive"]
+    },
+    {
+      "id": "chmod-calculator",
+      "name": "chmod Permission Calculator",
+      "description": "Calculate Linux file permissions — set rwx checkboxes to get octal and symbolic notation",
+      "category": "devops",
+      "icon": "Shield",
+      "inputs": ["visual"],
+      "outputs": ["text"],
+      "keywords": ["chmod", "permission", "linux", "unix", "rwx", "octal"]
+    },
+    {
+      "id": "mime-type-lookup",
+      "name": "MIME Type Lookup",
+      "description": "Look up MIME types by file extension or find extensions for a given MIME type",
+      "category": "development",
+      "icon": "FileSearch",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["mime", "type", "extension", "file", "content-type", "media"]
+    },
+    {
+      "id": "unicode-inspector",
+      "name": "Unicode / Character Inspector",
+      "description": "Inspect characters: show Unicode codepoint, name, hex, decimal, HTML entity, and binary",
+      "category": "text",
+      "icon": "Inspect",
+      "inputs": ["text"],
+      "outputs": ["visual"],
+      "keywords": ["unicode", "character", "codepoint", "hex", "ascii", "inspect"]
+    },
+    {
+      "id": "jwt-generator",
+      "name": "JWT Generator",
+      "description": "Generate signed JSON Web Tokens with custom header, payload, and HS256 secret",
+      "category": "security",
+      "icon": "KeyRound",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["jwt", "token", "generate", "sign", "hs256", "auth"]
+    },
+    {
+      "id": "qr-code-generator",
+      "name": "QR Code Generator",
+      "description": "Generate QR codes from text or URLs — download as PNG",
+      "category": "development",
+      "icon": "QrCode",
+      "inputs": ["text"],
+      "outputs": ["visual"],
+      "keywords": ["qr", "code", "qrcode", "generate", "scan", "barcode"]
+    },
+    {
+      "id": "text-sorter",
+      "name": "Text Line Sorter",
+      "description": "Sort lines alphabetically, numerically, by length, or shuffle randomly",
+      "category": "text",
+      "icon": "ArrowUpDown",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["sort", "lines", "alphabetical", "numeric", "shuffle", "order"]
+    },
+    {
+      "id": "json-minifier",
+      "name": "JSON Minifier",
+      "description": "Minify JSON by removing whitespace and comments to reduce file size",
+      "category": "formatting",
+      "icon": "Minimize2",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["json", "minify", "compress", "whitespace", "optimize"]
+    },
+    {
+      "id": "color-palette-generator",
+      "name": "Color Palette Generator",
+      "description": "Generate color palettes — shades, tints, complementary, analogous, and triadic colors",
+      "category": "frontend",
+      "icon": "Palette",
+      "inputs": ["visual"],
+      "outputs": ["visual"],
+      "keywords": ["color", "palette", "shades", "tints", "complementary", "design"]
+    },
+    {
+      "id": "text-to-binary",
+      "name": "Text to Binary/Hex",
+      "description": "Convert text to binary, hexadecimal, and decimal representations and back",
+      "category": "text",
+      "icon": "Binary",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["text", "binary", "hex", "decimal", "ascii", "convert"]
+    },
+    {
+      "id": "ip-cidr-calculator",
+      "name": "IP / CIDR Calculator",
+      "description": "Calculate network address, broadcast, subnet mask, host range, and usable IPs from CIDR notation",
+      "category": "devops",
+      "icon": "Network",
+      "inputs": ["text"],
+      "outputs": ["visual"],
+      "keywords": ["ip", "cidr", "subnet", "network", "calculator", "mask"]
+    },
+    {
+      "id": "number-formatter",
+      "name": "Number Formatter",
+      "description": "Format numbers with commas, currency symbols, scientific notation, ordinals, and locale settings",
+      "category": "development",
+      "icon": "Calculator",
+      "inputs": ["text"],
+      "outputs": ["text"],
+      "keywords": ["number", "format", "currency", "comma", "locale", "decimal"]
+    },
+    {
+      "id": "dns-lookup",
+      "name": "DNS Lookup",
+      "description": "Look up DNS records (A, AAAA, MX, TXT, CNAME) for any domain using DNS-over-HTTPS",
+      "category": "devops",
+      "icon": "Globe",
+      "inputs": ["text"],
+      "outputs": ["visual"],
+      "keywords": ["dns", "lookup", "domain", "record", "mx", "cname", "nameserver"]
     }
   ],
   "categories": [

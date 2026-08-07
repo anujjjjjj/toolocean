@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useHistory } from "@/hooks/useHistory";
 import { toolRegistry } from "@/lib/toolRegistry";
 import { getAllToolsForPalette } from "@/lib/allToolsForPalette";
+import { useSEO } from "@/hooks/useSEO";
 
 interface WorkflowStep {
   id: string;
@@ -32,6 +33,13 @@ interface Workflow {
 
 const WorkflowBuilderPage = () => {
   const navigate = useNavigate();
+
+  useSEO({
+    title: "Workflow Builder - Chain Developer Tools Together",
+    description: "Build and run custom automated workflows by chaining developer tools together. Free, browser-based, no sign-up required.",
+    path: "/workflow-builder",
+  });
+
   const toolCategories = useMemo(() => getAllToolsForPalette(), []);
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [currentWorkflow, setCurrentWorkflow] = useState<Workflow | null>(null);

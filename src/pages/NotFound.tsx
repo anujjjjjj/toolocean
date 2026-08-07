@@ -2,10 +2,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
+import { useSEO } from "@/hooks/useSEO";
 
 const NotFound = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  useSEO({
+    title: "Page Not Found",
+    description: "The page you're looking for doesn't exist.",
+    path: location.pathname,
+    noindex: true,
+  });
 
   useEffect(() => {
     console.error(

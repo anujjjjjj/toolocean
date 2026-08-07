@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Copy, Download, ArrowUpDown } from "lucide-react";
+import { Copy, Download, ArrowUpDown, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export function CsvJsonConverterTool() {
@@ -16,6 +16,19 @@ export function CsvJsonConverterTool() {
   const [customDelimiter, setCustomDelimiter] = useState("");
   const [hasHeader, setHasHeader] = useState(true);
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setInput(ev.target?.result as string);
+      setOutput("");
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
 
   const csvToJson = (csvText: string, delim: string, withHeader: boolean) => {
     const lines = csvText.trim().split('\n');
@@ -220,9 +233,17 @@ export function CsvJsonConverterTool() {
               {mode === "csv-to-json" ? "CSV Input" : "JSON Input"}
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-3">
+            <div className="flex items-center gap-2">
+              <input ref={fileInputRef} type="file" accept=".csv,.json,.txt" className="hidden" onChange={handleFileUpload} />
+              <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+                <Upload className="h-4 w-4 mr-2" />
+                Upload file
+              </Button>
+              <span className="text-xs text-muted-foreground">or paste below</span>
+            </div>
             <Textarea
-              placeholder={mode === "csv-to-json" 
+              placeholder={mode === "csv-to-json"
                 ? "Paste your CSV data here...\n\nExample:\nname,age,city\nJohn,30,New York\nJane,25,Boston" 
                 : "Paste your JSON array here...\n\nExample:\n[\n  {\"name\": \"John\", \"age\": 30, \"city\": \"New York\"},\n  {\"name\": \"Jane\", \"age\": 25, \"city\": \"Boston\"}\n]"}
               value={input}

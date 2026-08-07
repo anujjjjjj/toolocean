@@ -3,18 +3,34 @@ import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { FileSpreadsheet, FileUp, FileDown, Columns, ArrowLeft, Shield, Zap, Gift } from "lucide-react";
+import { FileSpreadsheet, FileUp, FileDown, Columns, ArrowLeft, Shield, Zap, Gift, Braces } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSEO } from "@/hooks/useSEO";
+import { CATEGORY_PAGE_SEO } from "@/data/staticPageSeo";
+import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+
+const BREADCRUMB_ITEMS = [
+  { name: "Home", path: "/" },
+  { name: "Spreadsheet Tools", path: "/spreadsheet-tools" },
+];
 
 const spreadsheetTools = [
   { id: "excel-reader", name: "Excel Reader", description: "Upload and view Excel files as table", icon: FileSpreadsheet, color: "from-green-500 to-emerald-500" },
   { id: "csv-to-excel", name: "CSV to Excel", description: "Convert CSV to .xlsx and download", icon: FileUp, color: "from-blue-500 to-cyan-500" },
   { id: "excel-to-csv", name: "Excel to CSV", description: "Export Excel sheets to CSV", icon: FileDown, color: "from-purple-500 to-violet-500" },
   { id: "column-extractor", name: "Column Extractor", description: "Select and export specific columns", icon: Columns, color: "from-orange-500 to-amber-500" },
+  { id: "json-to-excel", name: "JSON → Excel", description: "Convert a JSON array of objects to an Excel file", icon: Braces, color: "from-teal-500 to-cyan-500" },
 ];
 
 const SpreadsheetToolsPage = () => {
   const navigate = useNavigate();
+
+  useSEO({
+    ...CATEGORY_PAGE_SEO["/spreadsheet-tools"],
+    path: "/spreadsheet-tools",
+    jsonLd: [buildBreadcrumbJsonLd(BREADCRUMB_ITEMS)],
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -25,6 +41,8 @@ const SpreadsheetToolsPage = () => {
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to All Tools
         </Button>
+
+        <Breadcrumbs items={BREADCRUMB_ITEMS} />
 
         <section className="text-center py-8">
           <div className="max-w-4xl mx-auto">

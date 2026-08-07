@@ -1,10 +1,10 @@
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { GitCompare, Plus, Minus } from "lucide-react";
+import { GitCompare, Plus, Minus, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useHistory } from "@/hooks/useHistory";
 
@@ -20,6 +20,18 @@ export function TextDiffTool() {
   const [diff, setDiff] = useState<DiffLine[]>([]);
   const { toast } = useToast();
   const { addToHistory } = useHistory();
+  const file1Ref = useRef<HTMLInputElement>(null);
+  const file2Ref = useRef<HTMLInputElement>(null);
+
+  const makeUploadHandler = (setter: (v: string) => void, ref: React.RefObject<HTMLInputElement>) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => { setter(ev.target?.result as string); setDiff([]); };
+      reader.readAsText(file);
+      e.target.value = "";
+    };
 
   const calculateDiff = () => {
     if (!text1 && !text2) {
@@ -88,7 +100,14 @@ export function TextDiffTool() {
           <CardHeader>
             <CardTitle>Original Text</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-3">
+            <div className="flex items-center gap-2">
+              <input ref={file1Ref} type="file" accept=".txt,.md,.json,.xml,.csv" className="hidden" onChange={makeUploadHandler(setText1, file1Ref)} />
+              <Button variant="outline" size="sm" onClick={() => file1Ref.current?.click()}>
+                <Upload className="h-4 w-4 mr-2" />
+                Upload file
+              </Button>
+            </div>
             <Textarea
               placeholder="Enter original text here..."
               value={text1}
@@ -102,7 +121,14 @@ export function TextDiffTool() {
           <CardHeader>
             <CardTitle>Modified Text</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-3">
+            <div className="flex items-center gap-2">
+              <input ref={file2Ref} type="file" accept=".txt,.md,.json,.xml,.csv" className="hidden" onChange={makeUploadHandler(setText2, file2Ref)} />
+              <Button variant="outline" size="sm" onClick={() => file2Ref.current?.click()}>
+                <Upload className="h-4 w-4 mr-2" />
+                Upload file
+              </Button>
+            </div>
             <Textarea
               placeholder="Enter modified text here..."
               value={text2}

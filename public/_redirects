@@ -1,0 +1,27 @@
+# Netlify / Cloudflare Pages redirect rules.
+#
+# Every tool moved from a category-prefixed path to a flat root slug
+# (/tools/json-formatter -> /json-formatter). These 301s are what consolidate the
+# old URLs' link equity onto the new ones; the in-app <LegacyToolRedirect> is only
+# a fallback for hosts that do not read this file, and a client-side redirect is a
+# materially weaker signal than a real 301.
+#
+# First match wins, so the per-tool rules below sit above the catch-all. Category
+# listing pages (/pdf-tools) are untouched because these patterns all require a
+# second path segment.
+
+/tools/*                 /:splat   301!
+/pdf-tools/*             /:splat   301!
+/csv-tools/*             /:splat   301!
+/audio-tools/*           /:splat   301!
+/image-tools/*           /:splat   301!
+/video-tools/*           /:splat   301!
+/spreadsheet-tools/*     /:splat   301!
+/compression-tools/*     /:splat   301!
+/archive-tools/*         /:splat   301!
+/converter-tools/*       /:splat   301!
+
+# Every real route is prerendered to its own index.html, so anything left over is
+# genuinely missing. Serving 404.html with a 404 status avoids the soft-404s that
+# the usual SPA `/* /index.html 200` fallback produces.
+/*                       /404.html 404

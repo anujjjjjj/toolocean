@@ -2,9 +2,17 @@ import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSEO } from "@/hooks/useSEO";
 
 const WorkflowPage = () => {
   const navigate = useNavigate();
+
+  useSEO({
+    title: "Workflow Builder",
+    description: "Chain multiple tools together to create powerful automated workflows.",
+    path: "/workflows",
+    noindex: true,
+  });
 
   return (
     <div className="min-h-screen bg-background">

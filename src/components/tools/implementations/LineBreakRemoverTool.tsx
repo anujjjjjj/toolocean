@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Copy, Download } from "lucide-react";
+import { Copy, Download, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export function LineBreakRemoverTool() {
@@ -14,6 +14,16 @@ export function LineBreakRemoverTool() {
   const [preserveSpaces, setPreserveSpaces] = useState(true);
   const [removeParagraphBreaks, setRemoveParagraphBreaks] = useState(false);
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { setInput(ev.target?.result as string); setOutput(""); };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
 
   const removeLineBreaks = () => {
     if (!input.trim()) {
@@ -80,6 +90,14 @@ export function LineBreakRemoverTool() {
           <CardTitle>Multi-line Text</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="flex items-center gap-2">
+            <input ref={fileInputRef} type="file" accept=".txt,.md,.csv" className="hidden" onChange={handleFileUpload} />
+            <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+              <Upload className="h-4 w-4 mr-2" />
+              Upload file
+            </Button>
+            <span className="text-xs text-muted-foreground">or paste below</span>
+          </div>
           <Textarea
             placeholder="Enter multi-line text here..."
             value={input}

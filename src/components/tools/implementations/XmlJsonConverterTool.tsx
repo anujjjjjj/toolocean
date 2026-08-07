@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Copy, Download, ArrowUpDown, Check, X, AlertCircle } from "lucide-react";
+import { Copy, Download, ArrowUpDown, Check, X, AlertCircle, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { parseString, Builder } from 'xml2js';
 
@@ -18,6 +18,21 @@ export function XmlJsonConverterTool() {
   const [preserveAttributes, setPreserveAttributes] = useState(true);
   const [explicitArray, setExplicitArray] = useState(false);
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setInput(ev.target?.result as string);
+      setOutput("");
+      setIsValid(null);
+      setError("");
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
 
   const xmlToJson = (xmlText: string) => {
     return new Promise((resolve, reject) => {
@@ -207,8 +222,16 @@ export function XmlJsonConverterTool() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            <div className="flex items-center gap-2">
+              <input ref={fileInputRef} type="file" accept=".xml,.json" className="hidden" onChange={handleFileUpload} />
+              <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+                <Upload className="h-4 w-4 mr-2" />
+                Upload file
+              </Button>
+              <span className="text-xs text-muted-foreground">or paste below</span>
+            </div>
             <Textarea
-              placeholder={mode === "xml-to-json" 
+              placeholder={mode === "xml-to-json"
                 ? "Paste your XML here...\n\nExample:\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<person>\n  <name>John Doe</name>\n  <age>30</age>\n  <address city=\"New York\">\n    <street>123 Main St</street>\n    <zip>10001</zip>\n  </address>\n  <hobbies>\n    <hobby>reading</hobby>\n    <hobby>swimming</hobby>\n  </hobbies>\n</person>" 
                 : "Paste your JSON here...\n\nExample:\n{\n  \"person\": {\n    \"name\": \"John Doe\",\n    \"age\": 30,\n    \"address\": {\n      \"@city\": \"New York\",\n      \"street\": \"123 Main St\",\n      \"zip\": 10001\n    },\n    \"hobbies\": {\n      \"hobby\": [\"reading\", \"swimming\"]\n    }\n  }\n}"}
               value={input}

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Copy, Download, Share, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import * as Icons from "lucide-react";
+import { getToolIcon } from "@/lib/toolIcons";
 import { LucideIcon } from "lucide-react";
 import { JsonFormatterTool } from './implementations/JsonFormatterTool';
 import { CaseConverterTool } from './implementations/CaseConverterTool';
@@ -48,9 +48,7 @@ export function ToolRunner({
   const { toast } = useToast();
   const [output, setOutput] = useState("");
 
-  // Get the icon component dynamically
-  const IconComponent = (Icons as any)[tool.icon] as LucideIcon;
-  const Icon = IconComponent || Icons.Wrench;
+  const Icon = getToolIcon(tool.icon);
 
   const copyToClipboard = async (text: string) => {
     try {

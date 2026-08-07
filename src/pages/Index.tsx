@@ -3,14 +3,23 @@ import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Search, Waves, Code, FileText, FileSpreadsheet, Music, Workflow, Shield, Zap, Globe, Lock, Image, Video, Archive } from "lucide-react";
+import { Search, Waves, Code, FileText, FileSpreadsheet, Music, Workflow, Shield, Zap, Globe, Lock, Image, Video, Archive, ArrowUpDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCommandPalette } from "@/contexts/CommandPaletteContext";
+import { useSEO } from "@/hooks/useSEO";
+import { HOME_SEO } from "@/data/staticPageSeo";
+import { buildOrganizationJsonLd, buildWebSiteJsonLd } from "@/lib/jsonLd";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const { openPalette } = useCommandPalette();
+
+  useSEO({
+    ...HOME_SEO,
+    path: "/",
+    jsonLd: [buildOrganizationJsonLd(), buildWebSiteJsonLd()],
+  });
 
   const handleSearchFocus = () => {
     openPalette();
@@ -303,6 +312,24 @@ const Index = () => {
                   Extract, create, and preview ZIP files. JSZip in browser.
                 </CardDescription>
                 <p className="text-primary font-medium text-sm">3 Tools →</p>
+              </CardContent>
+            </Card>
+
+            <Card
+              className="group cursor-pointer transition-all hover:opacity-90 hover:shadow-elegant"
+              onClick={() => navigate('/converter-tools')}
+            >
+              <CardHeader className="text-center pb-4">
+                <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
+                  <ArrowUpDown className="h-6 w-6 text-primary" />
+                </div>
+                <CardTitle className="text-xl">Converter Tools</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <CardDescription className="text-base mb-4">
+                  Convert between formats: Markdown↔DOCX, JSON↔TOML↔YAML↔XML, colors, timestamps, and more.
+                </CardDescription>
+                <p className="text-primary font-medium text-sm">8 Tools →</p>
               </CardContent>
             </Card>
 

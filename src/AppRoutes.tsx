@@ -1,0 +1,121 @@
+import { Suspense, lazy, useEffect } from "react";
+import { Route, Routes } from "react-router-dom";
+import { Toaster } from "@/components/ui/toaster";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { CommandPaletteProvider, useCommandPalette } from "@/contexts/CommandPaletteContext";
+import { CommandPalette } from "@/components/layout/CommandPalette";
+import { LegacyToolRedirect } from "@/components/routing/LegacyToolRedirect";
+import { CATEGORY_ROUTE } from "@/data/toolCatalog";
+import Index from "./pages/Index";
+// Eager: ToolRoutePage and LegacyToolRedirect import it statically anyway.
+import NotFound from "./pages/NotFound";
+
+/**
+ * Everything inside the router, shared by the browser entry (main.tsx) and the
+ * build-time prerender entry (entry-ssg.tsx).
+ *
+ * Routes are lazy so a visitor landing on one tool page does not download the ten
+ * category listings and the workflow builder as well. The prerender still emits
+ * complete HTML because entry-ssg.tsx renders with renderToPipeableStream and
+ * waits for onAllReady, which resolves every Suspense boundary before serialising
+ * — renderToString cannot do this and would have emitted the empty fallback.
+ *
+ * On the client, hydrateRoot keeps the server markup on screen while a lazy chunk
+ * is still in flight, so the split costs nothing visually.
+ */
+const ToolRoutePage = lazy(() => import("./pages/ToolRoutePage"));
+const DevToolsPage = lazy(() => import("./pages/DevToolsPage"));
+const WorkflowPage = lazy(() => import("./pages/WorkflowPage"));
+const WorkflowBuilderPage = lazy(() => import("./pages/WorkflowBuilderPage"));
+const PdfToolsPage = lazy(() => import("./pages/PdfToolsPage"));
+const CsvToolsPage = lazy(() => import("./pages/CsvToolsPage"));
+const AudioToolsPage = lazy(() => import("./pages/AudioToolsPage"));
+const ImageToolsPage = lazy(() => import("./pages/ImageToolsPage"));
+const VideoToolsPage = lazy(() => import("./pages/VideoToolsPage"));
+const SpreadsheetToolsPage = lazy(() => import("./pages/SpreadsheetToolsPage"));
+const CompressionToolsPage = lazy(() => import("./pages/CompressionToolsPage"));
+const ArchiveToolsPage = lazy(() => import("./pages/ArchiveToolsPage"));
+const ConverterToolsPage = lazy(() => import("./pages/ConverterToolsPage"));
+
+const CATEGORY_LISTINGS = [
+  { path: "/pdf-tools", element: <PdfToolsPage /> },
+  { path: "/csv-tools", element: <CsvToolsPage /> },
+  { path: "/audio-tools", element: <AudioToolsPage /> },
+  { path: "/image-tools", element: <ImageToolsPage /> },
+  { path: "/video-tools", element: <VideoToolsPage /> },
+  { path: "/spreadsheet-tools", element: <SpreadsheetToolsPage /> },
+  { path: "/compression-tools", element: <CompressionToolsPage /> },
+  { path: "/archive-tools", element: <ArchiveToolsPage /> },
+  { path: "/converter-tools", element: <ConverterToolsPage /> },
+];
+
+function GlobalKeyboardHandler() {
+  const { openPalette } = useCommandPalette();
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+        event.preventDefault();
+        openPalette();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [openPalette]);
+
+  return null;
+}
+
+function GlobalCommandPalette() {
+  const { isOpen, closePalette } = useCommandPalette();
+  return <CommandPalette open={isOpen} onOpenChange={closePalette} />;
+}
+
+export function AppRoutes() {
+  return (
+    <TooltipProvider>
+      <CommandPaletteProvider>
+        <GlobalKeyboardHandler />
+        <GlobalCommandPalette />
+        <Toaster />
+        {/*
+          fallback={null} is never shown on a prerendered page: the build resolves
+          every boundary before serialising, and on the client React keeps the
+          server markup in place while the chunk loads.
+        */}
+        <Suspense fallback={null}>
+          <Routes>
+            <Route path="/" element={<Index />} />
+
+            {/* Category listings */}
+            <Route path="/dev-tools" element={<DevToolsPage />} />
+            {CATEGORY_LISTINGS.map((listing) => (
+              <Route key={listing.path} path={listing.path} element={listing.element} />
+            ))}
+
+            <Route path="/workflows" element={<WorkflowPage />} />
+            <Route path="/workflow-builder" element={<WorkflowBuilderPage />} />
+
+            {/*
+              Pre-flattening tool URLs. Real 301s live in public/_redirects and
+              vercel.json; this is the in-app fallback for hosts that read neither.
+            */}
+            {Object.values(CATEGORY_ROUTE).map((prefix) => (
+              <Route key={prefix} path={`${prefix}/:slug`} element={<LegacyToolRedirect />} />
+            ))}
+
+            {/*
+              Every tool, at the site root. React Router ranks static segments
+              above dynamic ones, so this cannot shadow the listings regardless of
+              declaration order.
+            */}
+            <Route path="/:slug" element={<ToolRoutePage />} />
+
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </CommandPaletteProvider>
+    </TooltipProvider>
+  );
+}
