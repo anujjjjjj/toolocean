@@ -4,6 +4,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { FileSpreadsheet, ArrowUpDown, CheckCircle, Merge, ArrowLeft, Shield, Zap, Gift } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSEO } from "@/hooks/useSEO";
+import { CATEGORY_PAGE_SEO } from "@/data/staticPageSeo";
+import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+
+const BREADCRUMB_ITEMS = [
+  { name: "Home", path: "/" },
+  { name: "CSV Tools", path: "/csv-tools" },
+];
 
 const csvTools = [
   {
@@ -32,6 +41,12 @@ const csvTools = [
 const CsvToolsPage = () => {
   const navigate = useNavigate();
 
+  useSEO({
+    ...CATEGORY_PAGE_SEO["/csv-tools"],
+    path: "/csv-tools",
+    jsonLd: [buildBreadcrumbJsonLd(BREADCRUMB_ITEMS)],
+  });
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -41,6 +56,8 @@ const CsvToolsPage = () => {
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to All Tools
         </Button>
+
+        <Breadcrumbs items={BREADCRUMB_ITEMS} />
 
         <section className="text-center py-8">
           <div className="max-w-4xl mx-auto">

@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { Upload } from "lucide-react";
 import CryptoJS from "crypto-js";
 
 interface HashGeneratorToolProps {
@@ -15,6 +16,16 @@ export const HashGeneratorTool = ({ onOutputChange }: HashGeneratorToolProps) =>
   const [algorithm, setAlgorithm] = useState("MD5");
   const [output, setOutput] = useState("");
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { setInput(ev.target?.result as string); setOutput(""); };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
 
   const generateHash = () => {
     if (!input.trim()) {
@@ -102,6 +113,14 @@ export const HashGeneratorTool = ({ onOutputChange }: HashGeneratorToolProps) =>
             <label htmlFor="text-input" className="block text-sm font-medium mb-2">
               Text to Hash
             </label>
+            <div className="flex items-center gap-2 mb-2">
+              <input ref={fileInputRef} type="file" className="hidden" onChange={handleFileUpload} />
+              <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+                <Upload className="h-4 w-4 mr-2" />
+                Upload file
+              </Button>
+              <span className="text-xs text-muted-foreground">or paste below</span>
+            </div>
             <Textarea
               id="text-input"
               value={input}

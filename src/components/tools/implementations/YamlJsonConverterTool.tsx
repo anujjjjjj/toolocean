@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Copy, Download, ArrowUpDown, Check, X, AlertCircle } from "lucide-react";
+import { Copy, Download, ArrowUpDown, Check, X, AlertCircle, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import * as yaml from 'js-yaml';
 
@@ -14,6 +14,21 @@ export function YamlJsonConverterTool() {
   const [isValid, setIsValid] = useState<boolean | null>(null);
   const [error, setError] = useState("");
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setInput(ev.target?.result as string);
+      setOutput("");
+      setIsValid(null);
+      setError("");
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
 
   const convert = () => {
     if (!input.trim()) {
@@ -145,8 +160,16 @@ export function YamlJsonConverterTool() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            <div className="flex items-center gap-2">
+              <input ref={fileInputRef} type="file" accept=".yaml,.yml,.json" className="hidden" onChange={handleFileUpload} />
+              <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+                <Upload className="h-4 w-4 mr-2" />
+                Upload file
+              </Button>
+              <span className="text-xs text-muted-foreground">or paste below</span>
+            </div>
             <Textarea
-              placeholder={mode === "yaml-to-json" 
+              placeholder={mode === "yaml-to-json"
                 ? "Paste your YAML here...\n\nExample:\nname: John Doe\nage: 30\naddress:\n  street: 123 Main St\n  city: New York\n  zip: 10001\nhobbies:\n  - reading\n  - swimming\n  - coding" 
                 : "Paste your JSON here...\n\nExample:\n{\n  \"name\": \"John Doe\",\n  \"age\": 30,\n  \"address\": {\n    \"street\": \"123 Main St\",\n    \"city\": \"New York\",\n    \"zip\": 10001\n  },\n  \"hobbies\": [\"reading\", \"swimming\", \"coding\"]\n}"}
               value={input}

@@ -1,9 +1,11 @@
 import { VideoThumbnailTool } from "@/components/tools/implementations/video/VideoThumbnailTool";
-import { PlaceholderTool } from "@/components/tools/PlaceholderTool";
+import { VideoTrimmerTool } from "@/components/tools/implementations/video/VideoTrimmerTool";
+import { VideoToGifTool } from "@/components/tools/implementations/video/VideoToGifTool";
+import { VideoMetadataTool } from "@/components/tools/implementations/video/VideoMetadataTool";
 
 export const videoComponentRegistry: Record<string, React.ComponentType<unknown>> = {
-  "video-trimmer": PlaceholderTool,
-  "video-to-gif": PlaceholderTool,
+  "video-trimmer": VideoTrimmerTool,
+  "video-to-gif": VideoToGifTool,
   "video-thumbnail": VideoThumbnailTool,
-  "video-metadata": PlaceholderTool,
+  "video-metadata": VideoMetadataTool,
 };

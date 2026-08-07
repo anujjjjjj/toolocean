@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Copy, Search, Replace } from "lucide-react";
+import { Copy, Search, Replace, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useHistory } from "@/hooks/useHistory";
 
@@ -21,6 +21,16 @@ export function TextReplacerTool() {
   const [replaceCount, setReplaceCount] = useState(0);
   const { toast } = useToast();
   const { addToHistory } = useHistory();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { setInput(ev.target?.result as string); setOutput(""); };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
 
   const performReplace = () => {
     if (!input || !searchText) {
@@ -145,7 +155,15 @@ export function TextReplacerTool() {
           <CardHeader>
             <CardTitle>Original Text</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-3">
+            <div className="flex items-center gap-2">
+              <input ref={fileInputRef} type="file" accept=".txt,.md,.csv,.json" className="hidden" onChange={handleFileUpload} />
+              <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+                <Upload className="h-4 w-4 mr-2" />
+                Upload file
+              </Button>
+              <span className="text-xs text-muted-foreground">or paste below</span>
+            </div>
             <Textarea
               placeholder="Enter text to search and replace..."
               value={input}

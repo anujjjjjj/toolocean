@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
-import { Copy, Download, Lock, Unlock, AlertCircle } from "lucide-react";
+import { Copy, Download, Lock, Unlock, AlertCircle, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export function EncryptionTool() {
@@ -20,6 +20,16 @@ export function EncryptionTool() {
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("encrypt");
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { setInput(ev.target?.result as string); setOutput(""); setError(""); };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
 
   // Simple encryption/decryption functions (for demo purposes)
   const caesarCipher = (text: string, shift: number, decrypt: boolean = false): string => {
@@ -352,7 +362,15 @@ export function EncryptionTool() {
           <CardHeader>
             <CardTitle>Input Text</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-3">
+            <div className="flex items-center gap-2">
+              <input ref={fileInputRef} type="file" accept=".txt,.json,.md" className="hidden" onChange={handleFileUpload} />
+              <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+                <Upload className="h-4 w-4 mr-2" />
+                Upload file
+              </Button>
+              <span className="text-xs text-muted-foreground">or paste below</span>
+            </div>
             <Textarea
               placeholder="Enter text to encrypt/decrypt..."
               value={input}

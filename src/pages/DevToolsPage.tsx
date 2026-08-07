@@ -4,9 +4,24 @@ import { ToolGrid } from "@/components/tools/ToolGrid";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Code, Shield, Zap, ArrowLeft } from "lucide-react";
+import { useSEO } from "@/hooks/useSEO";
+import { CATEGORY_PAGE_SEO } from "@/data/staticPageSeo";
+import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+
+const BREADCRUMB_ITEMS = [
+    { name: "Home", path: "/" },
+    { name: "Developer Tools", path: "/dev-tools" },
+];
 
 const DevToolsPage = () => {
     const navigate = useNavigate();
+
+    useSEO({
+      ...CATEGORY_PAGE_SEO["/dev-tools"],
+        path: "/dev-tools",
+        jsonLd: [buildBreadcrumbJsonLd(BREADCRUMB_ITEMS)],
+    });
 
     return (
         <div className="min-h-screen bg-background">
@@ -21,6 +36,8 @@ const DevToolsPage = () => {
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     Back to All Tools
                 </Button>
+
+                <Breadcrumbs items={BREADCRUMB_ITEMS} />
 
                 {/* Page Header */}
                 <section className="text-center py-8">

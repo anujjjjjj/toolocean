@@ -5,6 +5,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Video, Scissors, Image as ImageIcon, Film, Info, ArrowLeft, Shield, Zap, Gift } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSEO } from "@/hooks/useSEO";
+import { CATEGORY_PAGE_SEO } from "@/data/staticPageSeo";
+import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+
+const BREADCRUMB_ITEMS = [
+  { name: "Home", path: "/" },
+  { name: "Video Tools", path: "/video-tools" },
+];
 
 const videoTools = [
   { id: "video-trimmer", name: "Video Trimmer", description: "Trim video by selecting start and end time", icon: Scissors, color: "from-violet-500 to-purple-500" },
@@ -16,6 +25,12 @@ const videoTools = [
 const VideoToolsPage = () => {
   const navigate = useNavigate();
 
+  useSEO({
+    ...CATEGORY_PAGE_SEO["/video-tools"],
+    path: "/video-tools",
+    jsonLd: [buildBreadcrumbJsonLd(BREADCRUMB_ITEMS)],
+  });
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -25,6 +40,8 @@ const VideoToolsPage = () => {
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to All Tools
         </Button>
+
+        <Breadcrumbs items={BREADCRUMB_ITEMS} />
 
         <section className="text-center py-8">
           <div className="max-w-4xl mx-auto">

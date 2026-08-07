@@ -1,10 +1,10 @@
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Copy, FileText, Hash, Type, List } from "lucide-react";
+import { Copy, FileText, Hash, Type, List, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useHistory } from "@/hooks/useHistory";
 
@@ -29,6 +29,16 @@ export function WordCounterTool() {
   });
   const { toast } = useToast();
   const { addToHistory } = useHistory();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { setInput(ev.target?.result as string); };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
 
   const analyzeText = () => {
     if (!input.trim()) {
@@ -82,6 +92,14 @@ Sentences: ${stats.sentences}`;
           <CardTitle>Text Input</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="flex items-center gap-2">
+            <input ref={fileInputRef} type="file" accept=".txt,.md,.csv" className="hidden" onChange={handleFileUpload} />
+            <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+              <Upload className="h-4 w-4 mr-2" />
+              Upload file
+            </Button>
+            <span className="text-xs text-muted-foreground">or paste below</span>
+          </div>
           <Textarea
             placeholder="Enter your text here..."
             value={input}

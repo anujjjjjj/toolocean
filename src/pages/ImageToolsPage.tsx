@@ -15,8 +15,20 @@ import {
   Shield,
   Zap,
   Gift,
+  RotateCw,
+  Stamp,
+  Sparkles,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSEO } from "@/hooks/useSEO";
+import { CATEGORY_PAGE_SEO } from "@/data/staticPageSeo";
+import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+
+const BREADCRUMB_ITEMS = [
+  { name: "Home", path: "/" },
+  { name: "Image Tools", path: "/image-tools" },
+];
 
 const imageTools = [
   { id: "image-resizer", name: "Image Resizer", description: "Resize images with width, height, or aspect ratio", icon: Maximize2, color: "from-rose-500 to-pink-500" },
@@ -26,10 +38,19 @@ const imageTools = [
   { id: "color-picker", name: "Color Picker from Image", description: "Click on image to get pixel color", icon: Pipette, color: "from-purple-500 to-violet-500" },
   { id: "favicon-generator", name: "Favicon Generator", description: "Generate favicon sizes from image", icon: ImagePlus, color: "from-teal-500 to-green-500" },
   { id: "image-to-base64", name: "Image to Base64", description: "Convert image to data URL or raw Base64", icon: FileImage, color: "from-indigo-500 to-blue-500" },
+  { id: "image-rotate-flip", name: "Rotate & Flip", description: "Rotate 90/180/270° or flip horizontally/vertically", icon: RotateCw, color: "from-sky-500 to-blue-500" },
+  { id: "image-watermark", name: "Watermark", description: "Add text watermark with custom position and opacity", icon: Stamp, color: "from-amber-500 to-orange-500" },
+  { id: "image-filters", name: "Image Filters", description: "Adjust brightness, contrast, saturation, blur, and more", icon: Sparkles, color: "from-fuchsia-500 to-purple-500" },
 ];
 
 const ImageToolsPage = () => {
   const navigate = useNavigate();
+
+  useSEO({
+    ...CATEGORY_PAGE_SEO["/image-tools"],
+    path: "/image-tools",
+    jsonLd: [buildBreadcrumbJsonLd(BREADCRUMB_ITEMS)],
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -40,6 +61,8 @@ const ImageToolsPage = () => {
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to All Tools
         </Button>
+
+        <Breadcrumbs items={BREADCRUMB_ITEMS} />
 
         <section className="text-center py-8">
           <div className="max-w-4xl mx-auto">

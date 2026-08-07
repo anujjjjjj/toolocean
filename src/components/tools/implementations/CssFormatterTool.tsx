@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface CssFormatterToolProps {
@@ -14,6 +15,16 @@ export const CssFormatterTool = ({ onOutputChange }: CssFormatterToolProps) => {
   const [output, setOutput] = useState("");
   const [mode, setMode] = useState("beautify");
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { setInput(ev.target?.result as string); setOutput(""); };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
 
   const beautifyCSS = (css: string): string => {
     // Basic CSS beautification
@@ -94,6 +105,14 @@ export const CssFormatterTool = ({ onOutputChange }: CssFormatterToolProps) => {
             <label htmlFor="css-input" className="block text-sm font-medium mb-2">
               CSS Input
             </label>
+            <div className="flex items-center gap-2 mb-2">
+              <input ref={fileInputRef} type="file" accept=".css,.txt" className="hidden" onChange={handleFileUpload} />
+              <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+                <Upload className="h-4 w-4 mr-2" />
+                Upload file
+              </Button>
+              <span className="text-xs text-muted-foreground">or paste below</span>
+            </div>
             <Textarea
               id="css-input"
               value={input}

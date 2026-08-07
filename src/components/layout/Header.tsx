@@ -31,6 +31,7 @@ const toolCategories = [
   { name: "Spreadsheet", path: "/spreadsheet-tools" },
   { name: "Compression", path: "/compression-tools" },
   { name: "Archive", path: "/archive-tools" },
+  { name: "Converters", path: "/converter-tools" },
 ];
 
 export function Header({ minimal = false }: HeaderProps) {
@@ -73,6 +74,7 @@ export function Header({ minimal = false }: HeaderProps) {
     if (path === '/spreadsheet-tools') return location.pathname.startsWith('/spreadsheet-tools');
     if (path === '/compression-tools') return location.pathname.startsWith('/compression-tools');
     if (path === '/archive-tools') return location.pathname.startsWith('/archive-tools');
+    if (path === '/converter-tools') return location.pathname.startsWith('/converter-tools');
     return location.pathname === path;
   };
 

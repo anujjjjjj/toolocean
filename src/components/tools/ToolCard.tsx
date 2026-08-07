@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import * as Icons from "lucide-react";
+import { getToolIcon } from "@/lib/toolIcons";
 import { LucideIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -25,8 +25,7 @@ export function ToolCard({ tool, onAddToWorkflow, showWorkflowButton = false }: 
   const navigate = useNavigate();
   
   // Get the icon component dynamically
-  const IconComponent = (Icons as any)[tool.icon] as LucideIcon;
-  const Icon = IconComponent || Icons.Wrench;
+  const Icon = getToolIcon(tool.icon);
 
   const handleOpenTool = () => {
     navigate(`/tools/${tool.id}`);

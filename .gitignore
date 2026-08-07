@@ -10,6 +10,8 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+# Intermediate SSR bundle used only by scripts/prerender.mjs
+dist-ssg
 *.local
 
 # Editor directories and files

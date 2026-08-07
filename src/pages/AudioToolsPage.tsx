@@ -5,6 +5,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Music, Scissors, Merge, ArrowLeft, Shield, Zap, Gift } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSEO } from "@/hooks/useSEO";
+import { CATEGORY_PAGE_SEO } from "@/data/staticPageSeo";
+import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+
+const BREADCRUMB_ITEMS = [
+  { name: "Home", path: "/" },
+  { name: "Audio Tools", path: "/audio-tools" },
+];
 
 const audioTools = [
   {
@@ -26,6 +35,12 @@ const audioTools = [
 const AudioToolsPage = () => {
   const navigate = useNavigate();
 
+  useSEO({
+    ...CATEGORY_PAGE_SEO["/audio-tools"],
+    path: "/audio-tools",
+    jsonLd: [buildBreadcrumbJsonLd(BREADCRUMB_ITEMS)],
+  });
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -35,6 +50,8 @@ const AudioToolsPage = () => {
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to All Tools
         </Button>
+
+        <Breadcrumbs items={BREADCRUMB_ITEMS} />
 
         <section className="text-center py-8">
           <div className="max-w-4xl mx-auto">

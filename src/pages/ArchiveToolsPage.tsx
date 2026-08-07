@@ -5,6 +5,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Archive, FolderOpen, FolderPlus, List, ArrowLeft, Shield, Zap, Gift } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSEO } from "@/hooks/useSEO";
+import { CATEGORY_PAGE_SEO } from "@/data/staticPageSeo";
+import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
+import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+
+const BREADCRUMB_ITEMS = [
+  { name: "Home", path: "/" },
+  { name: "Archive Tools", path: "/archive-tools" },
+];
 
 const archiveTools = [
   { id: "zip-extractor", name: "ZIP Extractor", description: "Extract and download files from ZIP", icon: FolderOpen, color: "from-orange-500 to-amber-500" },
@@ -15,6 +24,12 @@ const archiveTools = [
 const ArchiveToolsPage = () => {
   const navigate = useNavigate();
 
+  useSEO({
+    ...CATEGORY_PAGE_SEO["/archive-tools"],
+    path: "/archive-tools",
+    jsonLd: [buildBreadcrumbJsonLd(BREADCRUMB_ITEMS)],
+  });
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -24,6 +39,8 @@ const ArchiveToolsPage = () => {
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to All Tools
         </Button>
+
+        <Breadcrumbs items={BREADCRUMB_ITEMS} />
 
         <section className="text-center py-8">
           <div className="max-w-4xl mx-auto">

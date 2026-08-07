@@ -1,0 +1,36 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/tools/:slug", "destination": "/:slug", "permanent": true },
+    { "source": "/pdf-tools/:slug", "destination": "/:slug", "permanent": true },
+    { "source": "/csv-tools/:slug", "destination": "/:slug", "permanent": true },
+    { "source": "/audio-tools/:slug", "destination": "/:slug", "permanent": true },
+    { "source": "/image-tools/:slug", "destination": "/:slug", "permanent": true },
+    { "source": "/video-tools/:slug", "destination": "/:slug", "permanent": true },
+    { "source": "/spreadsheet-tools/:slug", "destination": "/:slug", "permanent": true },
+    { "source": "/compression-tools/:slug", "destination": "/:slug", "permanent": true },
+    { "source": "/archive-tools/:slug", "destination": "/:slug", "permanent": true },
+    { "source": "/converter-tools/:slug", "destination": "/:slug", "permanent": true }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ]
+}

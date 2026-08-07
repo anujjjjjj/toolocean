@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface HtmlJsxConverterToolProps {
@@ -12,6 +13,16 @@ export const HtmlJsxConverterTool = ({ onOutputChange }: HtmlJsxConverterToolPro
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { setInput(ev.target?.result as string); setOutput(""); };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
 
   const convertHtmlToJsx = (html: string): string => {
     let jsx = html;
@@ -113,6 +124,14 @@ export const HtmlJsxConverterTool = ({ onOutputChange }: HtmlJsxConverterToolPro
             <label htmlFor="html-input" className="block text-sm font-medium mb-2">
               HTML Input
             </label>
+            <div className="flex items-center gap-2 mb-2">
+              <input ref={fileInputRef} type="file" accept=".html,.htm" className="hidden" onChange={handleFileUpload} />
+              <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+                <Upload className="h-4 w-4 mr-2" />
+                Upload file
+              </Button>
+              <span className="text-xs text-muted-foreground">or paste below</span>
+            </div>
             <Textarea
               id="html-input"
               value={input}

@@ -1,12 +1,12 @@
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Copy, Trash2 } from "lucide-react";
+import { Copy, Trash2, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useHistory } from "@/hooks/useHistory";
 
@@ -17,6 +17,16 @@ export function DuplicateRemoverTool() {
   const [preserveOrder, setPreserveOrder] = useState(true);
   const { toast } = useToast();
   const { addToHistory } = useHistory();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { setInput(ev.target?.result as string); setOutput(""); };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
 
   const removeDuplicates = () => {
     if (!input.trim()) {
@@ -68,6 +78,14 @@ export function DuplicateRemoverTool() {
           <CardTitle>Input Text</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="flex items-center gap-2">
+            <input ref={fileInputRef} type="file" accept=".txt,.md,.csv" className="hidden" onChange={handleFileUpload} />
+            <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+              <Upload className="h-4 w-4 mr-2" />
+              Upload file
+            </Button>
+            <span className="text-xs text-muted-foreground">or paste below</span>
+          </div>
           <Textarea
             placeholder="Enter text with duplicate lines..."
             value={input}
