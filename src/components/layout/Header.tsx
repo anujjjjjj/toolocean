@@ -105,7 +105,13 @@ export function Header({ minimal = false }: HeaderProps) {
         {/* Navigation - Top Right */}
         <nav className="flex items-center gap-1 shrink-0">
           {/* Show individual buttons on larger screens */}
-          <div className="hidden md:flex items-center gap-1">
+          {/*
+            xl, not md: the ten category buttons need ~1,100px of width. Showing
+            them from 768px pushed the document to 1,123px wide on an iPad in
+            portrait, so the whole page scrolled sideways — which also fails
+            Google's mobile-friendly check. Below xl the dropdown below is used.
+          */}
+          <div className="hidden xl:flex items-center gap-1">
             {toolCategories.map((category) => (
               <Button
                 key={category.path}
@@ -120,7 +126,7 @@ export function Header({ minimal = false }: HeaderProps) {
           </div>
 
           {/* Dropdown menu for smaller screens or when many categories exist */}
-          <div className="md:hidden">
+          <div className="xl:hidden">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="h-9">

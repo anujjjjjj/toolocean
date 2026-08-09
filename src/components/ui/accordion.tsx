@@ -44,7 +44,24 @@ const AccordionContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Content
     ref={ref}
-    className="overflow-hidden text-sm transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
+    className={cn(
+      "overflow-hidden text-sm transition-all data-[state=open]:animate-accordion-down",
+      /*
+       * Normally Radix unmounts collapsed content, so the collapse animation
+       * running to height:0 without a fill-mode does not matter — the element is
+       * gone before it springs back.
+       *
+       * With forceMount it stays mounted (so crawlers see FAQ answers that the
+       * FAQPage schema claims), and that spring-back made every answer visible
+       * while collapsed. Hiding it outright is what forceMount needs: it also
+       * keeps the text out of the accessibility tree until the user expands it.
+       * The trade is no collapse animation, which is not worth a workaround.
+       */
+      props.forceMount
+        ? "data-[state=closed]:hidden"
+        : "data-[state=closed]:animate-accordion-up",
+      // Radix drives height via CSS var; the animation reads it from here.
+    )}
     {...props}
   >
     <div className={cn("pb-4 pt-0", className)}>{children}</div>

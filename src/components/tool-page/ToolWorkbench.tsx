@@ -5,11 +5,15 @@ import { cn } from "@/lib/utils";
 /**
  * Height the placeholder reserves while the tool chunk loads.
  *
- * This must stay in sync with the real tool's collapsed height. It is the whole
- * reason this page can prerender without a CLS penalty: the box is the right
- * size from the first paint, so swapping the editor in shifts nothing.
+ * This is what lets the page prerender without a CLS penalty: the box is roughly
+ * the right size from first paint, so swapping the real editor in shifts little.
+ *
+ * Responsive because the two-pane tools stack below md, which roughly doubles
+ * their height — a single fixed value is wrong on one breakpoint or the other.
+ * These are averages across the catalogue, so a given tool may still shift a
+ * little; a per-tool `reservedHeight` on ToolPageContent would remove the rest.
  */
-const RESERVED_HEIGHT = "min-h-[640px]";
+const RESERVED_HEIGHT = "min-h-[780px] md:min-h-[660px]";
 
 function WorkbenchSkeleton({ label }: { label: string }) {
   return (

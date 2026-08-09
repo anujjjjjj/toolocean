@@ -270,8 +270,13 @@ export function JsonFormatterTool() {
         </div>
       </div>
 
-      {/* ------------------------------------------------------------------ panes */}
-      <div className="grid gap-px bg-border/60 lg:grid-cols-2">
+      {/*
+        Panes go side by side from md up. Below that they stack, so the editors
+        are deliberately much shorter: at the desktop height two stacked panes
+        came to 1,120px of largely empty box on a phone, burying the rest of the
+        page under it.
+      */}
+      <div className="grid gap-px bg-border/60 md:grid-cols-2">
         {/* input */}
         <div className="flex flex-col bg-card">
           <div className="flex items-center justify-between gap-2 px-3 py-2">
@@ -320,7 +325,7 @@ export function JsonFormatterTool() {
               errorLine={errorLine}
               describedBy="json-status"
               placeholder={'Paste JSON here, drop a file, or press "Open file".'}
-              className="h-[560px]"
+              className="h-[280px] md:h-[520px]"
             />
           </div>
         </div>
@@ -351,7 +356,7 @@ export function JsonFormatterTool() {
               value={output}
               readOnly
               placeholder="Formatted JSON appears here."
-              className="h-[560px] bg-muted/20"
+              className="h-[280px] bg-muted/20 md:h-[520px]"
             />
           </div>
         </div>
