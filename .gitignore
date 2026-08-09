@@ -24,3 +24,6 @@ dist-ssg
 *.njsproj
 *.sln
 *.sw?
+
+# Claude Code scratch worktrees
+.claude/worktrees/
