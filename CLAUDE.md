@@ -64,6 +64,16 @@ Dev tools metadata (name, description, keywords, category, icon) lives in `src/d
 - `src/contexts/CommandPaletteContext.tsx` — global Cmd+K command palette state
 - `src/hooks/useHistory.ts` — persists tool usage history to `localStorage` under key `toolOcean.history`
 - `src/lib/audioUtils.ts` — shared Web Audio API utilities for audio tools
+- `src/lib/analytics.ts` — GA4 via Consent Mode v2, lazily injected on idle. Disabled entirely unless `VITE_GA_MEASUREMENT_ID` is set, so `npm run dev` never reports
+
+### Analytics
+
+Adding a tool requires **no** analytics work — both tracking points are central:
+
+- **Page views** are fired by `useSEO` (`src/hooks/useSEO.ts`), which every page calls. It owns this rather than a router listener because it is the only place that runs on every route *and* knows the resolved title; a listener fires before a lazy route has rendered and would report the previous page's title.
+- **Interactions** are delegated from the workbench `<section>` by `useWorkbenchAnalytics`, so one listener covers all 114 tools. Emits `tool_engage` (first real interaction, once per route) and `tool_action` (button/download label).
+
+Never pass tool input to `trackEvent` — only slugs and static control labels. If a button's visible text is dynamic, give it `data-analytics-label` to pin a stable name.
 
 ### UI
 

@@ -1,4 +1,5 @@
 import { Suspense, useEffect, useState, type ComponentType } from "react";
+import { useWorkbenchAnalytics } from "@/hooks/useWorkbenchAnalytics";
 import { WORKBENCH_ID } from "@/lib/toolActions";
 import { cn } from "@/lib/utils";
 
@@ -54,10 +55,17 @@ interface ToolWorkbenchProps {
 export function ToolWorkbench({ component: Tool, label }: ToolWorkbenchProps) {
   const [mounted, setMounted] = useState(false);
 
+  /*
+   * Delegated from this section, so it covers the controls the mounted tool
+   * renders later without any of the 114 tools knowing analytics exists.
+   */
+  const analyticsRef = useWorkbenchAnalytics();
+
   useEffect(() => setMounted(true), []);
 
   return (
     <section
+      ref={analyticsRef}
       id={WORKBENCH_ID}
       aria-label={label}
       // scroll-mt keeps the sticky header from covering the workbench when the
