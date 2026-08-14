@@ -1,6 +1,15 @@
 import { createRoot, hydrateRoot } from "react-dom/client";
 import App from "./App.tsx";
+import { initAnalytics } from "./lib/analytics";
 import "./index.css";
+
+/*
+ * Before hydration, so the Consent Mode defaults are queued ahead of the first
+ * page_view — which useSEO fires from an effect during hydration. This only
+ * populates dataLayer and schedules the tag for an idle moment; no network
+ * request happens on the critical path.
+ */
+initAnalytics();
 
 const container = document.getElementById("root")!;
 

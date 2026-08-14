@@ -218,3 +218,78 @@ this codebase.
 
 **Sequencing.** 1, 2, 10, 17, 18 first: highest demand, and each has a clear
 reason to exist beyond capturing a keyword.
+
+---
+
+## 6. Analytics
+
+GA4, integrated so that it does not undo section 2's work.
+
+### Why the tag is not in `index.html`
+
+That file is the template for all 125 prerendered pages, so the standard
+`<script async src="googletagmanager.com/...">` would add a third-party origin to
+the critical path of every page on the site — directly against the CWV work above.
+Instead `src/lib/analytics.ts` injects it from JS on `requestIdleCallback`
+(2s `setTimeout` fallback for Safari, 4s timeout cap). gtag.js therefore never
+competes with the LCP, and `grep googletagmanager dist/**/index.html` returns
+nothing.
+
+Events pushed before the tag lands are not lost: `dataLayer` queues them and
+gtag.js drains the queue on load, so callers ignore load order entirely.
+
+### Consent
+
+Consent Mode v2, defaulting to **denied**. GA4 still receives cookieless pings in
+that state and models the aggregate, so traffic reporting works before anyone
+touches the banner, but nothing is stored until they opt in. `wait_for_update: 500`
+stops a fast accept from being raced by the initial `page_view`.
+
+`ad_storage`, `ad_user_data` and `ad_personalization` stay denied **even after
+consent** — there are no ads and no remarketing, so granting them would claim a
+purpose the site does not have. Only `analytics_storage` flips.
+
+`ConsentBanner` renders `null` until after mount, the same pattern as
+`ToolWorkbench` and for the same reason: the decision depends on `localStorage`,
+which does not exist at build time. The side benefit is that no cookie-notice text
+appears in the HTML a crawler reads.
+
+### The two tracking points
+
+Both are central, so adding the 115th tool needs no analytics work.
+
+| Signal | Fired from | Why there |
+|---|---|---|
+| `page_view` | `useSEO` | The only place that runs on every route *and* knows the resolved title. A router listener in `AppRoutes` fires its effect before a lazily-loaded route has rendered, so it reports the **previous** page's `document.title`. Passing the title explicitly removes the race. Dedupes on consecutive identical paths, so StrictMode's double effect does not double-count while A → B → A still records two views of A. |
+| `tool_engage`, `tool_action` | `useWorkbenchAnalytics`, delegated from the workbench `<section>` | There is no shared "a tool ran" callback to hook — 73 tools call `navigator.clipboard` directly and 49 build their own object URLs. Per-tool instrumentation would mean touching 100+ files and would rot on the next tool added. Listeners are capture-phase because several tools call `stopPropagation`. |
+
+`ToolWorkbench` *mounting* is deliberately not used as an engagement signal: it
+mounts from an effect on every page load, making it a duplicate of the
+`page_view`. `tool_engage` requires a real interaction instead, so the
+`page_view` → `tool_engage` gap is the honest answer to "do search visitors
+actually use the tool, or just bounce?"
+
+**No user content is ever sent** — only the tool slug and a static control label,
+truncated to 40 chars. `data-analytics-label` overrides the label for buttons
+whose visible text is dynamic.
+
+### Verified in Chrome
+
+Against the real prerendered build, with gtag.js stubbed so our own `dataLayer`
+output is what gets inspected:
+
+- **zero console messages** — hydration cleanliness from section 2 is not regressed
+- consent default queued **before** the first `page_view`
+- exactly one `page_view` on load, `page_title` matching `document.title`
+- `tool_engage` once and `tool_action` with `{tool: "json-formatter", action: "Beautify"}`
+- client-side nav emits a second `page_view` with the **new** title, confirming the
+  title race is actually solved
+
+### Operator setup
+
+1. Create a GA4 property, copy the `G-XXXXXXXXXX` measurement ID.
+2. Set `VITE_GA_MEASUREMENT_ID` in the host's environment. Vite inlines it **at
+   build time**, so it must be present when the build runs, not just at runtime.
+3. In GA4, register `tool` and `action` as **custom dimensions** (Admin → Custom
+   definitions, scope: Event). Until you do, the events arrive but their parameters
+   are not reportable.

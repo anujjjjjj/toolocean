@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { trackPageview } from "@/lib/analytics";
 import { resolveSeo, type SeoInput } from "@/lib/seoHead";
 
 export type SEOOptions = SeoInput;
@@ -42,6 +43,19 @@ export function useSEO(options: SEOOptions) {
 
     document.title = seo.fullTitle;
     setCanonical(seo.canonical);
+
+    /*
+     * Analytics rides along here rather than on a router listener in AppRoutes.
+     * This hook is the only place that runs on every route *and* knows the
+     * resolved title: a listener would fire its effect before a lazily-loaded
+     * route had rendered, reporting the previous page's document.title. Passing
+     * the value explicitly removes the race entirely.
+     *
+     * Every page reaches this — 14 of 15 call useSEO directly and ToolRoutePage
+     * delegates to ToolPageLayout, which does — so a new page gets tracked by
+     * virtue of having SEO tags at all, with nothing extra to remember.
+     */
+    trackPageview(path, seo.fullTitle);
 
     for (const [name, content] of Object.entries(seo.metaByName)) {
       upsertMeta("name", name, content);

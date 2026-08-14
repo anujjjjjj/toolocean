@@ -1,5 +1,6 @@
 import { Suspense, lazy, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
+import { ConsentBanner } from "@/components/analytics/ConsentBanner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CommandPaletteProvider, useCommandPalette } from "@/contexts/CommandPaletteContext";
@@ -79,6 +80,12 @@ export function AppRoutes() {
         <GlobalKeyboardHandler />
         <GlobalCommandPalette />
         <Toaster />
+        {/*
+          Renders null until after mount, so it stays out of the prerendered HTML
+          and cannot cause a hydration mismatch. Page views are not tracked here —
+          useSEO owns that; see the comment there for why.
+        */}
+        <ConsentBanner />
         {/*
           fallback={null} is never shown on a prerendered page: the build resolves
           every boundary before serialising, and on the client React keeps the
