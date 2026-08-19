@@ -129,6 +129,10 @@ const routes = [
     changefreq: "monthly",
     source: "src/pages/WorkflowBuilderPage.tsx",
   },
+  // Trust pages. Low priority — they exist for readers and for E-E-A-T, not to rank.
+  { path: "/about", priority: "0.4", changefreq: "yearly", source: "src/pages/AboutPage.tsx" },
+  { path: "/privacy", priority: "0.3", changefreq: "yearly", source: "src/pages/PrivacyPage.tsx" },
+  { path: "/terms", priority: "0.3", changefreq: "yearly", source: "src/pages/TermsPage.tsx" },
   // Tool pages are the money pages — they matter more than the listings.
   ...toolSlugs.map((slug) => ({
     path: `/${slug}`,

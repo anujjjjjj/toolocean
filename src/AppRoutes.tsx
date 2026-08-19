@@ -37,6 +37,9 @@ const SpreadsheetToolsPage = lazy(() => import("./pages/SpreadsheetToolsPage"));
 const CompressionToolsPage = lazy(() => import("./pages/CompressionToolsPage"));
 const ArchiveToolsPage = lazy(() => import("./pages/ArchiveToolsPage"));
 const ConverterToolsPage = lazy(() => import("./pages/ConverterToolsPage"));
+const AboutPage = lazy(() => import("./pages/AboutPage"));
+const PrivacyPage = lazy(() => import("./pages/PrivacyPage"));
+const TermsPage = lazy(() => import("./pages/TermsPage"));
 
 const CATEGORY_LISTINGS = [
   { path: "/pdf-tools", element: <PdfToolsPage /> },
@@ -103,6 +106,11 @@ export function AppRoutes() {
 
             <Route path="/workflows" element={<WorkflowPage />} />
             <Route path="/workflow-builder" element={<WorkflowBuilderPage />} />
+
+            {/* About/Privacy/Terms. Static segments outrank /:slug regardless of order. */}
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
 
             {/*
               Pre-flattening tool URLs. Real 301s live in public/_redirects and

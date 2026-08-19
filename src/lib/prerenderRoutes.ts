@@ -1,5 +1,5 @@
 import { TOOL_CATALOG, toolPath } from "@/data/toolCatalog";
-import { CATEGORY_PAGE_SEO, HOME_SEO } from "@/data/staticPageSeo";
+import { CATEGORY_PAGE_SEO, HOME_SEO, INFO_PAGE_SEO } from "@/data/staticPageSeo";
 import { buildToolPageGraph } from "@/lib/toolPageSchema";
 import { resolveToolContent } from "@/lib/toolContentResolver";
 import { renderHeadTags } from "@/lib/seoHead";
@@ -15,10 +15,15 @@ import { renderHeadTags } from "@/lib/seoHead";
 
 export const CATEGORY_INDEXES = Object.keys(CATEGORY_PAGE_SEO);
 
+/** About/Privacy/Terms. Separate from the category indexes so breadcrumbs and the
+ *  sitemap do not treat them as tool categories. */
+export const INFO_ROUTES = Object.keys(INFO_PAGE_SEO);
+
 /** Every path the build emits static HTML for. */
 export const PRERENDER_ROUTES: string[] = [
   "/",
   ...CATEGORY_INDEXES,
+  ...INFO_ROUTES,
   ...TOOL_CATALOG.map((tool) => toolPath(tool)),
 ];
 
@@ -31,6 +36,11 @@ export function headForRoute(path: string): string {
   const categoryPage = CATEGORY_PAGE_SEO[path];
   if (categoryPage) {
     return renderHeadTags({ ...categoryPage, path });
+  }
+
+  const infoPage = INFO_PAGE_SEO[path];
+  if (infoPage) {
+    return renderHeadTags({ ...infoPage, path });
   }
 
   const slug = path.replace(/^\//, "");

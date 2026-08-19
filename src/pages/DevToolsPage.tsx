@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 import { ToolGrid } from "@/components/tools/ToolGrid";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -57,6 +58,8 @@ const DevToolsPage = () => {
                     <ToolGrid searchQuery="" />
                 </section>
             </main>
+
+            <Footer />
         </div>
     );
 };
