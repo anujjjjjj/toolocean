@@ -74,3 +74,28 @@ export const CATEGORY_PAGE_SEO: Record<string, StaticPageSeo> = {
       "Free browser-based converters: Markdown to DOCX, JSON to TOML/YAML/XML/CSV, HTML to Markdown, colors, timestamps, and more. No uploads required.",
   },
 };
+
+/**
+ * The About/Privacy/Terms trio.
+ *
+ * Kept separate from CATEGORY_PAGE_SEO because prerenderRoutes derives the
+ * category listing routes from that object's keys — folding these in would list
+ * them as tool categories in the breadcrumbs and the sitemap's listing tier.
+ */
+export const INFO_PAGE_SEO: Record<string, StaticPageSeo> = {
+  "/about": {
+    title: "About ToolOcean - Who Builds It and How It Works",
+    description:
+      "ToolOcean is a free collection of 114 browser-based tools built and maintained by Anuj Kabra. Learn why every tool runs client-side and nothing is ever uploaded.",
+  },
+  "/privacy": {
+    title: "Privacy Policy - What ToolOcean Does and Doesn't Collect",
+    description:
+      "Your files and text never leave your device — there is no server to receive them. Read exactly what ToolOcean stores locally, and how analytics and consent work.",
+  },
+  "/terms": {
+    title: "Terms of Use - ToolOcean",
+    description:
+      "The terms covering your use of ToolOcean's free browser-based tools, including the no-warranty disclaimer and limitation of liability.",
+  },
+};

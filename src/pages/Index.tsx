@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -336,13 +337,10 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Footer */}
-        <footer className="py-12 text-center text-muted-foreground border-t border-border/60">
-          <p className="text-sm">
-            Built for developers who value privacy.
-          </p>
-        </footer>
       </main>
+
+      {/* Replaces an inline stub footer that sat inside <main> and linked nowhere. */}
+      <Footer />
     </div>
   );
 };

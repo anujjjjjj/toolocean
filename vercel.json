@@ -4,6 +4,12 @@
   "outputDirectory": "dist",
   "trailingSlash": false,
   "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "www.toolocean.co" }],
+      "destination": "https://toolocean.co/$1",
+      "permanent": true
+    },
     { "source": "/tools/:slug", "destination": "/:slug", "permanent": true },
     { "source": "/pdf-tools/:slug", "destination": "/:slug", "permanent": true },
     { "source": "/csv-tools/:slug", "destination": "/:slug", "permanent": true },

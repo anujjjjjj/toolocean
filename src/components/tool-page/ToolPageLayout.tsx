@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
 import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { useSEO } from "@/hooks/useSEO";
 import { buildToolPageGraph } from "@/lib/toolPageSchema";
@@ -125,6 +126,14 @@ export function ToolPageLayout({ content, tool, servedFrom }: ToolPageLayoutProp
 
         <ToolFooterCta category={content.category} />
       </main>
+
+      {/*
+        Site footer on all 114 tool pages. Two reasons beyond the obvious: it is
+        what stops /about, /privacy and /terms from being orphans reachable only
+        via the sitemap, and it links every tool page to all ten category
+        listings, which spreads crawl equity across the catalogue.
+      */}
+      <Footer />
 
       {servedFrom && servedFrom !== content.path && (
         // Not user-visible; a breadcrumb for anyone debugging why two URLs render
