@@ -82,7 +82,23 @@ export const CATEGORY_PAGE_SEO: Record<string, StaticPageSeo> = {
  * category listing routes from that object's keys — folding these in would list
  * them as tool categories in the breadcrumbs and the sitemap's listing tier.
  */
+/**
+ * Static app pages that are not tools and not category listings.
+ *
+ * /workflow-builder lives here because it has to be prerendered like everything
+ * else. It was previously absent from PRERENDER_ROUTES while still being linked
+ * from the footer of all 114 tool pages, twice from the homepage, and listed in
+ * sitemap.xml — so the one URL the sitemap advertised as a real page was the one
+ * URL that answered 404, because _redirects falls through to `/* /404.html 404`.
+ * Anyone hard-refreshing it, opening it in a new tab, or crawling it got the 404
+ * document and then a hydration mismatch as the client rendered over it.
+ */
 export const INFO_PAGE_SEO: Record<string, StaticPageSeo> = {
+  "/workflow-builder": {
+    title: "Workflow Builder - Chain Browser Tools Together",
+    description:
+      "Chain ToolOcean's text tools into a repeatable pipeline: format, convert, and transform in sequence. Runs entirely in your browser with no uploads.",
+  },
   "/about": {
     title: "About ToolOcean - Who Builds It and How It Works",
     description:

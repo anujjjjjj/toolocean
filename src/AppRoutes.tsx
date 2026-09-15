@@ -7,6 +7,7 @@ import { CommandPaletteProvider, useCommandPalette } from "@/contexts/CommandPal
 import { CommandPalette } from "@/components/layout/CommandPalette";
 import { LegacyToolRedirect } from "@/components/routing/LegacyToolRedirect";
 import { CATEGORY_ROUTE } from "@/data/toolCatalog";
+import { LANDING_PAGES } from "@/data/landingPages";
 import Index from "./pages/Index";
 // Eager: ToolRoutePage and LegacyToolRedirect import it statically anyway.
 import NotFound from "./pages/NotFound";
@@ -25,8 +26,8 @@ import NotFound from "./pages/NotFound";
  * is still in flight, so the split costs nothing visually.
  */
 const ToolRoutePage = lazy(() => import("./pages/ToolRoutePage"));
+const LandingRoutePage = lazy(() => import("./pages/LandingRoutePage"));
 const DevToolsPage = lazy(() => import("./pages/DevToolsPage"));
-const WorkflowPage = lazy(() => import("./pages/WorkflowPage"));
 const WorkflowBuilderPage = lazy(() => import("./pages/WorkflowBuilderPage"));
 const PdfToolsPage = lazy(() => import("./pages/PdfToolsPage"));
 const CsvToolsPage = lazy(() => import("./pages/CsvToolsPage"));
@@ -104,7 +105,6 @@ export function AppRoutes() {
               <Route key={listing.path} path={listing.path} element={listing.element} />
             ))}
 
-            <Route path="/workflows" element={<WorkflowPage />} />
             <Route path="/workflow-builder" element={<WorkflowBuilderPage />} />
 
             {/* About/Privacy/Terms. Static segments outrank /:slug regardless of order. */}
@@ -118,6 +118,15 @@ export function AppRoutes() {
             */}
             {Object.values(CATEGORY_ROUTE).map((prefix) => (
               <Route key={prefix} path={`${prefix}/:slug`} element={<LegacyToolRedirect />} />
+            ))}
+
+            {/*
+              Modifier and comparison landing pages, also at the root. Registered
+              as explicit static paths rather than a second dynamic route so they
+              outrank /:slug and cannot be shadowed by it.
+            */}
+            {LANDING_PAGES.map((page) => (
+              <Route key={page.slug} path={`/${page.slug}`} element={<LandingRoutePage />} />
             ))}
 
             {/*

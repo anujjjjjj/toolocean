@@ -3,6 +3,8 @@ import { CATEGORY_PAGE_SEO, HOME_SEO, INFO_PAGE_SEO } from "@/data/staticPageSeo
 import { buildToolPageGraph } from "@/lib/toolPageSchema";
 import { resolveToolContent } from "@/lib/toolContentResolver";
 import { renderHeadTags } from "@/lib/seoHead";
+import { LANDING_PAGES, findLandingPage } from "@/data/landingPages";
+import { buildLandingPageGraph } from "@/lib/landingPageSchema";
 
 /**
  * The route list the prerender walks, plus the <head> for each one.
@@ -20,10 +22,13 @@ export const CATEGORY_INDEXES = Object.keys(CATEGORY_PAGE_SEO);
 export const INFO_ROUTES = Object.keys(INFO_PAGE_SEO);
 
 /** Every path the build emits static HTML for. */
+export const LANDING_ROUTES = LANDING_PAGES.map((page) => `/${page.slug}`);
+
 export const PRERENDER_ROUTES: string[] = [
   "/",
   ...CATEGORY_INDEXES,
   ...INFO_ROUTES,
+  ...LANDING_ROUTES,
   ...TOOL_CATALOG.map((tool) => toolPath(tool)),
 ];
 
@@ -44,6 +49,18 @@ export function headForRoute(path: string): string {
   }
 
   const slug = path.replace(/^\//, "");
+
+  const landing = findLandingPage(slug);
+  if (landing) {
+    return renderHeadTags({
+      title: landing.seo.title,
+      description: landing.seo.description,
+      path: `/${landing.slug}`,
+      keywords: landing.seo.keywords,
+      jsonLd: [buildLandingPageGraph(landing)],
+    });
+  }
+
   const content = resolveToolContent(slug);
   if (content) {
     return renderHeadTags({

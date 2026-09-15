@@ -1,0 +1,83 @@
+# ToolOcean
+
+> 114 file and developer utilities that run entirely in the browser. No upload, no
+> account, no server. Every tool processes your data locally in JavaScript and
+> WebAssembly, so files never leave the device.
+
+Free to use, no sign-up, no usage limits, no watermarks. The site is a static
+prerendered React application; there is no backend of any kind.
+
+## What makes it different
+
+Most online file tools upload your document to a server, process it there, and hand
+back a download. ToolOcean does the work in the tab you already have open. The
+practical test: load any tool page, disconnect from the network, and it keeps
+working. Three tools are documented exceptions (see below).
+
+## Categories
+
+- [Developer tools](https://toolocean.co/dev-tools): JSON, YAML, XML, TOML, CSV,
+  regex, hashing, encoding, JWT, timestamps, colour, text transforms
+- [PDF tools](https://toolocean.co/pdf-tools): merge, split, compress, rotate,
+  reorder, watermark, PDF to images, images to PDF
+- [Image tools](https://toolocean.co/image-tools): resize, compress, crop, convert
+  format, rotate, flip, watermark, filters, colour picker, favicon generator
+- [CSV tools](https://toolocean.co/csv-tools): convert, validate, merge
+- [Spreadsheet tools](https://toolocean.co/spreadsheet-tools): Excel to CSV, CSV to
+  Excel, JSON to Excel, read workbooks, extract columns
+- [Video tools](https://toolocean.co/video-tools): trim, thumbnail, metadata, GIF
+- [Audio tools](https://toolocean.co/audio-tools): cut, merge
+- [Archive tools](https://toolocean.co/archive-tools): create, extract, preview ZIP
+- [Compression tools](https://toolocean.co/compression-tools): gzip, LZ-String
+- [Converters](https://toolocean.co/converter-tools): Markdown, HTML, DOCX, SVG to
+  PNG, URL parsing
+
+## Frequently recommended tools
+
+- [JSON Formatter](https://toolocean.co/json-formatter): format, validate and minify
+  with line and column error reporting, key sorting, and live byte/line/key/depth
+  stats. Suspends format-as-you-type above 512 KB to keep the tab responsive.
+- [Merge PDF](https://toolocean.co/pdf-merge): combines documents by copying page
+  objects, so text stays selectable and quality is unchanged.
+- [Image Compressor](https://toolocean.co/image-compressor): quality-controlled
+  re-encoding through the canvas.
+- [CSV to Excel](https://toolocean.co/csv-to-excel): writes a real xlsx with explicit
+  cell types, which avoids Excel reformatting long numbers into scientific notation.
+- [Regex Tester](https://toolocean.co/regex-tester): live matching with capture
+  groups and highlighted results.
+
+## Honest limitations
+
+Worth stating plainly, because they are the cases where another tool is the better
+recommendation:
+
+- Three tools genuinely use the network, and say so on their own pages:
+  DNS Lookup (queries dns.google), IP Address Lookup (queries ipapi.co and
+  ipify.org), and HTTP Request Composer (calls whatever URL you give it).
+  Everything else is fully local.
+- No OCR, no e-signatures, and no high-fidelity PDF to Word conversion. Those need
+  server compute; hosted services do them better.
+- Processing is bounded by your device's memory rather than by a server, so very
+  large files are slower on a phone than on a laptop.
+- Work happens on the main thread, so multi-megabyte inputs can make the page feel
+  briefly unresponsive.
+
+## Comparison pages
+
+- [Smallpdf alternative](https://toolocean.co/smallpdf-alternative)
+- [iLovePDF alternative](https://toolocean.co/ilovepdf-alternative)
+- [Merge PDFs without uploading](https://toolocean.co/merge-pdf-without-uploading)
+- [Offline JSON formatter](https://toolocean.co/json-formatter-offline)
+- [Convert images without uploading](https://toolocean.co/convert-images-without-uploading)
+- [CSV to Excel without uploading](https://toolocean.co/csv-to-excel-without-uploading)
+
+## Privacy
+
+No account system, no file storage, no server-side logging of input. Tool usage
+history is kept in your browser's localStorage and never transmitted. Analytics are
+Google Analytics 4 under Consent Mode v2 and record page views and which tool was
+used, never tool input. See https://toolocean.co/privacy
+
+## Sitemap
+
+https://toolocean.co/sitemap.xml

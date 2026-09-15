@@ -37,6 +37,18 @@ const devSlugs = JSON.parse(readFileSync(resolve(ROOT, "src/data/tools.json"), "
 );
 const toolSlugs = [...devSlugs, ...categorySlugs];
 
+/*
+ * Modifier and comparison landing pages. Parsed from the same data module the app
+ * routes and prerenders from, so a page cannot end up in the sitemap without a
+ * matching static file — which is exactly how /workflow-builder came to be the one
+ * advertised URL that answered 404.
+ */
+const landingSource = readFileSync(resolve(ROOT, "src/data/landingPages.ts"), "utf-8");
+const landingSlugs = [...landingSource.matchAll(/^\s{4}slug: "([a-z0-9-]+)",$/gm)].map(([, slug]) => slug);
+if (landingSlugs.length === 0) {
+  throw new Error("Could not parse any landing page slugs from src/data/landingPages.ts");
+}
+
 const CATEGORY_INDEXES = [
   "/dev-tools",
   "/pdf-tools",
@@ -129,6 +141,17 @@ const routes = [
     changefreq: "monthly",
     source: "src/pages/WorkflowBuilderPage.tsx",
   },
+  /*
+   * Landing pages rank higher than the tool pages here because they target the
+   * qualified queries this site can actually win, and each one is an entry point
+   * into several tools rather than just one.
+   */
+  ...landingSlugs.map((slug) => ({
+    path: `/${slug}`,
+    priority: "0.9",
+    changefreq: "monthly",
+    source: "src/data/landingPages.ts",
+  })),
   // Trust pages. Low priority — they exist for readers and for E-E-A-T, not to rank.
   { path: "/about", priority: "0.4", changefreq: "yearly", source: "src/pages/AboutPage.tsx" },
   { path: "/privacy", priority: "0.3", changefreq: "yearly", source: "src/pages/PrivacyPage.tsx" },
