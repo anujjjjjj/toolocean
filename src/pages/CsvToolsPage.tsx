@@ -9,35 +9,19 @@ import { useSEO } from "@/hooks/useSEO";
 import { CATEGORY_PAGE_SEO } from "@/data/staticPageSeo";
 import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { ToolLinkCard } from "@/components/tools/ToolLinkCard";
+import { toolsInCategory } from "@/data/toolCatalog";
 
 const BREADCRUMB_ITEMS = [
   { name: "Home", path: "/" },
   { name: "CSV Tools", path: "/csv-tools" },
 ];
 
-const csvTools = [
-  {
-    id: "csv-converter",
-    name: "CSV ⇄ JSON Converter",
-    description: "Convert between CSV and JSON with customizable delimiters",
-    icon: ArrowUpDown,
-    color: "from-emerald-500 to-teal-500",
-  },
-  {
-    id: "csv-validator",
-    name: "CSV Validator",
-    description: "Validate CSV format, headers, and row consistency",
-    icon: CheckCircle,
-    color: "from-green-500 to-emerald-500",
-  },
-  {
-    id: "csv-merge",
-    name: "CSV Merge",
-    description: "Combine multiple CSV files into one",
-    icon: Merge,
-    color: "from-cyan-500 to-blue-500",
-  },
-];
+/*
+ * Derived from the catalog rather than restated here. This list used to be a
+ * hardcoded copy, which is the drift src/data/toolCatalog.ts exists to remove.
+ */
+const csvTools = toolsInCategory("csv");
 
 const CsvToolsPage = () => {
   const navigate = useNavigate();
@@ -80,26 +64,9 @@ const CsvToolsPage = () => {
             <p className="text-muted-foreground">Select a tool to get started</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {csvTools.map((tool) => {
-              const Icon = tool.icon;
-              return (
-                <Card
-                  key={tool.id}
-                  className="group cursor-pointer transition-all hover:opacity-90 hover:shadow-elegant"
-                  onClick={() => navigate(`/csv-tools/${tool.id}`)}
-                >
-                  <CardHeader className="text-center pb-2">
-                    <div className="inline-flex items-center justify-center w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 group-hover:bg-primary/15 transition-colors">
-                      <Icon className="h-6 w-6 text-primary" />
-                    </div>
-                    <CardTitle className="text-lg">{tool.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-center pt-0">
-                    <CardDescription className="text-sm">{tool.description}</CardDescription>
-                  </CardContent>
-                </Card>
-              );
-            })}
+            {csvTools.map((tool) => (
+              <ToolLinkCard key={tool.id} tool={tool} />
+            ))}
           </div>
         </section>
 

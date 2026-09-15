@@ -13,7 +13,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useCommandPalette } from "@/contexts/CommandPaletteContext";
 
 interface HeaderProps {
@@ -84,13 +84,14 @@ export function Header({ minimal = false }: HeaderProps) {
     <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/95 backdrop-blur-sm">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between gap-4">
         {/* Logo - Top Left */}
-        <div
-          className="flex items-center space-x-2.5 cursor-pointer hover:opacity-70 transition-opacity shrink-0"
-          onClick={() => navigate("/")}
+        <Link
+          to="/"
+          className="flex items-center space-x-2.5 hover:opacity-70 transition-opacity shrink-0"
+          aria-label="ToolOcean home"
         >
           <Waves className="h-5 w-5 text-primary" />
           <span className="text-lg font-heading font-semibold text-foreground">ToolOcean</span>
-        </div>
+        </Link>
 
         {/* Center - Subtle tagline (optional) */}
         <div
@@ -117,10 +118,10 @@ export function Header({ minimal = false }: HeaderProps) {
                 key={category.path}
                 variant={isActive(category.path) ? "default" : "ghost"}
                 size="sm"
-                onClick={() => navigate(category.path)}
                 className={isActive(category.path) ? "" : "text-muted-foreground"}
+                asChild
               >
-                {category.name}
+                <Link to={category.path}>{category.name}</Link>
               </Button>
             ))}
           </div>
@@ -138,10 +139,10 @@ export function Header({ minimal = false }: HeaderProps) {
                 {toolCategories.map((category) => (
                   <DropdownMenuItem
                     key={category.path}
-                    onClick={() => navigate(category.path)}
                     className={isActive(category.path) ? "bg-accent" : ""}
+                    asChild
                   >
-                    {category.name}
+                    <Link to={category.path}>{category.name}</Link>
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>

@@ -10,18 +10,19 @@ import { useSEO } from "@/hooks/useSEO";
 import { CATEGORY_PAGE_SEO } from "@/data/staticPageSeo";
 import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { ToolLinkCard } from "@/components/tools/ToolLinkCard";
+import { toolsInCategory } from "@/data/toolCatalog";
 
 const BREADCRUMB_ITEMS = [
   { name: "Home", path: "/" },
   { name: "Video Tools", path: "/video-tools" },
 ];
 
-const videoTools = [
-  { id: "video-trimmer", name: "Video Trimmer", description: "Trim video by selecting start and end time", icon: Scissors, color: "from-violet-500 to-purple-500" },
-  { id: "video-to-gif", name: "Video to GIF", description: "Convert video to animated GIF", icon: ImageIcon, color: "from-pink-500 to-rose-500" },
-  { id: "video-thumbnail", name: "Thumbnail Extractor", description: "Capture a frame as image at any timestamp", icon: Film, color: "from-blue-500 to-cyan-500" },
-  { id: "video-metadata", name: "Metadata Viewer", description: "View duration, dimensions, codec info", icon: Info, color: "from-teal-500 to-green-500" },
-];
+/*
+ * Derived from the catalog rather than restated here. This list used to be a
+ * hardcoded copy, which is the drift src/data/toolCatalog.ts exists to remove.
+ */
+const videoTools = toolsInCategory("video");
 
 const VideoToolsPage = () => {
   const navigate = useNavigate();
@@ -64,26 +65,9 @@ const VideoToolsPage = () => {
             <p className="text-muted-foreground">Select a tool to get started</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {videoTools.map((tool) => {
-              const Icon = tool.icon;
-              return (
-                <Card
-                  key={tool.id}
-                  className="group cursor-pointer transition-all hover:opacity-90 hover:shadow-elegant"
-                  onClick={() => navigate(`/video-tools/${tool.id}`)}
-                >
-                  <CardHeader className="text-center pb-2">
-                    <div className="inline-flex items-center justify-center w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 group-hover:bg-primary/15 transition-colors">
-                      <Icon className="h-6 w-6 text-primary" />
-                    </div>
-                    <CardTitle className="text-lg">{tool.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-center pt-0">
-                    <CardDescription className="text-sm">{tool.description}</CardDescription>
-                  </CardContent>
-                </Card>
-              );
-            })}
+            {videoTools.map((tool) => (
+              <ToolLinkCard key={tool.id} tool={tool} />
+            ))}
           </div>
         </section>
 

@@ -9,98 +9,19 @@ import { useSEO } from "@/hooks/useSEO";
 import { CATEGORY_PAGE_SEO } from "@/data/staticPageSeo";
 import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { ToolLinkCard } from "@/components/tools/ToolLinkCard";
+import { toolsInCategory } from "@/data/toolCatalog";
 
 const BREADCRUMB_ITEMS = [
   { name: "Home", path: "/" },
   { name: "Converter Tools", path: "/converter-tools" },
 ];
 
-const converterTools = [
-  {
-    id: "md-to-docx",
-    name: "Markdown → DOCX",
-    description: "Convert Markdown files to Microsoft Word DOCX format",
-    icon: FileText,
-    color: "from-blue-500 to-cyan-500",
-  },
-  {
-    id: "markdown-html",
-    name: "Markdown ↔ HTML",
-    description: "Convert between Markdown and HTML formats bidirectionally",
-    icon: ArrowUpDown,
-    color: "from-purple-500 to-pink-500",
-  },
-  {
-    id: "json-toml",
-    name: "JSON ↔ TOML",
-    description: "Convert between JSON and TOML configuration formats",
-    icon: Code,
-    color: "from-orange-500 to-red-500",
-  },
-  {
-    id: "json-yaml",
-    name: "JSON ↔ YAML",
-    description: "Convert between JSON and YAML data formats",
-    icon: Code,
-    color: "from-green-500 to-emerald-500",
-  },
-  {
-    id: "json-xml",
-    name: "JSON ↔ XML",
-    description: "Convert between JSON and XML data formats",
-    icon: Code,
-    color: "from-indigo-500 to-blue-500",
-  },
-  {
-    id: "json-csv",
-    name: "JSON ↔ CSV",
-    description: "Convert between JSON arrays and CSV format",
-    icon: Code,
-    color: "from-teal-500 to-cyan-500",
-  },
-  {
-    id: "color-converter",
-    name: "Color Converter",
-    description: "Convert colors between HEX, RGB, HSL, and CMYK formats",
-    icon: Palette,
-    color: "from-pink-500 to-rose-500",
-  },
-  {
-    id: "timestamp-converter",
-    name: "Timestamp Converter",
-    description: "Convert between Unix timestamps, ISO dates, and locale formats",
-    icon: Clock,
-    color: "from-amber-500 to-yellow-500",
-  },
-  {
-    id: "html-markdown",
-    name: "HTML → Markdown",
-    description: "Convert HTML to clean Markdown format",
-    icon: ArrowUpDown,
-    color: "from-cyan-500 to-blue-500",
-  },
-  {
-    id: "csv-markdown",
-    name: "CSV → Markdown Table",
-    description: "Convert CSV data into a formatted Markdown table",
-    icon: ArrowUpDown,
-    color: "from-lime-500 to-green-500",
-  },
-  {
-    id: "svg-png",
-    name: "SVG → PNG",
-    description: "Render SVG to a high-resolution PNG image",
-    icon: Zap,
-    color: "from-violet-500 to-purple-500",
-  },
-  {
-    id: "url-parser",
-    name: "URL Parser / Builder",
-    description: "Parse, inspect, and build URLs with query parameters",
-    icon: Code,
-    color: "from-rose-500 to-pink-500",
-  },
-];
+/*
+ * Derived from the catalog rather than restated here. This list used to be a
+ * hardcoded copy, which is the drift src/data/toolCatalog.ts exists to remove.
+ */
+const converterTools = toolsInCategory("converter");
 
 const ConverterToolsPage = () => {
   const navigate = useNavigate();
@@ -143,26 +64,9 @@ const ConverterToolsPage = () => {
             <p className="text-muted-foreground">Select a tool to get started</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {converterTools.map((tool) => {
-              const Icon = tool.icon;
-              return (
-                <Card
-                  key={tool.id}
-                  className="group cursor-pointer transition-all hover:opacity-90 hover:shadow-elegant"
-                  onClick={() => navigate(`/converter-tools/${tool.id}`)}
-                >
-                  <CardHeader className="text-center pb-2">
-                    <div className="inline-flex items-center justify-center w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 group-hover:bg-primary/15 transition-colors">
-                      <Icon className="h-6 w-6 text-primary" />
-                    </div>
-                    <CardTitle className="text-lg">{tool.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-center pt-0">
-                    <CardDescription className="text-sm">{tool.description}</CardDescription>
-                  </CardContent>
-                </Card>
-              );
-            })}
+            {converterTools.map((tool) => (
+              <ToolLinkCard key={tool.id} tool={tool} />
+            ))}
           </div>
         </section>
 

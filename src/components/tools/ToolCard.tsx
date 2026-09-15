@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getToolIcon } from "@/lib/toolIcons";
 import { LucideIcon } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 interface Tool {
   id: string;
@@ -22,14 +22,15 @@ interface ToolCardProps {
 }
 
 export function ToolCard({ tool, onAddToWorkflow, showWorkflowButton = false }: ToolCardProps) {
-  const navigate = useNavigate();
-  
   // Get the icon component dynamically
   const Icon = getToolIcon(tool.icon);
 
-  const handleOpenTool = () => {
-    navigate(`/tools/${tool.id}`);
-  };
+  /*
+   * Tools live at a flat root slug. This used to navigate to /tools/<id>, which
+   * is a legacy prefix that 301s, so every card click cost a redirect and no
+   * anchor existed for a crawler to follow in the first place.
+   */
+  const href = `/${tool.id}`;
 
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
@@ -56,7 +57,9 @@ export function ToolCard({ tool, onAddToWorkflow, showWorkflowButton = false }: 
           </div>
           <div className="flex-1">
             <CardTitle className="text-lg group-hover:text-primary transition-colors">
-              {tool.name}
+              <Link to={href} className="after:absolute after:inset-0 after:content-['']">
+                {tool.name}
+              </Link>
             </CardTitle>
             <Badge 
               variant="outline" 
@@ -74,11 +77,8 @@ export function ToolCard({ tool, onAddToWorkflow, showWorkflowButton = false }: 
         </CardDescription>
         
         <div className="flex gap-2">
-          <Button 
-            onClick={handleOpenTool}
-            className="flex-1"
-          >
-            Open Tool
+          <Button className="flex-1 relative z-10" asChild>
+            <Link to={href}>Open Tool</Link>
           </Button>
           
           {showWorkflowButton && onAddToWorkflow && (
@@ -86,7 +86,7 @@ export function ToolCard({ tool, onAddToWorkflow, showWorkflowButton = false }: 
               variant="outline"
               size="sm"
               onClick={() => onAddToWorkflow(tool.id)}
-              className="shrink-0"
+              className="shrink-0 relative z-10"
             >
               + Workflow
             </Button>

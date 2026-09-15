@@ -10,19 +10,19 @@ import { useSEO } from "@/hooks/useSEO";
 import { CATEGORY_PAGE_SEO } from "@/data/staticPageSeo";
 import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { ToolLinkCard } from "@/components/tools/ToolLinkCard";
+import { toolsInCategory } from "@/data/toolCatalog";
 
 const BREADCRUMB_ITEMS = [
   { name: "Home", path: "/" },
   { name: "Spreadsheet Tools", path: "/spreadsheet-tools" },
 ];
 
-const spreadsheetTools = [
-  { id: "excel-reader", name: "Excel Reader", description: "Upload and view Excel files as table", icon: FileSpreadsheet, color: "from-green-500 to-emerald-500" },
-  { id: "csv-to-excel", name: "CSV to Excel", description: "Convert CSV to .xlsx and download", icon: FileUp, color: "from-blue-500 to-cyan-500" },
-  { id: "excel-to-csv", name: "Excel to CSV", description: "Export Excel sheets to CSV", icon: FileDown, color: "from-purple-500 to-violet-500" },
-  { id: "column-extractor", name: "Column Extractor", description: "Select and export specific columns", icon: Columns, color: "from-orange-500 to-amber-500" },
-  { id: "json-to-excel", name: "JSON → Excel", description: "Convert a JSON array of objects to an Excel file", icon: Braces, color: "from-teal-500 to-cyan-500" },
-];
+/*
+ * Derived from the catalog rather than restated here. This list used to be a
+ * hardcoded copy, which is the drift src/data/toolCatalog.ts exists to remove.
+ */
+const spreadsheetTools = toolsInCategory("spreadsheet");
 
 const SpreadsheetToolsPage = () => {
   const navigate = useNavigate();
@@ -65,26 +65,9 @@ const SpreadsheetToolsPage = () => {
             <p className="text-muted-foreground">Select a tool to get started</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {spreadsheetTools.map((tool) => {
-              const Icon = tool.icon;
-              return (
-                <Card
-                  key={tool.id}
-                  className="group cursor-pointer transition-all hover:opacity-90 hover:shadow-elegant"
-                  onClick={() => navigate(`/spreadsheet-tools/${tool.id}`)}
-                >
-                  <CardHeader className="text-center pb-2">
-                    <div className="inline-flex items-center justify-center w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 group-hover:bg-primary/15 transition-colors">
-                      <Icon className="h-6 w-6 text-primary" />
-                    </div>
-                    <CardTitle className="text-lg">{tool.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-center pt-0">
-                    <CardDescription className="text-sm">{tool.description}</CardDescription>
-                  </CardContent>
-                </Card>
-              );
-            })}
+            {spreadsheetTools.map((tool) => (
+              <ToolLinkCard key={tool.id} tool={tool} />
+            ))}
           </div>
         </section>
 
