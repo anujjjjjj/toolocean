@@ -3,6 +3,8 @@ import { renderToPipeableStream } from "react-dom/server";
 import { StaticRouter } from "react-router-dom/server";
 import { AppRoutes } from "./AppRoutes";
 import { CATEGORY_INDEXES, LANDING_ROUTES, PRERENDER_ROUTES, headForRoute } from "./lib/prerenderRoutes";
+import { provideToolContent } from "./lib/toolContentTransport";
+import { resolveToolContent } from "./lib/toolContentResolver";
 import {
   LANDING_ROUTE_MODULE,
   STATIC_ROUTE_MODULES,
@@ -23,7 +25,18 @@ import {
  * placeholder until mounted, keeping this pass free of the browser APIs the tools
  * need (Canvas, FileReader, Web Audio).
  */
-export function renderRoute(url: string): Promise<{ html: string; head: string }> {
+export function renderRoute(
+  url: string,
+): Promise<{ html: string; head: string; toolContent: string | null }> {
+  /*
+   * Hand the route's content to ToolRoutePage before rendering. It cannot import
+   * the resolver itself without dragging every tool's copy into the client
+   * bundle; see lib/toolContentTransport.
+   */
+  const slug = url.replace(/^\//, "");
+  const toolContent = slug ? (resolveToolContent(slug) ?? null) : null;
+  provideToolContent(toolContent);
+
   return new Promise((resolve, reject) => {
     let html = "";
     let settled = false;
@@ -38,7 +51,11 @@ export function renderRoute(url: string): Promise<{ html: string; head: string }
     sink.on("finish", () => {
       if (settled) return;
       settled = true;
-      resolve({ html, head: headForRoute(url) });
+      resolve({
+        html,
+        head: headForRoute(url),
+        toolContent: toolContent ? JSON.stringify(toolContent) : null,
+      });
     });
 
     const { pipe, abort } = renderToPipeableStream(

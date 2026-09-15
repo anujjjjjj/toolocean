@@ -21,6 +21,8 @@ import { dirname, join, resolve } from "node:path";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = join(ROOT, "dist");
 
+const TOOL_CONTENT_ELEMENT_ID = "tool-content";
+
 const {
   renderRoute,
   PRERENDER_ROUTES,
@@ -167,15 +169,30 @@ const failures = [];
 
 for (const route of PRERENDER_ROUTES) {
   try {
-    const { html, head } = await renderRoute(route);
+    const { html, head, toolContent } = await renderRoute(route);
 
     if (!html || html.length < 500) {
       throw new Error(`rendered body is suspiciously small (${html?.length ?? 0} bytes)`);
     }
 
     const preloads = preloadsForRoute(route);
+    /*
+     * The resolved content, inlined so hydration can read it synchronously.
+     *
+     * Without it ToolRoutePage would have to import the resolver, which pulls
+     * every tool's copy into the route chunk. The payload duplicates text that
+     * is already in the body, so it compresses almost to nothing against it.
+     *
+     * `<` is escaped for the same reason the JSON-LD is: a closing tag inside a
+     * string would otherwise end the script element early.
+     */
+    const contentScript = toolContent
+      ? `<script type="application/json" id="${TOOL_CONTENT_ELEMENT_ID}">` +
+        `${toolContent.replace(/</g, "\\u003c")}</script>`
+      : "";
+
     const page = baseTemplate
-      .replace("</head>", `  ${head}\n  ${preloads}\n  </head>`)
+      .replace("</head>", `  ${head}\n  ${preloads}\n  ${contentScript}\n  </head>`)
       .replace('<div id="root"></div>', `<div id="root">${html}</div>`);
 
     // "/" maps to dist/index.html; "/json-formatter" to dist/json-formatter/index.html
