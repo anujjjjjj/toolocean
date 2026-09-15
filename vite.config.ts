@@ -19,4 +19,18 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    /*
+     * The manifest maps each source module to its built chunk and that chunk's
+     * static-import closure. scripts/prerender.mjs reads it to emit a
+     * <link rel="modulepreload"> per route.
+     *
+     * Without it every prerendered page shipped only the entry script, so the
+     * browser could not discover the route chunk until the entry had downloaded,
+     * parsed and executed — a four-request serial waterfall before the page
+     * could mount: HTML -> entry -> route -> tool -> the tool's dependencies.
+     */
+    manifest: true,
+    target: "es2020",
+  },
 }));

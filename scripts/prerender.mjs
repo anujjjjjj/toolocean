@@ -14,18 +14,132 @@
  *
  * Run via `npm run build`, after `vite build` and the SSR bundle build.
  */
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join, resolve } from "node:path";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = join(ROOT, "dist");
 
-const { renderRoute, PRERENDER_ROUTES } = await import(
-  pathToFileURL(join(ROOT, "dist-ssg", "entry-ssg.js")).href
-);
+const {
+  renderRoute,
+  PRERENDER_ROUTES,
+  LANDING_ROUTES,
+  STATIC_ROUTE_MODULES,
+  TOOL_ROUTE_MODULE,
+  LANDING_ROUTE_MODULE,
+} = await import(pathToFileURL(join(ROOT, "dist-ssg", "entry-ssg.js")).href);
 
 const template = readFileSync(join(DIST, "index.html"), "utf-8");
+
+/*
+ * Resource hints per route.
+ *
+ * Every page previously shipped the entry script and nothing else, so the
+ * browser could not know it needed the route chunk until the entry had run:
+ * HTML -> entry -> route chunk -> tool chunk -> shared deps, four requests deep
+ * before anything could mount.
+ *
+ * The route shell is preloaded, because it is needed to hydrate what is already
+ * on screen. The tool chunk is only prefetched: ToolWorkbench deliberately mounts
+ * the tool after an effect, so it is not on the critical path, and preloading it
+ * would have it compete with the fonts and the route chunk for bandwidth during
+ * LCP — making Core Web Vitals worse, not better.
+ */
+const MANIFEST_PATH = join(DIST, ".vite", "manifest.json");
+if (!existsSync(MANIFEST_PATH)) {
+  throw new Error(
+    `Vite manifest missing at ${MANIFEST_PATH}. Set build.manifest = true in vite.config.ts — ` +
+      `without it no route can emit preload hints and every page falls back to a serial waterfall.`,
+  );
+}
+const manifest = JSON.parse(readFileSync(MANIFEST_PATH, "utf-8"));
+
+/** A chunk plus every chunk it statically imports, deduped. */
+function chunkClosure(entry, seen = new Set()) {
+  const chunk = manifest[entry];
+  if (!chunk || seen.has(entry)) return seen;
+  seen.add(entry);
+  for (const imported of chunk.imports ?? []) chunkClosure(imported, seen);
+  return seen;
+}
+
+function assetsFor(entry) {
+  return [...chunkClosure(entry)]
+    .map((key) => manifest[key]?.file)
+    .filter(Boolean)
+    .map((file) => `/${file}`);
+}
+
+/*
+ * Resolve a source module to its manifest key.
+ *
+ * Rollup keys a chunk by its source path only when that path is an explicit
+ * input. A module reached from more than one place becomes a shared chunk keyed
+ * as `_<Name>-<hash>.js` instead, which is what happens to ToolRoutePage — so a
+ * plain manifest[moduleId] lookup misses the single most important route on the
+ * site.
+ */
+function resolveManifestKey(moduleId) {
+  if (manifest[moduleId]) return moduleId;
+  const base = moduleId.split("/").pop().replace(/\.[jt]sx?$/, "");
+  return Object.keys(manifest).find((key) => manifest[key].name === base) ?? null;
+}
+
+/*
+ * Modules that are statically imported by the app entry rather than lazily.
+ * Their code is already inside the entry script the template loads, so there is
+ * nothing extra to preload and an empty hint list is the correct answer.
+ */
+const ENTRY_BUNDLED = new Set(["src/pages/Index.tsx"]);
+
+/** Entry chunk assets are already in the template's <script>; don't repeat them. */
+const entryKey = Object.keys(manifest).find((key) => manifest[key].isEntry);
+const entryAssets = new Set(entryKey ? assetsFor(entryKey) : []);
+
+const toolSlugs = new Set(
+  PRERENDER_ROUTES.filter((route) => route !== "/").map((route) => route.slice(1)),
+);
+
+function moduleForRoute(route) {
+  if (STATIC_ROUTE_MODULES[route]) return STATIC_ROUTE_MODULES[route];
+  if (LANDING_ROUTES.includes(route)) return LANDING_ROUTE_MODULE;
+  return toolSlugs.has(route.slice(1)) ? TOOL_ROUTE_MODULE : null;
+}
+
+/*
+ * Validate the whole route->module map up front.
+ *
+ * A silent miss here is the worst outcome available: the build still succeeds,
+ * every page loses its preload hints, and the site quietly returns to the
+ * waterfall it was supposed to have escaped. So drift fails the build loudly,
+ * once, instead of degrading 136 pages invisibly.
+ */
+const unresolvable = [...new Set([
+  ...Object.values(STATIC_ROUTE_MODULES),
+  TOOL_ROUTE_MODULE,
+  LANDING_ROUTE_MODULE,
+])].filter((moduleId) => !ENTRY_BUNDLED.has(moduleId) && !resolveManifestKey(moduleId));
+
+if (unresolvable.length > 0) {
+  throw new Error(
+    `src/lib/routeModules.ts points at ${unresolvable.length} module(s) with no chunk in the Vite ` +
+      `manifest:\n  ${unresolvable.join("\n  ")}\n` +
+      `Fix the path, or add it to ENTRY_BUNDLED if it is now statically imported.`,
+  );
+}
+
+function preloadsForRoute(route) {
+  const moduleId = moduleForRoute(route);
+  if (!moduleId || ENTRY_BUNDLED.has(moduleId)) return "";
+
+  const key = resolveManifestKey(moduleId);
+  const assets = assetsFor(key).filter((href) => !entryAssets.has(href));
+
+  return assets
+    .map((href) => `<link rel="modulepreload" crossorigin href="${href}" />`)
+    .join("\n  ");
+}
 
 if (!template.includes('<div id="root"></div>')) {
   throw new Error(
@@ -59,8 +173,9 @@ for (const route of PRERENDER_ROUTES) {
       throw new Error(`rendered body is suspiciously small (${html?.length ?? 0} bytes)`);
     }
 
+    const preloads = preloadsForRoute(route);
     const page = baseTemplate
-      .replace("</head>", `  ${head}\n  </head>`)
+      .replace("</head>", `  ${head}\n  ${preloads}\n  </head>`)
       .replace('<div id="root"></div>', `<div id="root">${html}</div>`);
 
     // "/" maps to dist/index.html; "/json-formatter" to dist/json-formatter/index.html

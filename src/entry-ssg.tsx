@@ -2,7 +2,12 @@ import { Writable } from "node:stream";
 import { renderToPipeableStream } from "react-dom/server";
 import { StaticRouter } from "react-router-dom/server";
 import { AppRoutes } from "./AppRoutes";
-import { CATEGORY_INDEXES, PRERENDER_ROUTES, headForRoute } from "./lib/prerenderRoutes";
+import { CATEGORY_INDEXES, LANDING_ROUTES, PRERENDER_ROUTES, headForRoute } from "./lib/prerenderRoutes";
+import {
+  LANDING_ROUTE_MODULE,
+  STATIC_ROUTE_MODULES,
+  TOOL_ROUTE_MODULE,
+} from "./lib/routeModules";
 
 /**
  * Build-time render entry. Consumed by scripts/prerender.mjs, never by the browser.
@@ -57,4 +62,16 @@ export function renderRoute(url: string): Promise<{ html: string; head: string }
   });
 }
 
-export { PRERENDER_ROUTES, CATEGORY_INDEXES };
+/*
+ * routeModules is re-exported here rather than read from source by the
+ * prerender script: this bundle is already compiled JavaScript, so Node can
+ * import it directly and the map cannot drift from what the app actually uses.
+ */
+export {
+  PRERENDER_ROUTES,
+  CATEGORY_INDEXES,
+  LANDING_ROUTES,
+  STATIC_ROUTE_MODULES,
+  TOOL_ROUTE_MODULE,
+  LANDING_ROUTE_MODULE,
+};
