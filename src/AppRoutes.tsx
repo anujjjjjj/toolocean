@@ -1,10 +1,8 @@
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import { ConsentBanner } from "@/components/analytics/ConsentBanner";
-import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CommandPaletteProvider, useCommandPalette } from "@/contexts/CommandPaletteContext";
-import { CommandPalette } from "@/components/layout/CommandPalette";
 import { LegacyToolRedirect } from "@/components/routing/LegacyToolRedirect";
 import { CATEGORY_ROUTE } from "@/data/toolCatalog";
 import { LANDING_PAGES } from "@/data/landingPages";
@@ -73,9 +71,49 @@ function GlobalKeyboardHandler() {
   return null;
 }
 
+/*
+ * The palette and the toaster are loaded on first use, not on first paint.
+ *
+ * Rendering CommandPalette unconditionally pulled cmdk, all of src/data/tools.json
+ * and the 78 statically imported lucide icons in toolIcons.ts into the entry
+ * chunk — on all 136 pages, for a dialog that only appears when someone presses
+ * Cmd+K. The toaster is used by a handful of tools and paid the same tax.
+ *
+ * `hasOpened` latches so the chunk is fetched once and the dialog keeps its
+ * mounted state across subsequent opens.
+ */
+const CommandPalette = lazy(() =>
+  import("@/components/layout/CommandPalette").then((m) => ({ default: m.CommandPalette })),
+);
+const Toaster = lazy(() => import("@/components/ui/toaster").then((m) => ({ default: m.Toaster })));
+
 function GlobalCommandPalette() {
   const { isOpen, closePalette } = useCommandPalette();
-  return <CommandPalette open={isOpen} onOpenChange={closePalette} />;
+  const [hasOpened, setHasOpened] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) setHasOpened(true);
+  }, [isOpen]);
+
+  if (!hasOpened) return null;
+
+  return (
+    <Suspense fallback={null}>
+      <CommandPalette open={isOpen} onOpenChange={closePalette} />
+    </Suspense>
+  );
+}
+
+/** Mounted only after hydration, so it never reaches the prerendered HTML. */
+function DeferredToaster() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
+  return (
+    <Suspense fallback={null}>
+      <Toaster />
+    </Suspense>
+  );
 }
 
 export function AppRoutes() {
@@ -84,7 +122,7 @@ export function AppRoutes() {
       <CommandPaletteProvider>
         <GlobalKeyboardHandler />
         <GlobalCommandPalette />
-        <Toaster />
+        <DeferredToaster />
         {/*
           Renders null until after mount, so it stays out of the prerendered HTML
           and cannot cause a hydration mismatch. Page views are not tracked here —
