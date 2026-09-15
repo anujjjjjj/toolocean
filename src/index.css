@@ -139,3 +139,44 @@ All colors MUST be HSL.
     font-weight: 600;
   }
 }
+/*
+ * Mobile overflow guards for the tool workbench.
+ *
+ * Nine tools scrolled the whole page sideways at 375px, the worst by 173px. The
+ * cause is not the grids themselves — those are all responsive — but the CSS
+ * default of `min-width: auto` on grid and flex children: a <pre> holding one long
+ * unbroken line refuses to shrink below its intrinsic width and pushes the column
+ * past the viewport. Setting min-width:0 lets the child shrink so its own overflow
+ * rule can take over.
+ *
+ * Scoped to the workbench so it cannot disturb the page chrome, and applied here
+ * rather than as `min-w-0` in 114 components so tools added later inherit it.
+ */
+@layer components {
+  #tool-workbench .grid > *,
+  #tool-workbench .flex > * {
+    min-width: 0;
+  }
+
+  /* Long tokens (base64, minified JSON, hashes) scroll inside their own box. */
+  #tool-workbench pre,
+  #tool-workbench table {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  #tool-workbench textarea,
+  #tool-workbench input {
+    max-width: 100%;
+  }
+
+  /*
+   * Long unbreakable tokens — IPv6 addresses, hashes, base64, minified output —
+   * have no natural break opportunity, so min-width:0 alone still left them
+   * pushing the layout wide. `anywhere` only breaks when the word genuinely
+   * cannot fit, so ordinary prose is unaffected.
+   */
+  #tool-workbench {
+    overflow-wrap: anywhere;
+  }
+}

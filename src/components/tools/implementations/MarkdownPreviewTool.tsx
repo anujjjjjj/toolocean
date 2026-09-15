@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Copy, Upload, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { marked } from "marked";
+import DOMPurify from "dompurify";
 
 marked.setOptions({ gfm: true, breaks: true });
 
@@ -65,7 +66,16 @@ export function MarkdownPreviewTool() {
     URL.revokeObjectURL(url);
   };
 
-  const html = marked(md) as string;
+  /*
+   * Sanitised, not raw.
+   *
+   * marked() output went straight into dangerouslySetInnerHTML, so a markdown file
+   * containing `<img src=x onerror="...">` executed that script on this origin —
+   * confirmed live, along with clickable javascript: links. Opening a .md someone
+   * sent you is the entire point of this tool, so the input is untrusted by
+   * definition and has to be scrubbed before it is injected.
+   */
+  const html = DOMPurify.sanitize(marked(md) as string, { USE_PROFILES: { html: true } });
 
   return (
     <div className="space-y-4">

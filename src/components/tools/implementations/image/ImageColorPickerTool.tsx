@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Upload, Copy } from "lucide-react";
@@ -25,30 +25,61 @@ function rgbToHsl(r: number, g: number, b: number): string {
 }
 
 export function ImageColorPickerTool() {
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(null);
   const [picked, setPicked] = useState<PickedColor | null>(null);
   const [history, setHistory] = useState<PickedColor[]>([]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const imgRef = useRef<HTMLImageElement | null>(null);
+  const bitmapRef = useRef<ImageBitmap | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  /*
+   * Decodes the File directly, with no object URL and no <img> in between.
+   *
+   * The original reached for canvasRef.current inside a detached `new Image()`
+   * onload — but the canvas is only rendered once there is an image, so the ref was
+   * always null there and every upload threw "Cannot set properties of null (setting
+   * 'width')". Rebuilding it around a rendered <img> fixed that and exposed a second
+   * problem: the input is cleared straight after (so the same file can be picked
+   * twice), and clearing it invalidates the object URL before the image finishes
+   * decoding, leaving naturalWidth at 0 and the canvas blank.
+   *
+   * createImageBitmap takes the File itself, so neither failure mode exists. There is
+   * also no URL lifetime to manage, which removes the leak this tool used to have.
+   */
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      imgRef.current = img;
-      setImageSrc(url);
-      const canvas = canvasRef.current!;
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      canvas.getContext("2d")!.drawImage(img, 0, 0);
-    };
-    img.src = url;
     e.target.value = "";
+    if (!file) return;
+
+    try {
+      const bitmap = await createImageBitmap(file);
+      bitmapRef.current?.close();
+      bitmapRef.current = bitmap;
+      setPicked(null);
+      setDimensions({ width: bitmap.width, height: bitmap.height });
+    } catch {
+      toast({
+        title: "Could not read that image",
+        description: "The file may be corrupt or in a format this browser cannot decode.",
+        variant: "destructive",
+      });
+    }
   };
+
+  // Draw once the canvas exists, which is the render after dimensions are set.
+  useEffect(() => {
+    const bitmap = bitmapRef.current;
+    const canvas = canvasRef.current;
+    if (!dimensions || !bitmap || !canvas) return;
+
+    canvas.width = bitmap.width;
+    canvas.height = bitmap.height;
+    canvas.getContext("2d")?.drawImage(bitmap, 0, 0);
+  }, [dimensions]);
+
+  // Bitmaps hold decoded pixels; without this each upload keeps the previous one.
+  useEffect(() => () => bitmapRef.current?.close(), []);
 
   const handleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current!;
@@ -85,9 +116,11 @@ export function ImageColorPickerTool() {
             </Button>
           </div>
 
-          {imageSrc && (
+          {dimensions && (
             <>
-              <p className="text-sm text-muted-foreground">Click anywhere on the image to pick a color.</p>
+              <p className="text-sm text-muted-foreground">
+                Click anywhere on the image to pick a color. ({dimensions.width} × {dimensions.height})
+              </p>
               <div className="overflow-auto border rounded-md">
                 <canvas
                   ref={canvasRef}

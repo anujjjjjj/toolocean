@@ -7,7 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Copy, Download, ArrowUpDown, Check, X, AlertCircle, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { parseString, Builder } from 'xml2js';
+import { xmlToJson, jsonToXml } from "@/lib/xmlJson";
 
 export function XmlJsonConverterTool() {
   const [input, setInput] = useState("");
@@ -34,46 +34,7 @@ export function XmlJsonConverterTool() {
     e.target.value = "";
   };
 
-  const xmlToJson = (xmlText: string) => {
-    return new Promise((resolve, reject) => {
-      const options = {
-        explicitArray: explicitArray,
-        mergeAttrs: !preserveAttributes,
-        explicitRoot: false,
-        trim: true,
-        normalize: true,
-        normalizeTags: false,
-        attrkey: preserveAttributes ? '@' : undefined,
-        charkey: preserveAttributes ? '#text' : undefined
-      };
-
-      parseString(xmlText, options, (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result);
-        }
-      });
-    });
-  };
-
-  const jsonToXml = (jsonText: string) => {
-    try {
-      const jsonObj = JSON.parse(jsonText);
-      const builder = new Builder({
-        xmldec: { version: '1.0', encoding: 'UTF-8' },
-        renderOpts: { pretty: true, indent: '  ', newline: '\n' },
-        attrkey: '@',
-        charkey: '#text'
-      });
-      
-      return builder.buildObject(jsonObj);
-    } catch (error) {
-      throw new Error("Invalid JSON format");
-    }
-  };
-
-  const convert = async () => {
+  const convert = () => {
     if (!input.trim()) {
       setOutput("");
       setIsValid(null);
@@ -83,7 +44,7 @@ export function XmlJsonConverterTool() {
 
     try {
       if (mode === "xml-to-json") {
-        const result = await xmlToJson(input);
+        const result = xmlToJson(input, { preserveAttributes, explicitArray });
         const jsonOutput = JSON.stringify(result, null, 2);
         setOutput(jsonOutput);
         setIsValid(true);

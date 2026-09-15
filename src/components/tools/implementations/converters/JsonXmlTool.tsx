@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Copy, ArrowUpDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { parseString, Builder } from "xml2js";
+import { xmlToJson, jsonToXml } from "@/lib/xmlJson";
 
 export function JsonXmlTool() {
   const [input, setInput] = useState("");
@@ -19,39 +19,17 @@ export function JsonXmlTool() {
     }
 
     try {
-      if (mode === "json-to-xml") {
-        const json = JSON.parse(input);
-        const builder = new Builder({ rootName: "root", headless: true });
-        const xml = builder.buildObject(json);
-        setOutput(xml);
-      } else {
-        parseString(input, (err, result) => {
-          if (err) {
-            toast({
-              title: "Conversion Error",
-              description: err instanceof Error ? err.message : "Failed to parse XML",
-              variant: "destructive",
-            });
-            setOutput("");
-            return;
-          }
-          try {
-            const json = JSON.stringify(result, null, 2);
-            setOutput(json);
-          } catch (error) {
-            toast({
-              title: "Conversion Error",
-              description: error instanceof Error ? error.message : "Failed to convert to JSON",
-              variant: "destructive",
-            });
-            setOutput("");
-          }
-        });
-      }
+      // Both directions are synchronous now. xml2js was callback-based *and*
+      // non-functional in the browser, which is why this used to be half-async.
+      setOutput(
+        mode === "json-to-xml"
+          ? jsonToXml(input)
+          : JSON.stringify(xmlToJson(input, { preserveAttributes: true, explicitArray: false }), null, 2),
+      );
     } catch (error) {
       toast({
         title: "Conversion Error",
-        description: error instanceof Error ? error.message : "Failed to convert",
+        description: error instanceof Error ? error.message : "Conversion failed",
         variant: "destructive",
       });
       setOutput("");

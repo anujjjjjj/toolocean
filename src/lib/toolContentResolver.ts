@@ -68,6 +68,40 @@ function deriveRelated(tool: CatalogTool, limit = 6): RelatedToolLink[] {
 }
 
 /**
+ * "a" or "an" for a noun.
+ *
+ * The CTA used to interpolate a bare "a", which shipped "Choose a image" on ten
+ * pages, "Choose a archive" on three and "Choose a audio file" on two — in a
+ * button, above the fold, on pages whose whole job is to look trustworthy to
+ * someone arriving from search.
+ */
+function indefiniteArticle(noun: string): string {
+  // Acronyms read by letter take the article of the letter sound: "an SVG", "a PDF".
+  const acronym = /^[A-Z]{2,}$/.test(noun.split(" ")[0]);
+  const head = acronym ? noun[0] : noun[0].toLowerCase();
+  const vowelSounding = acronym ? "AEFHILMNORSX".includes(head) : "aeiou".includes(head);
+  return vowelSounding ? "an" : "a";
+}
+
+/**
+ * The handful of tools that genuinely need the network, and what they call.
+ *
+ * Without this the generated category FAQ told every visitor their input "is never
+ * transmitted" and that there "are no outbound requests" — on the same page where
+ * the tool's own FAQ correctly said it queries Google DNS. Two contradictory
+ * answers side by side, the second trivially disproved by following the
+ * instructions in the first, both inside FAQPage structured data.
+ *
+ * The "everything is local" claim is the most valuable thing this site says. It is
+ * worth spending three honest exceptions to keep the other 111 credible.
+ */
+const NETWORK_TOOLS: Record<string, string> = {
+  "dns-lookup": "Google's public DNS resolver at dns.google",
+  "ip-address": "the ipapi.co and ipify.org lookup services",
+  "http-request-composer": "whatever URL you point it at, directly from your browser",
+};
+
+/**
  * Category-level FAQs appended after the tool's own.
  *
  * These are real questions with real answers that happen to have the same answer
@@ -77,11 +111,14 @@ function deriveRelated(tool: CatalogTool, limit = 6): RelatedToolLink[] {
 function categoryFaqs(tool: CatalogTool): ToolFaqEntry[] {
   const profile = CATEGORY_PROFILES[tool.category];
   const isFile = profile.ioMode === "file";
+  const outbound = NETWORK_TOOLS[tool.id];
 
   return [
     {
       question: `Is my ${profile.subject} uploaded to a server?`,
-      answer: `No. ${tool.name} is a static page with no backend. Your ${profile.subject} is read and processed by JavaScript running in this tab, and it is never transmitted. You can confirm this by opening your browser's network panel while you use the tool — there are no outbound requests.`,
+      answer: outbound
+        ? `${tool.name} is a static page with no backend of its own, and nothing you type is stored or logged here. It is one of the few tools on this site that does have to reach the network: answering the question at all means querying ${outbound}, so the value you enter is sent there. Every other tool in the catalogue is fully local.`
+        : `No. ${tool.name} is a static page with no backend. Your ${profile.subject} is read and processed by JavaScript running in this tab, and it is never transmitted. You can confirm this by opening your browser's network panel while you use the tool — there are no outbound requests.`,
     },
     {
       question: isFile ? "Is there a file size limit?" : "How much data can I paste in?",
@@ -91,7 +128,9 @@ function categoryFaqs(tool: CatalogTool): ToolFaqEntry[] {
     },
     {
       question: "Does it work offline?",
-      answer: "Yes, once the page has loaded. The code that does the work is already in your browser at that point, so you can disconnect and keep using it. Reloading the page while offline needs the browser cache to still hold it.",
+      answer: outbound
+        ? `No, and it is the exception. This tool has to query ${outbound} to answer, so it needs a connection even after the page has loaded. The rest of the catalogue keeps working with the network off.`
+        : "Yes, once the page has loaded. The code that does the work is already in your browser at that point, so you can disconnect and keep using it. Reloading the page while offline needs the browser cache to still hold it.",
     },
     {
       question: "Do I need to create an account?",
@@ -155,7 +194,7 @@ export function resolveToolContent(slug: string): ToolPageContent | null {
       primaryCta:
         override?.hero?.primaryCta ??
         (profile.ioMode === "file"
-          ? { label: `Choose a ${profile.subject}`, action: "upload" }
+          ? { label: `Choose ${indefiniteArticle(profile.subject)} ${profile.subject}`, action: "upload" }
           : { label: "Start with your own data", action: "scroll" }),
       secondaryCta:
         override?.hero?.secondaryCta ??

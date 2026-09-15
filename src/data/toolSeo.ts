@@ -30,8 +30,32 @@ export interface ToolSeoEntry {
 const PRIVACY_ANSWER =
   "No. Everything runs locally in your browser using JavaScript — your data is never uploaded to a server, and nothing is stored or logged.";
 
+/**
+ * Subjects that are grammatically plural, so the question needs "Are my" not "Is my".
+ *
+ * These are listed rather than detected from a trailing "s", because half the
+ * subjects here are acronyms and mass nouns that end in one anyway — "CSS", "CSV",
+ * "SVG", "address". Getting that wrong in the other direction ("Are my CSS
+ * uploaded") is no better than the bug being fixed.
+ */
+const PLURAL_SUBJECTS = new Set([
+  "audio files",
+  "colour values",
+  "files",
+  "generated strings",
+  "generated UUIDs",
+  "images",
+]);
+
+/*
+ * These questions render as <h3> inside FAQPage structured data, so "Is my images
+ * uploaded to a server?" was not just visible on the page — it was eligible to show
+ * up verbatim in a Google rich result. Roughly twenty pages carried one.
+ */
 const privacyFaq = (subject: string): ToolFaq => ({
-  question: `Is my ${subject} uploaded to a server?`,
+  question: PLURAL_SUBJECTS.has(subject)
+    ? `Are my ${subject} uploaded to a server?`
+    : `Is my ${subject} uploaded to a server?`,
   answer: PRIVACY_ANSWER,
 });
 

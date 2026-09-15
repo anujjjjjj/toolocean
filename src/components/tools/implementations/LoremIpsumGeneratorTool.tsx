@@ -21,18 +21,32 @@ const WORDS = [
   "hac","habitasse","platea","dictumst","vestibulum","rhoncus","est","pellentesque"
 ];
 
+/** What people expect a lorem ipsum generator to open with. */
+const CLASSIC_OPENER =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+
 function rndWord() { return WORDS[Math.floor(Math.random() * WORDS.length)]; }
 
+/*
+ * Note the `() =>` wrappers on every Array.from below.
+ *
+ * Array.from's map callback is invoked with (element, index), so passing these
+ * functions directly handed the array index in as `maxW`/`maxS`. At index 0 that
+ * made the range negative, `count` could come out as 0, and `words[0]` was then
+ * undefined — a hard "Cannot read properties of undefined (reading 'charAt')".
+ * When it did not throw it produced empty paragraphs and sentences far shorter
+ * than the requested range.
+ */
 function rndSentence(minW = 6, maxW = 14) {
-  const count = minW + Math.floor(Math.random() * (maxW - minW));
-  const words = Array.from({ length: count }, rndWord);
+  const count = minW + Math.floor(Math.random() * (maxW - minW + 1));
+  const words = Array.from({ length: count }, () => rndWord());
   words[0] = words[0].charAt(0).toUpperCase() + words[0].slice(1);
   return words.join(" ") + ".";
 }
 
 function rndParagraph(minS = 4, maxS = 8) {
-  const count = minS + Math.floor(Math.random() * (maxS - minS));
-  return Array.from({ length: count }, rndSentence).join(" ");
+  const count = minS + Math.floor(Math.random() * (maxS - minS + 1));
+  return Array.from({ length: count }, () => rndSentence()).join(" ");
 }
 
 export function LoremIpsumGeneratorTool() {
@@ -42,15 +56,19 @@ export function LoremIpsumGeneratorTool() {
   const { toast } = useToast();
 
   const generate = () => {
-    const n = Math.max(1, parseInt(count) || 1);
+    const n = Math.min(1000, Math.max(1, parseInt(count) || 1));
     let result = "";
     if (type === "words") {
-      result = Array.from({ length: n }, rndWord).join(" ");
+      result = Array.from({ length: n }, () => rndWord()).join(" ");
       result = result.charAt(0).toUpperCase() + result.slice(1) + ".";
     } else if (type === "sentences") {
-      result = Array.from({ length: n }, rndSentence).join(" ");
+      result = Array.from({ length: n }, () => rndSentence()).join(" ");
     } else {
-      result = Array.from({ length: n }, rndParagraph).join("\n\n");
+      // The canonical opener is what people expect to see first; the rest is
+      // randomised as before.
+      const paragraphs = Array.from({ length: n }, () => rndParagraph());
+      paragraphs[0] = `${CLASSIC_OPENER} ${paragraphs[0]}`;
+      result = paragraphs.join("\n\n");
     }
     setOutput(result);
   };
