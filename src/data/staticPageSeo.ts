@@ -99,6 +99,11 @@ export const INFO_PAGE_SEO: Record<string, StaticPageSeo> = {
     description:
       "Chain ToolOcean's text tools into a repeatable pipeline: format, convert, and transform in sequence. Runs entirely in your browser with no uploads.",
   },
+  "/all-tools": {
+    title: "All 114 Free Browser Tools - Complete List",
+    description:
+      "Every ToolOcean tool in one place, grouped by category: PDF, image, video, audio, CSV, spreadsheet, archive, compression, converters and developer utilities.",
+  },
   "/about": {
     title: "About ToolOcean - Who Builds It and How It Works",
     description:

@@ -6,11 +6,50 @@
  * unreachable, which is exactly the class of bug that is invisible in review and
  * obvious in production. Runs before every build.
  */
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+
+/*
+ * Every file the build text-parses must exist AND be tracked by git.
+ *
+ * src/data/landingPages.ts was once untracked while generate-sitemap.mjs read it
+ * with a bare readFileSync and prerenderRoutes.ts imported it. The working copy
+ * built fine; a clean checkout died with ENOENT before Vite ever ran, so three
+ * weeks of commits could not be deployed and nobody noticed, because the only
+ * machine anyone built on was the one holding the untracked file.
+ */
+const BUILD_INPUTS = [
+  "src/data/toolCatalog.ts",
+  "src/data/tools.json",
+  "src/data/toolSeo.ts",
+  "src/data/staticPageSeo.ts",
+  "src/data/landingPages.ts",
+];
+
+const untracked = [];
+for (const rel of BUILD_INPUTS) {
+  if (!existsSync(resolve(ROOT, rel))) {
+    untracked.push(`  ${rel}  (missing)`);
+    continue;
+  }
+  try {
+    execFileSync("git", ["ls-files", "--error-unmatch", rel], { cwd: ROOT, stdio: "ignore" });
+  } catch {
+    untracked.push(`  ${rel}  (exists but untracked)`);
+  }
+}
+
+if (untracked.length > 0) {
+  console.error(
+    `\n✗ ${untracked.length} build input(s) would not survive a clean checkout:\n${untracked.join("\n")}\n\n` +
+      `The build reads these directly. Commit them, or a fresh clone fails before Vite starts.\n`,
+  );
+  process.exit(1);
+}
 
 const catalogSource = readFileSync(resolve(ROOT, "src/data/toolCatalog.ts"), "utf-8");
 const categoryTools = [...catalogSource.matchAll(/\{ id: "([^"]+)", category: "([^"]+)"/g)].map(
@@ -59,4 +98,6 @@ if (missingSeo.length > 0) {
   process.exit(1);
 }
 
-console.log(`✓ catalog: ${all.length} tools, unique slugs, all have SEO content`);
+console.log(
+  `✓ catalog: ${all.length} tools, unique slugs, all have SEO content, ${BUILD_INPUTS.length} build inputs tracked`,
+);

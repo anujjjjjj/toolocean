@@ -81,7 +81,7 @@ export function Footer() {
                 { to: "/about", label: "About" },
                 { to: "/privacy", label: "Privacy" },
                 { to: "/terms", label: "Terms of Use" },
-                { to: "/workflow-builder", label: "Workflow Builder" },
+                { to: "/all-tools", label: "All Tools" },
               ].map((item) => (
                 <li key={item.to}>
                   <Link

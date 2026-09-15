@@ -13,6 +13,7 @@ import { useHistory } from "@/hooks/useHistory";
 import { toolRegistry } from "@/lib/toolRegistry";
 import { getAllToolsForPalette } from "@/lib/allToolsForPalette";
 import { useSEO } from "@/hooks/useSEO";
+import { INFO_PAGE_SEO } from "@/data/staticPageSeo";
 
 interface WorkflowStep {
   id: string;
@@ -34,10 +35,12 @@ interface Workflow {
 const WorkflowBuilderPage = () => {
   const navigate = useNavigate();
 
+  // noindex mirrors NOINDEX_ROUTES in prerenderRoutes.ts, so a client-side
+  // navigation here leaves the same robots directive as the static file does.
   useSEO({
-    title: "Workflow Builder - Chain Developer Tools Together",
-    description: "Build and run custom automated workflows by chaining developer tools together. Free, browser-based, no sign-up required.",
+    ...INFO_PAGE_SEO["/workflow-builder"],
     path: "/workflow-builder",
+    noindex: true,
   });
 
   const toolCategories = useMemo(() => getAllToolsForPalette(), []);

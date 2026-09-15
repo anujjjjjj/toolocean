@@ -135,12 +135,15 @@ const routes = [
     changefreq: "weekly",
     source: LISTING_SOURCE[path],
   })),
-  {
-    path: "/workflow-builder",
-    priority: "0.5",
-    changefreq: "monthly",
-    source: "src/pages/WorkflowBuilderPage.tsx",
-  },
+  /*
+   * /all-tools is the HTML sitemap. High priority because it is the page that
+   * distributes crawl equity to the whole catalogue.
+   *
+   * /workflow-builder is deliberately absent: it is noindex. Its prerendered
+   * body is 40 words of empty state because the page is an app whose content is
+   * produced at runtime, and there is no query it could win.
+   */
+  { path: "/all-tools", priority: "0.9", changefreq: "weekly", source: "src/data/toolCatalog.ts" },
   /*
    * Landing pages rank higher than the tool pages here because they target the
    * qualified queries this site can actually win, and each one is an entry point

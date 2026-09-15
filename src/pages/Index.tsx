@@ -5,15 +5,60 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Search, Waves, Code, FileText, FileSpreadsheet, Music, Workflow, Shield, Zap, Globe, Lock, Image, Video, Archive, ArrowUpDown } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useCommandPalette } from "@/contexts/CommandPaletteContext";
 import { useSEO } from "@/hooks/useSEO";
 import { HOME_SEO } from "@/data/staticPageSeo";
 import { buildOrganizationJsonLd, buildWebSiteJsonLd } from "@/lib/jsonLd";
+import type { CategoryKey } from "@/data/toolCatalog";
+import {
+  CATEGORY_INDEX,
+  CATEGORY_LABEL,
+  TOOL_CATALOG,
+  findToolBySlug,
+  toolPath,
+  toolsInCategory,
+} from "@/data/toolCatalog";
+
+/**
+ * Category cards, in the order they appear. Labels and counts come from the
+ * catalog; only the icon and the one-line blurb are editorial.
+ */
+const CATEGORY_CARDS: { key: CategoryKey; icon: typeof Code; blurb: string }[] = [
+  { key: "dev", icon: Code, blurb: "JSON formatters, encoders, converters, and more utilities for developers." },
+  { key: "pdf", icon: FileText, blurb: "Merge, split, compress, rotate, watermark, and convert PDF files." },
+  { key: "image", icon: Image, blurb: "Resize, crop, compress, and convert images without losing the originals." },
+  { key: "csv", icon: FileSpreadsheet, blurb: "Convert, validate, and merge CSV files with full control over delimiters." },
+  { key: "spreadsheet", icon: FileSpreadsheet, blurb: "Read Excel files, extract columns, and convert sheets to CSV or JSON." },
+  { key: "video", icon: Video, blurb: "Trim clips, pull thumbnails, read metadata, and make GIFs." },
+  { key: "audio", icon: Music, blurb: "Cut and join audio files with sample-accurate boundaries." },
+  { key: "archive", icon: Archive, blurb: "Open, inspect, and build ZIP archives without extracting to disk." },
+  { key: "compression", icon: ArrowUpDown, blurb: "Gzip and LZ-String compression for payloads, URLs, and stored blobs." },
+  { key: "converter", icon: ArrowUpDown, blurb: "Convert between formats: Markdown↔DOCX, JSON↔TOML↔YAML↔XML, colors, timestamps." },
+];
+
+/**
+ * Tools that get a direct link from the homepage.
+ *
+ * Curated rather than derived: the catalog has no popularity signal, and the
+ * point of this block is to cut the click depth for the specific jobs people
+ * arrive already intending to do.
+ */
+const POPULAR_TOOL_SLUGS = [
+  "pdf-merge", "pdf-compress", "pdf-split", "pdf-to-images",
+  "image-compressor", "image-resizer", "image-format-converter", "image-crop",
+  "zip-extractor", "zip-creator", "video-trimmer", "video-to-gif",
+  "audio-cutter", "json-formatter", "base64-tool", "jwt-decoder",
+  "hash-generator", "url-encoder", "regex-tester", "case-converter",
+  "uuid-generator", "timestamp-converter", "text-diff", "qr-code-generator",
+];
+
+const POPULAR_TOOLS = POPULAR_TOOL_SLUGS.map(findToolBySlug).filter(
+  (tool): tool is NonNullable<typeof tool> => Boolean(tool),
+);
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate();
   const { openPalette } = useCommandPalette();
 
   useSEO({
@@ -64,28 +109,23 @@ const Index = () => {
 
           {/* Quick Action Buttons - Reduced */}
           <div className="flex flex-wrap gap-3 justify-center">
-            <Button
-              size="lg"
-              onClick={() => navigate('/workflow-builder')}
-            >
-              <Workflow className="h-4 w-4 mr-2" />
-              Start Building
+            <Button size="lg" asChild>
+              <Link to="/workflow-builder">
+                <Workflow className="h-4 w-4 mr-2" />
+                Start Building
+              </Link>
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => navigate('/dev-tools')}
-            >
-              <Code className="h-4 w-4 mr-2" />
-              Dev Tools
+            <Button size="lg" variant="outline" asChild>
+              <Link to="/dev-tools">
+                <Code className="h-4 w-4 mr-2" />
+                Dev Tools
+              </Link>
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => navigate('/pdf-tools')}
-            >
-              <FileText className="h-4 w-4 mr-2" />
-              PDF Tools
+            <Button size="lg" variant="outline" asChild>
+              <Link to="/pdf-tools">
+                <FileText className="h-4 w-4 mr-2" />
+                PDF Tools
+              </Link>
             </Button>
           </div>
         </section>
@@ -131,211 +171,101 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Category Cards Section */}
-        <section className="py-20">
-          <h2 className="text-3xl font-heading font-bold text-center mb-12">Explore Tools</h2>
+        {/*
+          Category cards and the popular-tools grid.
+
+          Both are real <Link> anchors rather than onClick handlers. The previous
+          version navigated with useNavigate, which meant the prerendered homepage
+          contained no href to any tool or category — a crawler following links
+          from / could not reach a single one of the 114 tools, and 9 of them were
+          reachable only from sitemap.xml.
+
+          Counts are derived from the catalog. They were hardcoded and had drifted
+          badly: "31 Tools" for a category holding 66.
+        */}
+        <section className="py-20" aria-labelledby="explore-heading">
+          <h2 id="explore-heading" className="text-3xl font-heading font-bold text-center mb-12">
+            Explore Tools
+          </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {/* Workflow Builder - Featured */}
-            <Card
-              className="group cursor-pointer transition-all hover:opacity-90 hover:shadow-elegant md:col-span-2 lg:col-span-1 order-first"
-              onClick={() => navigate('/workflow-builder')}
-            >
-              <CardHeader className="text-center pb-4">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
-                  <Workflow className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle className="text-xl">Workflow Builder</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <CardDescription className="text-base mb-4">
-                  Chain multiple tools together to create powerful automated workflows.
-                </CardDescription>
-                <p className="text-primary font-medium text-sm">Create Workflow →</p>
-              </CardContent>
+            <Card className="group transition-all hover:opacity-90 hover:shadow-elegant md:col-span-2 lg:col-span-1 order-first">
+              <Link to="/workflow-builder" className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg">
+                <CardHeader className="text-center pb-4">
+                  <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
+                    <Workflow className="h-6 w-6 text-primary" />
+                  </div>
+                  <CardTitle className="text-xl">Workflow Builder</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <CardDescription className="text-base mb-4">
+                    Chain multiple tools together to create powerful automated workflows.
+                  </CardDescription>
+                  <p className="text-primary font-medium text-sm">Create Workflow →</p>
+                </CardContent>
+              </Link>
             </Card>
 
-            <Card
-              className="group cursor-pointer transition-all hover:opacity-90 hover:shadow-elegant"
-              onClick={() => navigate('/dev-tools')}
-            >
-              <CardHeader className="text-center pb-4">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
-                  <Code className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle className="text-xl">Developer Tools</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <CardDescription className="text-base mb-4">
-                  JSON formatters, encoders, converters, and more utilities for developers.
-                </CardDescription>
-                <p className="text-primary font-medium text-sm">31 Tools →</p>
-              </CardContent>
-            </Card>
-
-            <Card
-              className="group cursor-pointer transition-all hover:opacity-90 hover:shadow-elegant"
-              onClick={() => navigate('/pdf-tools')}
-            >
-              <CardHeader className="text-center pb-4">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
-                  <FileText className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle className="text-xl">PDF Tools</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <CardDescription className="text-base mb-4">
-                  Merge, split, compress, rotate, watermark, and convert PDF files.
-                </CardDescription>
-                <p className="text-primary font-medium text-sm">8 Tools →</p>
-              </CardContent>
-            </Card>
-
-            <Card
-              className="group cursor-pointer transition-all hover:opacity-90 hover:shadow-elegant"
-              onClick={() => navigate('/csv-tools')}
-            >
-              <CardHeader className="text-center pb-4">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
-                  <FileSpreadsheet className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle className="text-xl">CSV Tools</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <CardDescription className="text-base mb-4">
-                  Convert, validate, and merge CSV files with customizable delimiters.
-                </CardDescription>
-                <p className="text-primary font-medium text-sm">3 Tools →</p>
-              </CardContent>
-            </Card>
-
-            <Card
-              className="group cursor-pointer transition-all hover:opacity-90 hover:shadow-elegant"
-              onClick={() => navigate('/audio-tools')}
-            >
-              <CardHeader className="text-center pb-4">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
-                  <Music className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle className="text-xl">Audio Tools</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <CardDescription className="text-base mb-4">
-                  Cut and merge audio files. Output as WAV, all in your browser.
-                </CardDescription>
-                <p className="text-primary font-medium text-sm">2 Tools →</p>
-              </CardContent>
-            </Card>
-
-            <Card
-              className="group cursor-pointer transition-all hover:opacity-90 hover:shadow-elegant"
-              onClick={() => navigate('/image-tools')}
-            >
-              <CardHeader className="text-center pb-4">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
-                  <Image className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle className="text-xl">Image Tools</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <CardDescription className="text-base mb-4">
-                  Resize, compress, convert, and transform images. Canvas API only.
-                </CardDescription>
-                <p className="text-primary font-medium text-sm">7 Tools →</p>
-              </CardContent>
-            </Card>
-
-            <Card
-              className="group cursor-pointer transition-all hover:opacity-90 hover:shadow-elegant"
-              onClick={() => navigate('/video-tools')}
-            >
-              <CardHeader className="text-center pb-4">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
-                  <Video className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle className="text-xl">Video Tools</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <CardDescription className="text-base mb-4">
-                  Trim, extract thumbnails, convert to GIF. All in your browser.
-                </CardDescription>
-                <p className="text-primary font-medium text-sm">4 Tools →</p>
-              </CardContent>
-            </Card>
-
-            <Card
-              className="group cursor-pointer transition-all hover:opacity-90 hover:shadow-elegant"
-              onClick={() => navigate('/spreadsheet-tools')}
-            >
-              <CardHeader className="text-center pb-4">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
-                  <FileSpreadsheet className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle className="text-xl">Spreadsheet Tools</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <CardDescription className="text-base mb-4">
-                  Read Excel, convert CSV to Excel, export. SheetJS powered.
-                </CardDescription>
-                <p className="text-primary font-medium text-sm">4 Tools →</p>
-              </CardContent>
-            </Card>
-
-            <Card
-              className="group cursor-pointer transition-all hover:opacity-90 hover:shadow-elegant"
-              onClick={() => navigate('/compression-tools')}
-            >
-              <CardHeader className="text-center pb-4">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
-                  <Archive className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle className="text-xl">Compression Tools</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <CardDescription className="text-base mb-4">
-                  Gzip compress/decompress, LZ-String. All client-side.
-                </CardDescription>
-                <p className="text-primary font-medium text-sm">3 Tools →</p>
-              </CardContent>
-            </Card>
-
-            <Card
-              className="group cursor-pointer transition-all hover:opacity-90 hover:shadow-elegant"
-              onClick={() => navigate('/archive-tools')}
-            >
-              <CardHeader className="text-center pb-4">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
-                  <Archive className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle className="text-xl">Archive Tools</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <CardDescription className="text-base mb-4">
-                  Extract, create, and preview ZIP files. JSZip in browser.
-                </CardDescription>
-                <p className="text-primary font-medium text-sm">3 Tools →</p>
-              </CardContent>
-            </Card>
-
-            <Card
-              className="group cursor-pointer transition-all hover:opacity-90 hover:shadow-elegant"
-              onClick={() => navigate('/converter-tools')}
-            >
-              <CardHeader className="text-center pb-4">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
-                  <ArrowUpDown className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle className="text-xl">Converter Tools</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <CardDescription className="text-base mb-4">
-                  Convert between formats: Markdown↔DOCX, JSON↔TOML↔YAML↔XML, colors, timestamps, and more.
-                </CardDescription>
-                <p className="text-primary font-medium text-sm">8 Tools →</p>
-              </CardContent>
-            </Card>
-
+            {CATEGORY_CARDS.map(({ key, icon: Icon, blurb }) => {
+              const count = toolsInCategory(key).length;
+              return (
+                <Card key={key} className="group transition-all hover:opacity-90 hover:shadow-elegant">
+                  <Link
+                    to={CATEGORY_INDEX[key]}
+                    className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
+                  >
+                    <CardHeader className="text-center pb-4">
+                      <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
+                        <Icon className="h-6 w-6 text-primary" />
+                      </div>
+                      <CardTitle className="text-xl">{CATEGORY_LABEL[key]}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-center">
+                      <CardDescription className="text-base mb-4">{blurb}</CardDescription>
+                      <p className="text-primary font-medium text-sm">
+                        {count} {count === 1 ? "Tool" : "Tools"} →
+                      </p>
+                    </CardContent>
+                  </Link>
+                </Card>
+              );
+            })}
           </div>
         </section>
+
+        {/*
+          Direct links to the most-wanted tools. The category cards above put every
+          tool within two clicks, but the tools people actually arrive looking for
+          should not need the intermediate hop.
+        */}
+        <section className="pb-20" aria-labelledby="popular-heading">
+          <div className="max-w-5xl mx-auto">
+            <h2 id="popular-heading" className="text-3xl font-heading font-bold text-center mb-4">
+              Popular tools
+            </h2>
+            <p className="text-center text-muted-foreground mb-10">
+              Every one of these runs entirely in your browser. Nothing is uploaded.
+            </p>
+            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {POPULAR_TOOLS.map((tool) => (
+                <li key={tool.id}>
+                  <Link
+                    to={toolPath(tool)}
+                    className="block rounded-lg border border-border/60 px-4 py-3 transition-colors hover:border-primary/40 hover:bg-muted/40"
+                  >
+                    <span className="font-medium">{tool.name}</span>
+                    <span className="mt-1 block text-sm text-muted-foreground">{tool.description}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-8 text-center">
+              <Link to="/all-tools" className="text-sm font-medium text-primary hover:underline">
+                Browse all {TOOL_CATALOG.length} tools →
+              </Link>
+            </p>
+          </div>
+        </section>
+
 
       </main>
 

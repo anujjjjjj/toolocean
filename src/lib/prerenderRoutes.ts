@@ -17,6 +17,18 @@ import { buildLandingPageGraph } from "@/lib/landingPageSchema";
 
 export const CATEGORY_INDEXES = Object.keys(CATEGORY_PAGE_SEO);
 
+/**
+ * Routes that are prerendered but must not be indexed.
+ *
+ * /workflow-builder is an app whose content is produced at runtime, so its
+ * prerendered body is roughly forty words of empty state. It still needs a
+ * static file — a hard refresh would otherwise hit the `/* /404.html 404`
+ * fallback — but an indexed forty-word page linked from every footer on the
+ * site is a liability, not an asset. It stays crawlable and usable, just not
+ * indexable, and it is excluded from sitemap.xml to match.
+ */
+const NOINDEX_ROUTES = new Set(["/workflow-builder"]);
+
 /** About/Privacy/Terms. Separate from the category indexes so breadcrumbs and the
  *  sitemap do not treat them as tool categories. */
 export const INFO_ROUTES = Object.keys(INFO_PAGE_SEO);
@@ -45,7 +57,7 @@ export function headForRoute(path: string): string {
 
   const infoPage = INFO_PAGE_SEO[path];
   if (infoPage) {
-    return renderHeadTags({ ...infoPage, path });
+    return renderHeadTags({ ...infoPage, path, noindex: NOINDEX_ROUTES.has(path) });
   }
 
   const slug = path.replace(/^\//, "");

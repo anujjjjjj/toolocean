@@ -10,10 +10,11 @@
     "build:client": "vite build",
     "build:ssg": "vite build --ssr src/entry-ssg.tsx --outDir dist-ssg",
     "prerender": "node scripts/prerender.mjs",
-    "build": "npm run check:catalog && npm run sitemap && npm run build:client && npm run build:ssg && npm run prerender",
+    "build": "npm run check:catalog && npm run sitemap && npm run build:client && npm run build:ssg && npm run prerender && npm run check:links",
     "build:dev": "npm run check:catalog && npm run sitemap && vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check:links": "node scripts/check-links.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

@@ -8,3 +8,7 @@ Allow: /
 # the sitemap; crawlers that already know them will follow the redirect.
 
 Sitemap: https://toolocean.co/sitemap.xml
+
+# Plain-language summary of what this site is and what each category does,
+# for agents that prefer prose over crawling 135 pages.
+# https://toolocean.co/llms.txt

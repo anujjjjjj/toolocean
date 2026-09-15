@@ -38,6 +38,7 @@ const SpreadsheetToolsPage = lazy(() => import("./pages/SpreadsheetToolsPage"));
 const CompressionToolsPage = lazy(() => import("./pages/CompressionToolsPage"));
 const ArchiveToolsPage = lazy(() => import("./pages/ArchiveToolsPage"));
 const ConverterToolsPage = lazy(() => import("./pages/ConverterToolsPage"));
+const AllToolsPage = lazy(() => import("./pages/AllToolsPage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
 const PrivacyPage = lazy(() => import("./pages/PrivacyPage"));
 const TermsPage = lazy(() => import("./pages/TermsPage"));
@@ -108,6 +109,7 @@ export function AppRoutes() {
             <Route path="/workflow-builder" element={<WorkflowBuilderPage />} />
 
             {/* About/Privacy/Terms. Static segments outrank /:slug regardless of order. */}
+            <Route path="/all-tools" element={<AllToolsPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
