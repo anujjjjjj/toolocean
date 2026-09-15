@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import { useCommandPalette } from "@/contexts/CommandPaletteContext";
 import { useSEO } from "@/hooks/useSEO";
 import { HOME_SEO } from "@/data/staticPageSeo";
-import { buildOrganizationJsonLd, buildWebSiteJsonLd } from "@/lib/jsonLd";
+import { buildHomeGraph } from "@/lib/sitePageSchema";
 import type { CategoryKey } from "@/data/toolCatalog";
 import {
   CATEGORY_INDEX,
@@ -64,7 +64,7 @@ const Index = () => {
   useSEO({
     ...HOME_SEO,
     path: "/",
-    jsonLd: [buildOrganizationJsonLd(), buildWebSiteJsonLd()],
+    jsonLd: [buildHomeGraph()],
   });
 
   const handleSearchFocus = () => {

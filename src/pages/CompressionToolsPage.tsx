@@ -8,7 +8,7 @@ import { Archive, FileDown, FileUp, ArrowLeft, Shield, Zap, Gift } from "lucide-
 import { useNavigate } from "react-router-dom";
 import { useSEO } from "@/hooks/useSEO";
 import { CATEGORY_PAGE_SEO } from "@/data/staticPageSeo";
-import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
+import { buildCategoryGraph } from "@/lib/sitePageSchema";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { ToolLinkCard } from "@/components/tools/ToolLinkCard";
 import { toolsInCategory } from "@/data/toolCatalog";
@@ -30,7 +30,7 @@ const CompressionToolsPage = () => {
   useSEO({
     ...CATEGORY_PAGE_SEO["/compression-tools"],
     path: "/compression-tools",
-    jsonLd: [buildBreadcrumbJsonLd(BREADCRUMB_ITEMS)],
+    jsonLd: [buildCategoryGraph("/compression-tools")].filter(Boolean),
   });
 
   return (

@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { useSEO } from "@/hooks/useSEO";
+import { buildInfoPageGraph } from "@/lib/sitePageSchema";
 import { INFO_PAGE_SEO } from "@/data/staticPageSeo";
 import { Code, InfoPageLayout, P, Section, UL } from "@/components/layout/InfoPageLayout";
-import { buildOrganizationJsonLd } from "@/lib/jsonLd";
 
 /**
  * About page.
@@ -20,7 +20,7 @@ const AboutPage = () => {
   useSEO({
     ...INFO_PAGE_SEO["/about"],
     path: "/about",
-    jsonLd: [buildOrganizationJsonLd()],
+    jsonLd: [buildInfoPageGraph("/about")].filter(Boolean),
   });
 
   return (

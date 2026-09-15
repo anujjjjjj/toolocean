@@ -23,7 +23,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useSEO } from "@/hooks/useSEO";
 import { CATEGORY_PAGE_SEO } from "@/data/staticPageSeo";
-import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
+import { buildCategoryGraph } from "@/lib/sitePageSchema";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { ToolLinkCard } from "@/components/tools/ToolLinkCard";
 import { toolsInCategory } from "@/data/toolCatalog";
@@ -45,7 +45,7 @@ const ImageToolsPage = () => {
   useSEO({
     ...CATEGORY_PAGE_SEO["/image-tools"],
     path: "/image-tools",
-    jsonLd: [buildBreadcrumbJsonLd(BREADCRUMB_ITEMS)],
+    jsonLd: [buildCategoryGraph("/image-tools")].filter(Boolean),
   });
 
   return (

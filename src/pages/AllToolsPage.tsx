@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useSEO } from "@/hooks/useSEO";
+import { buildInfoPageGraph } from "@/lib/sitePageSchema";
 import { INFO_PAGE_SEO } from "@/data/staticPageSeo";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -48,6 +49,7 @@ const AllToolsPage = () => {
   useSEO({
     ...INFO_PAGE_SEO["/all-tools"],
     path: "/all-tools",
+    jsonLd: [buildInfoPageGraph("/all-tools")].filter(Boolean),
   });
 
   return (

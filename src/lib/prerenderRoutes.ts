@@ -5,6 +5,7 @@ import { resolveToolContent } from "@/lib/toolContentResolver";
 import { renderHeadTags } from "@/lib/seoHead";
 import { LANDING_PAGES, findLandingPage } from "@/data/landingPages";
 import { buildLandingPageGraph } from "@/lib/landingPageSchema";
+import { buildCategoryGraph, buildHomeGraph, buildInfoPageGraph } from "@/lib/sitePageSchema";
 
 /**
  * The route list the prerender walks, plus the <head> for each one.
@@ -47,17 +48,27 @@ export const PRERENDER_ROUTES: string[] = [
 /** Builds the <head> markup for a prerendered route. */
 export function headForRoute(path: string): string {
   if (path === "/") {
-    return renderHeadTags({ ...HOME_SEO, path: "/" });
+    return renderHeadTags({ ...HOME_SEO, path: "/", jsonLd: [buildHomeGraph()] });
   }
 
   const categoryPage = CATEGORY_PAGE_SEO[path];
   if (categoryPage) {
-    return renderHeadTags({ ...categoryPage, path });
+    const categoryGraph = buildCategoryGraph(path);
+    return renderHeadTags({ ...categoryPage, path, jsonLd: categoryGraph ? [categoryGraph] : [] });
   }
 
   const infoPage = INFO_PAGE_SEO[path];
   if (infoPage) {
-    return renderHeadTags({ ...infoPage, path, noindex: NOINDEX_ROUTES.has(path) });
+    // A noindex page gets no graph — describing a page in detail while telling
+    // the crawler to ignore it is a contradiction, not a signal.
+    const noindex = NOINDEX_ROUTES.has(path);
+    const infoGraph = noindex ? null : buildInfoPageGraph(path);
+    return renderHeadTags({
+      ...infoPage,
+      path,
+      noindex,
+      jsonLd: infoGraph ? [infoGraph] : [],
+    });
   }
 
   const slug = path.replace(/^\//, "");

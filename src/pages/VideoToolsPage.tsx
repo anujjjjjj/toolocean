@@ -8,7 +8,7 @@ import { Video, Scissors, Image as ImageIcon, Film, Info, ArrowLeft, Shield, Zap
 import { useNavigate } from "react-router-dom";
 import { useSEO } from "@/hooks/useSEO";
 import { CATEGORY_PAGE_SEO } from "@/data/staticPageSeo";
-import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
+import { buildCategoryGraph } from "@/lib/sitePageSchema";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { ToolLinkCard } from "@/components/tools/ToolLinkCard";
 import { toolsInCategory } from "@/data/toolCatalog";
@@ -30,7 +30,7 @@ const VideoToolsPage = () => {
   useSEO({
     ...CATEGORY_PAGE_SEO["/video-tools"],
     path: "/video-tools",
-    jsonLd: [buildBreadcrumbJsonLd(BREADCRUMB_ITEMS)],
+    jsonLd: [buildCategoryGraph("/video-tools")].filter(Boolean),
   });
 
   return (

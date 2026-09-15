@@ -8,7 +8,7 @@ import { Archive, FolderOpen, FolderPlus, List, ArrowLeft, Shield, Zap, Gift } f
 import { useNavigate } from "react-router-dom";
 import { useSEO } from "@/hooks/useSEO";
 import { CATEGORY_PAGE_SEO } from "@/data/staticPageSeo";
-import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
+import { buildCategoryGraph } from "@/lib/sitePageSchema";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { ToolLinkCard } from "@/components/tools/ToolLinkCard";
 import { toolsInCategory } from "@/data/toolCatalog";
@@ -30,7 +30,7 @@ const ArchiveToolsPage = () => {
   useSEO({
     ...CATEGORY_PAGE_SEO["/archive-tools"],
     path: "/archive-tools",
-    jsonLd: [buildBreadcrumbJsonLd(BREADCRUMB_ITEMS)],
+    jsonLd: [buildCategoryGraph("/archive-tools")].filter(Boolean),
   });
 
   return (
