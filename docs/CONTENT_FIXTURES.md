@@ -44,9 +44,10 @@ nothing.
 | `photo-3840.jpg` | 2,057,152 | 3840x2160 photograph, JPEG quality 85 |
 | `photo-3840.png` | 10,887,764 | the same photograph, lossless PNG |
 | `scan-page.jpg` | 1,206,570 | the photograph at 2480px, standing in for a 300 dpi scan |
+| `page-0.jpg` … `page-11.jpg` | ~860,000 each | twelve different 2550x3300 crops, the pages of `scan-12p.pdf` |
 | `report-40p.pdf` | 165,897 | 40-page A4 text-only PDF, Helvetica, generated from real prose |
 | `report-12p.pdf` | 50,563 | the same, 12 pages |
-| `scan-12p.pdf` | 1,209,181 | 12 A4 pages, each a full-bleed raster image |
+| `scan-12p.pdf` | 10,324,119 | 12 A4 pages, each a **different** full-bleed raster image |
 | `many-files.zip` | 160,235 | 300 small text files in nested folders |
 | `one-photo.zip` | 2,055,994 | a single already-compressed JPEG |
 
@@ -64,13 +65,14 @@ Session S1 throughout.
 | image-compressor | 3840x2160 photograph, PNG in, quality 80 | 10,887,764 | 1,201,043 | −89.0% | 179 ms |
 | pdf-merge | 40-page and 12-page text PDFs into one | 216,460 | 216,125 | −0.2% | 35 ms |
 | zip-creator | one JPEG and two text PDFs into one archive | 2,273,612 | 2,273,946 | +0.0% | 33 ms |
-| pdf-compress | 40-page A4 text-only PDF | 165,897 | 165,867 | −0.0% | 22 ms |
-| pdf-compress | 12 A4 pages of full-bleed raster | 1,209,181 | 1,209,141 | −0.0% | 12 ms |
+| pdf-compress | 12-page scan, re-encode pages as images, quality 70 | 10,324,119 | 1,644,152 | −84.1% | 2,376 ms |
+| pdf-compress | 12-page scan, lossless | 10,324,119 | 10,324,083 | −0.0% | 46 ms |
+| pdf-compress | 40-page text PDF, lossless | 165,897 | 165,867 | −0.0% | 22 ms |
+| pdf-compress | 40-page text PDF, re-encode pages as images | 165,897 | 14,810,686 | +8,827% | 875 ms |
 
 ### What these say
 
-Three of these are publishable as they stand, and two of them are more useful
-than a flattering number would be:
+Several of these are more useful than a flattering number would be:
 
 - **image-compressor** is the strong case. The PNG result is the one worth
   leading with — 89% is real, and it is real because re-encoding a photograph as
@@ -80,12 +82,25 @@ than a flattering number would be:
   "Merging does not shrink your file" is a better answer than a fake percentage.
 - **zip-creator** gets very slightly *larger* on this input, because the archive
   is dominated by an already-compressed JPEG that DEFLATE cannot improve, and the
-  container costs a few hundred bytes. Saying so is more useful than any ratio.
+  container costs a few hundred bytes.
+- **pdf-compress** is now two different operations with two honest answers.
+  Lossless recovers 0.0% on both fixtures — it only strips metadata, and saying
+  so is the fix for a tool that used to report that as a success. Re-encoding
+  pages as images takes a 10.3 MB scan to 1.6 MB, and takes a 166 KB text
+  document to 14.8 MB, because vector glyphs costing a few bytes a page become
+  full-page photographs. The tool refuses to hand back the larger file.
 
-- **pdf-compress does not compress.** Both fixtures came back 0.0% smaller, and
-  the run takes 12–22 ms because almost nothing happens: the implementation
-  strips document metadata and re-saves with object streams, and the quality
-  slider the page presents is never read by the code that produces the file. The
-  page is titled "Compress PDF" and reports a savings percentage that is always
-  approximately zero. It is listed in `KNOWN_BROKEN` until either the tool or the
-  claim changes.
+The 84.1% figure is the one to publish, with the text-PDF case stated beside it
+rather than hidden: a compressor that tells you when not to use it is worth more
+than one that always claims a win.
+
+### A fixture that was wrong
+
+The first `scan-12p.pdf` embedded a single image and referenced it twelve times,
+so the "12-page scan" was 1.2 MB rather than the ~10 MB a real one weighs.
+Measured against it, re-encoding appeared to make files *larger* — an artifact of
+pdf-lib deduplicating the repeated image, not a property of the tool. It is
+rebuilt from twelve different crops.
+
+Worth remembering when adding fixtures: a file that is the right shape can still
+be the wrong measurement, and the failure is silent.

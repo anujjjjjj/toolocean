@@ -182,50 +182,46 @@ const Index = () => {
           Counts are derived from the catalog. They were hardcoded and had drifted
           badly: "31 Tools" for a category holding 66.
         */}
-        <section className="py-20" aria-labelledby="explore-heading">
-          <h2 id="explore-heading" className="text-3xl font-heading font-bold text-center mb-12">
+        <section className="py-16" aria-labelledby="explore-heading">
+          <h2 id="explore-heading" className="mb-8 text-center font-heading text-3xl font-bold">
             Explore Tools
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            <Card className="group transition-all hover:opacity-90 hover:shadow-elegant md:col-span-2 lg:col-span-1 order-first">
-              <Link to="/workflow-builder" className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg">
-                <CardHeader className="text-center pb-4">
-                  <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
-                    <Workflow className="h-6 w-6 text-primary" />
-                  </div>
-                  <CardTitle className="text-xl">Workflow Builder</CardTitle>
-                </CardHeader>
-                <CardContent className="text-center">
-                  <CardDescription className="text-base mb-4">
-                    Chain multiple tools together to create powerful automated workflows.
-                  </CardDescription>
-                  <p className="text-primary font-medium text-sm">Create Workflow →</p>
-                </CardContent>
-              </Link>
-            </Card>
+          <div className="mx-auto grid max-w-5xl grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            <Link
+              to="/workflow-builder"
+              className="group order-first flex flex-col gap-2.5 rounded-lg border border-border/60 bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-elegant sm:col-span-2 lg:col-span-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/10 transition-colors group-hover:bg-primary">
+                <Workflow className="h-4 w-4 text-primary transition-colors group-hover:text-primary-foreground" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold">Workflow Builder</h3>
+                <p className="mt-0.5 text-xs leading-snug text-muted-foreground">
+                  Chain tools together into an automated pipeline.
+                </p>
+              </div>
+              <p className="mt-auto text-xs font-medium text-primary">Create workflow →</p>
+            </Link>
 
             {CATEGORY_CARDS.map(({ key, icon: Icon, blurb }) => {
               const count = toolsInCategory(key).length;
               return (
-                <Card key={key} className="group transition-all hover:opacity-90 hover:shadow-elegant">
-                  <Link
-                    to={CATEGORY_INDEX[key]}
-                    className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
-                  >
-                    <CardHeader className="text-center pb-4">
-                      <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
-                        <Icon className="h-6 w-6 text-primary" />
-                      </div>
-                      <CardTitle className="text-xl">{CATEGORY_LABEL[key]}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-center">
-                      <CardDescription className="text-base mb-4">{blurb}</CardDescription>
-                      <p className="text-primary font-medium text-sm">
-                        {count} {count === 1 ? "Tool" : "Tools"} →
-                      </p>
-                    </CardContent>
-                  </Link>
-                </Card>
+                <Link
+                  key={key}
+                  to={CATEGORY_INDEX[key]}
+                  className="group flex flex-col gap-2.5 rounded-lg border border-border/60 bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-elegant focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/10 transition-colors group-hover:bg-primary">
+                    <Icon className="h-4 w-4 text-primary transition-colors group-hover:text-primary-foreground" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-semibold">{CATEGORY_LABEL[key]}</h3>
+                    <p className="mt-0.5 text-xs leading-snug text-muted-foreground">{blurb}</p>
+                  </div>
+                  <p className="mt-auto text-xs font-medium text-primary">
+                    {count} {count === 1 ? "tool" : "tools"} →
+                  </p>
+                </Link>
               );
             })}
           </div>

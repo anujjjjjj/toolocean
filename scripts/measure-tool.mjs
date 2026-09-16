@@ -11,14 +11,7 @@ const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const PORT = 9410;
 const PROFILE = "/tmp/cdp-measure-" + Date.now();
 const [route, filePath, buttonText, waitMs = "8000"] = process.argv.slice(2);
-
-if (!route || !filePath || !buttonText) {
-  console.error(
-    "Usage: node scripts/measure-tool.mjs <route> <file[,file...]> <button-text> [waitMs]\n" +
-      "Requires a static server on :4177 serving dist/ — see docs/CONTENT_FIXTURES.md.",
-  );
-  process.exit(1);
-}
+const SETUP_JS = process.env.SETUP_JS;
 
 const chrome = spawn(CHROME, [
   `--remote-debugging-port=${PORT}`, "--headless=new", "--disable-gpu",
@@ -56,6 +49,8 @@ if (!input.nodeId) { console.error("no file input found on " + route); ws.close(
 const files = filePath.split(",");
 await send("DOM.setFileInputFiles", { nodeId: input.nodeId, files });
 await sleep(2500);
+
+if (SETUP_JS) { const r = await ev(SETUP_JS); console.error("  setup:", r); await sleep(1200); }
 
 const started = await ev(`(() => {
   const btn = [...document.querySelectorAll('#tool-workbench button')]

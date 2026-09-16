@@ -32,16 +32,8 @@ export const TOOL_CONTENT_OVERRIDES: Record<string, Partial<ToolPageContent>> = 
  * the page claims, then remove the slug.
  */
 export const KNOWN_BROKEN: string[] = [
-  /*
-   * pdf-compress does not compress. Measured through the real page in a real
-   * browser (docs/CONTENT_FIXTURES.md, session S1): a 40-page text PDF and a
-   * 12-page raster PDF both came back 0.0% smaller. The implementation strips
-   * metadata and re-saves with object streams, and the quality slider the page
-   * presents is never read by the code that produces the file — so the control
-   * is decorative and the reported "savings" is always about zero.
-   *
-   * Either the tool starts compressing or the page stops claiming to. Until one
-   * of those happens, no content gets written for it.
-   */
-  "pdf-compress",
+  // Currently empty. pdf-compress was listed here after measurement showed it
+  // reduced files by 0.0% while presenting a quality slider its code never read;
+  // it now has a real re-encoding mode (84.1% on a 12-page scan, measured) and a
+  // guard that refuses to return a file bigger than the original.
 ];
