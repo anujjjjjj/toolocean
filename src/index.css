@@ -97,10 +97,10 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 220 15% 12%;
 
-    /* Refined Primary - Teal accent */
-    --primary: 172 66% 50%;
+    /* Refined Primary - deep marine teal, not the brighter mint of the previous pass */
+    --primary: 176 79% 27%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 172 66% 55%;
+    --primary-glow: 176 70% 38%;
 
     --secondary: 220 14% 96%;
     --secondary-foreground: 220 15% 12%;
@@ -116,20 +116,20 @@ All colors MUST be HSL.
 
     --border: 220 14% 90%;
     --input: 220 14% 90%;
-    --ring: 172 66% 50%;
+    --ring: 176 79% 27%;
 
     /* Design System Tokens */
     --radius: 0.5rem;
-    
+
     /* Subtle gradients - use sparingly */
-    --gradient-primary: linear-gradient(135deg, hsl(172 66% 50%), hsl(172 66% 55%));
-    --gradient-ocean: linear-gradient(135deg, hsl(172 66% 50%), hsl(180 60% 55%));
+    --gradient-primary: linear-gradient(135deg, hsl(176 79% 27%), hsl(176 70% 38%));
+    --gradient-ocean: linear-gradient(135deg, hsl(176 79% 27%), hsl(185 60% 40%));
     --gradient-subtle: linear-gradient(180deg, hsl(0 0% 98%), hsl(220 14% 97%));
-    
+
     /* Refined shadows - softer, subtler */
     --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.04);
-    --shadow-glow: 0 0 20px hsl(172 66% 50% / 0.15);
-    --shadow-elegant: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-glow: 0 0 20px hsl(176 79% 27% / 0.15);
+    --shadow-elegant: 0 6px 16px -10px hsl(176 79% 27% / 0.45);
     
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -163,9 +163,9 @@ All colors MUST be HSL.
     --popover: 220 14% 11%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 172 66% 55%;
+    --primary: 176 65% 45%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 172 66% 60%;
+    --primary-glow: 176 60% 55%;
 
     --secondary: 220 14% 14%;
     --secondary-foreground: 0 0% 98%;
@@ -181,17 +181,17 @@ All colors MUST be HSL.
 
     --border: 220 14% 18%;
     --input: 220 14% 14%;
-    --ring: 172 66% 55%;
-    
+    --ring: 176 65% 45%;
+
     /* Dark Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(172 66% 55%), hsl(172 66% 60%));
-    --gradient-ocean: linear-gradient(135deg, hsl(172 66% 55%), hsl(180 60% 60%));
+    --gradient-primary: linear-gradient(135deg, hsl(176 65% 45%), hsl(176 60% 55%));
+    --gradient-ocean: linear-gradient(135deg, hsl(176 65% 45%), hsl(185 55% 50%));
     --gradient-subtle: linear-gradient(180deg, hsl(220 14% 9%), hsl(220 14% 11%));
-    
+
     /* Dark Shadows */
     --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.3);
-    --shadow-glow: 0 0 20px hsl(172 66% 55% / 0.2);
-    --shadow-elegant: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-glow: 0 0 20px hsl(176 65% 45% / 0.25);
+    --shadow-elegant: 0 6px 16px -10px hsl(176 65% 45% / 0.5);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;

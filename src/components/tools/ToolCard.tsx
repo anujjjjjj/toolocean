@@ -1,8 +1,5 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getToolIcon } from "@/lib/toolIcons";
-import { LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface Tool {
@@ -32,72 +29,43 @@ export function ToolCard({ tool, onAddToWorkflow, showWorkflowButton = false }: 
    */
   const href = `/${tool.id}`;
 
-  const getCategoryColor = (category: string) => {
-    const colors: Record<string, string> = {
-      text: "bg-blue-500/10 text-blue-700 dark:text-blue-300",
-      formatting: "bg-green-500/10 text-green-700 dark:text-green-300",
-      development: "bg-purple-500/10 text-purple-700 dark:text-purple-300",
-      security: "bg-red-500/10 text-red-700 dark:text-red-300",
-    };
-    return colors[category] || "bg-gray-500/10 text-gray-700 dark:text-gray-300";
-  };
-
   return (
-    <Card className="group hover:shadow-elegant transition-all hover:opacity-90 relative overflow-hidden">
-      {tool.featured && (
-        <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs px-2 py-1 rounded-bl-lg font-medium">
-          Featured
+    <div className="group relative flex flex-col gap-2.5 rounded-lg border border-border/60 bg-card p-3.5 transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-elegant">
+      <div className="flex items-start gap-3">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary/10 transition-colors group-hover:bg-primary">
+          <Icon className="h-4 w-4 text-primary transition-colors group-hover:text-primary-foreground" />
         </div>
-      )}
-      
-      <CardHeader className="pb-3">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/15 transition-colors">
-            <Icon className="h-5 w-5 text-primary" />
-          </div>
-          <div className="flex-1">
-            <CardTitle className="text-lg group-hover:text-primary transition-colors">
-              <Link to={href} className="after:absolute after:inset-0 after:content-['']">
-                {tool.name}
-              </Link>
-            </CardTitle>
-            <Badge 
-              variant="outline" 
-              className={`text-xs capitalize ${getCategoryColor(tool.category)}`}
-            >
-              {tool.category}
-            </Badge>
-          </div>
-        </div>
-      </CardHeader>
-
-      <CardContent className="pt-0">
-        <CardDescription className="text-sm text-muted-foreground mb-4 line-clamp-2">
-          {tool.description}
-        </CardDescription>
-        
-        <div className="flex gap-2">
-          <Button className="flex-1 relative z-10" asChild>
-            <Link to={href}>Open Tool</Link>
-          </Button>
-          
-          {showWorkflowButton && onAddToWorkflow && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onAddToWorkflow(tool.id)}
-              className="shrink-0 relative z-10"
-            >
-              + Workflow
-            </Button>
+        <div className="min-w-0 flex-1">
+          <h3 className="text-sm font-semibold leading-tight">
+            <Link to={href} className="after:absolute after:inset-0 after:content-['']">
+              {tool.name}
+            </Link>
+          </h3>
+          {tool.featured && (
+            <span className="mt-1 inline-block rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-medium text-primary">
+              Featured
+            </span>
           )}
         </div>
-        
-        {/* Keywords for search (hidden) */}
-        <div className="hidden">
-          {tool.keywords.join(" ")}
-        </div>
-      </CardContent>
-    </Card>
+      </div>
+
+      <p className="text-xs leading-snug text-muted-foreground line-clamp-2">{tool.description}</p>
+
+      {showWorkflowButton && onAddToWorkflow && (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onAddToWorkflow(tool.id)}
+          className="relative z-10 h-7 w-fit text-xs"
+        >
+          + Workflow
+        </Button>
+      )}
+
+      {/* Keywords for search (hidden) */}
+      <div className="hidden">
+        {tool.keywords.join(" ")}
+      </div>
+    </div>
   );
 }

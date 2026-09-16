@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getToolIcon } from "@/lib/toolIcons";
 import { toolPath, type CatalogTool } from "@/data/toolCatalog";
 
@@ -16,28 +15,28 @@ import { toolPath, type CatalogTool } from "@/data/toolCatalog";
  * context rather than being a bare card-shaped click target, and it resolves
  * through toolPath() so it points at the flat canonical slug instead of a
  * legacy /<category>-tools/<id> URL that would answer with a redirect.
+ *
+ * Deliberately built from a bare div/link rather than the Card primitive:
+ * Card's default header+content padding (24px each) is what made a grid of
+ * these read as mostly whitespace with a name floating in it.
  */
 export function ToolLinkCard({ tool }: { tool: CatalogTool }) {
   const Icon = getToolIcon(tool.icon);
 
   return (
-    <Card className="group transition-all hover:opacity-90 hover:shadow-elegant">
-      <Link
-        to={toolPath(tool)}
-        className="block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      >
-        <CardHeader className="text-center pb-2">
-          <div className="inline-flex items-center justify-center w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 group-hover:bg-primary/15 transition-colors">
-            <Icon className="h-6 w-6 text-primary" />
-          </div>
-          <CardTitle className="text-lg group-hover:text-primary transition-colors">
-            {tool.name}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="text-center pt-0">
-          <CardDescription className="text-sm">{tool.description}</CardDescription>
-        </CardContent>
-      </Link>
-    </Card>
+    <Link
+      to={toolPath(tool)}
+      className="group flex items-start gap-3 rounded-lg border border-border/60 bg-card p-3.5 transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-elegant focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    >
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary/10 transition-colors group-hover:bg-primary">
+        <Icon className="h-4 w-4 text-primary transition-colors group-hover:text-primary-foreground" />
+      </div>
+      <div className="min-w-0">
+        <h3 className="text-sm font-semibold leading-tight">{tool.name}</h3>
+        <p className="mt-0.5 text-xs leading-snug text-muted-foreground line-clamp-2">
+          {tool.description}
+        </p>
+      </div>
+    </Link>
   );
 }

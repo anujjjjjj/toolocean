@@ -70,7 +70,7 @@ const PdfToolsPage = () => {
             <p className="text-muted-foreground">Select a tool to get started</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3">
             {pdfTools.map((tool) => (
               <ToolLinkCard key={tool.id} tool={tool} />
             ))}
