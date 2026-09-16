@@ -10,7 +10,7 @@ import {
 import { CATEGORY_PROFILES } from "@/data/toolCategoryProfiles";
 import { getToolSeo } from "@/data/toolSeo";
 import { TOOL_CONTENT_OVERRIDES } from "@/data/toolContent";
-import type { RelatedToolLink, ToolFaqEntry, ToolPageContent } from "@/types/toolContent";
+import type { RelatedToolLink, ToolFaqEntry, ToolPageContent, ToolSpec } from "@/types/toolContent";
 
 /**
  * Produces a complete, non-thin ToolPageContent for any tool in the catalog.
@@ -115,26 +115,61 @@ function categoryFaqs(tool: CatalogTool): ToolFaqEntry[] {
 
   return [
     {
+      topic: "privacy",
       question: `Is my ${profile.subject} uploaded to a server?`,
       answer: outbound
         ? `${tool.name} is a static page with no backend of its own, and nothing you type is stored or logged here. It is one of the few tools on this site that does have to reach the network: answering the question at all means querying ${outbound}, so the value you enter is sent there. Every other tool in the catalogue is fully local.`
         : `No. ${tool.name} is a static page with no backend. Your ${profile.subject} is read and processed by JavaScript running in this tab, and it is never transmitted. You can confirm this by opening your browser's network panel while you use the tool — there are no outbound requests.`,
     },
     {
+      topic: "size",
       question: isFile ? "Is there a file size limit?" : "How much data can I paste in?",
       answer: isFile
         ? "There is no limit imposed by us, because there is no server tier to enforce one. The real constraint is your device's available memory, since the whole file is held in RAM while it is processed. Very large files are slower on phones than on a laptop."
         : "There is no server-side cap. Very large inputs are limited only by your device's memory and will make the page feel slower, since the work happens on the main thread. In practice a few megabytes of text is comfortable.",
     },
     {
+      topic: "offline",
       question: "Does it work offline?",
       answer: outbound
         ? `No, and it is the exception. This tool has to query ${outbound} to answer, so it needs a connection even after the page has loaded. The rest of the catalogue keeps working with the network off.`
         : "Yes, once the page has loaded. The code that does the work is already in your browser at that point, so you can disconnect and keep using it. Reloading the page while offline needs the browser cache to still hold it.",
     },
     {
+      topic: "account",
       question: "Do I need to create an account?",
       answer: "No. There is no sign-up, no email, and no usage tracking tied to an identity. The tool works the first time you open it.",
+    },
+  ];
+}
+
+/**
+ * The "what happens to your data" table.
+ *
+ * Generated rather than authored because the answers are properties of the
+ * architecture, not of the tool — and a generated answer that is identical
+ * everywhere is the correct output when the fact is identical everywhere. The
+ * three tools that genuinely reach the network are the reason this is a function
+ * and not a constant: they have to say so in the same table, in the same words,
+ * rather than quietly matching the others.
+ */
+function defaultSpecs(tool: CatalogTool): ToolSpec[] {
+  const profile = CATEGORY_PROFILES[tool.category];
+  const outbound = NETWORK_TOOLS[tool.id];
+  const isFile = profile.ioMode === "file";
+
+  return [
+    { label: "Read via", value: isFile ? "The browser File API, on your device" : "Typed or pasted into the page" },
+    { label: "Held in", value: "Your browser tab's memory for as long as it is open" },
+    { label: "Stored", value: "Nothing. No cookies, no database, no server-side copy" },
+    {
+      label: "Transmitted",
+      value: outbound ? `The value you enter, to ${outbound}` : "Nothing leaves your device",
+    },
+    { label: "Retained after you close the tab", value: "Nothing" },
+    {
+      label: "Works offline",
+      value: outbound ? "No — this tool needs the network to answer" : "Yes, once the page has loaded",
     },
   ];
 }
@@ -168,10 +203,22 @@ export function resolveToolContent(slug: string): ToolPageContent | null {
   // FAQs backfill, deduplicated so an authored privacy answer wins over the
   // generic one.
   const authoredFaqs = override?.faqs ?? seo.faqs ?? [];
+  /*
+   * Deduplicate by subject, not by wording.
+   *
+   * Matching question strings does not work: an authored "Is my contract really
+   * private?" never matches the generated "Is my PDF uploaded to a server?", so
+   * both rendered — two answers to the same question side by side, inside
+   * FAQPage structured data. An authored entry tagged with a topic now
+   * suppresses the generated one on that topic.
+   */
   const seenQuestions = new Set(authoredFaqs.map((faq) => faq.question.toLowerCase()));
+  const claimedTopics = new Set(authoredFaqs.map((faq) => faq.topic).filter(Boolean));
   const faqs = [
     ...authoredFaqs,
-    ...categoryFaqs(tool).filter((faq) => !seenQuestions.has(faq.question.toLowerCase())),
+    ...categoryFaqs(tool).filter(
+      (faq) => !seenQuestions.has(faq.question.toLowerCase()) && !claimedTopics.has(faq.topic),
+    ),
   ];
 
   return {
@@ -201,7 +248,16 @@ export function resolveToolContent(slug: string): ToolPageContent | null {
         (profile.ioMode === "file" ? undefined : { label: "Open a file", action: "upload" }),
     },
     intro: override?.intro,
-    features: override?.features ?? profile.features,
+    /*
+     * Authored cards first, then the shared pair — composed, not replaced.
+     * Previously an override had to restate the architectural claims to keep
+     * them, and a tool with no override got five identical cards and nothing
+     * specific to itself.
+     */
+    features: [
+      ...(override?.features ?? []),
+      ...(override?.dropSharedFeatures ? [] : profile.sharedFeatures),
+    ].slice(0, 6),
     howItWorks: override?.howItWorks ?? profile.howItWorks,
     // Never invented — an unauthored tool simply has no Examples section.
     examples: override?.examples ?? [],
@@ -209,5 +265,11 @@ export function resolveToolContent(slug: string): ToolPageContent | null {
     faqs,
     related: override?.related ?? deriveRelated(tool),
     headings: override?.headings,
+    specs: override?.specs ?? defaultSpecs(tool),
+    measurements: override?.measurements,
+    limitations: override?.limitations,
+    comparison: override?.comparison,
+    scenarios: override?.scenarios,
+    tier: override?.tier,
   };
 }

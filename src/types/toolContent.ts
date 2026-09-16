@@ -80,17 +80,47 @@ export interface ToolStep {
   body: string;
 }
 
-export interface ToolExample {
+/**
+ * A worked example.
+ *
+ * Text tools can show real input and real output. File tools cannot — there is
+ * no string to print for "compress this 4 MB scan" — so they describe a fixture
+ * instead. The original shape assumed every tool was a text tool, which left the
+ * 52 file tools unable to have an Examples section at all.
+ *
+ * `kind` is optional on the code variant so existing content keeps compiling;
+ * TypeScript still narrows correctly, because only the file variant sets it.
+ */
+export interface ToolCodeExample {
+  kind?: "code";
   title: string;
   /** Why a reader should care about this specific example. */
   description: string;
+  /** Must be byte-identical to what the tool actually produces. */
   input: string;
   output: string;
   /** Syntax label shown on the code block, e.g. "json". */
   language: string;
   /** What changed between input and output, and why it matters. */
   explanation: string;
+  /** Set false to suppress the "Try this example" button. */
+  loadable?: boolean;
 }
+
+export interface ToolFileExample {
+  kind: "file";
+  title: string;
+  description: string;
+  /** The fixture as it goes in, e.g. "12-page scan, 300 dpi, 4.1 MB". */
+  before: { label: string; detail: string };
+  /** The result, e.g. "1.6 MB, text layer intact". */
+  after: { label: string; detail: string };
+  /** Settings used, if they matter to the result. */
+  settings?: string;
+  explanation: string;
+}
+
+export type ToolExample = ToolCodeExample | ToolFileExample;
 
 export interface ToolUseCase {
   icon: string;
@@ -99,9 +129,22 @@ export interface ToolUseCase {
   body: string;
 }
 
+/**
+ * Subjects the generated category FAQs cover.
+ *
+ * Tagging them lets an authored answer on the same subject suppress the generic
+ * one. Deduplicating by question string does not work: an authored "Is my
+ * contract really private?" does not match the generated "Is my PDF uploaded to
+ * a server?", so both rendered side by side — inside FAQPage structured data,
+ * saying the same thing twice in different words.
+ */
+export type FaqTopic = "privacy" | "size" | "offline" | "account";
+
 export interface ToolFaqEntry {
   question: string;
   answer: string;
+  /** Set on generated entries, and on an authored answer that replaces one. */
+  topic?: FaqTopic;
 }
 
 export interface RelatedToolLink {
@@ -123,7 +166,111 @@ export interface ToolSectionHeadings {
   useCases?: { heading: string; lede?: string };
   faq?: { heading: string; lede?: string };
   related?: { heading: string; lede?: string };
+  specs?: { heading: string; lede?: string };
+  measurements?: { heading: string; lede?: string };
+  limitations?: { heading: string; lede?: string };
+  comparison?: { heading: string; lede?: string };
+  scenarios?: { heading: string; lede?: string };
 }
+
+/**
+ * "What happens to your data" — a short spec table.
+ *
+ * Deliberately near-identical between tools and deliberately short. It is a
+ * spec, not prose, so it is excluded from the authored-word count and is not
+ * expected to be rewritten per page. Its job is to make the architectural claim
+ * checkable at a glance, and machine-readable. The three tools that genuinely
+ * reach the network say so here rather than quietly matching the others.
+ */
+export interface ToolSpec {
+  label: string;
+  value: string;
+}
+
+/**
+ * A real measurement from a real run.
+ *
+ * The least copyable thing on the site: an upload-based competitor cannot
+ * publish "4.1 MB to 1.6 MB in 2.3 s" without disclosing their own numbers.
+ * It also answers the questions people actually search — "how much can you
+ * compress a PDF", "will compressing a PDF lose quality".
+ *
+ * Numbers must come from a fixture in docs/CONTENT_FIXTURES.md. Inventing them
+ * would make the one genuinely unfakeable asset on the site fake.
+ */
+export interface ToolMeasurement {
+  /** The fixture, e.g. "12-page scanned invoice, 300 dpi". */
+  scenario: string;
+  input: string;
+  output: string;
+  timing?: string;
+  note?: string;
+}
+
+export interface ToolMeasurementTable {
+  heading?: string;
+  lede?: string;
+  /** Provenance: device, browser, version, date. Required — see check-content.mjs. */
+  method: string;
+  rows: ToolMeasurement[];
+}
+
+/**
+ * What the tool cannot do.
+ *
+ * Nobody in this market publishes these, which is exactly why they are worth
+ * publishing. `alternative` may name a competitor where one honestly does the
+ * job better; conceding that is what makes the rest of the page credible.
+ */
+export interface ToolLimitation {
+  title: string;
+  body: string;
+  alternative?: string;
+}
+
+/**
+ * A scoped comparison against one named incumbent.
+ *
+ * Only on the handful of pages where the comparison is the reader's actual
+ * question. A table on all 114 would be the boilerplate this content model
+ * exists to remove, and 114 pages naming competitors reads as parasitic.
+ */
+export interface ToolComparisonRow {
+  capability: string;
+  /** Must be verifiable from the competitor's own public documentation. */
+  them: string;
+  /** Must be true of this tool right now. */
+  us: string;
+}
+
+export interface ToolComparison {
+  heading?: string;
+  competitor: string;
+  rows: ToolComparisonRow[];
+  /** Where the "them" column came from. Required. */
+  sourceNote: string;
+}
+
+/**
+ * A specific job someone arrives wanting to do.
+ *
+ * "Open a password-protected ZIP", "extract one subfolder without downloading
+ * the whole archive". This is long-tail capture that is also genuinely useful,
+ * which is the only kind worth writing.
+ */
+export interface ToolScenario {
+  question: string;
+  answer: string;
+}
+
+/**
+ * Authoring depth, which sets the build-time word floor.
+ *
+ * A — head terms and the pages competing with a dedicated incumbent.
+ * B — real demand, less contested.
+ * C — the long tail, mostly developer tools.
+ */
+export type ToolTier = "A" | "B" | "C";
 
 export interface ToolPageContent {
   /** Stable id, matches the tool registry key. */
@@ -147,4 +294,16 @@ export interface ToolPageContent {
   faqs: ToolFaqEntry[];
   related: RelatedToolLink[];
   headings?: ToolSectionHeadings;
+  specs?: ToolSpec[];
+  measurements?: ToolMeasurementTable;
+  limitations?: { heading?: string; lede?: string; items: ToolLimitation[] };
+  comparison?: ToolComparison;
+  scenarios?: { heading?: string; lede?: string; items: ToolScenario[] };
+  /** Set once a tool has been authored. Drives the build-time content floors. */
+  tier?: ToolTier;
+  /**
+   * Suppress the shared category feature cards. Only for a page whose own
+   * authored features already make the architectural point better.
+   */
+  dropSharedFeatures?: boolean;
 }

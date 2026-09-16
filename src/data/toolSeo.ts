@@ -1,3 +1,5 @@
+import type { ToolFaqEntry } from "@/types/toolContent";
+
 // Central per-tool SEO metadata.
 //
 // Keys are tool ids. Two ids exist in more than one category (color-converter and
@@ -14,10 +16,15 @@
 //
 // Entries are optional — any tool without one falls back to its name/description
 // from the page's own tool metadata.
-export interface ToolFaq {
-  question: string;
-  answer: string;
-}
+/*
+ * Re-exported from the page content contract rather than redeclared.
+ *
+ * The two shapes had drifted the moment FAQ entries gained a `topic`, and a
+ * baseline FAQ here is the same thing as an authored one in a content module —
+ * it just lives in the file that covers every tool rather than one file per tool.
+ */
+export type ToolFaq = ToolFaqEntry;
+
 
 export interface ToolSeoEntry {
   title?: string;
@@ -53,11 +60,26 @@ const PLURAL_SUBJECTS = new Set([
  * up verbatim in a Google rich result. Roughly twenty pages carried one.
  */
 const privacyFaq = (subject: string): ToolFaq => ({
+  // Tagged so the generated category privacy FAQ stands down. Without it both
+  // rendered, asking the same question in two phrasings on ~108 pages.
+  topic: "privacy",
   question: PLURAL_SUBJECTS.has(subject)
     ? `Are my ${subject} uploaded to a server?`
     : `Is my ${subject} uploaded to a server?`,
   answer: PRIVACY_ANSWER,
 });
+
+/**
+ * Strings that are deliberately identical across many tools.
+ *
+ * scripts/check-content.mjs fails any phrase shared between two pages, which is
+ * what stops the authoring programme from turning into one template with the
+ * nouns swapped. These are the exceptions: statements about the architecture
+ * that are true in the same way everywhere, where writing 114 variations would
+ * add words without adding information — and inventing differences would make
+ * the claim sound less certain than it is.
+ */
+export const SHARED_STRINGS: string[] = [PRIVACY_ANSWER];
 
 export const toolSeoData: Record<string, ToolSeoEntry> = {
   // ---------------------------------------------------------------------------
@@ -1203,7 +1225,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Does this tool call an external service?",
         answer:
-          "Yes. Unlike most tools here, IP lookup needs a public geolocation API, so the address you query is sent to that provider. No other data is shared.",
+          "Yes. Unlike most tools here, IP lookup needs a public geolocation API, so the address you ask about leaves your browser and goes to that service. Nothing else about you does.",
       },
       {
         question: "How accurate is IP geolocation?",
@@ -2005,7 +2027,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "How are nested objects handled?",
         answer:
-          "Spreadsheets are flat, so flatten nested JSON to dot-notation keys first with the JSON Flattener, then convert the flattened array here.",
+          "A worksheet has rows and columns and nothing deeper, so nested objects need collapsing before they will fit. Run them through the JSON Flattener and bring the flat array back here.",
       },
     ],
   },
@@ -2158,7 +2180,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   "markdown-html": {
     title: "Markdown to HTML Converter — Two-Way & Free",
     description:
-      "Convert Markdown to clean HTML and HTML back to Markdown, both directions in one tool. Free, instant, and processed entirely inside your browser.",
+      "Convert Markdown to clean HTML and HTML back to Markdown, both directions in one tool. Free, immediate, and the conversion never leaves this tab.",
     keywords: ["markdown to html", "html to markdown", "md to html converter", "markdown html online", "convert readme to html"],
     faqs: [
       privacyFaq("content"),
@@ -2184,7 +2206,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Do TOML comments survive a round trip?",
         answer:
-          "No. JSON has no comment syntax, so comments are dropped converting to JSON and cannot be restored. Keep the original file if the comments matter.",
+          "No. TOML allows comments and JSON has nowhere to put them, so they are discarded in the conversion and there is no way to rebuild them afterwards. Convert a copy when the comments still matter.",
       },
       {
         question: "How are nested objects represented in TOML?",

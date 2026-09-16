@@ -6,7 +6,7 @@
  * unreachable, which is exactly the class of bug that is invisible in review and
  * obvious in production. Runs before every build.
  */
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
@@ -98,6 +98,44 @@ if (missingSeo.length > 0) {
   process.exit(1);
 }
 
+/*
+ * Icon names in authored content must exist in the tool-page icon map.
+ *
+ * resolveIcon falls back to a wrench for anything it does not recognise, which
+ * is the right runtime behaviour and a terrible authoring experience: a typo
+ * ships a wrench beside a feature card and nothing anywhere reports it. With
+ * content being written for 114 tools, that fails quietly at scale.
+ */
+const iconSource = readFileSync(resolve(ROOT, "src/components/tool-page/icons.ts"), "utf-8");
+const iconMap = iconSource.slice(iconSource.indexOf("const ICONS"));
+const knownIcons = new Set([...iconMap.matchAll(/^\s{2}([A-Z][A-Za-z0-9]*),$/gm)].map(([, name]) => name));
+
+const contentDir = resolve(ROOT, "src/data/toolContent");
+const unknownIcons = [];
+if (existsSync(contentDir)) {
+  const walk = (dir) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const full = resolve(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (entry.name.endsWith(".ts")) {
+        const body = readFileSync(full, "utf-8");
+        for (const [, name] of body.matchAll(/\bicon:\s*"([^"]+)"/g)) {
+          if (!knownIcons.has(name)) unknownIcons.push(`  ${name}  (${entry.name})`);
+        }
+      }
+    }
+  };
+  walk(contentDir);
+}
+
+if (unknownIcons.length > 0) {
+  console.error(
+    `\n✗ ${unknownIcons.length} icon name(s) are not in src/components/tool-page/icons.ts, ` +
+      `so they would silently render a wrench:\n${[...new Set(unknownIcons)].join("\n")}\n`,
+  );
+  process.exit(1);
+}
+
 console.log(
-  `✓ catalog: ${all.length} tools, unique slugs, all have SEO content, ${BUILD_INPUTS.length} build inputs tracked`,
+  `✓ catalog: ${all.length} tools, unique slugs, all have SEO content, ${BUILD_INPUTS.length} build inputs tracked, icons resolve`,
 );

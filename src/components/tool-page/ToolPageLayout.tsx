@@ -15,6 +15,11 @@ import { ToolUseCases } from "./ToolUseCases";
 import { ToolFaq } from "./ToolFaq";
 import { RelatedTools } from "./RelatedTools";
 import { ToolFooterCta } from "./ToolFooterCta";
+import { ToolSpecs } from "./ToolSpecs";
+import { ToolMeasurements } from "./ToolMeasurements";
+import { ToolLimitations } from "./ToolLimitations";
+import { ToolComparison } from "./ToolComparison";
+import { ToolScenarios } from "./ToolScenarios";
 
 interface ToolPageLayoutProps {
   content: ToolPageContent;
@@ -45,6 +50,20 @@ const DEFAULT_HEADINGS: Required<ToolSectionHeadings> = {
     heading: "Related tools",
     lede: "Other browser-first tools that pair well with this one.",
   },
+  specs: {
+    heading: "What happens to your data",
+    lede: "The same questions a security review would ask, answered plainly.",
+  },
+  measurements: {
+    heading: "Measured results",
+    lede: "Real files, real numbers, and the machine they were run on.",
+  },
+  limitations: {
+    heading: "What this tool cannot do",
+    lede: "The honest edges, and where to go instead when you hit one.",
+  },
+  comparison: { heading: "How this compares" },
+  scenarios: { heading: "Common situations" },
 };
 
 /**
@@ -112,13 +131,29 @@ export function ToolPageLayout({ content, tool, servedFrom }: ToolPageLayoutProp
           </section>
         )}
 
+        {content.specs && <ToolSpecs specs={content.specs} {...section("specs")} />}
+
         <ToolFeatures features={content.features} {...section("features")} />
 
         <ToolHowItWorks steps={content.howItWorks} {...section("howItWorks")} />
 
         <ToolExamples examples={content.examples} {...section("examples")} />
 
+        {content.measurements && (
+          <ToolMeasurements measurements={content.measurements} {...section("measurements")} />
+        )}
+
+        {content.scenarios && <ToolScenarios scenarios={content.scenarios} {...section("scenarios")} />}
+
         <ToolUseCases useCases={content.useCases} {...section("useCases")} />
+
+        {content.limitations && (
+          <ToolLimitations limitations={content.limitations} {...section("limitations")} />
+        )}
+
+        {content.comparison && (
+          <ToolComparison comparison={content.comparison} {...section("comparison")} />
+        )}
 
         <ToolFaq faqs={content.faqs} {...section("faq")} />
 

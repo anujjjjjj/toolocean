@@ -4,6 +4,9 @@ import { StaticRouter } from "react-router-dom/server";
 import { AppRoutes } from "./AppRoutes";
 import { CATEGORY_INDEXES, LANDING_ROUTES, PRERENDER_ROUTES, headForRoute } from "./lib/prerenderRoutes";
 import { provideToolContent } from "./lib/toolContentTransport";
+import { TOOL_CONTENT_OVERRIDES, KNOWN_BROKEN } from "./data/toolContent";
+import { toolSeoData, SHARED_STRINGS } from "./data/toolSeo";
+import { TOOL_CATALOG } from "./data/toolCatalog";
 import { resolveToolContent } from "./lib/toolContentResolver";
 import {
   LANDING_ROUTE_MODULE,
@@ -85,6 +88,12 @@ export function renderRoute(
  * import it directly and the map cannot drift from what the app actually uses.
  */
 export {
+  resolveToolContent,
+  TOOL_CONTENT_OVERRIDES,
+  KNOWN_BROKEN,
+  toolSeoData,
+  SHARED_STRINGS,
+  TOOL_CATALOG,
   PRERENDER_ROUTES,
   CATEGORY_INDEXES,
   LANDING_ROUTES,

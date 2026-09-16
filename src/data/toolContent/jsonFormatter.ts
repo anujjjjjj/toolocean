@@ -35,6 +35,40 @@ const BROKEN_INPUT = `{
  * from the category profile, so nothing here repeats it.
  */
 export const jsonFormatterContent: Partial<ToolPageContent> = {
+  tier: "A",
+  /*
+   * Stated plainly because these are the things people discover ten minutes in,
+   * and finding them here rather than the hard way is the difference between a
+   * tool you trust and one you stop using. Each of these is a property of doing
+   * the work in a browser tab, not a bug waiting to be fixed.
+   */
+  limitations: {
+    items: [
+      {
+        title: "It is not a JSON Schema validator",
+        body:
+          "Valid JSON and correct JSON are different questions. This tool tells you the document parses; it has no opinion on whether a field is missing, a type is wrong, or an enum is out of range.",
+        alternative: "json-schema-validator",
+      },
+      {
+        title: "Very large documents run on the main thread",
+        body:
+          "Parsing and re-serialising happen in the page rather than a worker, so a document in the tens of megabytes will make the tab unresponsive while it works. A few megabytes is comfortable; a 200 MB export is not what this is for.",
+      },
+      {
+        title: "Reformatting is not byte-preserving for numbers",
+        body:
+          "Values pass through JavaScript numbers, which are IEEE-754 doubles. An integer larger than 9,007,199,254,740,991 — a Twitter-style ID, say — comes back rounded, and the output will be valid JSON that no longer says what the input said.",
+      },
+      {
+        title: "No diffing, no querying, no streaming",
+        body:
+          "This formats one document at a time. Comparing two payloads, running a JSONPath expression over one, or reading a file too big to hold in memory are all different jobs that this page deliberately does not try to do.",
+        alternative: "text-diff",
+      },
+    ],
+  },
+
   seo: {
     title: "JSON Formatter — Free Online JSON Beautifier & Validator",
     description:
