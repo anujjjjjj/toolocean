@@ -1,5 +1,7 @@
 import type { ToolPageContent } from "@/types/toolContent";
 import { jsonFormatterContent } from "./jsonFormatter";
+import { pdfMergeContent } from "./pdfMerge";
+import { pdfSplitContent } from "./pdfSplit";
 
 /**
  * Hand-authored page content, keyed by tool slug.
@@ -16,6 +18,8 @@ import { jsonFormatterContent } from "./jsonFormatter";
  */
 export const TOOL_CONTENT_OVERRIDES: Record<string, Partial<ToolPageContent>> = {
   "json-formatter": jsonFormatterContent,
+  "pdf-merge": pdfMergeContent,
+  "pdf-split": pdfSplitContent,
 };
 
 /**

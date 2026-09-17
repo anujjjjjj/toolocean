@@ -40,6 +40,7 @@ const {
   KNOWN_BROKEN,
   toolSeoData,
   SHARED_STRINGS,
+  SHARED_CONTENT_STRINGS,
   TOOL_CATALOG,
 } = await import(pathToFileURL(join(ROOT, "dist-ssg", "entry-ssg.js")).href);
 
@@ -79,7 +80,7 @@ const wordsIn = (text) => text.split(/\s+/).filter(Boolean).length;
  * stop standing in for real writing.
  */
 function authoredStrings(slug) {
-  const shared = new Set(SHARED_STRINGS);
+  const shared = new Set([...SHARED_STRINGS, ...SHARED_CONTENT_STRINGS]);
 
   /*
    * A generated FAQ is shared in both halves, not just its answer. privacyFaq()

@@ -69,6 +69,9 @@ Session S1 throughout.
 | pdf-compress | 12-page scan, lossless | 10,324,119 | 10,324,083 | −0.0% | 46 ms |
 | pdf-compress | 40-page text PDF, lossless | 165,897 | 165,867 | −0.0% | 22 ms |
 | pdf-compress | 40-page text PDF, re-encode pages as images | 165,897 | 14,810,686 | +8,827% | 875 ms |
+| pdf-merge | 12-page scan and a 12-page text PDF | 10,374,682 | 10,374,095 | −0.0% | 32 ms |
+| pdf-split | pages 1-10 of the 40-page text PDF | 165,897 | 42,181 | −74.6% | 20 ms |
+| pdf-split | pages 1-10 of the 12-page scan | 10,324,119 | 9,258,693 | −10.3% | 35 ms |
 
 ### What these say
 
@@ -104,3 +107,30 @@ rebuilt from twelve different crops.
 
 Worth remembering when adding fixtures: a file that is the right shape can still
 be the wrong measurement, and the failure is silent.
+
+## Behavioural checks
+
+Some claims are not about size. These were tested rather than assumed, because
+they end up as statements on a public page.
+
+### What `copyPages` carries, and what it drops
+
+Both pdf-merge and pdf-split build their output with pdf-lib's `copyPages`
+followed by `addPage`. Building a source document with a named text field and a
+bookmark tree, running exactly that sequence, and reloading the result:
+
+| Property | Before | After |
+| --- | --- | --- |
+| Form fields (`customer.name`) | present | **gone** |
+| Bookmark tree (`/Outlines`) | present | **gone** |
+| Page annotations | present | present |
+| Page count | 3 | 3 |
+
+The form-field result is the one worth stating on the page, because the failure
+is deceptive rather than obvious: the field's *appearance* survives as a page
+annotation, so the output still looks like a form and simply cannot be filled in.
+Anyone merging a signed or fillable document needs to know that before they send
+it on, not after.
+
+Reproduce with a short script against pdf-lib; the sequence is the same six lines
+the tools use.

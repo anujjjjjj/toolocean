@@ -5,6 +5,7 @@ import { AppRoutes } from "./AppRoutes";
 import { CATEGORY_INDEXES, LANDING_ROUTES, PRERENDER_ROUTES, headForRoute } from "./lib/prerenderRoutes";
 import { provideToolContent } from "./lib/toolContentTransport";
 import { TOOL_CONTENT_OVERRIDES, KNOWN_BROKEN } from "./data/toolContent";
+import { SHARED_CONTENT_STRINGS } from "./data/toolContent/shared";
 import { toolSeoData, SHARED_STRINGS } from "./data/toolSeo";
 import { TOOL_CATALOG } from "./data/toolCatalog";
 import { resolveToolContent } from "./lib/toolContentResolver";
@@ -93,6 +94,7 @@ export {
   KNOWN_BROKEN,
   toolSeoData,
   SHARED_STRINGS,
+  SHARED_CONTENT_STRINGS,
   TOOL_CATALOG,
   PRERENDER_ROUTES,
   CATEGORY_INDEXES,
