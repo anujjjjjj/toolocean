@@ -7,6 +7,8 @@ import { zipCreatorContent } from "./zipCreator";
 import { imageCompressorContent } from "./imageCompressor";
 import { imageResizerContent } from "./imageResizer";
 import { imageFormatConverterContent } from "./imageFormatConverter";
+import { pdfToImagesContent } from "./pdfToImages";
+import { imagesToPdfContent } from "./imagesToPdf";
 
 /**
  * Hand-authored page content, keyed by tool slug.
@@ -30,6 +32,8 @@ export const TOOL_CONTENT_OVERRIDES: Record<string, Partial<ToolPageContent>> = 
   "image-compressor": imageCompressorContent,
   "image-resizer": imageResizerContent,
   "image-format-converter": imageFormatConverterContent,
+  "pdf-to-images": pdfToImagesContent,
+  "images-to-pdf": imagesToPdfContent,
 };
 
 /**

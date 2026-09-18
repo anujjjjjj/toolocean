@@ -86,6 +86,10 @@ Session S1 throughout.
 | image-format-converter | the photograph, JPEG to PNG | 2,057,152 | 16,015,580 | +678% | 306 ms |
 | image-format-converter | the photograph, PNG to WebP at quality 0.92 | 10,887,764 | 1,490,806 | −86.3% | 669 ms |
 | image-format-converter | the photograph, PNG to JPEG at quality 0.92 | 10,887,764 | 1,825,404 | −83.2% | 200 ms |
+| pdf-to-images | 12-page scan to JPEG at 2x, quality 90 | 10,324,119 | 3,006,308 | −70.9% | see note |
+| pdf-to-images | 12-page scan to PNG at 2x | 10,324,119 | 23,899,262 | +131% | see note |
+| pdf-to-images | 40-page text PDF to PNG at 2x | 165,897 | 25,256,591 | +15,124% | see note |
+| images-to-pdf | three 2550x3300 JPEGs into one document | 3,549,756 | 3,551,383 | +0.0% | 38 ms |
 
 ### What these say
 
@@ -190,3 +194,23 @@ the honest answer here is that this tool cannot, rather than a vague one.
   original, from an action whose entire purpose is to make a file smaller. It now
   encodes back into the source format and the same operation returns 683,263
   bytes.
+
+### What the conversion numbers say
+
+Output sizes for pdf-to-images are the ZIP of all pages. The timing column is not
+comparable with the other rows: rendering happens during the conversion step and
+the figure the harness captures is only the final archiving, so it is omitted
+rather than quoted misleadingly.
+
+- **Format matters far more than anything else on this page.** The same 12-page
+  scan rendered to JPEG came out at 3,006,308 bytes and to PNG at 23,899,262, a
+  factor of eight for output that looks the same on screen.
+- **PNG on a text document is extreme.** A 166 KB, 40-page text PDF rendered to
+  PNG produced a 25 MB archive, roughly 152 times the source, because each page
+  becomes a full lossless raster of mostly white space. The tool defaults to PNG,
+  which is the right default for fidelity and the wrong one for most people's
+  intent, so the page says so directly.
+- **images-to-pdf does not compress.** Three JPEGs totalling 3,549,756 bytes
+  produced a 3,551,383 byte PDF. JPEG data is embedded into the document as-is
+  rather than re-encoded, which is why quality is untouched and why the PDF is
+  the sum of its images plus a small container overhead.
