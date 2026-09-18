@@ -5,12 +5,28 @@ import { Label } from "@/components/ui/label";
 import { Upload, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+/** Formats a canvas can actually encode. Anything else is written as PNG. */
+const ENCODABLE = new Set(["image/png", "image/jpeg", "image/webp"]);
+
+const EXTENSION: Record<string, string> = {
+  "image/png": "png",
+  "image/jpeg": "jpg",
+  "image/webp": "webp",
+};
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+}
+
 export function ImageResizerTool() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [width, setWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
   const [aspectLock, setAspectLock] = useState(true);
   const [originalSize, setOriginalSize] = useState({ w: 0, h: 0 });
+  const [sourceType, setSourceType] = useState<string>("image/png");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -22,6 +38,12 @@ export function ImageResizerTool() {
       return;
     }
     const url = URL.createObjectURL(file);
+    /*
+     * Remember what the source was so the result can be written back in the
+     * same format. Canvas can only encode PNG, JPEG and WebP, so anything else
+     * (HEIC, GIF, BMP, SVG) becomes PNG, which is lossless and always readable.
+     */
+    setSourceType(ENCODABLE.has(file.type) ? file.type : "image/png");
     const img = new Image();
     img.onload = () => {
       setOriginalSize({ w: img.width, h: img.height });
@@ -56,15 +78,33 @@ export function ImageResizerTool() {
       canvas.height = height;
       const ctx = canvas.getContext("2d")!;
       ctx.drawImage(img, 0, 0, width, height);
-      canvas.toBlob((blob) => {
-        if (!blob) return;
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = `resized-${width}x${height}.png`;
-        a.click();
-        URL.revokeObjectURL(a.href);
-        toast({ title: "Downloaded", description: "Resized image saved" });
-      });
+      /*
+       * Encode back into the format that came in.
+       *
+       * toBlob with no type argument produces PNG, which meant every resize
+       * returned a PNG whatever went in. For a photograph that is a disaster:
+       * a 2,057,152 byte JPEG scaled down to a quarter of its pixels came back
+       * as a 4,803,265 byte PNG, more than twice the size of the original,
+       * because PNG stores photographic detail losslessly. People resize images
+       * to make them smaller, so handing back something larger was the opposite
+       * of the job.
+       */
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) return;
+          const a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = `resized-${width}x${height}.${EXTENSION[sourceType] ?? "png"}`;
+          a.click();
+          URL.revokeObjectURL(a.href);
+          toast({
+            title: "Downloaded",
+            description: `${width}x${height}, ${formatBytes(blob.size)}`,
+          });
+        },
+        sourceType,
+        sourceType === "image/png" ? undefined : 0.92,
+      );
     };
     img.src = imageUrl;
   };

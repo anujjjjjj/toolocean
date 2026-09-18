@@ -4,6 +4,9 @@ import { pdfMergeContent } from "./pdfMerge";
 import { pdfSplitContent } from "./pdfSplit";
 import { zipExtractorContent } from "./zipExtractor";
 import { zipCreatorContent } from "./zipCreator";
+import { imageCompressorContent } from "./imageCompressor";
+import { imageResizerContent } from "./imageResizer";
+import { imageFormatConverterContent } from "./imageFormatConverter";
 
 /**
  * Hand-authored page content, keyed by tool slug.
@@ -24,6 +27,9 @@ export const TOOL_CONTENT_OVERRIDES: Record<string, Partial<ToolPageContent>> = 
   "pdf-split": pdfSplitContent,
   "zip-extractor": zipExtractorContent,
   "zip-creator": zipCreatorContent,
+  "image-compressor": imageCompressorContent,
+  "image-resizer": imageResizerContent,
+  "image-format-converter": imageFormatConverterContent,
 };
 
 /**

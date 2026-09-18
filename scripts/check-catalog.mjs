@@ -108,7 +108,14 @@ if (missingSeo.length > 0) {
  */
 const iconSource = readFileSync(resolve(ROOT, "src/components/tool-page/icons.ts"), "utf-8");
 const iconMap = iconSource.slice(iconSource.indexOf("const ICONS"));
-const knownIcons = new Set([...iconMap.matchAll(/^\s{2}([A-Z][A-Za-z0-9]*),$/gm)].map(([, name]) => name));
+/*
+ * Matches both `Wrench,` shorthand and `Infinity: InfinityIcon,` aliases. The
+ * first version of this only caught the shorthand, so it reported a correctly
+ * registered icon as missing.
+ */
+const knownIcons = new Set(
+  [...iconMap.matchAll(/^\s{2}([A-Z][A-Za-z0-9]*)\s*(?:,|:)/gm)].map(([, name]) => name),
+);
 
 const contentDir = resolve(ROOT, "src/data/toolContent");
 const unknownIcons = [];

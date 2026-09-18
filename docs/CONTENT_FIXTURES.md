@@ -81,6 +81,11 @@ Session S1 throughout.
 | zip-extractor | 20.5 MB archive of three large members | 20,507,979 | n/a | n/a | 100 ms |
 | zip-preview | the same 300-entry archive, listed only | 724,948 | n/a | n/a | 39 ms |
 | zip-preview | the same 20.5 MB archive, listed only | 20,507,979 | n/a | n/a | 54 ms |
+| image-resizer | 3840x2160 JPEG down to 1920 wide | 2,057,152 | 683,263 | −66.8% | 58 ms |
+| image-resizer | 3840x2160 PNG down to 1920 wide | 10,887,764 | 4,858,793 | −55.4% | 212 ms |
+| image-format-converter | the photograph, JPEG to PNG | 2,057,152 | 16,015,580 | +678% | 306 ms |
+| image-format-converter | the photograph, PNG to WebP at quality 0.92 | 10,887,764 | 1,490,806 | −86.3% | 669 ms |
+| image-format-converter | the photograph, PNG to JPEG at quality 0.92 | 10,887,764 | 1,825,404 | −83.2% | 200 ms |
 
 ### What these say
 
@@ -167,3 +172,21 @@ the tools use.
 listing: the whole file fails to open. This matters because "how do I open a
 password protected ZIP" is one of the most common questions in this category, and
 the honest answer here is that this tool cannot, rather than a vague one.
+
+### What the image numbers say
+
+- **WebP beats JPEG by about 18% on the same photograph** at the same quality
+  setting: 1,490,806 bytes against 1,825,404 from an identical source. That is a
+  concrete reason to prefer it for the web, and it costs three times the encoding
+  time, which nobody notices on a single image.
+- **Converting a photograph to PNG makes it very much larger.** The JPEG went
+  from 2,057,152 to 16,015,580 bytes, nearly eight times the size, because PNG
+  stores every pixel losslessly and a photograph has no flat regions to exploit.
+  This is PNG working correctly rather than a fault, but it is the opposite of
+  what someone reaching for a converter usually wants, so the page says so.
+- **image-resizer had the same bug in a worse place.** It called `toBlob` with no
+  type, which produces PNG whatever went in, so scaling a 2 MB JPEG down to a
+  quarter of its pixels returned a 4,803,265 byte PNG: more than twice the
+  original, from an action whose entire purpose is to make a file smaller. It now
+  encodes back into the source format and the same operation returns 683,263
+  bytes.

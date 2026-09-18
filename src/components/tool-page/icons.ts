@@ -56,7 +56,6 @@ import type { LucideIcon } from "lucide-react";
  * into the bundle, which is a measurable LCP/TBT cost on every page.
  */
 const ICONS: Record<string, LucideIcon> = {
-  // Exposed under its schema-friendly name; `Infinity` is a global.,
   AlertTriangle,
   ArrowDownWideNarrow,
   BookOpen,
@@ -77,6 +76,7 @@ const ICONS: Record<string, LucideIcon> = {
   FileSignature,
   Gauge,
   GraduationCap,
+  // Keyed under its plain name; `Infinity` is a JS global, hence the import alias.
   Infinity: InfinityIcon,
   Keyboard,
   Landmark,
