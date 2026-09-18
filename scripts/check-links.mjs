@@ -22,7 +22,7 @@ const DIST = resolve(ROOT, "dist");
 const MAX_DEPTH = 3;
 
 if (!existsSync(DIST)) {
-  console.error("\n✗ dist/ not found — run the build before checking links.\n");
+  console.error("\n✗ dist/ not found, run the build before checking links.\n");
   process.exit(1);
 }
 
@@ -87,7 +87,7 @@ while (queue.length > 0) {
 
 const failures = [];
 
-// 1. Orphans — reachable only from sitemap.xml, which is discovery of last resort.
+// 1. Orphans, reachable only from sitemap.xml, which is discovery of last resort.
 const orphans = [...pages.keys()].filter(
   (route) => !depth.has(route) && route !== "/404" && !pages.get(route).noindex,
 );

@@ -24,7 +24,7 @@ import {
  * from the front page.
  *
  * One page linking everything puts the whole catalogue at click depth two and
- * makes that failure mode structurally impossible to reintroduce — a new tool
+ * makes that failure mode structurally impossible to reintroduce, a new tool
  * appears here the moment it is added to the catalog, with no separate list to
  * remember to update.
  *
@@ -66,7 +66,7 @@ const AllToolsPage = () => {
             All {TOOL_CATALOG.length} ToolOcean tools
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-            Every tool on the site, grouped by category. All of them run entirely in your browser —
+            Every tool on the site, grouped by category. All of them run entirely in your browser,
             your files and text are never uploaded, and each one keeps working with the network off
             once the page has loaded.
           </p>

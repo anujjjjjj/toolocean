@@ -79,7 +79,7 @@ export function Base64Tool() {
                 Upload file
               </Button>
               <span className="text-xs text-muted-foreground">
-                {mode === "encode" ? "Any file" : ".txt"} — or paste below
+                {mode === "encode" ? "Any file" : ".txt"}, or paste below
               </span>
             </div>
             <Textarea

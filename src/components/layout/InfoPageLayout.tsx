@@ -8,13 +8,13 @@ import { Footer } from "@/components/layout/Footer";
  * @tailwindcss/typography is a devDependency but is not registered in
  * tailwind.config.ts, so `prose` classes are inert in this project. Rather than
  * wire up the plugin for three pages, the handful of type styles they need are
- * defined here as small components — which also keeps the heading levels correct
+ * defined here as small components. Which also keeps the heading levels correct
  * by construction, since Section always emits an h2.
  */
 
 interface InfoPageLayoutProps {
   title: string;
-  /** Shown under the h1 — a one-line summary of what the page covers. */
+  /** Shown under the h1. A one-line summary of what the page covers. */
   intro: string;
   /** Human-readable date, e.g. "18 August 2026". Omitted where meaningless. */
   lastUpdated?: string;
@@ -68,7 +68,7 @@ export function UL({ children }: { children: ReactNode }) {
   );
 }
 
-/** Emphasised inline term — used for the storage keys and similar literals. */
+/** Emphasised inline term, used for the storage keys and similar literals. */
 export function Code({ children }: { children: ReactNode }) {
   return (
     <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[0.85em] text-foreground">

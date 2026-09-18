@@ -7,7 +7,7 @@ import { InfoPageLayout, P, Section, UL } from "@/components/layout/InfoPageLayo
 /**
  * Terms of use.
  *
- * Plain-language and deliberately short — the service is free, takes no accounts
+ * Plain-language and deliberately short. The service is free, takes no accounts
  * and holds no user data, so most of what a standard SaaS ToS covers does not
  * apply here and has been left out rather than padded in.
  *
@@ -28,7 +28,7 @@ const TermsPage = () => {
       <Section id="acceptance" heading="Using the site">
         <P>
           By using ToolOcean you agree to these terms. If you do not agree with them, please do not
-          use the site. There is nothing to cancel and no account to close — closing the tab is
+          use the site. There is nothing to cancel and no account to close, closing the tab is
           sufficient.
         </P>
       </Section>
@@ -50,7 +50,7 @@ const TermsPage = () => {
       <Section id="your-files" heading="Your files are your responsibility">
         <P>
           Tools run in your browser and operate on files you select. Because processing happens on
-          your own device, you keep full control of your data — and full responsibility for it.
+          your own device, you keep full control of your data, and full responsibility for it.
         </P>
         <UL>
           <li>
@@ -112,7 +112,7 @@ const TermsPage = () => {
       <Section id="ip" heading="Intellectual property">
         <P>
           The ToolOcean name, design and source code belong to their author. Anything{" "}
-          <em>you</em> produce with the tools is entirely yours — no licence to your content is
+          <em>you</em> produce with the tools is entirely yours. No licence to your content is
           claimed, granted or needed, since your content never reaches the site's operator.
         </P>
       </Section>

@@ -74,7 +74,7 @@ for (const tool of all) {
 
 if (collisions.length > 0) {
   console.error(
-    `\n✗ Tool slug collision — these ids resolve to the same root URL:\n${collisions.join("\n")}\n\n` +
+    `\n✗ Tool slug collision. These ids resolve to the same root URL:\n${collisions.join("\n")}\n\n` +
       `Give one of each pair a distinct id, or cross-list it via CROSS_LISTED in src/data/toolCatalog.ts.\n`,
   );
   process.exit(1);

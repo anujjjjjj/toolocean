@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import * as pdfjsLib from "pdfjs-dist";
 
-// Same worker wiring as PdfToImagesTool — rasterising needs pdf.js to render.
+// Same worker wiring as PdfToImagesTool, rasterising needs pdf.js to render.
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
     "pdfjs-dist/build/pdf.worker.min.mjs",
     import.meta.url,
@@ -57,7 +57,7 @@ export function PdfCompressTool() {
      *
      * This is what the tool used to do for every request, and it is honest only
      * because it is now labelled for what it is. Measured on a 40-page text PDF
-     * and a 12-page raster PDF, it recovers 0.0% — the saving is whatever the
+     * and a 12-page raster PDF, it recovers 0.0%. The saving is whatever the
      * document metadata happened to weigh. It is still the right default,
      * because it is the only mode that cannot lose anything.
      */
@@ -76,7 +76,7 @@ export function PdfCompressTool() {
      * Raster: render every page and re-encode it as a JPEG at the chosen quality.
      *
      * This is what actually shrinks a PDF in a browser, and it is the only thing
-     * the quality slider can meaningfully control — pdf-lib cannot reach inside
+     * the quality slider can meaningfully control, pdf-lib cannot reach inside
      * an existing page and recompress the images it references.
      *
      * The cost is real and is stated in the UI rather than buried: the output is
@@ -155,7 +155,7 @@ export function PdfCompressTool() {
                     description:
                         mode === "raster"
                             ? `Rendering the pages as images produces ${formatSize(newSize)}, up from ${formatSize(originalSize)}. This document is mostly text, which is far cheaper to store as text than as pictures of text. Your original is already the smaller file.`
-                            : `There was nothing to strip — the file is already ${formatSize(originalSize)}. Nothing was downloaded.`,
+                            : `There was nothing to strip. The file is already ${formatSize(originalSize)}. Nothing was downloaded.`,
                     variant: "destructive",
                 });
                 return;
@@ -175,7 +175,7 @@ export function PdfCompressTool() {
             /*
              * Report what happened, including when nothing did. The previous
              * version always announced a "savings" percentage, which on this
-             * code path was reliably 0.0% — a success message for a no-op.
+             * code path was reliably 0.0%. A success message for a no-op.
              */
             const delta = originalSize - newSize;
             const pct = originalSize > 0 ? (delta / originalSize) * 100 : 0;
@@ -190,7 +190,7 @@ export function PdfCompressTool() {
                           description:
                               mode === "lossless"
                                   ? "This file had little metadata to strip. Try re-encoding pages as images if you need it smaller."
-                                  : "Re-encoding did not help — the pages were already compressed about as far as JPEG will take them.",
+                                  : "Re-encoding did not help. The pages were already compressed about as far as JPEG will take them.",
                       },
             );
         } catch (error) {
@@ -287,7 +287,7 @@ export function PdfCompressTool() {
                                     <div className="flex items-start gap-3 rounded-lg border border-border/70 p-3">
                                         <RadioGroupItem value="lossless" id="mode-lossless" className="mt-1" />
                                         <Label htmlFor="mode-lossless" className="cursor-pointer font-normal">
-                                            <span className="font-medium">Lossless — strip metadata and rewrite</span>
+                                            <span className="font-medium">Lossless, strip metadata and rewrite</span>
                                             <span className="mt-1 block text-sm text-muted-foreground">
                                                 Nothing is re-encoded, so text stays selectable and images keep their
                                                 quality. Most files barely shrink: the only saving is whatever the
@@ -301,7 +301,7 @@ export function PdfCompressTool() {
                                             <span className="font-medium">Re-encode pages as images</span>
                                             <span className="mt-1 block text-sm text-muted-foreground">
                                                 Renders every page and saves it as a JPEG at the quality below. This is
-                                                what actually makes a PDF smaller — and it turns the pages into
+                                                what actually makes a PDF smaller, and it turns the pages into
                                                 pictures, so text can no longer be selected, searched or read aloud.
                                                 Good for scans, bad for documents you still need to read as text.
                                             </span>
@@ -338,7 +338,7 @@ export function PdfCompressTool() {
                                     </p>
                                     <p className="mt-1 text-muted-foreground">
                                         {result.after < result.before
-                                            ? `${(((result.before - result.after) / result.before) * 100).toFixed(1)}% smaller — downloaded`
+                                            ? `${(((result.before - result.after) / result.before) * 100).toFixed(1)}% smaller, downloaded`
                                             : "Larger than the original, so nothing was downloaded"}
                                     </p>
                                 </div>

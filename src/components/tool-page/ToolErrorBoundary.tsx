@@ -16,7 +16,7 @@ interface State {
  *
  * Without this, a tool that throws during render unmounts the whole React tree:
  * header, hero, FAQ and every other prerendered word disappear and the visitor
- * gets a blank document. That is not hypothetical — a Node-only GIF encoder threw
+ * gets a blank document. That is not hypothetical. A Node-only GIF encoder threw
  * at import time and `document.body.innerText.length` was 0 on /video-to-gif,
  * which also meant a crawler saw an empty page on an indexed URL.
  *

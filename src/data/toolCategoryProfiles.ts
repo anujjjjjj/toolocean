@@ -8,7 +8,7 @@ import type { ToolBadgeKey, ToolFeature, ToolStep } from "@/types/toolContent";
  * per-tool authoring can focus on what is actually specific to that tool
  * (examples, use cases, real FAQs).
  *
- * Every claim here is factually true of every tool in the category — the site is
+ * Every claim here is factually true of every tool in the category, the site is
  * a static bundle with no backend, so "nothing is uploaded" is a description of
  * the architecture, not marketing. That distinction is what keeps shared copy on
  * the right side of the thin-content line: it is boilerplate because the fact is
@@ -29,7 +29,7 @@ export interface CategoryProfile {
 }
 
 /*
- * Shared by every category — the privacy architecture does not vary.
+ * Shared by every category. The privacy architecture does not vary.
  *
  * Cut from five cards to two. The other three ("no queue wait", "keeps working
  * offline", "safe for confidential files") were 169 words repeated byte-for-byte
@@ -75,7 +75,7 @@ function fileSteps(subject: string, verb: string): ToolStep[] {
   return [
     {
       title: `Choose your ${subject}`,
-      body: `Pick a file from your device or drag it onto the page. It is read locally — the file is never transmitted.`,
+      body: `Pick a file from your device or drag it onto the page. It is read locally. The file is never transmitted.`,
     },
     {
       title: verb,

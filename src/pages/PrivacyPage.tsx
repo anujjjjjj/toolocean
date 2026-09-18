@@ -52,7 +52,7 @@ const PrivacyPage = () => {
         </P>
         <P>
           A practical consequence: once the page has loaded, these tools keep working with your
-          network disconnected. That is the clearest proof of the claim — a tool that needed a
+          network disconnected. That is the clearest proof of the claim. A tool that needed a
           server would stop.
         </P>
       </Section>
@@ -64,18 +64,18 @@ const PrivacyPage = () => {
         </P>
         <UL>
           <li>
-            <strong className="text-foreground">DNS Lookup</strong> — the domain name you enter is
+            <strong className="text-foreground">DNS Lookup</strong>. The domain name you enter is
             sent to Google's public DNS-over-HTTPS resolver at <Code>dns.google</Code> to be
             resolved. Google receives the domain you looked up and your IP address.
           </li>
           <li>
-            <strong className="text-foreground">IP Address Lookup</strong> — calls{" "}
+            <strong className="text-foreground">IP Address Lookup</strong>, calls{" "}
             <Code>ipapi.co</Code> and <Code>api.ipify.org</Code> to discover your public IP and its
             approximate location. Those services necessarily see your IP address. Looking up
             someone else's IP sends that address to them instead.
           </li>
           <li>
-            <strong className="text-foreground">HTTP Request Composer</strong> — sends a request to
+            <strong className="text-foreground">HTTP Request Composer</strong>, sends a request to
             whatever URL you type, which is the entire point of the tool. Anything you put in the
             URL, headers or body goes to that destination. Nothing is routed through ToolOcean.
           </li>
@@ -90,15 +90,15 @@ const PrivacyPage = () => {
         </P>
         <UL>
           <li>
-            <Code>toolOcean.history</Code> — a short local list of tools you have used, so recent
+            <Code>toolOcean.history</Code>. A short local list of tools you have used, so recent
             work is easy to return to. Capped at the last 100 entries.
           </li>
           <li>
-            <Code>toolOcean.analyticsConsent</Code> — whether you accepted or declined analytics,
+            <Code>toolOcean.analyticsConsent</Code>, whether you accepted or declined analytics,
             so you are not asked again.
           </li>
           <li>
-            <Code>darkMode</Code> — your light or dark theme preference.
+            <Code>darkMode</Code>. Your light or dark theme preference.
           </li>
         </UL>
       </Section>
@@ -118,7 +118,7 @@ const PrivacyPage = () => {
             ads and no remarketing on this site, so that permission is never requested.
           </li>
           <li>
-            What is recorded: the page visited, its title, and two interaction events — that a tool
+            What is recorded: the page visited, its title, and two interaction events, that a tool
             was used, and which control was pressed. That means a tool's name, such as{" "}
             <Code>json-formatter</Code>, and a button label, such as <Code>Beautify</Code>.
           </li>
@@ -129,7 +129,7 @@ const PrivacyPage = () => {
         </UL>
         <P>
           Google acts as the data processor for this analytics data and receives your IP address as
-          part of any request to it. You can decline on the banner, or use any tracker blocker —
+          part of any request to it. You can decline on the banner, or use any tracker blocker,
           the tools all work identically either way.
         </P>
       </Section>

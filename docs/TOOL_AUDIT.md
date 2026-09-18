@@ -13,7 +13,7 @@ Scope: 128 prerendered routes smoke-tested, 80 functional assertions on text too
 
 ## Verdict
 
-The catalogue is in better shape than its size suggests — **127 of 128 routes render
+The catalogue is in better shape than its size suggests, **127 of 128 routes render
 cleanly with no console errors, and hydration is correct on every prerendered page**.
 The problems are concentrated in a handful of older tools and in one systemic gap
 (the hero CTAs).
@@ -22,7 +22,7 @@ Counts below are what the harness measured, not estimates.
 
 ---
 
-## P0 — fix before anything else
+## P0, fix before anything else
 
 ### 1. The "Encryption Tool" does not encrypt
 
@@ -43,7 +43,7 @@ $ atob(ciphertext)
 
 The dropdown says "AES (Simulated)", but the page title, the H1, the meta description and
 the category all say *encryption*. Someone pastes a real secret, gets something that looks
-like ciphertext, and shares it — with the key attached.
+like ciphertext, and shares it, with the key attached.
 
 `crypto-js` is **already a dependency**. Fix is `CryptoJS.AES.encrypt(text, key, { iv })`,
 or drop the AES/DES options and present the tool honestly as "Caesar / Base64 / Hex
@@ -60,7 +60,7 @@ while ((match = regex.exec(testString)) !== null) { results.push(...) }
 With the global flag and any pattern that can match empty (`.*`, `a*`, `\b`, `\d*`),
 `lastIndex` never advances past a zero-length match, so this loops forever pushing into an
 unbounded array. Pattern `.*` against `hello world` made the renderer permanently
-unresponsive — the tab has to be killed. `.*` is the first thing anyone types into a regex
+unresponsive. The tab has to be killed. `.*` is the first thing anyone types into a regex
 tester.
 
 ```js
@@ -81,9 +81,9 @@ native module). It throws at import in the browser:
 TypeError: Class extends value #<Object> is not a constructor or null
 ```
 
-`/video-to-gif` is the only route out of 128 that fails — and it fails to a **completely
+`/video-to-gif` is the only route out of 128 that fails, and it fails to a **completely
 blank page**: `document.body.innerText.length === 0`. Header, footer, hero, FAQ, all the
-prerendered SEO copy — gone, because **there is no error boundary anywhere in the app**
+prerendered SEO copy, gone, because **there is no error boundary anywhere in the app**
 (`grep -r "componentDidCatch\|getDerivedStateFromError" src/` → nothing).
 
 Two separate fixes:
@@ -91,14 +91,14 @@ Two separate fixes:
 - Swap `gif-encoder-2` for a browser encoder (`gifenc`, `gif.js`), or build GIFs from
   canvas frames directly.
 - Wrap `ToolWorkbench`'s `<Suspense>` in an error boundary. Right now any tool that throws
-  during render blanks the entire document — the prerendered HTML is discarded and the
+  during render blanks the entire document. The prerendered HTML is discarded and the
   visitor sees white. One boundary around the workbench keeps the page and its content
   intact and shows "this tool failed to load" in the tool's place.
 
 ### 4. `/workflow-builder` returns HTTP 404 in production
 
 It is linked from the footer on **all 114 tool pages**, twice from the homepage
-(`src/pages/Index.tsx:69,141`), and **it is listed in `public/sitemap.xml:70`** — but it is
+(`src/pages/Index.tsx:69,141`), and **it is listed in `public/sitemap.xml:70`**, but it is
 not in `PRERENDER_ROUTES`, so no `dist/workflow-builder/index.html` is emitted.
 `dist/_redirects` ends with `/* /404.html 404`, and `vercel.json` has no rewrite, so:
 
@@ -114,13 +114,13 @@ Hard refresh, open-in-new-tab, or any crawler gets a 404. Confirmed the client-r
 also throws a hydration mismatch (`Expected server HTML to contain a matching <button> in
 <div>`) because it is hydrating the 404 document.
 
-Add both routes to `PRERENDER_ROUTES` — or, if the workflow builder isn't ready, remove
+Add both routes to `PRERENDER_ROUTES`, or, if the workflow builder isn't ready, remove
 the footer links, the two homepage CTAs and the sitemap entry. Note `/workflows` currently
 renders "Coming soon!" as its entire body.
 
 ---
 
-## P1 — broken or misleading behaviour
+## P1, broken or misleading behaviour
 
 ### 5. XML ↔ JSON converter is completely broken
 
@@ -134,7 +134,7 @@ this.removeAllListeners is not a function
 
 `xml2js` pulls in `sax`, which assumes Node's EventEmitter. It also drags a **104 KB**
 `xml2js` chunk into the bundle for a feature that never works. `fast-xml-parser` is
-browser-native and a fraction of the size. (`XmlFormatterTool` is fine — it uses
+browser-native and a fraction of the size. (`XmlFormatterTool` is fine, it uses
 `DOMParser`.)
 
 ### 6. Colour Picker never draws the image
@@ -173,7 +173,7 @@ Observed both the crash and this output:
 
 Empty first paragraph, then two sentences instead of 4–8. Wrap the callback:
 `Array.from({ length: n }, () => rndSentence())`. Separately, the word list has six
-duplicated entries and the output never starts with "Lorem ipsum dolor sit amet" — most
+duplicated entries and the output never starts with "Lorem ipsum dolor sit amet", most
 people expect that opener.
 
 ### 8. Markdown Preview executes injected scripts
@@ -192,13 +192,13 @@ Add `dompurify` (~20 KB) around the `marked()` output.
 ### 9. Two tools contradict their own privacy claims on the same page
 
 `/dns-lookup` sends the domain you type to `dns.google`; `/ip-address` sends your IP to
-`ipapi.co` and `api.ipify.org`. Both tools disclose this honestly in their own FAQ —
+`ipapi.co` and `api.ipify.org`. Both tools disclose this honestly in their own FAQ,
 and then the auto-generated category FAQ underneath says:
 
 > **Is my text uploaded to a server?**
 > No. DNS Lookup is a static page with no backend. Your text is read and processed by
 > JavaScript running in this tab, and **it is never transmitted**. You can confirm this by
-> opening your browser's network panel — **there are no outbound requests**.
+> opening your browser's network panel, **there are no outbound requests**.
 
 > **Does it work offline?** **Yes**, once the page has loaded.
 
@@ -209,12 +209,12 @@ the instructions in the first. `/http-request-composer` has the same conflict. A
 
 ---
 
-## P2 — systemic UX gaps
+## P2, systemic UX gaps
 
 ### 10. The hero CTAs are dead on 113 of 114 tools
 
 This is the biggest UX finding. `ToolHero` renders a prominent primary button on every
-page — "Start with your own data" / "Open a file" / "Choose a PDF" — which fires an intent
+page, "Start with your own data" / "Open a file" / "Choose a PDF", which fires an intent
 on the `toolActions` bus. **Only `JsonFormatterTool` ever subscribes**
 (`grep -c subscribeToToolActions` → 1/114).
 
@@ -227,7 +227,7 @@ Measured across all 114 tools:
 | "Try this example" | 1 | 1 |
 | "Choose a {subject}" | 33 | 0 |
 
-The scroll-to-workbench part works, so it isn't *obviously* broken — the button just
+The scroll-to-workbench part works, so it isn't *obviously* broken, the button just
 scrolls and then nothing happens. On the 33 file tools, "Choose a PDF" looks exactly like
 a file picker trigger and never opens one.
 
@@ -235,7 +235,7 @@ The bus design is right; nothing opted in. Two options:
 
 - Add the three-line `subscribeToToolActions` effect to each tool (mechanical, ~114 small
   edits), or
-- Better: have `ToolWorkbench` handle `focus` and `upload` generically — it can find the
+- Better: have `ToolWorkbench` handle `focus` and `upload` generically, it can find the
   first non-readonly `textarea` and the first `input[type=file]` in its own subtree without
   any tool knowing. That fixes all 114 at once and keeps new tools working by default.
 
@@ -244,7 +244,7 @@ example content in `src/data/toolContent/` is inert as a CTA.
 
 ### 11. The catalogue is two products in one
 
-The JSON Formatter is genuinely excellent — toolbar, split panes, live validation with
+The JSON Formatter is genuinely excellent, toolbar, split panes, live validation with
 line/column, byte/line/key/depth stats, keyboard shortcuts, drag-and-drop, large-input
 guard. Then 73 of 114 tools are still the old `<Card><CardTitle>` stack.
 
@@ -261,14 +261,14 @@ Measured across all 114 implementations:
 | Web Worker for heavy work | **0 / 114** |
 
 Nobody needs all of these everywhere, but **Clear at 8/114 and drag-and-drop at 4/114** are
-the ones users notice. Of the 52 tools that take a file, 52 have no drop zone — you must
+the ones users notice. Of the 52 tools that take a file, 52 have no drop zone, you must
 click through the picker every time.
 
 A shared `<ToolShell>` (toolbar + input pane + output pane + copy/download/clear + drop
 zone) would collapse most of the 22,000 lines under `implementations/` and make the
 catalogue feel like one product. The JSON formatter is already the reference design.
 
-### 12. Zero Web Workers — big inputs block the main thread
+### 12. Zero Web Workers, big inputs block the main thread
 
 Every tool processes on the main thread. Only `JsonFormatterTool` guards against it
 (auto-format suspends above 512 KB). Feeding a few MB to the CSV, XML, hash or compression
@@ -293,18 +293,18 @@ Page scrolls sideways on a phone:
 
 `html-formatter`, `sql-formatter` and `markdown-preview` have fixed-width children
 (403px, 403px, 532px) inside a 375px viewport. `markdown-preview` also renders **two
-`<h1>`s** whenever the user's markdown contains one — scope the preview's typography so
+`<h1>`s** whenever the user's markdown contains one, scope the preview's typography so
 user headings start at `h2`.
 
 ### 14. Accessibility
 
 - **125 form controls across 66 tools use `placeholder` as their only label.** Placeholders
   vanish on input and aren't reliably announced. These need `<Label htmlFor>` or `aria-label`.
-- **21 tools have icon-only buttons with no accessible name** — worst are
+- **21 tools have icon-only buttons with no accessible name**, worst are
   `chmod-calculator` (11), `css-unit-converter` (10), `gitignore-generator` (10),
   `color-palette-generator` (9), `password-generator` (5). A screen reader announces
   "button".
-- **16 tools have touch targets under 32px** — `chmod-calculator` (11),
+- **16 tools have touch targets under 32px**, `chmod-calculator` (11),
   `gitignore-generator` (10), `color-palette-generator` (9). WCAG 2.2 AA asks for 24px
   minimum; 44px is the comfortable target on a phone.
 - **97 of 114 pages skip a heading level** (`h1` → `h3`), because shadcn's `CardTitle`
@@ -313,13 +313,13 @@ user headings start at `h2`.
 
 ### 15. Grammar bugs in generated copy
 
-`src/lib/toolContentResolver.ts:158` — `Choose a ${profile.subject}` with no article
+`src/lib/toolContentResolver.ts:158`, `Choose a ${profile.subject}` with no article
 agreement produces, on live pages:
 
 - "Choose **a** image" (10 tools) · "Choose **a** archive" (3) · "Choose **a** audio file" (2)
-- "Choose a PDF" on `/images-to-pdf`, which takes **images** — wrong noun, not just wrong article
+- "Choose a PDF" on `/images-to-pdf`, which takes **images**, wrong noun, not just wrong article
 
-`src/data/toolSeo.ts:33` — `privacyFaq(subject)` builds `Is my ${subject} uploaded to a
+`src/data/toolSeo.ts:33`, `privacyFaq(subject)` builds `Is my ${subject} uploaded to a
 server?` and is called with plural subjects, producing:
 
 - "Is my **images** uploaded to a server?"
@@ -327,7 +327,7 @@ server?` and is called with plural subjects, producing:
 - "Is my **colour values** uploaded to a server?"
 - "Is my **generated UUIDs** uploaded to a server?"
 
-Roughly 20 pages carry one of these, in an `<h3>` inside FAQPage structured data — so it's
+Roughly 20 pages carry one of these, in an `<h3>` inside FAQPage structured data, so it's
 in the rich results too. Add `article` and `subjectPlural` fields to the category profile
 and pick the right one per template.
 
@@ -346,16 +346,16 @@ typed with no undo. Guard with `if (output) setInput(output)`.
 
 ---
 
-## P3 — code health
+## P3, code health
 
-**Dead code, 374 lines.** Nothing imports any of these — verified with a full-tree grep
+**Dead code, 374 lines.** Nothing imports any of these, verified with a full-tree grep
 including `scripts/`:
 
-- `src/components/tools/ToolRunner.tsx` (218 lines) — a `switch` over 14 tool IDs that
+- `src/components/tools/ToolRunner.tsx` (218 lines). A `switch` over 14 tool IDs that
   duplicates the registry, plus its own copy/download/share bar
 - `src/components/tools/PlaceholderTool.tsx`
 - All nine eager `*ToolRegistry.ts` files (`pdf`, `csv`, `audio`, `image`, `video`,
-  `spreadsheet`, `compression`, `archive`, `converter`) — superseded by `lazyToolRegistry.ts`
+  `spreadsheet`, `compression`, `archive`, `converter`), superseded by `lazyToolRegistry.ts`
 - `componentRegistry` in `src/lib/toolRegistry.ts:542`
 
 **Two TypeScript errors** (`npx tsc --noEmit` is not part of `npm run build`, so these ship):
@@ -369,14 +369,14 @@ VideoToGifTool.tsx(8,1):     TS2578: Unused '@ts-expect-error' directive
 Adding `tsc --noEmit` to the build would have caught both.
 
 **`npm run lint`: 86 errors, 34 warnings.** The 18 `react-hooks/exhaustive-deps` warnings
-are the ones that matter — those are stale-closure bugs waiting to happen. The 50
+are the ones that matter. Those are stale-closure bugs waiting to happen. The 50
 `no-explicit-any` are mostly in the dead registries above.
 
-**Object URL leaks** — `createObjectURL` with no matching `revokeObjectURL`, so blobs are
+**Object URL leaks**, `createObjectURL` with no matching `revokeObjectURL`, so blobs are
 pinned for the page's lifetime: `color-picker`, `image-crop`, `image-filters`,
 `image-rotate-flip`, `image-watermark`. Each new upload leaks the previous full-size image.
 
-**Bundle** — largest chunks are `PDFButton` 512K, `PdfToImagesTool` 448K, `index` 436K
+**Bundle**, largest chunks are `PDFButton` 512K, `PdfToImagesTool` 448K, `index` 436K
 (132K gzip), `xlsx` 416K, `MdToDocxTool` 340K. Code splitting is working well; the 104K
 `xml2js` chunk is pure waste since that tool doesn't function.
 
@@ -394,7 +394,7 @@ Worth stating, since most of this catalogue is solid:
 
 - **127 / 128 routes** render with zero console errors; hydration is clean on every
   prerendered page (an earlier apparent site-wide failure was an artifact of `vite preview`
-  serving the SPA fallback instead of the per-route HTML — a real static host is fine).
+  serving the SPA fallback instead of the per-route HTML. A real static host is fine).
 - **All 8 PDF tools** work on a real 5-page PDF: merge (5+2 → 7 pages), split, compress,
   rotate, reorder, watermark, images→PDF, and PDF→images rendering all 5 pages with a
   Download ZIP.
@@ -411,13 +411,13 @@ Worth stating, since most of this catalogue is solid:
 
 ## Suggested order
 
-1. Encryption tool — remove or implement with the `crypto-js` already installed
-2. Regex tester `lastIndex` guard — one line
-3. Error boundary around `ToolWorkbench` — stops any future tool crash blanking the site
+1. Encryption tool, remove or implement with the `crypto-js` already installed
+2. Regex tester `lastIndex` guard, one line
+3. Error boundary around `ToolWorkbench`, stops any future tool crash blanking the site
 4. `/workflow-builder` + `/workflows` into `PRERENDER_ROUTES` (or delete the links + sitemap entry)
-5. Generic `focus` / `upload` handling in `ToolWorkbench` — revives dead CTAs on 113 tools
+5. Generic `focus` / `upload` handling in `ToolWorkbench`, revives dead CTAs on 113 tools
 6. `video-to-gif` encoder swap; `xml-json-converter` → `fast-xml-parser`; colour picker `useEffect`; lorem ipsum `Array.from`
 7. Sanitise markdown preview; fix the DNS/IP privacy copy
 8. Grammar in `toolContentResolver.ts` + `toolSeo.ts`
 9. Delete the 374 lines of dead code; refresh `CLAUDE.md`
-10. Shared `<ToolShell>` — Clear, drag & drop, copy/download everywhere
+10. Shared `<ToolShell>`, Clear, drag & drop, copy/download everywhere

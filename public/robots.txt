@@ -1,4 +1,4 @@
-# ToolOcean — every tool is a static, prerendered page. Nothing here is
+# ToolOcean: every tool is a static, prerendered page. Nothing here is
 # user-generated, so the whole site is crawlable.
 
 User-agent: *

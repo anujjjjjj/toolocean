@@ -18,7 +18,7 @@ import NotFound from "./pages/NotFound";
  * category listings and the workflow builder as well. The prerender still emits
  * complete HTML because entry-ssg.tsx renders with renderToPipeableStream and
  * waits for onAllReady, which resolves every Suspense boundary before serialising
- * — renderToString cannot do this and would have emitted the empty fallback.
+ *, renderToString cannot do this and would have emitted the empty fallback.
  *
  * On the client, hydrateRoot keeps the server markup on screen while a lazy chunk
  * is still in flight, so the split costs nothing visually.
@@ -76,7 +76,7 @@ function GlobalKeyboardHandler() {
  *
  * Rendering CommandPalette unconditionally pulled cmdk, all of src/data/tools.json
  * and the 78 statically imported lucide icons in toolIcons.ts into the entry
- * chunk — on all 136 pages, for a dialog that only appears when someone presses
+ * chunk, on all 136 pages, for a dialog that only appears when someone presses
  * Cmd+K. The toaster is used by a handful of tools and paid the same tax.
  *
  * `hasOpened` latches so the chunk is fetched once and the dialog keeps its
@@ -125,7 +125,7 @@ export function AppRoutes() {
         <DeferredToaster />
         {/*
           Renders null until after mount, so it stays out of the prerendered HTML
-          and cannot cause a hydration mismatch. Page views are not tracked here —
+          and cannot cause a hydration mismatch. Page views are not tracked here,
           useSEO owns that; see the comment there for why.
         */}
         <ConsentBanner />

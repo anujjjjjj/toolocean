@@ -156,7 +156,7 @@ export function FaviconGeneratorTool() {
           </div>
 
           <p className="text-xs text-muted-foreground">
-            Generates: {SIZES.join(", ")} px — all exported as PNG
+            Generates: {SIZES.join(", ")} px, all exported as PNG
           </p>
         </div>
       )}

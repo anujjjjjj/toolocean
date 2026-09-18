@@ -3,7 +3,7 @@
  *
  * check-catalog.mjs regex-parses TypeScript and so can only assert that entries
  * exist. This runs after the SSR bundle is built and imports the real resolver,
- * so it can assert things about the content itself — which is what the authoring
+ * so it can assert things about the content itself. Which is what the authoring
  * programme actually needs, because the failure mode it has to prevent is not a
  * missing file but 114 pages of plausible-looking near-identical prose.
  *
@@ -11,7 +11,7 @@
  *   1. Authored word count against the tool's tier floor.
  *   2. Structural minimums once a tool has been authored.
  *   3. Cross-page duplication, by shingle. This is the real anti-boilerplate
- *      check — everything else can be satisfied by paraphrasing one template.
+ *      check. Everything else can be satisfied by paraphrasing one template.
  *   4. Internal links that do not resolve.
  *   5. Measurements without provenance.
  *   6. A committed ratchet, so an authored page cannot quietly get thinner.
@@ -74,7 +74,7 @@ const wordsIn = (text) => text.split(/\s+/).filter(Boolean).length;
 
 /*
  * Authored text is whatever a human wrote for this specific tool: its override
- * module plus its toolSeo entry. Resolved content is the wrong thing to count —
+ * module plus its toolSeo entry. Resolved content is the wrong thing to count,
  * it includes the shared feature cards, the generated specs table and the
  * generated category FAQs, which is exactly the boilerplate the floors exist to
  * stop standing in for real writing.
@@ -133,7 +133,7 @@ for (const tool of TOOL_CATALOG) {
 
   // KNOWN_BROKEN: refuse content for a tool that does not do what a page would say.
   if (override && KNOWN_BROKEN.includes(slug)) {
-    fail(`${slug}: has authored content but is listed in KNOWN_BROKEN — fix the tool or drop the claim first`);
+    fail(`${slug}: has authored content but is listed in KNOWN_BROKEN, fix the tool or drop the claim first`);
   }
 
   if (tier) {
@@ -158,7 +158,7 @@ for (const tool of TOOL_CATALOG) {
     if (authoredFaqs < STRUCTURE.authoredFaqs)
       fail(`${slug}: needs ${STRUCTURE.authoredFaqs} authored FAQs, has ${authoredFaqs}`);
     if ((content.limitations?.items?.length ?? 0) < STRUCTURE.limitations)
-      fail(`${slug}: needs ${STRUCTURE.limitations} stated limitations — every tool has them`);
+      fail(`${slug}: needs ${STRUCTURE.limitations} stated limitations, every tool has them`);
     if ((content.related?.length ?? 0) < STRUCTURE.related)
       fail(`${slug}: needs ${STRUCTURE.related} related links, has ${content.related?.length ?? 0}`);
   }
@@ -191,14 +191,14 @@ for (const tool of TOOL_CATALOG) {
    * This is the check that actually enforces the content model. Word floors and
    * section counts can all be satisfied by one template with the nouns swapped;
    * an 8-word phrase appearing on two pages cannot. SHARED_STRINGS carries the
-   * deliberate exceptions — statements about the architecture that are true in
+   * deliberate exceptions, statements about the architecture that are true in
    * the same way everywhere.
    */
   for (const text of authored) {
     for (const shingle of shingles(text)) {
       const owner = shingleOwners.get(shingle);
       if (owner && owner !== slug) {
-        fail(`${slug}: shares an 8-word phrase with ${owner} — "${shingle}"`);
+        fail(`${slug}: shares an 8-word phrase with ${owner}, "${shingle}"`);
       } else if (!owner) {
         shingleOwners.set(shingle, slug);
       }

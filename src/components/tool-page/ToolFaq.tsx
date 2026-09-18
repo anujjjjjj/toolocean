@@ -16,7 +16,7 @@ import type { ToolFaqEntry } from "@/types/toolContent";
  *    phrasing content) and breaks heading-order tooling.
  *
  * 2. Radix unmounts collapsed content by default. That would leave every answer
- *    out of the prerendered HTML while the FAQPage JSON-LD still claimed it —
+ *    out of the prerendered HTML while the FAQPage JSON-LD still claimed it,
  *    a visible-content mismatch. `forceMount` keeps the answers in the DOM at
  *    all times; Radix marks them [hidden] when collapsed, which Google's FAQ
  *    guidance explicitly permits for expandable answers.

@@ -37,7 +37,7 @@ export function ImageColorPickerTool() {
    * Decodes the File directly, with no object URL and no <img> in between.
    *
    * The original reached for canvasRef.current inside a detached `new Image()`
-   * onload — but the canvas is only rendered once there is an image, so the ref was
+   * onload, but the canvas is only rendered once there is an image, so the ref was
    * always null there and every upload threw "Cannot set properties of null (setting
    * 'width')". Rebuilding it around a rendered <img> fixed that and exposed a second
    * problem: the input is cleared straight after (so the same file can be picked

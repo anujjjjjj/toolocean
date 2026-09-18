@@ -83,7 +83,7 @@ export function ToolExamples({ examples, heading, lede }: { examples: ToolExampl
           /*
            * "Try this example" loads the input into the workbench, which only
            * means anything when there is a string to load. A file example has no
-           * such payload — the button would be a dead control on 52 tools.
+           * such payload. The button would be a dead control on 52 tools.
            */
           const loadable = !file && example.loadable !== false;
 

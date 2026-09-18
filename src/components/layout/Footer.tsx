@@ -7,7 +7,7 @@ import { LANDING_PAGES } from "@/data/landingPages";
  * Site footer.
  *
  * Added with the About/Privacy/Terms pages, which otherwise would have had no
- * route into them from anywhere on the site — an orphaned page is one a crawler
+ * route into them from anywhere on the site. An orphaned page is one a crawler
  * only reaches via the sitemap, and Google treats sitemap-only discovery as a
  * much weaker signal than an internal link.
  *
@@ -44,7 +44,7 @@ export function Footer() {
             </Link>
             <p className="mt-3 max-w-sm text-sm text-muted-foreground">
               114 free browser tools for developers, documents, images, audio and data. Every
-              one runs entirely on your device — nothing is uploaded, and there is no account.
+              one runs entirely on your device. Nothing is uploaded, and there is no account.
             </p>
           </div>
 
@@ -97,7 +97,7 @@ export function Footer() {
 
           {/*
             The landing pages need an internal link from somewhere, or they are
-            orphans that Google only ever reaches through the sitemap — which is a
+            orphans that Google only ever reaches through the sitemap, which is a
             far weaker discovery signal than a link, and a much weaker ranking one.
             Being in the footer puts them one hop from all 135 pages.
           */}

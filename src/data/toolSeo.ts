@@ -4,23 +4,23 @@ import type { ToolFaqEntry } from "@/types/toolContent";
 //
 // Keys are tool ids. Two ids exist in more than one category (color-converter and
 // timestamp-converter live under both /tools/ and /converter-tools/), so entries may
-// also be keyed "<route-prefix>/<tool-id>" — a scoped key wins over the bare id.
+// also be keyed "<route-prefix>/<tool-id>". A scoped key wins over the bare id.
 // Category pages pass their prefix as the second argument to getToolSeo().
 //
 //   - title: overrides the auto-generated "<Tool Name> - Free Online Tool"
 //            ("| ToolOcean" is appended by useSEO, so leave it out here)
-//   - description: meta description — aim for 140-160 characters
+//   - description: meta description, aim for 140-160 characters
 //   - keywords: meta keywords, and the phrases each page is written to rank for
 //   - faqs: rendered as a visible FAQ accordion on the tool page AND emitted as
 //           FAQPage JSON-LD
 //
-// Entries are optional — any tool without one falls back to its name/description
+// Entries are optional. Any tool without one falls back to its name/description
 // from the page's own tool metadata.
 /*
  * Re-exported from the page content contract rather than redeclared.
  *
  * The two shapes had drifted the moment FAQ entries gained a `topic`, and a
- * baseline FAQ here is the same thing as an authored one in a content module —
+ * baseline FAQ here is the same thing as an authored one in a content module,
  * it just lives in the file that covers every tool rather than one file per tool.
  */
 export type ToolFaq = ToolFaqEntry;
@@ -35,13 +35,13 @@ export interface ToolSeoEntry {
 
 // Every tool is client-side, so this answer is reused verbatim in many entries.
 const PRIVACY_ANSWER =
-  "No. Everything runs locally in your browser using JavaScript — your data is never uploaded to a server, and nothing is stored or logged.";
+  "No. Everything runs locally in your browser using JavaScript. Your data is never uploaded to a server, and nothing is stored or logged.";
 
 /**
  * Subjects that are grammatically plural, so the question needs "Are my" not "Is my".
  *
  * These are listed rather than detected from a trailing "s", because half the
- * subjects here are acronyms and mass nouns that end in one anyway — "CSS", "CSV",
+ * subjects here are acronyms and mass nouns that end in one anyway, "CSS", "CSV",
  * "SVG", "address". Getting that wrong in the other direction ("Are my CSS
  * uploaded") is no better than the bug being fixed.
  */
@@ -56,7 +56,7 @@ const PLURAL_SUBJECTS = new Set([
 
 /*
  * These questions render as <h3> inside FAQPage structured data, so "Is my images
- * uploaded to a server?" was not just visible on the page — it was eligible to show
+ * uploaded to a server?" was not just visible on the page. It was eligible to show
  * up verbatim in a Google rich result. Roughly twenty pages carried one.
  */
 const privacyFaq = (subject: string): ToolFaq => ({
@@ -76,17 +76,17 @@ const privacyFaq = (subject: string): ToolFaq => ({
  * what stops the authoring programme from turning into one template with the
  * nouns swapped. These are the exceptions: statements about the architecture
  * that are true in the same way everywhere, where writing 114 variations would
- * add words without adding information — and inventing differences would make
+ * add words without adding information, and inventing differences would make
  * the claim sound less certain than it is.
  */
 export const SHARED_STRINGS: string[] = [PRIVACY_ANSWER];
 
 export const toolSeoData: Record<string, ToolSeoEntry> = {
   // ---------------------------------------------------------------------------
-  // Developer tools — Text Processing (/tools/)
+  // Developer tools, Text Processing (/tools/)
   // ---------------------------------------------------------------------------
   "case-converter": {
-    title: "Case Converter — camelCase, snake_case & More",
+    title: "Case Converter: camelCase, snake_case & More",
     description:
       "Convert text between uppercase, lowercase, camelCase, PascalCase, snake_case, kebab-case, and Title Case instantly in your browser. Free, no signup.",
     keywords: ["case converter", "camelcase converter", "snake case converter", "pascalcase", "kebab case", "text case changer", "uppercase to lowercase"],
@@ -105,7 +105,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "word-counter": {
-    title: "Word Counter — Count Words, Characters & Reading Time",
+    title: "Word Counter: Count Words, Characters & Reading Time",
     description:
       "Free online word counter. Count words, characters with and without spaces, sentences, paragraphs, and estimated reading time as you type. Nothing is uploaded.",
     keywords: ["word counter", "character counter", "word count tool", "letter count", "reading time calculator", "paragraph counter"],
@@ -119,12 +119,12 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Are spaces counted as characters?",
         answer:
-          "Both figures are shown — characters including spaces and characters excluding spaces — because social platforms and form limits differ in which one they enforce.",
+          "Both figures are shown, characters including spaces and characters excluding spaces, because social platforms and form limits differ in which one they enforce.",
       },
     ],
   },
   "text-diff": {
-    title: "Text Diff Checker — Compare Two Texts Online",
+    title: "Text Diff Checker: Compare Two Texts Online",
     description:
       "Compare two blocks of text and highlight every addition, deletion, and change line by line. A free, private diff checker that runs entirely in your browser.",
     keywords: ["text diff", "diff checker", "compare text online", "text comparison tool", "file diff", "find differences between two texts"],
@@ -143,7 +143,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "duplicate-remover": {
-    title: "Remove Duplicate Lines Online — Free & Instant",
+    title: "Remove Duplicate Lines Online: Free & Instant",
     description:
       "Remove duplicate lines from any list while preserving the original order. Free online duplicate line remover for emails, IDs, keywords, and log files.",
     keywords: ["remove duplicate lines", "duplicate line remover", "deduplicate list", "unique lines online", "remove repeated lines"],
@@ -162,7 +162,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "line-break-remover": {
-    title: "Line Break Remover — Join Text Into One Line",
+    title: "Line Break Remover: Join Text Into One Line",
     description:
       "Strip line breaks and newlines from pasted text to join it into a single clean line. Useful for fixing text copied out of PDFs, emails, and terminals.",
     keywords: ["line break remover", "remove newlines", "join lines", "remove line breaks from text", "strip carriage returns"],
@@ -181,7 +181,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "text-replacer": {
-    title: "Find and Replace Text Online — With Regex Support",
+    title: "Find and Replace Text Online: With Regex Support",
     description:
       "Find and replace text in bulk, with plain-text or regular expression matching and capture groups. A free online search-and-replace tool with no upload.",
     keywords: ["find and replace online", "text replacer", "regex replace", "bulk replace text", "search and replace tool"],
@@ -200,7 +200,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "slug-converter": {
-    title: "Slug Generator — Convert Text to URL-Friendly Slugs",
+    title: "Slug Generator: Convert Text to URL-Friendly Slugs",
     description:
       "Turn any title into a clean, lowercase, hyphenated URL slug. Strips accents, punctuation, and extra spaces so your links stay readable and SEO-friendly.",
     keywords: ["slug generator", "url slug converter", "seo slug", "permalink generator", "text to slug", "slugify online"],
@@ -209,7 +209,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "What makes a good URL slug?",
         answer:
-          "Short, lowercase, hyphen-separated, and made of real keywords from the page title. Avoid stop words, dates, and IDs where you can — slugs are read by both people and search engines.",
+          "Short, lowercase, hyphen-separated, and made of real keywords from the page title. Avoid stop words, dates, and IDs where you can. Slugs are read by both people and search engines.",
       },
       {
         question: "How are accented and non-English characters handled?",
@@ -238,7 +238,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "lorem-ipsum-generator": {
-    title: "Lorem Ipsum Generator — Placeholder Text for Mockups",
+    title: "Lorem Ipsum Generator: Placeholder Text for Mockups",
     description:
       "Generate lorem ipsum placeholder text by words, sentences, or paragraphs for design mockups and wireframes. Copy it in one click, free and without signup.",
     keywords: ["lorem ipsum generator", "placeholder text", "dummy text generator", "filler text", "lipsum", "mockup text"],
@@ -257,7 +257,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "string-escape": {
-    title: "String Escape & Unescape — JSON, JavaScript, HTML, URL",
+    title: "String Escape & Unescape: JSON, JavaScript, HTML, URL",
     description:
       "Escape or unescape strings for JSON, JavaScript, HTML, and URL contexts. Handles quotes, backslashes, newlines, and percent-encoding in one free online tool.",
     keywords: ["string escape", "unescape string", "escape json string", "javascript escape", "backslash escape", "escape quotes online"],
@@ -276,7 +276,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "unicode-inspector": {
-    title: "Unicode Character Inspector — Codepoints & Hex",
+    title: "Unicode Character Inspector: Codepoints & Hex",
     description:
       "Inspect any string character by character: Unicode codepoint, character name, hex, decimal, HTML entity, and binary. Ideal for debugging invisible characters.",
     keywords: ["unicode inspector", "character codepoint lookup", "unicode hex", "invisible character detector", "utf-8 inspector", "html entity lookup"],
@@ -290,12 +290,12 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "What is the difference between a codepoint and a byte?",
         answer:
-          "A codepoint is the abstract Unicode number for a character (U+1F600). Its byte length depends on the encoding — in UTF-8 a character can take between one and four bytes.",
+          "A codepoint is the abstract Unicode number for a character (U+1F600). Its byte length depends on the encoding, in UTF-8 a character can take between one and four bytes.",
       },
     ],
   },
   "text-sorter": {
-    title: "Sort Lines Online — Alphabetical, Numeric & Random",
+    title: "Sort Lines Online: Alphabetical, Numeric & Random",
     description:
       "Sort text lines alphabetically, numerically, by length, in reverse, or shuffle them randomly. A fast, free line sorter that never uploads your list.",
     keywords: ["sort lines online", "alphabetical sorter", "sort list", "numeric sort", "shuffle lines", "reverse sort text"],
@@ -314,7 +314,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "text-to-binary": {
-    title: "Text to Binary Converter — Binary, Hex & Decimal",
+    title: "Text to Binary Converter: Binary, Hex & Decimal",
     description:
       "Convert text to binary, hexadecimal, or decimal and convert it back to readable text. A free two-way ASCII and Unicode converter that runs in your browser.",
     keywords: ["text to binary", "binary to text", "text to hex", "ascii converter", "binary translator", "text to decimal"],
@@ -328,16 +328,16 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Why does my binary fail to convert back?",
         answer:
-          "Binary input must be a whole number of 8-bit groups. Missing digits or stray characters break byte alignment — separate each byte with a space to be safe.",
+          "Binary input must be a whole number of 8-bit groups. Missing digits or stray characters break byte alignment, separate each byte with a space to be safe.",
       },
     ],
   },
 
   // ---------------------------------------------------------------------------
-  // Developer tools — Code Formatting (/tools/)
+  // Developer tools, Code Formatting (/tools/)
   // ---------------------------------------------------------------------------
   "json-formatter": {
-    title: "JSON Formatter & Validator — Beautify JSON Online",
+    title: "JSON Formatter & Validator: Beautify JSON Online",
     description:
       "Format, validate, and beautify JSON with proper indentation and syntax highlighting. Catch errors instantly with a free JSON formatter that never uploads data.",
     keywords: ["json formatter", "json beautifier", "json validator", "pretty print json", "format json online", "json viewer"],
@@ -349,14 +349,14 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
           "The input is parsed as strict JSON, so trailing commas, single quotes, unquoted keys, and comments are all reported as errors with the position where parsing failed.",
       },
       {
-        question: "My JSON is invalid — can it be fixed automatically?",
+        question: "My JSON is invalid, can it be fixed automatically?",
         answer:
-          "Use the JSON Fixer tool. It repairs the most common problems — trailing commas, missing quotes around keys, and smart quotes — and hands back valid JSON to format here.",
+          "Use the JSON Fixer tool. It repairs the most common problems, trailing commas, missing quotes around keys, and smart quotes, and hands back valid JSON to format here.",
       },
     ],
   },
   "json-stringify": {
-    title: "JSON.stringify Online — Objects to JSON Strings",
+    title: "JSON.stringify Online: Objects to JSON Strings",
     description:
       "Convert JavaScript objects and JSON into escaped JSON strings, ready to embed in code, config files, or API payloads. Free and entirely client-side.",
     keywords: ["json stringify", "object to json string", "escape json", "json to string online", "stringify javascript object"],
@@ -375,7 +375,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "json-parse": {
-    title: "JSON.parse Online — Parse JSON Strings to Readable Data",
+    title: "JSON.parse Online: Parse JSON Strings to Readable Data",
     description:
       "Parse an escaped JSON string back into readable, formatted data. Paste stringified JSON from logs or env vars and see the real structure. Free, no upload.",
     keywords: ["json parse online", "parse json string", "unescape json", "json string to object", "decode json"],
@@ -384,7 +384,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Why does my log line fail to parse?",
         answer:
-          "Log output is often double-escaped or truncated. Remove the surrounding quotes and any doubled backslashes first — the parser needs a complete, well-formed JSON document.",
+          "Log output is often double-escaped or truncated. Remove the surrounding quotes and any doubled backslashes first. The parser needs a complete, well-formed JSON document.",
       },
       {
         question: "Does it handle nested stringified JSON?",
@@ -394,7 +394,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "html-formatter": {
-    title: "HTML Formatter & Beautifier — Indent HTML Online",
+    title: "HTML Formatter & Beautifier: Indent HTML Online",
     description:
       "Format and beautify messy or minified HTML with consistent indentation and readable nesting. A free HTML beautifier that processes markup in your browser.",
     keywords: ["html formatter", "html beautifier", "format html online", "indent html", "prettify html", "unminify html"],
@@ -413,7 +413,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "sql-formatter": {
-    title: "SQL Formatter — Beautify & Indent SQL Queries Online",
+    title: "SQL Formatter: Beautify & Indent SQL Queries Online",
     description:
       "Format long or generated SQL into readable, consistently indented queries with keyword casing. A free SQL beautifier for SELECT, JOIN, CTE, and DDL statements.",
     keywords: ["sql formatter", "sql beautifier", "format sql online", "sql pretty print", "indent sql query", "sql prettifier"],
@@ -427,12 +427,12 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Is it safe to paste production queries?",
         answer:
-          "Yes. Formatting happens locally in your browser — the query is never transmitted, which matters when the SQL contains table names or literal values from a real system.",
+          "Yes. Formatting happens locally in your browser. The query is never transmitted, which matters when the SQL contains table names or literal values from a real system.",
       },
     ],
   },
   "json-fixer": {
-    title: "JSON Fixer — Repair Broken or Invalid JSON Online",
+    title: "JSON Fixer: Repair Broken or Invalid JSON Online",
     description:
       "Automatically repair invalid JSON: trailing commas, missing or single quotes, unquoted keys, and comments. Get valid, parseable JSON back in one click.",
     keywords: ["json fixer", "repair json", "fix invalid json", "json error fix", "trailing comma json", "json repair tool"],
@@ -446,7 +446,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Will it change my data?",
         answer:
-          "It only repairs syntax. Keys, values, and ordering are preserved — always review the output before using it in place of the original document.",
+          "It only repairs syntax. Keys, values, and ordering are preserved, always review the output before using it in place of the original document.",
       },
     ],
   },
@@ -470,7 +470,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "xml-formatter": {
-    title: "XML Formatter & Minifier — Beautify XML Online",
+    title: "XML Formatter & Minifier: Beautify XML Online",
     description:
       "Format XML with proper indentation or minify it to save space, with syntax validation on the way. A free XML beautifier that keeps documents on your machine.",
     keywords: ["xml formatter", "xml beautifier", "format xml online", "xml minifier", "pretty print xml", "xml validator"],
@@ -479,7 +479,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Does it validate the document?",
         answer:
-          "The XML is parsed before formatting, so malformed markup — unclosed tags, mismatched nesting, invalid characters — is reported rather than silently reformatted.",
+          "The XML is parsed before formatting, so malformed markup, unclosed tags, mismatched nesting, invalid characters, is reported rather than silently reformatted.",
       },
       {
         question: "Can it format SOAP or RSS payloads?",
@@ -489,7 +489,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "csv-formatter": {
-    title: "CSV Formatter & Validator — Clean Up CSV Online",
+    title: "CSV Formatter & Validator: Clean Up CSV Online",
     description:
       "Validate and reformat CSV files with custom delimiters, quoting, and a table preview. Spot ragged rows and bad quoting before importing your data anywhere.",
     keywords: ["csv formatter", "csv validator", "clean csv online", "csv delimiter", "fix csv file", "csv preview"],
@@ -498,7 +498,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "What does the validator flag?",
         answer:
-          "Rows with the wrong number of columns, unbalanced quotes, and inconsistent line endings — the three problems that most often break a spreadsheet or database import.",
+          "Rows with the wrong number of columns, unbalanced quotes, and inconsistent line endings. The three problems that most often break a spreadsheet or database import.",
       },
       {
         question: "Can I use semicolons or tabs as the delimiter?",
@@ -508,7 +508,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "markdown-preview": {
-    title: "Markdown Preview — Live Markdown Editor & Renderer",
+    title: "Markdown Preview: Live Markdown Editor & Renderer",
     description:
       "Write Markdown and see the rendered result live side by side, with GitHub Flavored Markdown support for tables, task lists, and fenced code blocks.",
     keywords: ["markdown preview", "markdown editor online", "md viewer", "github flavored markdown", "markdown renderer", "readme preview"],
@@ -527,7 +527,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "json-minifier": {
-    title: "JSON Minifier — Compress JSON by Removing Whitespace",
+    title: "JSON Minifier: Compress JSON by Removing Whitespace",
     description:
       "Minify JSON by stripping whitespace and line breaks to cut payload size for APIs and config files. See the byte savings instantly, free and client-side.",
     keywords: ["json minifier", "minify json online", "compress json", "json whitespace remover", "reduce json size"],
@@ -547,10 +547,10 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   },
 
   // ---------------------------------------------------------------------------
-  // Developer tools — Development (/tools/)
+  // Developer tools, Development (/tools/)
   // ---------------------------------------------------------------------------
   "regex-tester": {
-    title: "Regex Tester — Live Regular Expression Matching",
+    title: "Regex Tester: Live Regular Expression Matching",
     description:
       "Test regular expressions against sample text with live highlighting, capture groups, and flag toggles. A free regex tester and debugger for JavaScript patterns.",
     keywords: ["regex tester", "regular expression tester", "regex online", "test regex", "regex debugger", "regex match highlighter"],
@@ -569,16 +569,16 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "regex-generator": {
-    title: "Regex Generator — Build Regex from Patterns",
+    title: "Regex Generator: Build Regex from Patterns",
     description:
-      "Generate regular expressions from common patterns — email, URL, phone, date, IP — and test them against your own input with real-time matching. Free online.",
+      "Generate regular expressions from common patterns, email, URL, phone, date, IP, and test them against your own input with real-time matching. Free online.",
     keywords: ["regex generator", "build regex", "regex patterns", "email regex", "url regex", "regex builder online"],
     faqs: [
       privacyFaq("input"),
       {
         question: "Which common patterns are included?",
         answer:
-          "Ready-made patterns for email addresses, URLs, phone numbers, dates, IP addresses, hex colours, and postcodes — each editable so you can adapt it to your own data.",
+          "Ready-made patterns for email addresses, URLs, phone numbers, dates, IP addresses, hex colours, and postcodes. Each editable so you can adapt it to your own data.",
       },
       {
         question: "Should I validate emails with a regex?",
@@ -588,7 +588,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "code-explainer": {
-    title: "Code Explainer — Code in Plain English",
+    title: "Code Explainer: Code in Plain English",
     description:
       "Paste a code snippet and get a plain-English breakdown of what it does, step by step. Useful for reviewing unfamiliar code and legacy functions.",
     keywords: ["code explainer", "explain code online", "code to english", "understand code snippet", "code analysis tool"],
@@ -607,7 +607,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "url-encoder": {
-    title: "URL Encoder & Decoder — Percent-Encoding Online",
+    title: "URL Encoder & Decoder: Percent-Encoding Online",
     description:
       "Encode and decode URLs and URL components with correct percent-encoding for query strings, paths, and form data. Free, instant, and fully client-side.",
     keywords: ["url encoder", "url decoder", "percent encoding", "encodeuricomponent online", "escape url", "query string encoder"],
@@ -626,7 +626,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "number-base-converter": {
-    title: "Number Base Converter — Decimal, Hex, Binary & Octal",
+    title: "Number Base Converter: Decimal, Hex, Binary & Octal",
     description:
       "Convert numbers between decimal, hexadecimal, binary, and octal, with all four bases updating together as you type. Free online base converter, no signup.",
     keywords: ["number base converter", "decimal to hex", "hex to binary", "binary converter", "octal converter", "base conversion tool"],
@@ -645,7 +645,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "mime-type-lookup": {
-    title: "MIME Type Lookup — Find Content-Type by File Extension",
+    title: "MIME Type Lookup: Find Content-Type by File Extension",
     description:
       "Look up the MIME type for any file extension, or find which extensions map to a given content type. A quick reference for Content-Type headers and uploads.",
     keywords: ["mime type lookup", "content type by extension", "file extension mime", "media type list", "content-type header"],
@@ -664,9 +664,9 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "qr-code-generator": {
-    title: "QR Code Generator — Free QR Codes from Text or URLs",
+    title: "QR Code Generator: Free QR Codes from Text or URLs",
     description:
-      "Generate a QR code from any text or URL and download it as a PNG. Free, unlimited, no watermark, no tracking, and no account — generated in your browser.",
+      "Generate a QR code from any text or URL and download it as a PNG. Free, unlimited, no watermark, no tracking, and no account, generated in your browser.",
     keywords: ["qr code generator", "create qr code", "free qr code", "url to qr code", "qr code png download", "qr generator no watermark"],
     faqs: [
       {
@@ -683,7 +683,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "number-formatter": {
-    title: "Number Formatter — Commas, Currency, Ordinals & Locales",
+    title: "Number Formatter: Commas, Currency, Ordinals & Locales",
     description:
       "Format numbers with thousands separators, currency symbols, percentages, scientific notation, ordinals, and locale rules. Free online number formatting tool.",
     keywords: ["number formatter", "add commas to numbers", "currency formatter", "thousands separator", "ordinal numbers", "locale number format"],
@@ -703,18 +703,18 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   },
 
   // ---------------------------------------------------------------------------
-  // Developer tools — Security (/tools/)
+  // Developer tools, Security (/tools/)
   // ---------------------------------------------------------------------------
   "encryption-tool": {
-    title: "Text Encryption & Decryption — AES & DES",
+    title: "Text Encryption & Decryption: AES & DES",
     description:
-      "Encrypt and decrypt text with AES or DES using your own passphrase. Everything runs in your browser — neither the text nor the key leaves your device.",
+      "Encrypt and decrypt text with AES or DES using your own passphrase. Everything runs in your browser, neither the text nor the key leaves your device.",
     keywords: ["text encryption online", "aes encrypt decrypt", "encrypt text with password", "des encryption", "online cipher tool"],
     faqs: [
       {
         question: "Is my key or plaintext sent anywhere?",
         answer:
-          "No. Encryption and decryption run entirely in your browser. Nothing — plaintext, ciphertext, or passphrase — is transmitted or stored.",
+          "No. Encryption and decryption run entirely in your browser. Nothing, plaintext, ciphertext, or passphrase, is transmitted or stored.",
       },
       {
         question: "Should I use AES or DES?",
@@ -729,7 +729,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "hash-generator": {
-    title: "Hash Generator — MD5, SHA-1 & SHA-256 Online",
+    title: "Hash Generator: MD5, SHA-1 & SHA-256 Online",
     description:
       "Generate MD5, SHA-1, and SHA-256 hashes from any text instantly. A free checksum and digest generator that hashes locally without uploading your input.",
     keywords: ["hash generator", "md5 generator", "sha256 online", "sha1 hash", "checksum calculator", "text to hash"],
@@ -748,7 +748,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "password-generator": {
-    title: "Strong Password Generator — Random & Secure",
+    title: "Strong Password Generator: Random & Secure",
     description:
       "Generate strong random passwords with configurable length, symbols, numbers, and case. Created in your browser with a cryptographic RNG and never transmitted.",
     keywords: ["password generator", "strong password generator", "random password", "secure password creator", "passphrase generator"],
@@ -766,12 +766,12 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "How long should a password be?",
         answer:
-          "At least 16 characters for important accounts. Length beats complexity — a long random password with mixed character types is far stronger than a short one with substitutions.",
+          "At least 16 characters for important accounts. Length beats complexity. A long random password with mixed character types is far stronger than a short one with substitutions.",
       },
     ],
   },
   "uuid-generator": {
-    title: "UUID Generator — Create v1 and v4 UUIDs in Bulk",
+    title: "UUID Generator: Create v1 and v4 UUIDs in Bulk",
     description:
       "Generate UUID version 1 and version 4 identifiers, one at a time or in bulk. Free online GUID generator using the browser's cryptographic random source.",
     keywords: ["uuid generator", "guid generator", "uuid v4", "uuid v1", "bulk uuid", "unique identifier generator"],
@@ -785,7 +785,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Can two UUIDs collide?",
         answer:
-          "In practice, no. A v4 UUID has 122 random bits — you would need to generate billions per second for a century before a collision became likely.",
+          "In practice, no. A v4 UUID has 122 random bits. You would need to generate billions per second for a century before a collision became likely.",
       },
     ],
   },
@@ -798,7 +798,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Are my environment variables uploaded?",
         answer:
-          "No. The file is parsed locally in your browser and never transmitted — which matters, because .env files usually hold live credentials.",
+          "No. The file is parsed locally in your browser and never transmitted. Which matters, because .env files usually hold live credentials.",
       },
       {
         question: "When do .env values need quotes?",
@@ -813,7 +813,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "jwt-decoder": {
-    title: "JWT Decoder — Decode & Inspect JSON Web Tokens",
+    title: "JWT Decoder: Decode & Inspect JSON Web Tokens",
     description:
       "Decode a JWT to inspect its header, payload, claims, and expiry. A free online JWT debugger that decodes tokens locally without sending them to a server.",
     keywords: ["jwt decoder", "decode jwt online", "jwt debugger", "json web token viewer", "jwt payload decode", "jwt expiry check"],
@@ -831,14 +831,14 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Why is JWT payload data not secret?",
         answer:
-          "The payload is base64-encoded, not encrypted — anyone holding the token can read every claim. Never put passwords or personal data you would not expose into a JWT.",
+          "The payload is base64-encoded, not encrypted, anyone holding the token can read every claim. Never put passwords or personal data you would not expose into a JWT.",
       },
     ],
   },
   "jwt-generator": {
-    title: "JWT Generator — Create Signed JSON Web Tokens (HS256)",
+    title: "JWT Generator: Create Signed JSON Web Tokens (HS256)",
     description:
-      "Generate signed JSON Web Tokens with a custom header, payload, and HS256 secret for testing auth flows. Signing happens locally — your secret is never sent.",
+      "Generate signed JSON Web Tokens with a custom header, payload, and HS256 secret for testing auth flows. Signing happens locally. Your secret is never sent.",
     keywords: ["jwt generator", "create jwt token", "sign jwt hs256", "jwt builder", "generate json web token", "jwt for testing"],
     faqs: [
       {
@@ -859,7 +859,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "base64-tool": {
-    title: "Base64 Encoder & Decoder — Text and Files",
+    title: "Base64 Encoder & Decoder: Text and Files",
     description:
       "Encode text or files to Base64 and decode Base64 back to plain text. A free, private Base64 converter that handles Unicode correctly and never uploads data.",
     keywords: ["base64 encoder", "base64 decoder", "base64 to text", "encode file to base64", "atob btoa online", "base64 converter"],
@@ -873,16 +873,16 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Why does Base64 make files larger?",
         answer:
-          "Base64 represents three bytes with four ASCII characters, so encoded data is about 33% larger than the original — the cost of being safe to embed in text.",
+          "Base64 represents three bytes with four ASCII characters, so encoded data is about 33% larger than the original. The cost of being safe to embed in text.",
       },
     ],
   },
 
   // ---------------------------------------------------------------------------
-  // Developer tools — Data & Format Converters (/tools/)
+  // Developer tools, Data & Format Converters (/tools/)
   // ---------------------------------------------------------------------------
   "csv-json-converter": {
-    title: "CSV to JSON Converter — Two-Way, with Custom Delimiters",
+    title: "CSV to JSON Converter: Two-Way, with Custom Delimiters",
     description:
       "Convert CSV to JSON and JSON back to CSV with configurable delimiters and header handling. Free, instant, and processed entirely inside your browser.",
     keywords: ["csv to json", "json to csv", "csv json converter", "convert csv online", "csv parser", "csv to json array"],
@@ -901,7 +901,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "yaml-json-converter": {
-    title: "YAML to JSON Converter — Two-Way with Validation",
+    title: "YAML to JSON Converter: Two-Way with Validation",
     description:
       "Convert YAML to JSON and JSON to YAML with validation and clear error messages. Ideal for Kubernetes manifests, CI pipelines, and application config files.",
     keywords: ["yaml to json", "json to yaml", "yaml converter", "convert yaml online", "yaml parser", "kubernetes yaml to json"],
@@ -920,7 +920,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "xml-json-converter": {
-    title: "XML to JSON Converter — Two-Way with Attribute Handling",
+    title: "XML to JSON Converter: Two-Way with Attribute Handling",
     description:
       "Convert XML to JSON and JSON to XML, with control over how attributes and text nodes are mapped. Free online converter that keeps your documents local.",
     keywords: ["xml to json", "json to xml", "xml json converter", "convert xml online", "xml parser", "xml attributes to json"],
@@ -939,7 +939,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "json-schema-validator": {
-    title: "JSON Schema Validator — Validate JSON Against a Schema",
+    title: "JSON Schema Validator: Validate JSON Against a Schema",
     description:
       "Validate a JSON document against a JSON Schema and get detailed, path-level error reporting. Free online schema validation that runs entirely in your browser.",
     keywords: ["json schema validator", "validate json against schema", "json schema online", "jsonschema check", "api contract validation"],
@@ -948,7 +948,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "What does the error output tell me?",
         answer:
-          "Each failure reports the JSON path of the offending value, the keyword that failed (type, required, pattern, enum), and what was expected — enough to fix the document directly.",
+          "Each failure reports the JSON path of the offending value, the keyword that failed (type, required, pattern, enum), and what was expected, enough to fix the document directly.",
       },
       {
         question: "Why use JSON Schema at all?",
@@ -958,7 +958,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "json-merger": {
-    title: "JSON Merger — Combine JSON Objects Online",
+    title: "JSON Merger: Combine JSON Objects Online",
     description:
       "Merge two or more JSON objects with control over how conflicting keys are resolved. Free online JSON merge tool for config layering and fixture assembly.",
     keywords: ["json merger", "merge json objects", "combine json online", "json deep merge", "json conflict resolution"],
@@ -977,7 +977,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "json-flattener": {
-    title: "JSON Flattener & Unflattener — Dot Notation Converter",
+    title: "JSON Flattener & Unflattener: Dot Notation Converter",
     description:
       "Flatten nested JSON into dot-notation keys, or expand dot-notation objects back into nested structures. Useful for env vars, CSV exports, and feature flags.",
     keywords: ["json flattener", "flatten json online", "unflatten json", "dot notation json", "nested json to flat", "json to key value"],
@@ -997,10 +997,10 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   },
 
   // ---------------------------------------------------------------------------
-  // Developer tools — Frontend & Styling (/tools/)
+  // Developer tools, Frontend & Styling (/tools/)
   // ---------------------------------------------------------------------------
   "css-minifier": {
-    title: "CSS Minifier & Beautifier — Compress or Format CSS",
+    title: "CSS Minifier & Beautifier: Compress or Format CSS",
     description:
       "Minify CSS to shrink stylesheets, or beautify compressed CSS back into readable rules. Free online CSS compressor and formatter with no upload.",
     keywords: ["css minifier", "css beautifier", "compress css online", "format css", "unminify css", "css optimizer"],
@@ -1019,7 +1019,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "html-jsx-converter": {
-    title: "HTML to JSX Converter — Convert Markup for React",
+    title: "HTML to JSX Converter: Convert Markup for React",
     description:
       "Convert HTML into valid JSX with the right attribute names, self-closing tags, and inline style objects. Paste a snippet and get React-ready markup instantly.",
     keywords: ["html to jsx", "jsx converter", "html to react", "class to classname", "convert html for react", "jsx transformer"],
@@ -1038,7 +1038,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "color-converter": {
-    title: "Color Picker & Converter — HEX, RGB & HSL",
+    title: "Color Picker & Converter: HEX, RGB & HSL",
     description:
       "Pick a colour and convert it between HEX, RGB, and HSL with a live preview. A free colour converter for CSS work that runs entirely in your browser.",
     keywords: ["color converter", "hex to rgb", "rgb to hex", "hsl converter", "color picker online", "css color tool"],
@@ -1057,7 +1057,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "gradient-generator": {
-    title: "CSS Gradient Generator — Linear & Radial with Preview",
+    title: "CSS Gradient Generator: Linear & Radial with Preview",
     description:
       "Build CSS linear and radial gradients with multiple colour stops and a live preview, then copy the ready-to-use CSS. Free gradient generator, no signup.",
     keywords: ["css gradient generator", "linear gradient", "radial gradient", "gradient css code", "background gradient maker"],
@@ -1076,7 +1076,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "box-shadow-generator": {
-    title: "CSS Box Shadow Generator — Live Preview & Code",
+    title: "CSS Box Shadow Generator: Live Preview & Code",
     description:
       "Design CSS box-shadows visually with offset, blur, spread, colour, and inset controls, and layer multiple shadows. Copy the generated CSS in one click.",
     keywords: ["box shadow generator", "css box shadow", "shadow css code", "inset shadow", "multiple box shadows", "css shadow maker"],
@@ -1095,9 +1095,9 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "css-unit-converter": {
-    title: "CSS Unit Converter — px, rem, em, vw, vh & pt",
+    title: "CSS Unit Converter: px, rem, em, vw, vh & pt",
     description:
-      "Convert between CSS units — px, rem, em, vw, vh, and pt — with a configurable base font size and viewport. Free online converter for responsive layouts.",
+      "Convert between CSS units, px, rem, em, vw, vh, and pt, with a configurable base font size and viewport. Free online converter for responsive layouts.",
     keywords: ["css unit converter", "px to rem", "rem to px", "em converter", "vw vh calculator", "responsive css units"],
     faqs: [
       privacyFaq("input"),
@@ -1114,7 +1114,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "color-palette-generator": {
-    title: "Color Palette Generator — Shades, Tints & Harmonies",
+    title: "Color Palette Generator: Shades, Tints & Harmonies",
     description:
       "Generate a colour palette from any base colour: shades, tints, complementary, analogous, and triadic harmonies, with copyable HEX values for each swatch.",
     keywords: ["color palette generator", "color scheme generator", "shades and tints", "complementary colors", "analogous palette", "brand color palette"],
@@ -1134,12 +1134,12 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   },
 
   // ---------------------------------------------------------------------------
-  // Developer tools — Testing & API Tools (/tools/)
+  // Developer tools, Testing & API Tools (/tools/)
   // ---------------------------------------------------------------------------
   "fake-data-generator": {
-    title: "Fake Data Generator — Names, Emails & Test Records",
+    title: "Fake Data Generator: Names, Emails & Test Records",
     description:
-      "Generate realistic fake test data — names, emails, addresses, phone numbers, and more — in bulk for seeding databases, demos, and QA. Free and client-side.",
+      "Generate realistic fake test data, names, emails, addresses, phone numbers, and more, in bulk for seeding databases, demos, and QA. Free and client-side.",
     keywords: ["fake data generator", "mock data generator", "test data online", "dummy data", "sample records", "seed data generator"],
     faqs: [
       privacyFaq("generated data"),
@@ -1156,7 +1156,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "http-request-composer": {
-    title: "HTTP Request Composer — Build & Test API Requests",
+    title: "HTTP Request Composer: Build & Test API Requests",
     description:
       "Compose HTTP requests with custom methods, headers, and body, then send them and inspect the response. A lightweight in-browser client for quick API checks.",
     keywords: ["http request composer", "api testing tool", "online rest client", "postman alternative", "send http request", "api request builder"],
@@ -1164,7 +1164,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Why does my request fail with a CORS error?",
         answer:
-          "Browsers block cross-origin requests unless the target server sends permissive CORS headers. That is a server-side policy — a desktop client or curl is unaffected by it.",
+          "Browsers block cross-origin requests unless the target server sends permissive CORS headers. That is a server-side policy. A desktop client or curl is unaffected by it.",
       },
       {
         question: "Are my requests proxied through a server?",
@@ -1179,7 +1179,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "user-agent-generator": {
-    title: "User-Agent Generator — Browser & Device UA Strings",
+    title: "User-Agent Generator: Browser & Device UA Strings",
     description:
       "Generate valid user-agent strings for major browsers, operating systems, and mobile devices. Useful for testing device detection and responsive behaviour.",
     keywords: ["user agent generator", "user agent string list", "browser ua string", "mobile user agent", "chrome user agent", "ua string generator"],
@@ -1198,7 +1198,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "timestamp-converter": {
-    title: "Epoch & Unix Timestamp Converter — To and From Dates",
+    title: "Epoch & Unix Timestamp Converter: To and From Dates",
     description:
       "Convert Unix epoch timestamps to human-readable dates and back, in seconds or milliseconds, across time zones. Free online timestamp converter, no upload.",
     keywords: ["epoch converter", "unix timestamp converter", "timestamp to date", "date to epoch", "milliseconds to date", "unix time"],
@@ -1217,7 +1217,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "ip-address": {
-    title: "IP Address Lookup — Find Your IP, Location & ISP",
+    title: "IP Address Lookup: Find Your IP, Location & ISP",
     description:
       "Look up any IP address to see its approximate location, ISP, and network details, or check your own public IP. Free IP lookup with no account required.",
     keywords: ["ip address lookup", "what is my ip", "ip geolocation", "ip isp lookup", "public ip checker", "ip location finder"],
@@ -1241,12 +1241,12 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   },
 
   // ---------------------------------------------------------------------------
-  // Developer tools — DevOps & Infrastructure (/tools/)
+  // Developer tools, DevOps & Infrastructure (/tools/)
   // ---------------------------------------------------------------------------
   "gitignore-generator": {
-    title: ".gitignore Generator — Templates by Language",
+    title: ".gitignore Generator: Templates by Language",
     description:
-      "Generate a .gitignore file for your stack — Node, Python, Java, Go, macOS, IDEs, and more — by combining ready-made templates. Free and instant.",
+      "Generate a .gitignore file for your stack, Node, Python, Java, Go, macOS, IDEs, and more, by combining ready-made templates. Free and instant.",
     keywords: ["gitignore generator", "gitignore template", "node gitignore", "python gitignore", "create gitignore file", "git ignore rules"],
     faqs: [
       privacyFaq("selection"),
@@ -1263,7 +1263,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "dockerfile-formatter": {
-    title: "Dockerfile Formatter & Linter — Best Practice Checks",
+    title: "Dockerfile Formatter & Linter: Best Practice Checks",
     description:
       "Format Dockerfiles consistently and lint them for common problems: unpinned tags, missing users, and wasteful layer ordering. Free, runs in your browser.",
     keywords: ["dockerfile formatter", "dockerfile linter", "docker best practices", "format dockerfile online", "dockerfile validator"],
@@ -1282,7 +1282,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "yaml-formatter": {
-    title: "YAML Formatter & Validator — Fix Indentation Online",
+    title: "YAML Formatter & Validator: Fix Indentation Online",
     description:
       "Format and validate YAML with consistent indentation and clear syntax errors. Built for Kubernetes manifests, GitHub Actions, Docker Compose, and app config.",
     keywords: ["yaml formatter", "yaml validator", "yaml linter online", "fix yaml indentation", "kubernetes yaml validator", "yaml syntax check"],
@@ -1291,17 +1291,17 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Why does YAML reject tab characters?",
         answer:
-          "The YAML spec forbids tabs for indentation because their width is ambiguous. Use spaces consistently — most editors can be set to insert spaces automatically.",
+          "The YAML spec forbids tabs for indentation because their width is ambiguous. Use spaces consistently. Most editors can be set to insert spaces automatically.",
       },
       {
         question: "Why did my value 'no' become false?",
         answer:
-          "YAML 1.1 parsers coerce no, yes, on, and off to booleans. Quote the value when you mean the string — the same trap catches version numbers like 1.10.",
+          "YAML 1.1 parsers coerce no, yes, on, and off to booleans. Quote the value when you mean the string. The same trap catches version numbers like 1.10.",
       },
     ],
   },
   "nginx-config-generator": {
-    title: "NGINX Config Generator — Proxy, SSL & Static",
+    title: "NGINX Config Generator: Proxy, SSL & Static",
     description:
       "Generate NGINX configuration for common setups: static sites, reverse proxies, SSL redirects, and SPA fallbacks. Copy a working server block in seconds.",
     keywords: ["nginx config generator", "nginx reverse proxy config", "nginx ssl config", "nginx server block", "nginx spa fallback"],
@@ -1339,7 +1339,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "chmod-calculator": {
-    title: "chmod Calculator — Linux File Permissions to Octal",
+    title: "chmod Calculator: Linux File Permissions to Octal",
     description:
       "Tick read, write, and execute boxes for owner, group, and others to get the octal and symbolic chmod notation. A free Unix file permission calculator.",
     keywords: ["chmod calculator", "file permissions calculator", "octal permissions", "linux chmod 755", "unix permission converter", "rwx calculator"],
@@ -1358,7 +1358,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "ip-cidr-calculator": {
-    title: "CIDR Calculator — Subnet, Netmask & Host Range",
+    title: "CIDR Calculator: Subnet, Netmask & Host Range",
     description:
       "Calculate network address, broadcast address, subnet mask, host range, and usable host count from any CIDR block. Free online IP subnet calculator.",
     keywords: ["cidr calculator", "subnet calculator", "ip range calculator", "netmask calculator", "cidr to ip range", "subnet mask lookup"],
@@ -1372,14 +1372,14 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "What does the number after the slash mean?",
         answer:
-          "It is the count of leading bits fixed as the network portion. A larger prefix means a smaller network — /24 is 256 addresses, /25 is 128.",
+          "It is the count of leading bits fixed as the network portion. A larger prefix means a smaller network, /24 is 256 addresses, /25 is 128.",
       },
     ],
   },
   "dns-lookup": {
-    title: "DNS Lookup — Check A, AAAA, MX, TXT & CNAME Records",
+    title: "DNS Lookup: Check A, AAAA, MX, TXT & CNAME Records",
     description:
-      "Look up DNS records for any domain — A, AAAA, MX, TXT, and CNAME — using DNS-over-HTTPS straight from your browser. Free, fast, and no account needed.",
+      "Look up DNS records for any domain. A, AAAA, MX, TXT, and CNAME, using DNS-over-HTTPS straight from your browser. Free, fast, and no account needed.",
     keywords: ["dns lookup", "dns record checker", "mx record lookup", "txt record check", "cname lookup", "dig online", "nslookup online"],
     faqs: [
       {
@@ -1395,7 +1395,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "What are TXT records used for?",
         answer:
-          "Mostly domain verification and email authentication — SPF, DKIM, and DMARC policies all live in TXT records, which is why mail deliverability debugging starts here.",
+          "Mostly domain verification and email authentication, SPF, DKIM, and DMARC policies all live in TXT records, which is why mail deliverability debugging starts here.",
       },
     ],
   },
@@ -1404,7 +1404,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   // PDF tools (/pdf-tools/)
   // ---------------------------------------------------------------------------
   "pdf-merge": {
-    title: "Merge PDF Files Online — Free & Private",
+    title: "Merge PDF Files Online: Free & Private",
     description:
       "Combine multiple PDFs into one document in the order you choose. Free online PDF merger with no file size limit, no watermark, and no upload to any server.",
     keywords: ["merge pdf", "combine pdf files", "pdf merger online", "join pdf", "merge pdf free", "pdf combiner no upload"],
@@ -1423,7 +1423,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "pdf-split": {
-    title: "Split PDF Online — Extract Pages from a PDF",
+    title: "Split PDF Online: Extract Pages from a PDF",
     description:
       "Split a PDF by page range or extract specific pages into a new document. Free online PDF splitter with no watermark that never uploads your file.",
     keywords: ["split pdf", "extract pdf pages", "pdf splitter online", "separate pdf pages", "pdf page extractor", "cut pdf"],
@@ -1442,7 +1442,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "pdf-compress": {
-    title: "Compress PDF Online — Reduce PDF File Size Free",
+    title: "Compress PDF Online: Reduce PDF File Size Free",
     description:
       "Shrink PDF file size so documents fit email and upload limits, with control over the quality trade-off. Free PDF compressor that works entirely offline.",
     keywords: ["compress pdf", "reduce pdf size", "pdf compressor online", "shrink pdf", "make pdf smaller", "pdf size reducer free"],
@@ -1456,12 +1456,12 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Will compression blur my document?",
         answer:
-          "Text stays sharp because it is vector data. Embedded images are re-encoded, so heavy compression can soften photos — check the preview before saving over the original.",
+          "Text stays sharp because it is vector data. Embedded images are re-encoded, so heavy compression can soften photos, check the preview before saving over the original.",
       },
     ],
   },
   "pdf-to-images": {
-    title: "PDF to Image Converter — PDF to PNG & JPG",
+    title: "PDF to Image Converter: PDF to PNG & JPG",
     description:
       "Convert PDF pages into PNG or JPG images at your chosen resolution, and download them individually or all at once. Free, private, and browser-based.",
     keywords: ["pdf to image", "pdf to png", "pdf to jpg", "convert pdf to pictures", "extract images from pdf", "pdf page to image"],
@@ -1475,12 +1475,12 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Can I control the output resolution?",
         answer:
-          "Yes. Higher DPI produces larger, sharper images — useful for printing or OCR, while screen use is usually fine at the default.",
+          "Yes. Higher DPI produces larger, sharper images, useful for printing or OCR, while screen use is usually fine at the default.",
       },
     ],
   },
   "images-to-pdf": {
-    title: "Images to PDF Converter — JPG & PNG to PDF",
+    title: "Images to PDF Converter: JPG & PNG to PDF",
     description:
       "Combine JPG, PNG, and WebP images into a single PDF in the order you choose. Free image-to-PDF converter with no watermark and no upload.",
     keywords: ["images to pdf", "jpg to pdf", "png to pdf", "convert photos to pdf", "combine images into pdf", "picture to pdf free"],
@@ -1499,7 +1499,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "pdf-rotate": {
-    title: "Rotate PDF Online — Fix Page Orientation Free",
+    title: "Rotate PDF Online: Fix Page Orientation Free",
     description:
       "Rotate PDF pages 90, 180, or 270 degrees and save the corrected document. Fix sideways scans in seconds, free and without uploading the file anywhere.",
     keywords: ["rotate pdf", "pdf rotate online", "turn pdf pages", "fix pdf orientation", "rotate scanned pdf", "save rotated pdf"],
@@ -1518,7 +1518,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "pdf-watermark": {
-    title: "Add Watermark to PDF — Free Online Watermark Tool",
+    title: "Add Watermark to PDF: Free Online Watermark Tool",
     description:
       "Stamp a text watermark across every page of a PDF, with control over position, size, rotation, and opacity. Free, no watermark of ours, no upload.",
     keywords: ["pdf watermark", "add watermark to pdf", "stamp pdf", "draft watermark pdf", "confidential watermark", "watermark pdf free"],
@@ -1527,7 +1527,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Can the watermark be removed afterwards?",
         answer:
-          "The text is drawn into the page content, so it is not a layer that can be toggled off. It is a visible deterrent, not a security control — keep an unwatermarked original.",
+          "The text is drawn into the page content, so it is not a layer that can be toggled off. It is a visible deterrent, not a security control, keep an unwatermarked original.",
       },
       {
         question: "Can I change the opacity and angle?",
@@ -1537,7 +1537,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "pdf-reorder": {
-    title: "Reorder PDF Pages Online — Rearrange & Delete Pages",
+    title: "Reorder PDF Pages Online: Rearrange & Delete Pages",
     description:
       "Rearrange, move, or delete pages in a PDF with a visual page list, then save the reordered document. Free, no watermark, and processed on your device.",
     keywords: ["reorder pdf pages", "rearrange pdf", "move pdf pages", "delete pdf pages", "organize pdf", "sort pdf pages"],
@@ -1560,7 +1560,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   // CSV tools (/csv-tools/)
   // ---------------------------------------------------------------------------
   "csv-converter": {
-    title: "CSV to JSON Converter Online — Two-Way & Free",
+    title: "CSV to JSON Converter Online: Two-Way & Free",
     description:
       "Convert CSV to JSON or JSON back to CSV with custom delimiters and header handling. Free online converter that processes your file entirely in the browser.",
     keywords: ["csv to json converter", "json to csv online", "csv converter free", "convert csv file", "csv to json array"],
@@ -1579,7 +1579,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "csv-validator": {
-    title: "CSV Validator — Check Format, Headers & Row Consistency",
+    title: "CSV Validator: Check Format, Headers & Row Consistency",
     description:
       "Validate a CSV file before importing it: catch ragged rows, duplicate headers, unbalanced quotes, and encoding issues. Free and processed in your browser.",
     keywords: ["csv validator", "validate csv online", "check csv format", "csv error checker", "csv row consistency", "csv lint"],
@@ -1588,7 +1588,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "What does the validator check?",
         answer:
-          "Column count consistency across rows, duplicate or empty header names, unbalanced quotes, and inconsistent line endings — the failures that break most imports.",
+          "Column count consistency across rows, duplicate or empty header names, unbalanced quotes, and inconsistent line endings. The failures that break most imports.",
       },
       {
         question: "Why does my import fail even though the CSV opens fine?",
@@ -1598,7 +1598,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "csv-merge": {
-    title: "Merge CSV Files Online — Combine Multiple CSVs",
+    title: "Merge CSV Files Online: Combine Multiple CSVs",
     description:
       "Combine several CSV files into one, matching headers and keeping rows in order. Free online CSV merger with no upload and no row limit.",
     keywords: ["merge csv files", "combine csv online", "csv merger", "join csv files", "concatenate csv", "append csv files"],
@@ -1621,7 +1621,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   // Audio tools (/audio-tools/)
   // ---------------------------------------------------------------------------
   "audio-cutter": {
-    title: "Audio Cutter — Trim MP3 & Audio Files Online Free",
+    title: "Audio Cutter: Trim MP3 & Audio Files Online Free",
     description:
       "Trim an audio file by selecting a start and end time, then download the clip. Free online audio cutter for MP3 and WAV that never uploads your recording.",
     keywords: ["audio cutter", "trim mp3 online", "cut audio file", "mp3 trimmer", "audio clip maker", "cut song online free"],
@@ -1635,12 +1635,12 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Does trimming re-encode and lose quality?",
         answer:
-          "The audio is decoded and re-exported as uncompressed WAV, so nothing is lost relative to the decoded source — the output file is simply larger than a compressed original.",
+          "The audio is decoded and re-exported as uncompressed WAV, so nothing is lost relative to the decoded source. The output file is simply larger than a compressed original.",
       },
     ],
   },
   "audio-merge": {
-    title: "Audio Merger — Combine Audio Files Online Free",
+    title: "Audio Merger: Combine Audio Files Online Free",
     description:
       "Join multiple audio files into one continuous track in the order you choose. Free online audio merger that runs in your browser with no upload.",
     keywords: ["audio merger", "combine audio files", "join mp3 online", "merge audio tracks", "concatenate audio", "audio joiner free"],
@@ -1663,7 +1663,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   // Image tools (/image-tools/)
   // ---------------------------------------------------------------------------
   "image-resizer": {
-    title: "Image Resizer — Resize Photos Online Free",
+    title: "Image Resizer: Resize Photos Online Free",
     description:
       "Resize images by width, height, percentage, or aspect ratio and download the result instantly. Free online image resizer with no upload and no watermark.",
     keywords: ["image resizer", "resize image online", "photo resizer free", "change image dimensions", "resize jpg", "bulk image resize"],
@@ -1672,7 +1672,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Will resizing reduce image quality?",
         answer:
-          "Scaling down is generally clean. Scaling up cannot invent detail, so enlarged images look soft — always start from the highest-resolution original you have.",
+          "Scaling down is generally clean. Scaling up cannot invent detail, so enlarged images look soft, always start from the highest-resolution original you have.",
       },
       {
         question: "How do I keep the aspect ratio?",
@@ -1682,7 +1682,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "image-compressor": {
-    title: "Image Compressor — Reduce Image File Size Online",
+    title: "Image Compressor: Reduce Image File Size Online",
     description:
       "Compress JPG, PNG, and WebP images with a quality slider and see the size saving before you download. Free image compressor that works entirely offline.",
     keywords: ["image compressor", "compress jpg online", "reduce image size", "png compressor", "optimize images for web", "shrink photo file size"],
@@ -1691,7 +1691,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "What quality setting should I use?",
         answer:
-          "Around 80% is the usual sweet spot for photos on the web — a large size reduction with no visible difference. Go higher for images with text or fine detail.",
+          "Around 80% is the usual sweet spot for photos on the web. A large size reduction with no visible difference. Go higher for images with text or fine detail.",
       },
       {
         question: "Why is my PNG barely getting smaller?",
@@ -1701,7 +1701,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "image-format-converter": {
-    title: "Image Format Converter — PNG, JPG & WebP",
+    title: "Image Format Converter: PNG, JPG & WebP",
     description:
       "Convert images between PNG, JPEG, and WebP with quality control. A free format converter that runs in your browser, so photos never leave your device.",
     keywords: ["image format converter", "png to jpg", "jpg to webp", "webp converter", "convert image format online", "png to webp"],
@@ -1710,7 +1710,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Which format should I use on the web?",
         answer:
-          "WebP for most cases — it is typically 25-35% smaller than JPEG at equivalent quality and supports transparency. Keep PNG for images that need lossless edges.",
+          "WebP for most cases. It is typically 25-35% smaller than JPEG at equivalent quality and supports transparency. Keep PNG for images that need lossless edges.",
       },
       {
         question: "What happens to transparency when converting to JPG?",
@@ -1720,7 +1720,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "image-crop": {
-    title: "Crop Image Online — Free Photo Cropper",
+    title: "Crop Image Online: Free Photo Cropper",
     description:
       "Crop an image to any region or fixed aspect ratio and export the result. Free online image cropper with no watermark that never uploads your photo.",
     keywords: ["crop image online", "photo cropper", "crop jpg", "image crop tool free", "cut image", "crop to aspect ratio"],
@@ -1729,7 +1729,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Can I crop to a fixed aspect ratio?",
         answer:
-          "Yes. Lock a ratio such as 1:1, 4:3, or 16:9 so the selection stays proportional — useful for avatars, thumbnails, and social posts.",
+          "Yes. Lock a ratio such as 1:1, 4:3, or 16:9 so the selection stays proportional, useful for avatars, thumbnails, and social posts.",
       },
       {
         question: "Does cropping affect the rest of the image quality?",
@@ -1739,7 +1739,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "color-picker": {
-    title: "Color Picker from Image — Get HEX Codes from a Photo",
+    title: "Color Picker from Image: Get HEX Codes from a Photo",
     description:
       "Upload an image and click anywhere to read the exact pixel colour as HEX and RGB. A free eyedropper tool for pulling palettes out of screenshots and photos.",
     keywords: ["color picker from image", "image eyedropper", "get hex from photo", "pixel color picker", "extract colors from image", "screenshot color picker"],
@@ -1758,9 +1758,9 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "favicon-generator": {
-    title: "Favicon Generator — Create Favicons from an Image",
+    title: "Favicon Generator: Create Favicons from an Image",
     description:
-      "Generate favicon files at every size a site needs — 16x16 through 512x512 — from a single image. Free favicon generator that runs entirely in your browser.",
+      "Generate favicon files at every size a site needs, 16x16 through 512x512, from a single image. Free favicon generator that runs entirely in your browser.",
     keywords: ["favicon generator", "create favicon from image", "favicon ico", "apple touch icon", "site icon generator", "favicon sizes"],
     faqs: [
       privacyFaq("image"),
@@ -1777,7 +1777,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "image-to-base64": {
-    title: "Image to Base64 Converter — Data URL Generator",
+    title: "Image to Base64 Converter: Data URL Generator",
     description:
       "Convert an image into a Base64 data URL you can paste straight into CSS, HTML, or JSON. Free converter that encodes locally without uploading the file.",
     keywords: ["image to base64", "base64 image encoder", "data url generator", "png to base64", "embed image in css", "base64 image converter"],
@@ -1786,7 +1786,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "When should I inline an image as Base64?",
         answer:
-          "For tiny assets — icons, spinners, 1px gradients — where saving a network round trip beats caching. Large inlined images bloat the HTML or CSS and cannot be cached separately.",
+          "For tiny assets, icons, spinners, 1px gradients. Where saving a network round trip beats caching. Large inlined images bloat the HTML or CSS and cannot be cached separately.",
       },
       {
         question: "How much larger is the Base64 version?",
@@ -1796,7 +1796,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "image-rotate-flip": {
-    title: "Rotate & Flip Image Online — Free Image Rotator",
+    title: "Rotate & Flip Image Online: Free Image Rotator",
     description:
       "Rotate an image 90, 180, or 270 degrees, or flip it horizontally and vertically, then download the result. Free, no watermark, and fully client-side.",
     keywords: ["rotate image online", "flip image", "image rotator free", "mirror image online", "turn photo sideways", "rotate jpg"],
@@ -1815,7 +1815,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "image-watermark": {
-    title: "Add Watermark to Image — Free Online Watermark Tool",
+    title: "Add Watermark to Image: Free Online Watermark Tool",
     description:
       "Add a text watermark to any image with custom position, font size, colour, and opacity. Free watermarking tool that keeps your photos on your own device.",
     keywords: ["image watermark", "add watermark to photo", "watermark tool free", "text watermark online", "copyright photo", "watermark jpg"],
@@ -1834,7 +1834,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "image-filters": {
-    title: "Image Filters Online — Brightness, Contrast & Blur",
+    title: "Image Filters Online: Brightness, Contrast & Blur",
     description:
       "Adjust brightness, contrast, saturation, grayscale, sepia, and blur with a live preview, then export the edited image. Free and processed in your browser.",
     keywords: ["image filters online", "adjust brightness contrast", "photo filter free", "grayscale image", "blur image online", "saturation editor"],
@@ -1857,7 +1857,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   // Video tools (/video-tools/)
   // ---------------------------------------------------------------------------
   "video-trimmer": {
-    title: "Video Trimmer — Cut Video Online Free, No Upload",
+    title: "Video Trimmer: Cut Video Online Free, No Upload",
     description:
       "Trim a video by selecting a start and end time and export the clip. Free online video cutter that processes the file in your browser with no watermark.",
     keywords: ["video trimmer", "cut video online", "trim mp4", "video cutter free", "clip video no watermark", "shorten video"],
@@ -1876,7 +1876,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "video-to-gif": {
-    title: "Video to GIF Converter — Free, No Upload",
+    title: "Video to GIF Converter: Free, No Upload",
     description:
       "Convert a video clip into an animated GIF with control over frame rate and dimensions. Free online video-to-GIF converter that runs in your browser.",
     keywords: ["video to gif", "mp4 to gif", "gif maker from video", "convert video to gif free", "animated gif converter", "video gif no watermark"],
@@ -1895,7 +1895,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "video-thumbnail": {
-    title: "Video Thumbnail Extractor — Capture a Frame as an Image",
+    title: "Video Thumbnail Extractor: Capture a Frame as an Image",
     description:
       "Scrub to any timestamp in a video and export that frame as a PNG or JPG. A free thumbnail grabber that never uploads your footage.",
     keywords: ["video thumbnail extractor", "capture frame from video", "video screenshot", "get thumbnail from mp4", "extract frame as image"],
@@ -1909,12 +1909,12 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "How do I pick a good thumbnail frame?",
         answer:
-          "Avoid motion-blurred frames and transitions. Pause on a well-lit, static moment with a clear subject — those read best at small sizes in a feed.",
+          "Avoid motion-blurred frames and transitions. Pause on a well-lit, static moment with a clear subject. Those read best at small sizes in a feed.",
       },
     ],
   },
   "video-metadata": {
-    title: "Video Metadata Viewer — Duration, Resolution & Codec",
+    title: "Video Metadata Viewer: Duration, Resolution & Codec",
     description:
       "Inspect a video file's duration, dimensions, aspect ratio, and available track information without uploading it anywhere. Free and instant in your browser.",
     keywords: ["video metadata viewer", "check video resolution", "video duration checker", "video codec info", "mp4 properties", "video file details"],
@@ -1937,7 +1937,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   // Spreadsheet tools (/spreadsheet-tools/)
   // ---------------------------------------------------------------------------
   "excel-reader": {
-    title: "Excel Viewer Online — Open XLSX Files in Your Browser",
+    title: "Excel Viewer Online: Open XLSX Files in Your Browser",
     description:
       "Open and view Excel files as a sortable table without installing Excel. A free XLSX viewer that reads the file locally and never uploads your spreadsheet.",
     keywords: ["excel viewer online", "open xlsx in browser", "view excel file free", "xls reader", "spreadsheet viewer no upload"],
@@ -1946,7 +1946,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Which spreadsheet formats can it open?",
         answer:
-          "XLSX and XLS workbooks, plus CSV. Multi-sheet workbooks are supported — pick the sheet you want to view from the list.",
+          "XLSX and XLS workbooks, plus CSV. Multi-sheet workbooks are supported, pick the sheet you want to view from the list.",
       },
       {
         question: "Are formulas shown or evaluated?",
@@ -1956,7 +1956,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "csv-to-excel": {
-    title: "CSV to Excel Converter — Convert CSV to XLSX Free",
+    title: "CSV to Excel Converter: Convert CSV to XLSX Free",
     description:
       "Convert a CSV file into a proper .xlsx workbook and download it. Free CSV-to-Excel converter that avoids the encoding and delimiter problems of a plain rename.",
     keywords: ["csv to excel", "convert csv to xlsx", "csv to spreadsheet", "csv to excel online free", "make xlsx from csv"],
@@ -1965,7 +1965,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Why not just rename the file to .xlsx?",
         answer:
-          "They are different formats — CSV is plain text, XLSX is a zipped XML package. Renaming produces a file Excel refuses to open; a real conversion is required.",
+          "They are different formats. CSV is plain text, XLSX is a zipped XML package. Renaming produces a file Excel refuses to open; a real conversion is required.",
       },
       {
         question: "Will long numbers keep their leading zeros?",
@@ -1975,7 +1975,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "excel-to-csv": {
-    title: "Excel to CSV Converter — Export XLSX Sheets to CSV",
+    title: "Excel to CSV Converter: Export XLSX Sheets to CSV",
     description:
       "Convert Excel worksheets into CSV files, one sheet at a time, straight from your browser. Free XLSX-to-CSV export with no upload and no account.",
     keywords: ["excel to csv", "xlsx to csv converter", "convert excel to csv online", "export sheet to csv", "excel csv free"],
@@ -1989,12 +1989,12 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "What happens to formatting and formulas?",
         answer:
-          "CSV stores only values — colours, fonts, merged cells, and formulas are dropped, leaving the computed cell contents as plain text.",
+          "CSV stores only values, colours, fonts, merged cells, and formulas are dropped, leaving the computed cell contents as plain text.",
       },
     ],
   },
   "column-extractor": {
-    title: "Extract Columns from a Spreadsheet — CSV & Excel",
+    title: "Extract Columns from a Spreadsheet: CSV & Excel",
     description:
       "Select the columns you need from a CSV or Excel file and export just those, in the order you choose. Free column extractor that runs in your browser.",
     keywords: ["extract columns from csv", "select columns spreadsheet", "csv column filter", "remove columns from excel", "column extractor tool"],
@@ -2013,7 +2013,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "json-to-excel": {
-    title: "JSON to Excel Converter — JSON Array to XLSX",
+    title: "JSON to Excel Converter: JSON Array to XLSX",
     description:
       "Convert a JSON array of objects into a formatted Excel workbook with keys as column headers. Free JSON-to-XLSX converter with no upload required.",
     keywords: ["json to excel", "json to xlsx", "convert json to spreadsheet", "json array to excel", "export json as excel"],
@@ -2036,7 +2036,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   // Compression tools (/compression-tools/)
   // ---------------------------------------------------------------------------
   "gzip-compress": {
-    title: "Gzip Compress Online — Compress Text with Gzip",
+    title: "Gzip Compress Online: Compress Text with Gzip",
     description:
       "Compress text or JSON with gzip in your browser and see the exact byte savings. Free online gzip tool for checking payload sizes before shipping them.",
     keywords: ["gzip compress online", "gzip text", "compress json gzip", "gzip encoder", "check gzip size", "gzip tool free"],
@@ -2055,7 +2055,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "gzip-decompress": {
-    title: "Gzip Decompress Online — Decode Gzipped Data",
+    title: "Gzip Decompress Online: Decode Gzipped Data",
     description:
       "Decompress gzip-encoded data back to readable text in your browser. Free gzip decoder for inspecting compressed API responses and stored payloads.",
     keywords: ["gzip decompress online", "ungzip text", "decode gzip", "gunzip tool", "decompress gzip data", "gzip decoder"],
@@ -2064,7 +2064,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Why does decompression fail on my input?",
         answer:
-          "The data must be complete and correctly encoded. Copying a gzip stream through a text editor usually corrupts it — Base64-encode the bytes before pasting instead.",
+          "The data must be complete and correctly encoded. Copying a gzip stream through a text editor usually corrupts it, Base64-encode the bytes before pasting instead.",
       },
       {
         question: "Can I decompress a .gz file?",
@@ -2074,7 +2074,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "lz-string-compress": {
-    title: "LZ-String Compress — For URLs & localStorage",
+    title: "LZ-String Compress: For URLs & localStorage",
     description:
       "Compress strings with LZ-String into URL-safe or UTF-16 output for query parameters and localStorage. Free, two-way, and entirely browser-based.",
     keywords: ["lz-string compress", "compress string for url", "localstorage compression", "lzstring online", "url safe compression", "shorten query string"],
@@ -2097,7 +2097,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   // Archive tools (/archive-tools/)
   // ---------------------------------------------------------------------------
   "zip-extractor": {
-    title: "ZIP Extractor Online — Unzip Files in Your Browser",
+    title: "ZIP Extractor Online: Unzip Files in Your Browser",
     description:
       "Open a ZIP archive and download individual files from it without installing anything. Free online unzip tool that extracts locally, with no upload.",
     keywords: ["zip extractor online", "unzip files browser", "open zip online", "extract zip free", "unzip without software", "zip opener"],
@@ -2116,7 +2116,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "zip-creator": {
-    title: "Create ZIP Online — Zip Files in Your Browser Free",
+    title: "Create ZIP Online: Zip Files in Your Browser Free",
     description:
       "Bundle multiple files into a single ZIP archive and download it. Free online ZIP creator that compresses on your device without uploading anything.",
     keywords: ["create zip online", "zip files in browser", "make zip archive", "compress files to zip", "online zip creator free"],
@@ -2135,9 +2135,9 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "zip-preview": {
-    title: "ZIP Preview — List Archive Contents Without Extracting",
+    title: "ZIP Preview: List Archive Contents Without Extracting",
     description:
-      "Inspect what is inside a ZIP file — names, sizes, and compression ratios — without extracting it. Free, fast, and processed entirely in your browser.",
+      "Inspect what is inside a ZIP file, names, sizes, and compression ratios, without extracting it. Free, fast, and processed entirely in your browser.",
     keywords: ["zip preview", "list zip contents", "view zip without extracting", "inspect zip file", "zip file contents online"],
     faqs: [
       privacyFaq("archive"),
@@ -2159,7 +2159,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   // Two ids collide with dev tools, so those are scoped by route prefix.
   // ---------------------------------------------------------------------------
   "md-to-docx": {
-    title: "Markdown to DOCX Converter — Markdown to Word Free",
+    title: "Markdown to DOCX Converter: Markdown to Word Free",
     description:
       "Convert Markdown into a Microsoft Word .docx document with headings, lists, and formatting preserved. Free converter that runs entirely in your browser.",
     keywords: ["markdown to docx", "markdown to word", "md to docx converter", "convert markdown to word document", "markdown word export"],
@@ -2173,12 +2173,12 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Can I apply my own Word template?",
         answer:
-          "The output uses default Word styles. Apply your organisation's template in Word afterwards — since the content uses real heading styles, restyling is a single step.",
+          "The output uses default Word styles. Apply your organisation's template in Word afterwards, since the content uses real heading styles, restyling is a single step.",
       },
     ],
   },
   "markdown-html": {
-    title: "Markdown to HTML Converter — Two-Way & Free",
+    title: "Markdown to HTML Converter: Two-Way & Free",
     description:
       "Convert Markdown to clean HTML and HTML back to Markdown, both directions in one tool. Free, immediate, and the conversion never leaves this tab.",
     keywords: ["markdown to html", "html to markdown", "md to html converter", "markdown html online", "convert readme to html"],
@@ -2197,7 +2197,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "json-toml": {
-    title: "JSON to TOML Converter — Two-Way & Free Online",
+    title: "JSON to TOML Converter: Two-Way & Free Online",
     description:
       "Convert JSON to TOML and TOML back to JSON for Cargo, pyproject, and app configuration files. Free two-way converter with no upload.",
     keywords: ["json to toml", "toml to json", "toml converter online", "convert config to toml", "cargo toml converter"],
@@ -2216,7 +2216,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "json-yaml": {
-    title: "JSON to YAML Converter — Two-Way & Free Online",
+    title: "JSON to YAML Converter: Two-Way & Free Online",
     description:
       "Convert JSON to YAML and YAML back to JSON with validation. Ideal for Kubernetes manifests, GitHub Actions workflows, and Docker Compose files.",
     keywords: ["json to yaml", "yaml to json converter", "convert yaml online", "kubernetes json to yaml", "yaml json two way"],
@@ -2225,7 +2225,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Why is YAML preferred for config files?",
         answer:
-          "It supports comments, needs fewer punctuation characters, and reads more naturally for hand-edited files — which is why most infrastructure tooling standardised on it.",
+          "It supports comments, needs fewer punctuation characters, and reads more naturally for hand-edited files. Which is why most infrastructure tooling standardised on it.",
       },
       {
         question: "What should I watch for converting to YAML?",
@@ -2235,7 +2235,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "json-xml": {
-    title: "JSON to XML Converter — Two-Way & Free Online",
+    title: "JSON to XML Converter: Two-Way & Free Online",
     description:
       "Convert JSON to XML and XML back to JSON, with sensible handling of attributes and text nodes. Free online converter that keeps documents on your device.",
     keywords: ["json to xml", "xml to json converter", "convert xml online free", "json xml two way", "xml data converter"],
@@ -2254,7 +2254,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "json-csv": {
-    title: "JSON to CSV Converter — Two-Way & Free Online",
+    title: "JSON to CSV Converter: Two-Way & Free Online",
     description:
       "Convert a JSON array of objects into CSV, or turn CSV rows back into JSON. Free two-way converter with RFC 4180 quoting and no upload.",
     keywords: ["json to csv", "csv to json converter", "json array to csv", "convert json to spreadsheet", "json csv online"],
@@ -2273,7 +2273,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "converter-tools/color-converter": {
-    title: "Color Converter — HEX, RGB, HSL & CMYK",
+    title: "Color Converter: HEX, RGB, HSL & CMYK",
     description:
       "Convert colours between HEX, RGB, HSL, and CMYK with a live swatch preview. Free colour format converter for web and print work, no signup required.",
     keywords: ["color converter", "hex to cmyk", "rgb to hsl", "cmyk converter online", "color format conversion", "hex rgb hsl cmyk"],
@@ -2292,7 +2292,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "converter-tools/timestamp-converter": {
-    title: "Timestamp Converter — Unix, ISO 8601 & Locale Dates",
+    title: "Timestamp Converter: Unix, ISO 8601 & Locale Dates",
     description:
       "Convert between Unix timestamps, ISO 8601 strings, and locale-formatted dates in seconds or milliseconds. Free timestamp converter that runs in the browser.",
     keywords: ["timestamp converter", "unix to iso 8601", "iso date converter", "epoch to date", "date format converter", "milliseconds to date"],
@@ -2304,14 +2304,14 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
           "The international standard date format, such as 2026-03-14T09:30:00Z. It sorts correctly as plain text and is unambiguous across regions, unlike 03/14 versus 14/03.",
       },
       {
-        question: "Seconds or milliseconds — how do I tell?",
+        question: "Seconds or milliseconds, how do I tell?",
         answer:
           "A 10-digit value is seconds (Unix convention) and a 13-digit value is milliseconds (JavaScript convention). Confusing the two shifts dates by decades.",
       },
     ],
   },
   "html-markdown": {
-    title: "HTML to Markdown Converter — Clean Markdown Output",
+    title: "HTML to Markdown Converter: Clean Markdown Output",
     description:
       "Convert HTML into clean, readable Markdown, stripping presentational markup along the way. Free converter for migrating pages into docs and READMEs.",
     keywords: ["html to markdown", "convert html to md", "html markdown converter", "web page to markdown", "clean markdown from html"],
@@ -2320,7 +2320,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "What happens to markup Markdown cannot express?",
         answer:
-          "Elements without a Markdown equivalent — complex tables, iframes, styled spans — are either kept as inline HTML or simplified, since Markdown permits raw HTML.",
+          "Elements without a Markdown equivalent, complex tables, iframes, styled spans, are either kept as inline HTML or simplified, since Markdown permits raw HTML.",
       },
       {
         question: "Is this useful for migrating a CMS?",
@@ -2330,7 +2330,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "csv-markdown": {
-    title: "CSV to Markdown Table Converter — Free Online",
+    title: "CSV to Markdown Table Converter: Free Online",
     description:
       "Turn CSV data into a properly aligned Markdown table ready to paste into a README, wiki, or pull request. Free, instant, and fully client-side.",
     keywords: ["csv to markdown table", "markdown table generator", "csv to md", "make markdown table from csv", "excel to markdown table"],
@@ -2339,7 +2339,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       {
         question: "Can I paste data straight from a spreadsheet?",
         answer:
-          "Yes. Copied spreadsheet cells arrive as tab-separated values — set the delimiter to tab and the table converts directly.",
+          "Yes. Copied spreadsheet cells arrive as tab-separated values, set the delimiter to tab and the table converts directly.",
       },
       {
         question: "Does column alignment matter?",
@@ -2349,7 +2349,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "svg-png": {
-    title: "SVG to PNG Converter — Render SVG at Any Resolution",
+    title: "SVG to PNG Converter: Render SVG at Any Resolution",
     description:
       "Render an SVG to a high-resolution PNG at whatever dimensions you need. Free SVG-to-PNG converter that rasterises in your browser with no upload.",
     keywords: ["svg to png", "convert svg to png online", "svg rasterizer", "svg to image free", "high resolution svg export"],
@@ -2368,7 +2368,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "url-parser": {
-    title: "URL Parser & Builder — Inspect Query Parameters Online",
+    title: "URL Parser & Builder: Inspect Query Parameters Online",
     description:
       "Break a URL into protocol, host, path, query parameters, and fragment, or build one from parts. Free URL inspector and query string editor, all client-side.",
     keywords: ["url parser", "query string parser", "url builder online", "parse url parameters", "utm parameter builder", "inspect url"],

@@ -7,7 +7,7 @@ import type { ToolSpec } from "@/types/toolContent";
  * Short and near-identical between tools on purpose. Every competitor can write
  * the sentence "your files are safe"; far fewer will commit to a row-by-row
  * statement of what is read, what is held, what is stored and what is
- * transmitted — and the three tools here that do reach the network say so in the
+ * transmitted, and the three tools here that do reach the network say so in the
  * same table rather than quietly matching the others.
  */
 export function ToolSpecs({ specs, heading, lede }: { specs: ToolSpec[]; heading: string; lede?: string }) {

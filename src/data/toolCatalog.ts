@@ -4,7 +4,7 @@ import toolsData from "@/data/tools.json";
  * Single source of truth for every tool ToolOcean ships.
  *
  * Before this existed, each tool's name/description/icon was duplicated across
- * its category page, allToolsForPalette.ts, and scripts/generate-sitemap.mjs —
+ * its category page, allToolsForPalette.ts, and scripts/generate-sitemap.mjs,
  * three places that had already drifted apart. Everything now derives from here:
  * routing, the command palette, the sitemap, and the per-page SEO content
  * resolver. Adding a tool means adding one entry.
@@ -75,7 +75,7 @@ export const CATEGORY_LABEL: Record<CategoryKey, string> = {
 };
 
 /**
- * Developer tools keep living in tools.json — it is already the file the dev
+ * Developer tools keep living in tools.json. It is already the file the dev
  * tool grid and workflow builder read, and duplicating 66 entries here would
  * recreate exactly the drift this module exists to remove.
  */
@@ -164,7 +164,7 @@ export const TOOL_CATALOG: CatalogTool[] = [...DEV_TOOLS, ...CATEGORY_TOOLS];
  * Tools that also belong on a second category's listing page.
  *
  * color-converter and timestamp-converter used to be registered under both
- * /tools/ and /converter-tools/ with the *same* component — two URLs serving one
+ * /tools/ and /converter-tools/ with the *same* component, two URLs serving one
  * tool. Each now has a single canonical slug and simply appears in both listings.
  */
 const CROSS_LISTED: Record<string, CategoryKey[]> = {
@@ -174,7 +174,7 @@ const CROSS_LISTED: Record<string, CategoryKey[]> = {
 
 /**
  * Canonical page path. Every tool lives at the site root, e.g. "/json-formatter".
- * Slugs are globally unique — see scripts/check-catalog.mjs, which fails the
+ * Slugs are globally unique, see scripts/check-catalog.mjs, which fails the
  * build if a collision is ever introduced.
  */
 export function toolPath(tool: CatalogTool): string {

@@ -70,7 +70,7 @@ export function MarkdownPreviewTool() {
    * Sanitised, not raw.
    *
    * marked() output went straight into dangerouslySetInnerHTML, so a markdown file
-   * containing `<img src=x onerror="...">` executed that script on this origin —
+   * containing `<img src=x onerror="...">` executed that script on this origin,
    * confirmed live, along with clickable javascript: links. Opening a .md someone
    * sent you is the entire point of this tool, so the input is untrusted by
    * definition and has to be scrubbed before it is injected.

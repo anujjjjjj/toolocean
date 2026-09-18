@@ -29,7 +29,7 @@ const BROKEN_INPUT = `{
 }`;
 
 /**
- * Hand-authored content for the JSON formatter — the flagship tool page.
+ * Hand-authored content for the JSON formatter, the flagship tool page.
  *
  * Everything below is specific to JSON. The generic privacy/offline copy comes
  * from the category profile, so nothing here repeats it.
@@ -58,7 +58,7 @@ export const jsonFormatterContent: Partial<ToolPageContent> = {
       {
         title: "Reformatting is not byte-preserving for numbers",
         body:
-          "Values pass through JavaScript numbers, which are IEEE-754 doubles. An integer larger than 9,007,199,254,740,991 — a Twitter-style ID, say — comes back rounded, and the output will be valid JSON that no longer says what the input said.",
+          "Values pass through JavaScript numbers, which are IEEE-754 doubles. An integer larger than 9,007,199,254,740,991. A Twitter-style ID, say, comes back rounded, and the output will be valid JSON that no longer says what the input said.",
       },
       {
         title: "No diffing, no querying, no streaming",
@@ -70,7 +70,7 @@ export const jsonFormatterContent: Partial<ToolPageContent> = {
   },
 
   seo: {
-    title: "JSON Formatter — Free Online JSON Beautifier & Validator",
+    title: "JSON Formatter: Free Online JSON Beautifier & Validator",
     description:
       "Format, validate and minify JSON in your browser. Get the exact line and column of any syntax error, sort keys, and copy or download the result. Nothing is uploaded.",
     keywords: [
@@ -99,7 +99,7 @@ export const jsonFormatterContent: Partial<ToolPageContent> = {
   intro: {
     heading: "What this formatter does differently",
     paragraphs: [
-      "Most online JSON formatters post your document to a server, format it there, and send it back. That is a poor trade for something a browser can do natively in under a millisecond, and it means every API response you debug — tokens, customer records, internal IDs — lands in somebody else's request log. This page has no backend at all. The formatting runs in the tab you are reading, which is why it is safe to paste production data into.",
+      "Most online JSON formatters post your document to a server, format it there, and send it back. That is a poor trade for something a browser can do natively in under a millisecond, and it means every API response you debug, tokens, customer records, internal IDs, lands in somebody else's request log. This page has no backend at all. The formatting runs in the tab you are reading, which is why it is safe to paste production data into.",
       "The other difference is error reporting. Browsers word their JSON syntax errors inconsistently and Safari does not report a position at all, so this tool normalises the message and derives a line and column number, then highlights that line in the gutter. For a 4,000-line config file, that is the difference between a five-second fix and a bisect.",
     ],
   },
@@ -108,7 +108,7 @@ export const jsonFormatterContent: Partial<ToolPageContent> = {
     {
       icon: "CloudOff",
       title: "Nothing is uploaded",
-      body: "There is no server to send your JSON to. The page is a static bundle, and the formatting happens in local JavaScript — check your network panel while you use it.",
+      body: "There is no server to send your JSON to. The page is a static bundle, and the formatting happens in local JavaScript, check your network panel while you use it.",
     },
     {
       icon: "AlertTriangle",
@@ -140,7 +140,7 @@ export const jsonFormatterContent: Partial<ToolPageContent> = {
   howItWorks: [
     {
       title: "Paste or open your JSON",
-      body: 'Paste into the left editor, drag a .json file onto it, or press "Open file". Files are read locally with the FileReader API — picking a file is not an upload.',
+      body: 'Paste into the left editor, drag a .json file onto it, or press "Open file". Files are read locally with the FileReader API, picking a file is not an upload.',
     },
     {
       title: "Format, minify or validate",
@@ -160,13 +160,13 @@ export const jsonFormatterContent: Partial<ToolPageContent> = {
       output: FORMATTED_OUTPUT,
       language: "json",
       explanation:
-        "The data is untouched — only whitespace changed. Nested objects and arrays each gain a level of indentation, which is what makes the structure scannable. Formatting is purely presentational, so you can safely paste the result back into the system it came from.",
+        "The data is untouched, only whitespace changed. Nested objects and arrays each gain a level of indentation, which is what makes the structure scannable. Formatting is purely presentational, so you can safely paste the result back into the system it came from.",
     },
     {
       title: "Find a trailing comma",
       description: "Valid in JavaScript, invalid in JSON. The single most common reason a config file fails to parse.",
       input: BROKEN_INPUT,
-      output: "Expected double-quoted property name — line 4, column 1",
+      output: "Expected double-quoted property name, line 4, column 1",
       language: "json",
       explanation:
         "The comma after 3 on line 3 is the mistake, but the error points at line 4. That is not a bug: the parser accepts the comma, then expects another property name and instead finds the closing brace, so the first position it can definitively call invalid is line 4. When a reported line looks fine, the cause is almost always the line above it.",
@@ -219,12 +219,12 @@ export const jsonFormatterContent: Partial<ToolPageContent> = {
     {
       question: "How do I format JSON?",
       answer:
-        'Paste your JSON into the left editor. With auto format on it is indented immediately; otherwise press Beautify or ⌘/Ctrl+Enter. Pick your indentation — 2, 3 or 4 spaces, or tabs — then copy the result or download it as a file.',
+        'Paste your JSON into the left editor. With auto format on it is indented immediately; otherwise press Beautify or ⌘/Ctrl+Enter. Pick your indentation, 2, 3 or 4 spaces, or tabs, then copy the result or download it as a file.',
     },
     {
       question: "Is my JSON uploaded to a server?",
       answer:
-        "No. This page has no backend. The formatter is JavaScript that runs in your browser, so your JSON never leaves the tab. You can verify it by opening DevTools, switching to the Network tab, and formatting a document — no request is made.",
+        "No. This page has no backend. The formatter is JavaScript that runs in your browser, so your JSON never leaves the tab. You can verify it by opening DevTools, switching to the Network tab, and formatting a document, no request is made.",
     },
     {
       question: "What is the difference between beautifying and minifying JSON?",
@@ -239,12 +239,12 @@ export const jsonFormatterContent: Partial<ToolPageContent> = {
     {
       question: "Can I use comments in a JSON file?",
       answer:
-        "Not in standard JSON — the specification has no comment syntax, so this validator rejects them. Some tools accept a superset called JSONC (used by tsconfig.json and VS Code settings) which does allow // and /* */. If you need comments, keep the file as JSONC and strip them before handing it to a strict parser.",
+        "Not in standard JSON. The specification has no comment syntax, so this validator rejects them. Some tools accept a superset called JSONC (used by tsconfig.json and VS Code settings) which does allow // and /* */. If you need comments, keep the file as JSONC and strip them before handing it to a strict parser.",
     },
     {
       question: "Can this tool fix invalid JSON automatically?",
       answer:
-        "This page reports errors rather than guessing at repairs, because a wrong guess silently changes your data. For automatic repair of the common cases — trailing commas, unquoted keys, smart quotes — use the JSON Fixer, then bring the result back here to format it.",
+        "This page reports errors rather than guessing at repairs, because a wrong guess silently changes your data. For automatic repair of the common cases, trailing commas, unquoted keys, smart quotes, use the JSON Fixer, then bring the result back here to format it.",
     },
     {
       question: "How large a JSON file can I format?",
@@ -259,7 +259,7 @@ export const jsonFormatterContent: Partial<ToolPageContent> = {
     {
       question: "Will formatting change my data?",
       answer:
-        "Formatting only alters whitespace, so the parsed value is identical. There are two things worth knowing, though: very large integers and duplicate keys are affected by the parse step itself — see the next two answers.",
+        "Formatting only alters whitespace, so the parsed value is identical. There are two things worth knowing, though: very large integers and duplicate keys are affected by the parse step itself, see the next two answers.",
     },
     {
       question: "Why did my very large numbers change?",

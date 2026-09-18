@@ -86,7 +86,7 @@ export function JsonFormatterTool() {
       const result = parseJson(source);
       if (result.status === "error") {
         setStatus({ kind: "invalid", error: result.error });
-        // The previous good output is cleared deliberately — leaving stale output
+        // The previous good output is cleared deliberately, leaving stale output
         // next to an error is how people copy the wrong thing.
         setOutput("");
         return;
@@ -131,7 +131,7 @@ export function JsonFormatterTool() {
       reader.onload = (event) => loadText(String(event.target?.result ?? ""));
       reader.onerror = () =>
         toast({ title: "Could not read that file", description: "Try opening it and pasting the text instead.", variant: "destructive" });
-      // readAsText keeps the file on the device — there is no upload here despite
+      // readAsText keeps the file on the device. There is no upload here despite
       // the button being labelled "Upload".
       reader.readAsText(file);
     },
@@ -396,7 +396,7 @@ export function JsonFormatterTool() {
               {status.error.message}
               {status.error.line != null && (
                 <span className="font-normal">
-                  {" — line "}
+                  {", line "}
                   {status.error.line}
                   {status.error.column != null && `, column ${status.error.column}`}
                 </span>
@@ -407,7 +407,7 @@ export function JsonFormatterTool() {
 
         {autoFormatSuspended && (
           <span className="text-muted-foreground">
-            Auto format paused above {formatBytes(AUTO_FORMAT_MAX_BYTES)} — use Beautify.
+            Auto format paused above {formatBytes(AUTO_FORMAT_MAX_BYTES)}, use Beautify.
           </span>
         )}
 

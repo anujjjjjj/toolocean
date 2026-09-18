@@ -175,7 +175,7 @@ const Index = () => {
 
           Both are real <Link> anchors rather than onClick handlers. The previous
           version navigated with useNavigate, which meant the prerendered homepage
-          contained no href to any tool or category — a crawler following links
+          contained no href to any tool or category, a crawler following links
           from / could not reach a single one of the 114 tools, and 9 of them were
           reachable only from sitemap.xml.
 

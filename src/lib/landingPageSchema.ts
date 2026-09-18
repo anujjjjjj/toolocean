@@ -9,7 +9,7 @@ import type { LandingPage } from "@/data/landingPages";
  * article-shaped page is the kind of mismatch between markup and visible content
  * that gets structured data ignored, or worse, manually actioned.
  *
- * Same omissions as the tool graph — no aggregateRating, no invented review counts.
+ * Same omissions as the tool graph. No aggregateRating, no invented review counts.
  * FAQPage is included because it is a true machine-readable statement of the Q&A on
  * the page, and answer engines read it even though Google narrowed FAQ rich results
  * to government and health sites in 2023.

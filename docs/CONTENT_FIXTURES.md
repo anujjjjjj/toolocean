@@ -18,7 +18,7 @@ over the DevTools protocol: the fixture is handed to the page's own file input,
 the page's own button is clicked, and the bytes recorded are the bytes the page
 hands to the download. The numbers are what a reader would see.
 
-The harness patches `URL.createObjectURL` to record the size of every blob the
+The measurement script patches `URL.createObjectURL` to record the size of every blob the
 page produces, and suppresses the download click so nothing is written to disk.
 
 ## Run environment
@@ -78,7 +78,7 @@ Session S1 throughout.
 Several of these are more useful than a flattering number would be:
 
 - **image-compressor** is the strong case. The PNG result is the one worth
-  leading with — 89% is real, and it is real because re-encoding a photograph as
+  leading with, 89% is real, and it is real because re-encoding a photograph as
   JPEG is simply the right thing to do with it, not because of anything clever.
 - **pdf-merge** barely changes the byte count, and that is the point: pages are
   copied rather than re-rendered, so nothing is recompressed and nothing is lost.
@@ -87,7 +87,7 @@ Several of these are more useful than a flattering number would be:
   is dominated by an already-compressed JPEG that DEFLATE cannot improve, and the
   container costs a few hundred bytes.
 - **pdf-compress** is now two different operations with two honest answers.
-  Lossless recovers 0.0% on both fixtures — it only strips metadata, and saying
+  Lossless recovers 0.0% on both fixtures. It only strips metadata, and saying
   so is the fix for a tool that used to report that as a success. Re-encoding
   pages as images takes a 10.3 MB scan to 1.6 MB, and takes a 166 KB text
   document to 14.8 MB, because vector glyphs costing a few bytes a page become
@@ -101,7 +101,7 @@ than one that always claims a win.
 
 The first `scan-12p.pdf` embedded a single image and referenced it twelve times,
 so the "12-page scan" was 1.2 MB rather than the ~10 MB a real one weighs.
-Measured against it, re-encoding appeared to make files *larger* — an artifact of
+Measured against it, re-encoding appeared to make files *larger*, an artifact of
 pdf-lib deduplicating the repeated image, not a property of the tool. It is
 rebuilt from twelve different crops.
 

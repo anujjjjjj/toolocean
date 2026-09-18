@@ -30,7 +30,7 @@ export interface JsonParseFailure {
  * String discriminant rather than an `ok: boolean` flag.
  *
  * This project compiles with `strictNullChecks: false`, and under that setting
- * TypeScript will not narrow a union on a boolean literal discriminant — the
+ * TypeScript will not narrow a union on a boolean literal discriminant, the
  * `error` branch stays unreachable to the checker. String literals narrow
  * correctly either way, so the discriminant is `status`.
  */
@@ -57,7 +57,7 @@ export function offsetToLineColumn(text: string, offset: number): { line: number
 function describeFailure(error: unknown, text: string): JsonParseFailure {
   const raw = error instanceof Error ? error.message : "Invalid JSON";
 
-  // Prefer an explicit line/column pair — Firefox and newer V8 both provide one
+  // Prefer an explicit line/column pair, Firefox and newer V8 both provide one
   // and it is authoritative.
   const lineCol = raw.match(/line (\d+) column (\d+)/i);
   if (lineCol) {
@@ -121,7 +121,7 @@ export function indentToken(style: IndentStyle): string | number {
 }
 
 /**
- * Recursively sorts object keys. Arrays keep their order — reordering them would
+ * Recursively sorts object keys. Arrays keep their order, reordering them would
  * change the document's meaning, not just its presentation.
  */
 export function sortKeysDeep(value: unknown): unknown {
@@ -147,7 +147,7 @@ export function computeStats(text: string, parsed: unknown): JsonStats {
   let keys = 0;
   let depth = 0;
 
-  // Iterative walk — a recursive one blows the stack on deeply nested documents,
+  // Iterative walk. A recursive one blows the stack on deeply nested documents,
   // which is exactly the kind of file people bring to a formatter.
   const stack: Array<{ node: unknown; level: number }> = [{ node: parsed, level: 1 }];
   while (stack.length > 0) {
@@ -167,7 +167,7 @@ export function computeStats(text: string, parsed: unknown): JsonStats {
   }
 
   return {
-    // Byte length, not character length — a multi-byte document is bigger on
+    // Byte length, not character length. A multi-byte document is bigger on
     // disk than its .length suggests.
     bytes: new TextEncoder().encode(text).length,
     lines: text.length === 0 ? 0 : text.split("\n").length,

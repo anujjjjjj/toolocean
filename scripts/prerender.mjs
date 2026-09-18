@@ -5,7 +5,7 @@
  * empty <div id="root">. Every title, meta description, canonical and JSON-LD
  * block was written by JavaScript after hydration. Google can render JS, but it
  * does so on a second pass with no guaranteed timeline, and competitors in this
- * niche serve static HTML — which made the whole SEO layer effectively invisible
+ * niche serve static HTML. Which made the whole SEO layer effectively invisible
  * at crawl time.
  *
  * Each route now gets a real file (dist/json-formatter/index.html) containing the
@@ -46,12 +46,12 @@ const template = readFileSync(join(DIST, "index.html"), "utf-8");
  * on screen. The tool chunk is only prefetched: ToolWorkbench deliberately mounts
  * the tool after an effect, so it is not on the critical path, and preloading it
  * would have it compete with the fonts and the route chunk for bandwidth during
- * LCP — making Core Web Vitals worse, not better.
+ * LCP, making Core Web Vitals worse, not better.
  */
 const MANIFEST_PATH = join(DIST, ".vite", "manifest.json");
 if (!existsSync(MANIFEST_PATH)) {
   throw new Error(
-    `Vite manifest missing at ${MANIFEST_PATH}. Set build.manifest = true in vite.config.ts — ` +
+    `Vite manifest missing at ${MANIFEST_PATH}. Set build.manifest = true in vite.config.ts, ` +
       `without it no route can emit preload hints and every page falls back to a serial waterfall.`,
   );
 }
@@ -78,7 +78,7 @@ function assetsFor(entry) {
  *
  * Rollup keys a chunk by its source path only when that path is an explicit
  * input. A module reached from more than one place becomes a shared chunk keyed
- * as `_<Name>-<hash>.js` instead, which is what happens to ToolRoutePage — so a
+ * as `_<Name>-<hash>.js` instead, which is what happens to ToolRoutePage, so a
  * plain manifest[moduleId] lookup misses the single most important route on the
  * site.
  */

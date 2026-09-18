@@ -12,7 +12,7 @@ import NotFound from "@/pages/NotFound";
  *
  * The actual 301s live in public/_redirects (Netlify/Cloudflare Pages) and
  * vercel.json. This component is the safety net for hosts where neither file is
- * read — without it, every previously indexed URL would hit the 404 page.
+ * read, without it, every previously indexed URL would hit the 404 page.
  */
 export function LegacyToolRedirect() {
   const { slug } = useParams<{ slug: string }>();

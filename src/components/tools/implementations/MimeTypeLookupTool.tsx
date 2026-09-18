@@ -59,11 +59,11 @@ export function MimeTypeLookupTool() {
     const trimmed = q.trim().toLowerCase().replace(/^\./, "");
     if (!trimmed) { setDetectedMime(""); setDetectedExt(""); return; }
     if (trimmed.includes("/")) {
-      // It's a MIME type — find extensions
+      // It's a MIME type, find extensions
       setDetectedMime(trimmed);
       setDetectedExt((REVERSE_MAP[trimmed] || []).join(", ") || "unknown");
     } else {
-      // It's an extension — find MIME
+      // It's an extension, find MIME
       const mime = MIME_MAP[trimmed] || "application/octet-stream";
       setDetectedMime(mime);
       setDetectedExt((REVERSE_MAP[mime] || []).join(", ") || trimmed);
@@ -90,7 +90,7 @@ export function MimeTypeLookupTool() {
         <CardHeader><CardTitle>MIME Type Lookup</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Enter a file extension (e.g. <code>png</code>, <code>.mp4</code>) or a MIME type (e.g. <code>image/jpeg</code>) — or upload a file to auto-detect.
+            Enter a file extension (e.g. <code>png</code>, <code>.mp4</code>) or a MIME type (e.g. <code>image/jpeg</code>), or upload a file to auto-detect.
           </p>
 
           <div className="flex items-center gap-2">

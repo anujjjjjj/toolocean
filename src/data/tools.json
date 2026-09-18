@@ -842,7 +842,7 @@
     {
       "id": "url-encoder",
       "name": "URL Encoder/Decoder",
-      "description": "Encode and decode URLs and URL components — percent-encoding for query strings and paths",
+      "description": "Encode and decode URLs and URL components, percent-encoding for query strings and paths",
       "category": "development",
       "icon": "Link",
       "inputs": ["text"],
@@ -882,7 +882,7 @@
     {
       "id": "markdown-preview",
       "name": "Markdown Preview",
-      "description": "Live Markdown editor with rendered preview — supports GitHub Flavored Markdown",
+      "description": "Live Markdown editor with rendered preview, supports GitHub Flavored Markdown",
       "category": "formatting",
       "icon": "FileText",
       "inputs": ["text"],
@@ -952,7 +952,7 @@
     {
       "id": "chmod-calculator",
       "name": "chmod Permission Calculator",
-      "description": "Calculate Linux file permissions — set rwx checkboxes to get octal and symbolic notation",
+      "description": "Calculate Linux file permissions, set rwx checkboxes to get octal and symbolic notation",
       "category": "devops",
       "icon": "Shield",
       "inputs": ["visual"],
@@ -992,7 +992,7 @@
     {
       "id": "qr-code-generator",
       "name": "QR Code Generator",
-      "description": "Generate QR codes from text or URLs — download as PNG",
+      "description": "Generate QR codes from text or URLs, download as PNG",
       "category": "development",
       "icon": "QrCode",
       "inputs": ["text"],
@@ -1022,7 +1022,7 @@
     {
       "id": "color-palette-generator",
       "name": "Color Palette Generator",
-      "description": "Generate color palettes — shades, tints, complementary, analogous, and triadic colors",
+      "description": "Generate color palettes, shades, tints, complementary, analogous, and triadic colors",
       "category": "frontend",
       "icon": "Palette",
       "inputs": ["visual"],

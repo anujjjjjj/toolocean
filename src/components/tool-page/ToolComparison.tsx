@@ -6,8 +6,8 @@ import type { ToolComparison as ToolComparisonContent } from "@/types/toolConten
  * A scoped comparison against one named incumbent.
  *
  * Used on a handful of pages, not all of them. Every row has to be verifiable
- * from the competitor's own public documentation — hence the required source
- * note — and every table has to concede at least one row they win. A comparison
+ * from the competitor's own public documentation, hence the required source
+ * note, and every table has to concede at least one row they win. A comparison
  * that the named party would call unfair is worth less than no comparison.
  */
 export function ToolComparison({

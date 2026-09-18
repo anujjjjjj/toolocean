@@ -5,15 +5,15 @@ import { MEASURED_S1 } from "./shared";
  * Tier A content for /pdf-merge.
  *
  * Every number here comes from docs/CONTENT_FIXTURES.md session S1, measured by
- * driving this page in a browser. Every behavioural claim — what survives a
- * merge and what does not — comes from the copyPages check recorded in the same
+ * driving this page in a browser. Every behavioural claim, what survives a
+ * merge and what does not, comes from the copyPages check recorded in the same
  * file. Nothing is estimated.
  */
 export const pdfMergeContent: Partial<ToolPageContent> = {
   tier: "A",
 
   seo: {
-    title: "Merge PDF Files — Combine PDFs in Your Browser",
+    title: "Merge PDF Files: Combine PDFs in Your Browser",
     description:
       "Combine PDF files into one document without uploading them. Reorder by dragging, keep text selectable, and download in about a second. No account, no watermark.",
     keywords: [
@@ -30,7 +30,7 @@ export const pdfMergeContent: Partial<ToolPageContent> = {
   hero: {
     h1: "Merge PDF Files Online",
     subtitle:
-      "Combine several PDFs into one document, in the order you choose, without sending them anywhere. Pages are copied rather than re-rendered, so nothing is recompressed — and nothing is made smaller either.",
+      "Combine several PDFs into one document, in the order you choose, without sending them anywhere. Pages are copied rather than re-rendered, so nothing is recompressed, and nothing is made smaller either.",
     badges: ["browser-first", "no-uploads", "offline", "free"],
     primaryCta: { label: "Choose your PDFs", action: "upload" },
   },
@@ -38,8 +38,8 @@ export const pdfMergeContent: Partial<ToolPageContent> = {
   intro: {
     heading: "What merging actually does to your file",
     paragraphs: [
-      "A PDF is a collection of numbered objects — page trees, fonts, images, content streams — tied together by a cross-reference table that says where each one lives in the file. Merging does not open your documents and paste one into the other. It creates an empty document, copies the page objects across from each source, renumbers everything so the references still point at the right places, and writes a fresh cross-reference table. The bytes that describe your pages are moved, not reinterpreted.",
-      "That is why the result comes back at almost exactly the size it went in. Combining a 12-page scan with a 12-page text document measured 10,374,682 bytes in and 10,374,095 out — a difference of 587 bytes, which is the old cross-reference tables being replaced by one new one. It is also why the whole thing takes 32 milliseconds: no page is ever rendered, no image is ever decoded, and no text is ever re-typeset. If you were hoping the merge would also shrink the file, it will not, and any tool that claims otherwise is quietly re-encoding something.",
+      "A PDF is a collection of numbered objects, page trees, fonts, images, content streams, tied together by a cross-reference table that says where each one lives in the file. Merging does not open your documents and paste one into the other. It creates an empty document, copies the page objects across from each source, renumbers everything so the references still point at the right places, and writes a fresh cross-reference table. The bytes that describe your pages are moved, not reinterpreted.",
+      "That is why the result comes back at almost exactly the size it went in. Combining a 12-page scan with a 12-page text document measured 10,374,682 bytes in and 10,374,095 out. A difference of 587 bytes, which is the old cross-reference tables being replaced by one new one. It is also why the whole thing takes 32 milliseconds: no page is ever rendered, no image is ever decoded, and no text is ever re-typeset. If you were hoping the merge would also shrink the file, it will not, and any tool that claims otherwise is quietly re-encoding something.",
     ],
   },
 
@@ -89,7 +89,7 @@ export const pdfMergeContent: Partial<ToolPageContent> = {
       before: { label: "Two files", detail: "12-page scan (10.3 MB) + 12-page text PDF (50 KB)" },
       after: { label: "One file", detail: "24 pages, 10,374,095 bytes, 32 ms" },
       explanation:
-        "The output is 587 bytes smaller than the two inputs added together. Nothing was compressed — that difference is two cross-reference tables being replaced by one. The scanned pages are still the same images at the same resolution, and the typed pages still have selectable text.",
+        "The output is 587 bytes smaller than the two inputs added together. Nothing was compressed. That difference is two cross-reference tables being replaced by one. The scanned pages are still the same images at the same resolution, and the typed pages still have selectable text.",
     },
     {
       kind: "file",
@@ -187,7 +187,7 @@ export const pdfMergeContent: Partial<ToolPageContent> = {
       topic: "privacy",
       question: "How can I check the files are really not being uploaded?",
       answer:
-        "Open your browser's developer tools, switch to the Network tab, and merge something. You will see this page's own assets load and then nothing at all while the work happens. The stronger test is to disconnect from the network entirely once the page has loaded and merge anyway — it still works, which is not something a tool that needs a server can do.",
+        "Open your browser's developer tools, switch to the Network tab, and merge something. You will see this page's own assets load and then nothing at all while the work happens. The stronger test is to disconnect from the network entirely once the page has loaded and merge anyway. It still works, which is not something a tool that needs a server can do.",
     },
     {
       question: "Does merging reduce the quality of scanned pages?",
@@ -222,7 +222,7 @@ export const pdfMergeContent: Partial<ToolPageContent> = {
     {
       question: "Do annotations and highlights survive?",
       answer:
-        "Page-level annotations such as highlights, sticky notes and link areas are attached to the pages themselves, so they are carried across. Anything stored at document level rather than page level — the bookmark tree, form field definitions — is not.",
+        "Page-level annotations such as highlights, sticky notes and link areas are attached to the pages themselves, so they are carried across. Anything stored at document level rather than page level. The bookmark tree, form field definitions, is not.",
     },
     {
       question: "Can I merge files that are not PDFs?",
@@ -298,7 +298,7 @@ export const pdfMergeContent: Partial<ToolPageContent> = {
     },
     limitations: {
       heading: "What a merge cannot carry across",
-      lede: "Structural facts about PDFs, not shortcomings of this page — worth knowing before you send the result on.",
+      lede: "Structural facts about PDFs, not shortcomings of this page, worth knowing before you send the result on.",
     },
   },
 };

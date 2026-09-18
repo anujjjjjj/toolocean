@@ -23,8 +23,8 @@ export const CATEGORY_INDEXES = Object.keys(CATEGORY_PAGE_SEO);
  *
  * /workflow-builder is an app whose content is produced at runtime, so its
  * prerendered body is roughly forty words of empty state. It still needs a
- * static file — a hard refresh would otherwise hit the `/* /404.html 404`
- * fallback — but an indexed forty-word page linked from every footer on the
+ * static file. A hard refresh would otherwise hit the `/* /404.html 404`
+ * fallback, but an indexed forty-word page linked from every footer on the
  * site is a liability, not an asset. It stays crawlable and usable, just not
  * indexable, and it is excluded from sitemap.xml to match.
  */
@@ -59,7 +59,7 @@ export function headForRoute(path: string): string {
 
   const infoPage = INFO_PAGE_SEO[path];
   if (infoPage) {
-    // A noindex page gets no graph — describing a page in detail while telling
+    // A noindex page gets no graph, describing a page in detail while telling
     // the crawler to ignore it is a contradiction, not a signal.
     const noindex = NOINDEX_ROUTES.has(path);
     const infoGraph = noindex ? null : buildInfoPageGraph(path);

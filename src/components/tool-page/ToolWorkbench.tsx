@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
  * the right size from first paint, so swapping the real editor in shifts little.
  *
  * Responsive because the two-pane tools stack below md, which roughly doubles
- * their height — a single fixed value is wrong on one breakpoint or the other.
+ * their height. A single fixed value is wrong on one breakpoint or the other.
  * These are averages across the catalogue, so a given tool may still shift a
  * little; a per-tool `reservedHeight` on ToolPageContent would remove the rest.
  */
@@ -27,7 +27,7 @@ function WorkbenchSkeleton({ label }: { label: string }) {
     >
       {/*
         aria-live so assistive tech announces the tool becoming ready, but the
-        visual treatment stays quiet — a spinner here would compete with the
+        visual treatment stays quiet. A spinner here would compete with the
         hero for attention on a page most people reach from search.
       */}
       <p className="text-sm text-muted-foreground" role="status" aria-live="polite">
@@ -68,14 +68,14 @@ export function ToolWorkbench({ component: Tool, label }: ToolWorkbenchProps) {
    * Generic handling for the hero CTAs.
    *
    * The toolActions bus was designed as opt-in, and exactly one of the 114 tools
-   * ever opted in — so on 113 pages "Start with your own data" and "Open a file"
+   * ever opted in, so on 113 pages "Start with your own data" and "Open a file"
    * scrolled here and then did nothing, and "Choose a PDF" looked like a file
    * picker that never opened. Rather than adding the same effect to 114 files (and
    * needing it again for every tool added later), the workbench honours the two
    * structural intents itself: every tool has a first input, and every file tool
    * has a file input.
    *
-   * A tool that subscribes directly still wins — this runs a tick later and backs
+   * A tool that subscribes directly still wins. This runs a tick later and backs
    * off if the tool already moved focus into itself.
    */
   useEffect(() => {

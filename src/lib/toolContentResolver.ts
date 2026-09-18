@@ -16,11 +16,11 @@ import type { RelatedToolLink, ToolFaqEntry, ToolPageContent, ToolSpec } from "@
  * Produces a complete, non-thin ToolPageContent for any tool in the catalog.
  *
  * Three layers, most specific winning:
- *   1. Hand-authored override  (src/data/toolContent/*) — examples, use cases,
+ *   1. Hand-authored override  (src/data/toolContent/*), examples, use cases,
  *      bespoke FAQs and hero copy for tools worth the writing time.
- *   2. Existing per-tool SEO   (src/data/toolSeo.ts) — already covers all 116
+ *   2. Existing per-tool SEO   (src/data/toolSeo.ts), already covers all 116
  *      tools with a real title, description, keywords and 2–4 genuine FAQs.
- *   3. Category profile        (toolCategoryProfiles.ts) — the privacy/offline
+ *   3. Category profile        (toolCategoryProfiles.ts), the privacy/offline
  *      facts and the paste→run→copy flow, which really are identical per category.
  *
  * Sections with nothing truthful to say render nothing at all. That is a
@@ -71,7 +71,7 @@ function deriveRelated(tool: CatalogTool, limit = 6): RelatedToolLink[] {
  * "a" or "an" for a noun.
  *
  * The CTA used to interpolate a bare "a", which shipped "Choose a image" on ten
- * pages, "Choose a archive" on three and "Choose a audio file" on two — in a
+ * pages, "Choose a archive" on three and "Choose a audio file" on two, in a
  * button, above the fold, on pages whose whole job is to look trustworthy to
  * someone arriving from search.
  */
@@ -87,7 +87,7 @@ function indefiniteArticle(noun: string): string {
  * The handful of tools that genuinely need the network, and what they call.
  *
  * Without this the generated category FAQ told every visitor their input "is never
- * transmitted" and that there "are no outbound requests" — on the same page where
+ * transmitted" and that there "are no outbound requests", on the same page where
  * the tool's own FAQ correctly said it queries Google DNS. Two contradictory
  * answers side by side, the second trivially disproved by following the
  * instructions in the first, both inside FAQPage structured data.
@@ -119,7 +119,7 @@ function categoryFaqs(tool: CatalogTool): ToolFaqEntry[] {
       question: `Is my ${profile.subject} uploaded to a server?`,
       answer: outbound
         ? `${tool.name} is a static page with no backend of its own, and nothing you type is stored or logged here. It is one of the few tools on this site that does have to reach the network: answering the question at all means querying ${outbound}, so the value you enter is sent there. Every other tool in the catalogue is fully local.`
-        : `No. ${tool.name} is a static page with no backend. Your ${profile.subject} is read and processed by JavaScript running in this tab, and it is never transmitted. You can confirm this by opening your browser's network panel while you use the tool — there are no outbound requests.`,
+        : `No. ${tool.name} is a static page with no backend. Your ${profile.subject} is read and processed by JavaScript running in this tab, and it is never transmitted. You can confirm this by opening your browser's network panel while you use the tool. There are no outbound requests.`,
     },
     {
       topic: "size",
@@ -147,7 +147,7 @@ function categoryFaqs(tool: CatalogTool): ToolFaqEntry[] {
  * The "what happens to your data" table.
  *
  * Generated rather than authored because the answers are properties of the
- * architecture, not of the tool — and a generated answer that is identical
+ * architecture, not of the tool, and a generated answer that is identical
  * everywhere is the correct output when the fact is identical everywhere. The
  * three tools that genuinely reach the network are the reason this is a function
  * and not a constant: they have to say so in the same table, in the same words,
@@ -169,7 +169,7 @@ function defaultSpecs(tool: CatalogTool): ToolSpec[] {
     { label: "Retained after you close the tab", value: "Nothing" },
     {
       label: "Works offline",
-      value: outbound ? "No — this tool needs the network to answer" : "Yes, once the page has loaded",
+      value: outbound ? "No. This tool needs the network to answer" : "Yes, once the page has loaded",
     },
   ];
 }
@@ -177,7 +177,7 @@ function defaultSpecs(tool: CatalogTool): ToolSpec[] {
 /** Reuses the already-authored SEO title as a natural H1 by dropping the modifier clause. */
 function deriveH1(seoTitle: string | undefined, fallback: string): string {
   if (!seoTitle) return fallback;
-  const [head] = seoTitle.split(/\s+[—–|]\s+/);
+  const [head] = seoTitle.split(/\s+[, –|]\s+/);
   return head?.trim() || fallback;
 }
 
@@ -194,12 +194,12 @@ export function resolveToolContent(slug: string): ToolPageContent | null {
 
   // An override's SEO fields win over the toolSeo.ts baseline, which is itself a
   // fallback for the catalog entry.
-  const title = override?.seo?.title ?? seo.title ?? `${tool.name} — Free Online Tool`;
+  const title = override?.seo?.title ?? seo.title ?? `${tool.name}, Free Online Tool`;
   const description = override?.seo?.description ?? seo.description ?? tool.description;
   const keywords = override?.seo?.keywords ?? seo.keywords ?? tool.keywords;
   const h1 = override?.hero?.h1 ?? deriveH1(title, tool.name);
 
-  // Tool-specific FAQs first — they are the ones a visitor came for. Category
+  // Tool-specific FAQs first. They are the ones a visitor came for. Category
   // FAQs backfill, deduplicated so an authored privacy answer wins over the
   // generic one.
   const authoredFaqs = override?.faqs ?? seo.faqs ?? [];
@@ -208,7 +208,7 @@ export function resolveToolContent(slug: string): ToolPageContent | null {
    *
    * Matching question strings does not work: an authored "Is my contract really
    * private?" never matches the generated "Is my PDF uploaded to a server?", so
-   * both rendered — two answers to the same question side by side, inside
+   * both rendered, two answers to the same question side by side, inside
    * FAQPage structured data. An authored entry tagged with a topic now
    * suppresses the generated one on that topic.
    */
@@ -249,7 +249,7 @@ export function resolveToolContent(slug: string): ToolPageContent | null {
     },
     intro: override?.intro,
     /*
-     * Authored cards first, then the shared pair — composed, not replaced.
+     * Authored cards first, then the shared pair, composed, not replaced.
      * Previously an override had to restate the architectural claims to keep
      * them, and a tool with no override got five identical cards and nothing
      * specific to itself.
@@ -259,7 +259,7 @@ export function resolveToolContent(slug: string): ToolPageContent | null {
       ...(override?.dropSharedFeatures ? [] : profile.sharedFeatures),
     ].slice(0, 6),
     howItWorks: override?.howItWorks ?? profile.howItWorks,
-    // Never invented — an unauthored tool simply has no Examples section.
+    // Never invented. An unauthored tool simply has no Examples section.
     examples: override?.examples ?? [],
     useCases: override?.useCases ?? [],
     faqs,

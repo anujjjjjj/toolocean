@@ -3,7 +3,7 @@
  *
  * Replaces xml2js, which never worked here at all. xml2js depends on `sax`, which
  * assumes Node's EventEmitter, so the tool threw `this.removeAllListeners is not a
- * function` on every conversion and rendered an empty output box — while still
+ * function` on every conversion and rendered an empty output box, while still
  * pulling a 104 KB chunk into the bundle for the privilege.
  *
  * DOMParser and XMLSerializer are native, already loaded, and cost nothing.

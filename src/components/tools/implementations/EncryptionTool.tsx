@@ -164,7 +164,7 @@ export function EncryptionTool() {
       /*
        * Outer encoding, for the algorithms that return raw text. AES and Triple DES
        * already emitted base64 or hex themselves above, so they are excluded from
-       * both branches — re-encoding their output here produced ciphertext that
+       * both branches, re-encoding their output here produced ciphertext that
        * could never be decrypted back.
        */
       const selfEncoded = algorithm === "aes" || algorithm === "des";

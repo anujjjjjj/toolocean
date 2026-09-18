@@ -20,7 +20,7 @@ import {
  *
  * Uses renderToPipeableStream rather than renderToString specifically so route
  * components can stay behind React.lazy. renderToString has no way to await a
- * suspended boundary — it serialises the fallback — which would have forced every
+ * suspended boundary. It serialises the fallback. Which would have forced every
  * route to be imported eagerly and collapsed the whole app back into one 1.1 MB
  * entry chunk. Waiting for onAllReady resolves every boundary first, so the HTML
  * is complete *and* the client keeps its per-route code splitting.

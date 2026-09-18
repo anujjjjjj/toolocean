@@ -4,7 +4,7 @@
  * Usage: node scripts/build-fixtures.mjs <output-dir>
  *
  * The image sources come from the OS wallpaper via sips; see the doc. The
- * fixtures are not committed — they are large and reproducible.
+ * fixtures are not committed. They are large and reproducible.
  */
 /**
  * Builds the fixture corpus. Source material is a real 3840x2160 photograph

@@ -3,7 +3,7 @@
  *
  * Previously both families came from a render-blocking stylesheet on
  * fonts.googleapis.com, with the woff2 files a second request discovered only
- * after that stylesheet parsed — a third-party DNS lookup, TLS handshake and two
+ * after that stylesheet parsed. A third-party DNS lookup, TLS handshake and two
  * chained round trips before any text could paint, on a page whose LCP element
  * is the H1.
  *
@@ -52,7 +52,7 @@
 }
 
 /*
- * No metric-matched fallback faces here, deliberately — this was tried and
+ * No metric-matched fallback faces here, deliberately, this was tried and
  * measured, and it made things worse.
  *
  * The usual advice is to add an @font-face over Arial with size-adjust and
@@ -61,7 +61,7 @@
  * size-adjust 125.05% for DM Sans and 134.12% for Instrument Sans.
  *
  * Measured in headless Chrome with the webfonts blocked, so only the fallback
- * renders — which is exactly what a reader sees during the swap window:
+ * renders. Which is exactly what a reader sees during the swap window:
  *
  *   plain system fallback   document height 4083px   (settled: 4083px)
  *   Arial + the overrides   document height 4204px   (settled: 4083px)
@@ -73,7 +73,7 @@
  *
  * The premise was also wrong for this codebase: the H1 carries an explicit
  * line-height (48px), so it cannot change height when the font swaps regardless
- * of metrics. If this is revisited, measure on Windows and Linux too — the
+ * of metrics. If this is revisited, measure on Windows and Linux too, the
  * finding above is macOS only.
  */
 
@@ -222,7 +222,7 @@ All colors MUST be HSL.
  * Mobile overflow guards for the tool workbench.
  *
  * Nine tools scrolled the whole page sideways at 375px, the worst by 173px. The
- * cause is not the grids themselves — those are all responsive — but the CSS
+ * cause is not the grids themselves. Those are all responsive, but the CSS
  * default of `min-width: auto` on grid and flex children: a <pre> holding one long
  * unbroken line refuses to shrink below its intrinsic width and pushes the column
  * past the viewport. Setting min-width:0 lets the child shrink so its own overflow
@@ -250,7 +250,7 @@ All colors MUST be HSL.
   }
 
   /*
-   * Long unbreakable tokens — IPv6 addresses, hashes, base64, minified output —
+   * Long unbreakable tokens, IPv6 addresses, hashes, base64, minified output,
    * have no natural break opportunity, so min-width:0 alone still left them
    * pushing the layout wide. `anywhere` only breaks when the word genuinely
    * cannot fit, so ordinary prose is unaffected.

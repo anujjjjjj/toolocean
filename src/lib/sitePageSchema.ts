@@ -17,7 +17,7 @@ import { WEBSITE_ID, buildBreadcrumbNode, buildSiteNodes } from "@/lib/schemaNod
  * These shipped no structured data at all. headForRoute() builds their <head>
  * from StaticPageSeo, which carries only a title and a description, so the
  * prerendered HTML for the homepage and every category index contained zero
- * ld+json — while the client-side code in the old jsonLd.ts did emit some after
+ * ld+json, while the client-side code in the old jsonLd.ts did emit some after
  * hydration. The site's highest-authority pages were therefore describing
  * themselves only to visitors who ran JavaScript.
  *
@@ -133,7 +133,7 @@ export function buildInfoPageGraph(path: string) {
   const breadcrumbId = `${pageUrl}#breadcrumb`;
 
   // /all-tools is the HTML sitemap, so it is a collection like the category
-  // pages are — just one that collects the entire catalogue.
+  // pages are, just one that collects the entire catalogue.
   const isAllTools = path === "/all-tools";
 
   const page: Record<string, unknown> = {
@@ -161,7 +161,7 @@ export function buildInfoPageGraph(path: string) {
     };
   }
 
-  const label = seo.title.split(/[-–—|]/)[0].trim();
+  const label = seo.title.split(/[-–, |]/)[0].trim();
 
   return graph([
     ...buildSiteNodes(),

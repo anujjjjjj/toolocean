@@ -6,7 +6,7 @@ import { pdfSplitContent } from "./pdfSplit";
 /**
  * Hand-authored page content, keyed by tool slug.
  *
- * Every tool renders a complete page without an entry here — resolveToolContent()
+ * Every tool renders a complete page without an entry here, resolveToolContent()
  * falls back to the tool's existing SEO record plus its category profile. An
  * entry is how a tool graduates from "correct" to "genuinely the best page on
  * the web for this query": worked examples, real use cases, and FAQs that answer

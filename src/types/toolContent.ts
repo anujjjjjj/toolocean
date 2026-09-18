@@ -31,7 +31,7 @@ export interface ToolCategoryRef {
 }
 
 export interface ToolSeo {
-  /** <title> without the "| ToolOcean" suffix — useSEO appends it. Aim ≤ 60 chars total. */
+  /** <title> without the "| ToolOcean" suffix, useSEO appends it. Aim ≤ 60 chars total. */
   title: string;
   /** Meta description. Aim 140–160 characters. Must read as a sentence, not a keyword list. */
   description: string;
@@ -45,7 +45,7 @@ export interface ToolSeo {
   ogImage?: string;
   /** ISO date. Drives schema.org datePublished. */
   datePublished?: string;
-  /** ISO date. Drives schema.org dateModified — bump when the copy materially changes. */
+  /** ISO date. Drives schema.org dateModified, bump when the copy materially changes. */
   dateModified?: string;
 }
 
@@ -83,8 +83,8 @@ export interface ToolStep {
 /**
  * A worked example.
  *
- * Text tools can show real input and real output. File tools cannot — there is
- * no string to print for "compress this 4 MB scan" — so they describe a fixture
+ * Text tools can show real input and real output. File tools cannot, there is
+ * no string to print for "compress this 4 MB scan", so they describe a fixture
  * instead. The original shape assumed every tool was a text tool, which left the
  * 52 file tools unable to have an Examples section at all.
  *
@@ -135,7 +135,7 @@ export interface ToolUseCase {
  * Tagging them lets an authored answer on the same subject suppress the generic
  * one. Deduplicating by question string does not work: an authored "Is my
  * contract really private?" does not match the generated "Is my PDF uploaded to
- * a server?", so both rendered side by side — inside FAQPage structured data,
+ * a server?", so both rendered side by side, inside FAQPage structured data,
  * saying the same thing twice in different words.
  */
 export type FaqTopic = "privacy" | "size" | "offline" | "account";
@@ -150,7 +150,7 @@ export interface ToolFaqEntry {
 export interface RelatedToolLink {
   name: string;
   path: string;
-  /** Short reason to click through — this is what makes internal links useful rather than spammy. */
+  /** Short reason to click through. This is what makes internal links useful rather than spammy. */
   description: string;
 }
 
@@ -174,7 +174,7 @@ export interface ToolSectionHeadings {
 }
 
 /**
- * "What happens to your data" — a short spec table.
+ * "What happens to your data", a short spec table.
  *
  * Deliberately near-identical between tools and deliberately short. It is a
  * spec, not prose, so it is excluded from the authored-word count and is not
@@ -192,7 +192,7 @@ export interface ToolSpec {
  *
  * The least copyable thing on the site: an upload-based competitor cannot
  * publish "4.1 MB to 1.6 MB in 2.3 s" without disclosing their own numbers.
- * It also answers the questions people actually search — "how much can you
+ * It also answers the questions people actually search, "how much can you
  * compress a PDF", "will compressing a PDF lose quality".
  *
  * Numbers must come from a fixture in docs/CONTENT_FIXTURES.md. Inventing them
@@ -210,7 +210,7 @@ export interface ToolMeasurement {
 export interface ToolMeasurementTable {
   heading?: string;
   lede?: string;
-  /** Provenance: device, browser, version, date. Required — see check-content.mjs. */
+  /** Provenance: device, browser, version, date. Required, see check-content.mjs. */
   method: string;
   rows: ToolMeasurement[];
 }
@@ -266,9 +266,9 @@ export interface ToolScenario {
 /**
  * Authoring depth, which sets the build-time word floor.
  *
- * A — head terms and the pages competing with a dedicated incumbent.
- * B — real demand, less contested.
- * C — the long tail, mostly developer tools.
+ * A, head terms and the pages competing with a dedicated incumbent.
+ * B, real demand, less contested.
+ * C. The long tail, mostly developer tools.
  */
 export type ToolTier = "A" | "B" | "C";
 
@@ -284,7 +284,7 @@ export interface ToolPageContent {
   hero: ToolHeroContent;
   /**
    * Optional prose that sits directly under the workbench. Use it for the
-   * genuinely useful background a search visitor wants — not an SEO paragraph.
+   * genuinely useful background a search visitor wants, not an SEO paragraph.
    */
   intro?: { heading: string; paragraphs: string[] };
   features: ToolFeature[];

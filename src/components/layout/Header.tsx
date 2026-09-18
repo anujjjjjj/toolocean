@@ -109,7 +109,7 @@ export function Header({ minimal = false }: HeaderProps) {
           {/*
             xl, not md: the ten category buttons need ~1,100px of width. Showing
             them from 768px pushed the document to 1,123px wide on an iPad in
-            portrait, so the whole page scrolled sideways — which also fails
+            portrait, so the whole page scrolled sideways, which also fails
             Google's mobile-friendly check. Below xl the dropdown below is used.
           */}
           <div className="hidden xl:flex items-center gap-1">

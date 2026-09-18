@@ -29,8 +29,8 @@ export function ToolMeasurements({
     row.scenario,
     row.input,
     row.output,
-    ...(showTiming ? [row.timing ?? "—"] : []),
-    ...(showNote ? [row.note ?? "—"] : []),
+    ...(showTiming ? [row.timing ?? ", "] : []),
+    ...(showNote ? [row.note ?? ", "] : []),
   ]);
 
   return (

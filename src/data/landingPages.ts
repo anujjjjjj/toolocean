@@ -3,7 +3,7 @@ import type { ToolFaqEntry } from "@/types/toolContent";
 /**
  * Modifier and comparison landing pages.
  *
- * The per-tool pages target the tool name — "json formatter", "merge pdf" — and
+ * The per-tool pages target the tool name, "json formatter", "merge pdf", and
  * those SERPs belong to sites with a decade of links. A new domain does not take
  * them, and increasingly nobody wins them because the query gets answered inside a
  * chatbot instead.
@@ -11,7 +11,7 @@ import type { ToolFaqEntry } from "@/types/toolContent";
  * What is winnable is the qualified version of the same intent: "merge pdf without
  * uploading", "smallpdf alternative no upload". Lower volume, far lower
  * competition, and the qualifier is the one thing this site can honestly claim that
- * the incumbents cannot — they all upload. A page that answers the qualifier
+ * the incumbents cannot. They all upload. A page that answers the qualifier
  * directly can outrank a stronger domain that only answers the head term.
  *
  * Each page has to earn its place: it makes a specific claim, backs it with how the

@@ -45,7 +45,7 @@ export function LzStringCompressTool() {
       } else {
         const m = METHODS.find((x) => x.value === method)!;
         const result = (LZString[m.decompress] as (s: string) => string | null)(input);
-        if (result === null) throw new Error("Decompression failed — wrong method or corrupted data");
+        if (result === null) throw new Error("Decompression failed, wrong method or corrupted data");
         setOutput(result);
       }
       setError("");

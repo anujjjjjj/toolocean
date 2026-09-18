@@ -12,18 +12,18 @@ import { trackEvent } from "@/lib/analytics";
  * component every tool page renders, so a delegated listener on its section
  * covers the whole catalogue from a single place.
  *
- * ToolWorkbench mounting is *not* usable as an engagement signal — it mounts from
+ * ToolWorkbench mounting is *not* usable as an engagement signal, it mounts from
  * an effect on every page load, so it would be a duplicate of the page_view.
  * Real interaction is what is measured here:
  *
- *   tool_engage — first genuine interaction inside the workbench, once per route.
+ *   tool_engage, first genuine interaction inside the workbench, once per route.
  *                 The gap between page_view and tool_engage is the honest answer
  *                 to "do search visitors actually use the tool, or just bounce?"
- *   tool_action — a button or download link was activated, labelled with the
+ *   tool_action. A button or download link was activated, labelled with the
  *                 control's text so the report distinguishes Format from Clear.
  *
  * Only the slug and a static control label are ever sent. Tool input is not
- * touched — that is the one promise this site makes.
+ * touched. That is the one promise this site makes.
  */
 
 /** Keeps a stray long label (a filename in a button, say) out of the report. */

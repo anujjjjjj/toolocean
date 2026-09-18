@@ -48,7 +48,7 @@ const AccordionContent = React.forwardRef<
       "overflow-hidden text-sm transition-all data-[state=open]:animate-accordion-down",
       /*
        * Normally Radix unmounts collapsed content, so the collapse animation
-       * running to height:0 without a fill-mode does not matter — the element is
+       * running to height:0 without a fill-mode does not matter, the element is
        * gone before it springs back.
        *
        * With forceMount it stays mounted (so crawlers see FAQ answers that the

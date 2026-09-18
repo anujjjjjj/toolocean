@@ -13,7 +13,7 @@ export const pdfSplitContent: Partial<ToolPageContent> = {
   tier: "A",
 
   seo: {
-    title: "Split PDF — Extract Pages Without Uploading",
+    title: "Split PDF: Extract Pages Without Uploading",
     description:
       "Pull specific pages or ranges out of a PDF and save them as a new document, entirely in your browser. Type 1-3, 7, 12-15 and download. No account, no watermark.",
     keywords: [
@@ -38,7 +38,7 @@ export const pdfSplitContent: Partial<ToolPageContent> = {
   intro: {
     heading: "Extracting pages, and why the result shrinks the way it does",
     paragraphs: [
-      "Ask for pages 1 to 10 and this builds an empty document, lifts those ten page objects out of the original along with the resources each one depends on — the fonts it references, the images it draws, the colour spaces it uses — and writes them into the new file with a rebuilt index. The pages you did not ask for are never opened, and neither is the text on the pages you did. It is a copy operation on the file's object graph, which is why ten pages come out in twenty milliseconds.",
+      "Ask for pages 1 to 10 and this builds an empty document, lifts those ten page objects out of the original along with the resources each one depends on. The fonts it references, the images it draws, the colour spaces it uses, and writes them into the new file with a rebuilt index. The pages you did not ask for are never opened, and neither is the text on the pages you did. It is a copy operation on the file's object graph, which is why ten pages come out in twenty milliseconds.",
       "The consequence worth understanding is that the output size tracks what you keep rather than what you discard, and not always in a straight line. Taking ten pages out of a forty-page text report produced a file 25.4% of the original, almost exactly the proportion of pages kept. Taking ten of twelve pages from a scan produced 89.7% of the original, because every page of a scan carries its own full-page image and those images are the file. A page of dense text weighs almost nothing; a page that is a photograph weighs a megabyte. Which pages you pick matters more than how many.",
     ],
   },
@@ -73,7 +73,7 @@ export const pdfSplitContent: Partial<ToolPageContent> = {
     },
     {
       title: "Say which pages you want",
-      body: "Write the selection as numbers and spans separated by commas — 1-3, 7, 12-15. Use Select All if you actually want the whole document copied into a fresh file.",
+      body: "Write the selection as numbers and spans separated by commas, 1-3, 7, 12-15. Use Select All if you actually want the whole document copied into a fresh file.",
     },
     {
       title: "Extract and save",
@@ -188,7 +188,7 @@ export const pdfSplitContent: Partial<ToolPageContent> = {
       topic: "privacy",
       question: "Can I confirm the document is not being sent anywhere?",
       answer:
-        "Yes, in two ways. Watch the Network panel in your browser's developer tools while you extract — after this page's own files load, nothing further is requested. Or take the machine off the network completely once the page is open and extract anyway; it works, which is impossible for anything that relies on a server.",
+        "Yes, in two ways. Watch the Network panel in your browser's developer tools while you extract, after this page's own files load, nothing further is requested. Or take the machine off the network completely once the page is open and extract anyway; it works, which is impossible for anything that relies on a server.",
     },
     {
       question: "What syntax does the page range accept?",

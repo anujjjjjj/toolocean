@@ -1,7 +1,7 @@
 /**
  * Drives a real tool page in a real browser with a real file and records the
  * bytes it produces. Measuring the library in Node would be easier and would be
- * measuring the wrong thing — these numbers are published as what the tool does.
+ * measuring the wrong thing. These numbers are published as what the tool does.
  */
 import { spawn } from "node:child_process";
 import { setTimeout as sleep } from "node:timers/promises";

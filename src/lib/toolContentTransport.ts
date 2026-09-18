@@ -5,20 +5,20 @@ import type { ToolPageContent } from "@/types/toolContent";
  *
  * ToolRoutePage used to import resolveToolContent directly. That pulled the
  * 2,380-line src/data/toolSeo.ts into the route chunk, so a visitor reading
- * /pdf-merge downloaded the marketing copy for all 114 tools — 53 KB gzip of
+ * /pdf-merge downloaded the marketing copy for all 114 tools, 53 KB gzip of
  * which roughly 52 KB was about pages they were not on. Authoring deep per-tool
  * content would have multiplied that by an order of magnitude, so this has to be
  * fixed before the content program starts, not after.
  *
  * Three sources, in order:
  *
- *   1. SSR — entry-ssg calls provideToolContent() before rendering. The Node
+ *   1. SSR, entry-ssg calls provideToolContent() before rendering. The Node
  *      bundle has no size budget, so it just resolves normally.
- *   2. First paint in the browser — the prerender inlines the resolved content
+ *   2. First paint in the browser. The prerender inlines the resolved content
  *      as JSON in the document head. This read is synchronous, which matters:
  *      hydration must have the content in the same tick or React discards the
  *      prerendered markup and the page visibly flashes.
- *   3. Client-side navigation to another tool — nothing is inlined for that slug,
+ *   3. Client-side navigation to another tool. Nothing is inlined for that slug,
  *      so the resolver is imported dynamically. Async is fine here because there
  *      is no server markup to preserve.
  */

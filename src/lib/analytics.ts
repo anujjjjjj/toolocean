@@ -6,7 +6,7 @@
  *
  *   1. **The tag is not in index.html.** That template is the base for all 125
  *      prerendered pages, so a hard-coded script there would put a third-party
- *      origin on the critical path of every one of them — undoing the CWV work
+ *      origin on the critical path of every one of them, undoing the CWV work
  *      documented in docs/SEO.md. It is injected from here, on idle, after the
  *      page is interactive. gtag.js is therefore never competing with the LCP.
  *
@@ -20,8 +20,8 @@
  *      remarketing, so those signals stay denied even after consent. Only
  *      `analytics_storage` flips.
  *
- * Events queue in `dataLayer` whether or not gtag.js has landed — it drains the
- * queue on load — so callers never have to care about load order.
+ * Events queue in `dataLayer` whether or not gtag.js has landed, it drains the
+ * queue on load, so callers never have to care about load order.
  *
  * Nothing here sends user content. The tools' inputs are the one thing this site
  * promises never to transmit; see useWorkbenchAnalytics for how interactions are
@@ -60,7 +60,7 @@ function isBrowser(): boolean {
 }
 
 /**
- * False when no measurement ID is configured — the case in `vite dev` and in any
+ * False when no measurement ID is configured. The case in `vite dev` and in any
  * fork of this repo. Every export below becomes a no-op, and the consent banner
  * stays hidden, so there is nothing to opt out of.
  */
@@ -157,7 +157,7 @@ export function initAnalytics(): void {
     wait_for_update: CONSENT_UPDATE_GRACE_MS,
   });
 
-  // send_page_view: false because this is a single-page app — the tag would only
+  // send_page_view: false because this is a single-page app, the tag would only
   // ever see the entry URL. trackPageview() handles every route instead.
   gtag("config", MEASUREMENT_ID, { send_page_view: false });
 
@@ -173,7 +173,7 @@ export function initAnalytics(): void {
  *              input rather than location.pathname so query strings and stray
  *              trailing slashes cannot fragment the report.
  * @param title Resolved document title, passed in by useSEO because it sets the
- *              title in the same effect — reading document.title here would race
+ *              title in the same effect, reading document.title here would race
  *              a lazily-loaded route and report the previous page's title.
  */
 export function trackPageview(path: string, title: string): void {

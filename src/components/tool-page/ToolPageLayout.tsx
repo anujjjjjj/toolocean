@@ -33,7 +33,7 @@ interface ToolPageLayoutProps {
   servedFrom?: string;
 }
 
-/** Generic fallbacks — correct for any tool category, overridable per page. */
+/** Generic fallbacks, correct for any tool category, overridable per page. */
 const DEFAULT_HEADINGS: Required<ToolSectionHeadings> = {
   features: {
     heading: "Why use this tool",

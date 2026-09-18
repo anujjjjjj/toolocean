@@ -82,7 +82,7 @@ function ComparisonTable({ comparison }: { comparison: NonNullable<LandingPage["
 const LandingRoutePage = () => {
   /*
    * These are registered as explicit static paths (so they outrank the /:slug tool
-   * route), which means there is no route param to read — useParams() returns {}
+   * route), which means there is no route param to read, useParams() returns {}
    * here. The slug has to come from the pathname.
    */
   const { pathname } = useLocation();

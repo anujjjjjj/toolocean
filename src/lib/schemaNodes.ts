@@ -6,7 +6,7 @@ import { SITE_NAME, SITE_URL } from "@/lib/siteConfig";
  * Organization and WebSite were previously rebuilt inline in each graph builder,
  * which meant three verbatim copies drifting independently. They are pure
  * constants of the site, so they live here and every graph references them by
- * @id — which is also what lets a parser resolve the whole site into one entity
+ * @id. Which is also what lets a parser resolve the whole site into one entity
  * rather than a set of unrelated assertions that happen to share a name.
  */
 
@@ -16,7 +16,7 @@ export const WEBSITE_ID = `${SITE_URL}/#website`;
 /**
  * Deliberately no `potentialAction`/SearchAction. The previous WebSite node
  * declared a sitelinks searchbox pointing at /?q={search_term_string}, which
- * nothing on the site handles — the homepage field just opens the command
+ * nothing on the site handles. The homepage field just opens the command
  * palette. Google also retired the sitelinks searchbox result in November 2024,
  * so the claim bought nothing and was not true.
  */

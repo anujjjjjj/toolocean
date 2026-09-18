@@ -63,7 +63,7 @@ export function RegexTesterTool() {
 
           /*
            * A zero-length match does not advance lastIndex, so patterns that can
-           * match empty — .*, a*, \b, \d* — looped forever here and pushed into
+           * match empty, .*, a*, \b, \d*, looped forever here and pushed into
            * `results` until the tab died. `.*` is the first thing most people type
            * into a regex tester, so this froze the page on close to the most
            * common input there is.

@@ -5,7 +5,7 @@ import "./index.css";
 
 /*
  * Before hydration, so the Consent Mode defaults are queued ahead of the first
- * page_view — which useSEO fires from an effect during hydration. This only
+ * page_view. Which useSEO fires from an effect during hydration. This only
  * populates dataLayer and schedules the tag for an idle moment; no network
  * request happens on the critical path.
  */

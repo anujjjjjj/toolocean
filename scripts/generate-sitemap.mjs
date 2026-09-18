@@ -6,7 +6,7 @@
  * verbatim, so both `build:client` and the prerender pass pick it up with no extra
  * wiring, and `vite dev` serves the same file the deploy will.
  *
- * Reads src/data/toolCatalog.ts — the same file the app routes on — so the
+ * Reads src/data/toolCatalog.ts. The same file the app routes on, so the
  * sitemap cannot drift from reality. The previous version kept its own hand-typed
  * copy of every category's tool ids, which had already fallen out of sync.
  *
@@ -40,7 +40,7 @@ const toolSlugs = [...devSlugs, ...categorySlugs];
 /*
  * Modifier and comparison landing pages. Parsed from the same data module the app
  * routes and prerenders from, so a page cannot end up in the sitemap without a
- * matching static file — which is exactly how /workflow-builder came to be the one
+ * matching static file. Which is exactly how /workflow-builder came to be the one
  * advertised URL that answered 404.
  */
 const landingSource = readFileSync(resolve(ROOT, "src/data/landingPages.ts"), "utf-8");
@@ -71,9 +71,9 @@ const CATEGORY_INDEXES = [
  * credibility and returning nothing. Bing does use it, which is why the fix is to
  * make it true rather than to drop it.
  *
- * A missing date is better than a wrong one: if git history is unavailable — no
+ * A missing date is better than a wrong one: if git history is unavailable, no
  * repo, or a clone too shallow to reach the commit that last touched a file, which
- * is how most CI checkouts behave — the element is omitted for that URL instead of
+ * is how most CI checkouts behave. The element is omitted for that URL instead of
  * being filled in with a guess.
  */
 const gitDateCache = new Map();
@@ -155,11 +155,11 @@ const routes = [
     changefreq: "monthly",
     source: "src/data/landingPages.ts",
   })),
-  // Trust pages. Low priority — they exist for readers and for E-E-A-T, not to rank.
+  // Trust pages. Low priority. They exist for readers and for E-E-A-T, not to rank.
   { path: "/about", priority: "0.4", changefreq: "yearly", source: "src/pages/AboutPage.tsx" },
   { path: "/privacy", priority: "0.3", changefreq: "yearly", source: "src/pages/PrivacyPage.tsx" },
   { path: "/terms", priority: "0.3", changefreq: "yearly", source: "src/pages/TermsPage.tsx" },
-  // Tool pages are the money pages — they matter more than the listings.
+  // Tool pages are the money pages. They matter more than the listings.
   ...toolSlugs.map((slug) => ({
     path: `/${slug}`,
     priority: "0.8",

@@ -33,7 +33,7 @@ function rndWord() { return WORDS[Math.floor(Math.random() * WORDS.length)]; }
  * Array.from's map callback is invoked with (element, index), so passing these
  * functions directly handed the array index in as `maxW`/`maxS`. At index 0 that
  * made the range negative, `count` could come out as 0, and `words[0]` was then
- * undefined — a hard "Cannot read properties of undefined (reading 'charAt')".
+ * undefined. A hard "Cannot read properties of undefined (reading 'charAt')".
  * When it did not throw it produced empty paragraphs and sentences far shorter
  * than the requested range.
  */
