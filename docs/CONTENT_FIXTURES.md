@@ -48,7 +48,10 @@ nothing.
 | `report-40p.pdf` | 165,897 | 40-page A4 text-only PDF, Helvetica, generated from real prose |
 | `report-12p.pdf` | 50,563 | the same, 12 pages |
 | `scan-12p.pdf` | 10,324,119 | 12 A4 pages, each a **different** full-bleed raster image |
-| `many-files.zip` | 160,235 | 300 small text files in nested folders |
+| `many-files.zip` | 724,948 | 300 text files in nested folders, DEFLATE |
+| `large-members.zip` | 20,507,979 | three large members: a PNG, a scanned PDF, a text PDF |
+| `text-0.txt` .. `text-2.txt` | 55,476 each | plain prose, highly compressible |
+| `secret.zip` | 18,740 | two text files, AES password protected with `zip -e` |
 | `one-photo.zip` | 2,055,994 | a single already-compressed JPEG |
 
 The fixture files are not committed. They are reproducible from the sources
@@ -72,6 +75,12 @@ Session S1 throughout.
 | pdf-merge | 12-page scan and a 12-page text PDF | 10,374,682 | 10,374,095 | −0.0% | 32 ms |
 | pdf-split | pages 1-10 of the 40-page text PDF | 165,897 | 42,181 | −74.6% | 20 ms |
 | pdf-split | pages 1-10 of the 12-page scan | 10,324,119 | 9,258,693 | −10.3% | 35 ms |
+| zip-creator | three plain text files | 167,472 | 27,859 | −83.4% | 17 ms |
+| zip-creator | a JPEG and two PDFs, all already compressed | 2,273,612 | 2,269,170 | −0.2% | 101 ms |
+| zip-extractor | 300-entry archive, all entries decompressed and listed | 724,948 | n/a | n/a | 69 ms |
+| zip-extractor | 20.5 MB archive of three large members | 20,507,979 | n/a | n/a | 100 ms |
+| zip-preview | the same 300-entry archive, listed only | 724,948 | n/a | n/a | 39 ms |
+| zip-preview | the same 20.5 MB archive, listed only | 20,507,979 | n/a | n/a | 54 ms |
 
 ### What these say
 
@@ -134,3 +143,27 @@ it on, not after.
 
 Reproduce with a short script against pdf-lib; the sequence is the same six lines
 the tools use.
+
+### What the archive numbers say
+
+- **zip-creator compresses now.** It previously called JSZip's `generateAsync`
+  without a compression option, and the default is STORE: 167,472 bytes of text
+  produced a 167,782 byte archive, very slightly larger than the input. With
+  DEFLATE at level 6 the same files produce 27,859 bytes. The fix was one option;
+  the miss was a factor of six.
+- **Zipping already-compressed files does nothing, and that is worth saying.** A
+  JPEG and two PDFs went from 2,273,612 to 2,269,170 bytes, a 0.2% saving for
+  101 ms of work. People expect a ZIP to shrink things and are surprised when a
+  folder of photos does not.
+- **Listing is about twice as fast as extracting.** On a 20.5 MB archive,
+  zip-preview showed the contents in 54 ms against zip-extractor's 100 ms,
+  because preview reads the archive directory and never decompresses a member.
+  The gap widens with member size, not member count.
+
+### Encrypted archives are rejected, not prompted
+
+`zip -e -P hunter2` produces an archive that JSZip refuses at load time with
+"Encrypted zip are not supported". There is no password prompt and no partial
+listing: the whole file fails to open. This matters because "how do I open a
+password protected ZIP" is one of the most common questions in this category, and
+the honest answer here is that this tool cannot, rather than a vague one.

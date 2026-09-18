@@ -110,7 +110,7 @@
   "gzip-compress": 107,
   "gzip-decompress": 105,
   "lz-string-compress": 103,
-  "zip-extractor": 96,
-  "zip-creator": 110,
+  "zip-extractor": 2256,
+  "zip-creator": 2074,
   "zip-preview": 105
 }

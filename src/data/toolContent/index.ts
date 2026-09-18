@@ -2,6 +2,8 @@ import type { ToolPageContent } from "@/types/toolContent";
 import { jsonFormatterContent } from "./jsonFormatter";
 import { pdfMergeContent } from "./pdfMerge";
 import { pdfSplitContent } from "./pdfSplit";
+import { zipExtractorContent } from "./zipExtractor";
+import { zipCreatorContent } from "./zipCreator";
 
 /**
  * Hand-authored page content, keyed by tool slug.
@@ -20,6 +22,8 @@ export const TOOL_CONTENT_OVERRIDES: Record<string, Partial<ToolPageContent>> = 
   "json-formatter": jsonFormatterContent,
   "pdf-merge": pdfMergeContent,
   "pdf-split": pdfSplitContent,
+  "zip-extractor": zipExtractorContent,
+  "zip-creator": zipCreatorContent,
 };
 
 /**
