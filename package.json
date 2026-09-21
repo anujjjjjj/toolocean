@@ -16,7 +16,9 @@
     "preview": "vite preview",
     "check:links": "node scripts/check-links.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json",
-    "check:content": "node scripts/check-content.mjs"
+    "check:content": "node scripts/check-content.mjs",
+    "serve:dist": "node scripts/serve-dist.mjs",
+    "check:hydration": "node --experimental-websocket scripts/check-hydration.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

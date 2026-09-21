@@ -90,6 +90,11 @@ Session S1 throughout.
 | pdf-to-images | 12-page scan to PNG at 2x | 10,324,119 | 23,899,262 | +131% | see note |
 | pdf-to-images | 40-page text PDF to PNG at 2x | 165,897 | 25,256,591 | +15,124% | see note |
 | images-to-pdf | three 2550x3300 JPEGs into one document | 3,549,756 | 3,551,383 | +0.0% | 38 ms |
+| pdf-rotate | all 12 pages of a text PDF turned 90 degrees | 50,563 | 50,578 | +15 bytes | 17 ms |
+| pdf-rotate | all 12 pages of a 10 MB scan turned 90 degrees | 10,324,119 | 10,324,133 | +14 bytes | 33 ms |
+| pdf-watermark | CONFIDENTIAL across 12 text pages | 50,563 | 53,480 | +5.8% | 25 ms |
+| pdf-watermark | CONFIDENTIAL across 40 text pages | 165,897 | 175,270 | +5.6% | 24 ms |
+| pdf-reorder | 12-page text PDF rebuilt, order unchanged | 50,563 | 50,562 | −1 byte | 25 ms |
 
 ### What these say
 
@@ -214,3 +219,34 @@ rather than quoted misleadingly.
   produced a 3,551,383 byte PDF. JPEG data is embedded into the document as-is
   rather than re-encoded, which is why quality is untouched and why the PDF is
   the sum of its images plus a small container overhead.
+
+### What the page-level PDF numbers say
+
+- **Rotation is free, whatever the document weighs.** Turning all twelve pages of
+  a 10 MB scan added 14 bytes and took 33 ms, barely more than the same operation
+  on a 50 KB text file. Rotation is recorded as a `/Rotate` entry on each page
+  rather than by moving pixels, so the images are never touched and the cost does
+  not scale with them.
+- **A watermark costs about 240 bytes a page.** Twelve pages grew by 2,917 bytes
+  and forty by 9,373, which is the drawn text plus one embedded font. The
+  proportion looks large on a small file and is negligible on a scan.
+- **Reordering is size-neutral**, at one byte smaller on the fixture.
+
+### What each operation preserves
+
+The same check used for merge and split, run against all three operations on a
+document carrying a named form field and a bookmark tree:
+
+| Operation | Form fields | Bookmarks |
+| --- | --- | --- |
+| rotate | **kept** | **kept** |
+| watermark | **kept** | **kept** |
+| reorder | lost | lost |
+| merge / split | lost | lost |
+
+The difference is structural rather than incidental. Rotate and watermark load
+the document and modify it in place, so everything held at document level
+survives. Reorder, merge and split copy pages into a new document, and only
+page-level objects make that trip. It is worth stating on the pages, because
+"will my fillable form still work afterwards" has a different answer depending on
+which of these tools you reach for.

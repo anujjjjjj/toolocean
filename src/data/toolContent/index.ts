@@ -9,6 +9,9 @@ import { imageResizerContent } from "./imageResizer";
 import { imageFormatConverterContent } from "./imageFormatConverter";
 import { pdfToImagesContent } from "./pdfToImages";
 import { imagesToPdfContent } from "./imagesToPdf";
+import { pdfRotateContent } from "./pdfRotate";
+import { pdfWatermarkContent } from "./pdfWatermark";
+import { pdfReorderContent } from "./pdfReorder";
 
 /**
  * Hand-authored page content, keyed by tool slug.
@@ -34,6 +37,9 @@ export const TOOL_CONTENT_OVERRIDES: Record<string, Partial<ToolPageContent>> = 
   "image-format-converter": imageFormatConverterContent,
   "pdf-to-images": pdfToImagesContent,
   "images-to-pdf": imagesToPdfContent,
+  "pdf-rotate": pdfRotateContent,
+  "pdf-watermark": pdfWatermarkContent,
+  "pdf-reorder": pdfReorderContent,
 };
 
 /**
