@@ -3,7 +3,7 @@
  *
  * The site previously pointed og:image at /favicon.svg. Facebook, X, LinkedIn and
  * Slack all reject SVG for link previews, so every share rendered with no image
- * at all — and a missing preview image measurably depresses click-through on the
+ * at all, and a missing preview image measurably depresses click-through on the
  * social and chat surfaces where developer tools actually spread.
  *
  * Requires ImageMagick (`brew install imagemagick`). This is a one-off asset

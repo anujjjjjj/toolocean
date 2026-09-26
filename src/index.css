@@ -1,3 +1,32 @@
+/*
+ * Self-hosted typography.
+ *
+ * One family for everything now (Urbanist), not a heading/body split, so one
+ * variable-weight file per subset covers every weight used (400-800) instead
+ * of the two families this replaced needing four files between them.
+ *
+ * The unicode-range values are Google's own, so latin-ext is only fetched by a
+ * reader who actually hits one of those characters.
+ */
+
+@font-face {
+  font-family: 'Urbanist';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('/fonts/urbanist-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Urbanist';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('/fonts/urbanist-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -18,10 +47,13 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 220 15% 12%;
 
-    /* Refined Primary - Teal accent */
-    --primary: 172 66% 50%;
+    /* Primary action color, copied from ilovepdf.com's red at the user's request.
+       Used for the logo, CTAs, and the trust badges alike: an earlier pass kept
+       the old teal for the logo and trust copy, and it read as two competing
+       brand colors, so everything is one red now. */
+    --primary: 2 78% 54%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 172 66% 55%;
+    --primary-glow: 2 78% 62%;
 
     --secondary: 220 14% 96%;
     --secondary-foreground: 220 15% 12%;
@@ -37,20 +69,20 @@ All colors MUST be HSL.
 
     --border: 220 14% 90%;
     --input: 220 14% 90%;
-    --ring: 172 66% 50%;
+    --ring: 2 78% 54%;
 
     /* Design System Tokens */
     --radius: 0.5rem;
-    
+
     /* Subtle gradients - use sparingly */
-    --gradient-primary: linear-gradient(135deg, hsl(172 66% 50%), hsl(172 66% 55%));
-    --gradient-ocean: linear-gradient(135deg, hsl(172 66% 50%), hsl(180 60% 55%));
+    --gradient-primary: linear-gradient(135deg, hsl(2 78% 54%), hsl(2 78% 62%));
+    --gradient-ocean: linear-gradient(135deg, hsl(2 78% 54%), hsl(15 70% 55%));
     --gradient-subtle: linear-gradient(180deg, hsl(0 0% 98%), hsl(220 14% 97%));
-    
+
     /* Refined shadows - softer, subtler */
     --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.04);
-    --shadow-glow: 0 0 20px hsl(172 66% 50% / 0.15);
-    --shadow-elegant: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-glow: 0 0 20px hsl(2 78% 54% / 0.15);
+    --shadow-elegant: 0 10px 24px -14px hsl(2 78% 54% / 0.35);
     
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -84,9 +116,9 @@ All colors MUST be HSL.
     --popover: 220 14% 11%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 172 66% 55%;
+    --primary: 2 82% 62%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 172 66% 60%;
+    --primary-glow: 2 82% 68%;
 
     --secondary: 220 14% 14%;
     --secondary-foreground: 0 0% 98%;
@@ -102,17 +134,17 @@ All colors MUST be HSL.
 
     --border: 220 14% 18%;
     --input: 220 14% 14%;
-    --ring: 172 66% 55%;
-    
+    --ring: 2 82% 62%;
+
     /* Dark Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(172 66% 55%), hsl(172 66% 60%));
-    --gradient-ocean: linear-gradient(135deg, hsl(172 66% 55%), hsl(180 60% 60%));
+    --gradient-primary: linear-gradient(135deg, hsl(2 82% 62%), hsl(2 82% 68%));
+    --gradient-ocean: linear-gradient(135deg, hsl(2 82% 62%), hsl(15 70% 60%));
     --gradient-subtle: linear-gradient(180deg, hsl(220 14% 9%), hsl(220 14% 11%));
-    
+
     /* Dark Shadows */
     --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.3);
-    --shadow-glow: 0 0 20px hsl(172 66% 55% / 0.2);
-    --shadow-elegant: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-glow: 0 0 20px hsl(2 82% 62% / 0.25);
+    --shadow-elegant: 0 10px 24px -14px hsl(2 82% 62% / 0.4);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -131,11 +163,52 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-weight: 600;
+    font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 700;
+  }
+}
+/*
+ * Mobile overflow guards for the tool workbench.
+ *
+ * Nine tools scrolled the whole page sideways at 375px, the worst by 173px. The
+ * cause is not the grids themselves. Those are all responsive, but the CSS
+ * default of `min-width: auto` on grid and flex children: a <pre> holding one long
+ * unbroken line refuses to shrink below its intrinsic width and pushes the column
+ * past the viewport. Setting min-width:0 lets the child shrink so its own overflow
+ * rule can take over.
+ *
+ * Scoped to the workbench so it cannot disturb the page chrome, and applied here
+ * rather than as `min-w-0` in 114 components so tools added later inherit it.
+ */
+@layer components {
+  #tool-workbench .grid > *,
+  #tool-workbench .flex > * {
+    min-width: 0;
+  }
+
+  /* Long tokens (base64, minified JSON, hashes) scroll inside their own box. */
+  #tool-workbench pre,
+  #tool-workbench table {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  #tool-workbench textarea,
+  #tool-workbench input {
+    max-width: 100%;
+  }
+
+  /*
+   * Long unbreakable tokens, IPv6 addresses, hashes, base64, minified output,
+   * have no natural break opportunity, so min-width:0 alone still left them
+   * pushing the layout wide. `anywhere` only breaks when the word genuinely
+   * cannot fit, so ordinary prose is unaffected.
+   */
+  #tool-workbench {
+    overflow-wrap: anywhere;
   }
 }

@@ -2,7 +2,7 @@
 
 interface ImportMetaEnv {
   /**
-   * GA4 measurement ID, e.g. "G-XXXXXXXXXX". Optional by design — when it is
+   * GA4 measurement ID, e.g. "G-XXXXXXXXXX". Optional by design, when it is
    * absent (vite dev, or a fork of this repo) every analytics call no-ops and the
    * consent banner never renders. See src/lib/analytics.ts.
    *

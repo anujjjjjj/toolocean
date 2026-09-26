@@ -7,72 +7,21 @@ import { FileText, Merge, Split, Shrink, Image, RotateCw, Droplets, ArrowUpDown,
 import { useNavigate } from "react-router-dom";
 import { useSEO } from "@/hooks/useSEO";
 import { CATEGORY_PAGE_SEO } from "@/data/staticPageSeo";
-import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
+import { buildCategoryGraph } from "@/lib/sitePageSchema";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
+import { ToolLinkCard } from "@/components/tools/ToolLinkCard";
+import { toolsInCategory } from "@/data/toolCatalog";
 
 const BREADCRUMB_ITEMS = [
   { name: "Home", path: "/" },
   { name: "PDF Tools", path: "/pdf-tools" },
 ];
 
-const pdfTools = [
-  {
-    id: "pdf-merge",
-    name: "PDF Merge",
-    description: "Combine multiple PDF files into one document",
-    icon: Merge,
-    color: "from-rose-500 to-pink-500",
-  },
-  {
-    id: "pdf-split",
-    name: "PDF Split",
-    description: "Extract specific pages from a PDF document",
-    icon: Split,
-    color: "from-orange-500 to-amber-500",
-  },
-  {
-    id: "pdf-compress",
-    name: "PDF Compress",
-    description: "Reduce PDF file size while maintaining quality",
-    icon: Shrink,
-    color: "from-green-500 to-emerald-500",
-  },
-  {
-    id: "pdf-to-images",
-    name: "PDF to Images",
-    description: "Convert PDF pages to PNG or JPG images",
-    icon: Image,
-    color: "from-blue-500 to-cyan-500",
-  },
-  {
-    id: "images-to-pdf",
-    name: "Images to PDF",
-    description: "Combine multiple images into a single PDF",
-    icon: FileText,
-    color: "from-purple-500 to-violet-500",
-  },
-  {
-    id: "pdf-rotate",
-    name: "PDF Rotate",
-    description: "Rotate PDF pages by 90°, 180°, or 270°",
-    icon: RotateCw,
-    color: "from-teal-500 to-green-500",
-  },
-  {
-    id: "pdf-watermark",
-    name: "PDF Watermark",
-    description: "Add text or image watermark to PDF pages",
-    icon: Droplets,
-    color: "from-indigo-500 to-blue-500",
-  },
-  {
-    id: "pdf-reorder",
-    name: "PDF Page Reorder",
-    description: "Rearrange PDF pages with drag and drop",
-    icon: ArrowUpDown,
-    color: "from-pink-500 to-rose-500",
-  },
-];
+/*
+ * Derived from the catalog rather than restated here. This list used to be a
+ * hardcoded copy, which is the drift src/data/toolCatalog.ts exists to remove.
+ */
+const pdfTools = toolsInCategory("pdf");
 
 const PdfToolsPage = () => {
   const navigate = useNavigate();
@@ -80,7 +29,7 @@ const PdfToolsPage = () => {
   useSEO({
     ...CATEGORY_PAGE_SEO["/pdf-tools"],
     path: "/pdf-tools",
-    jsonLd: [buildBreadcrumbJsonLd(BREADCRUMB_ITEMS)],
+    jsonLd: [buildCategoryGraph("/pdf-tools")].filter(Boolean),
   });
 
   return (
@@ -100,16 +49,24 @@ const PdfToolsPage = () => {
         <Breadcrumbs items={BREADCRUMB_ITEMS} />
 
         {/* Hero Section */}
-        <section className="text-center py-8">
-          <div className="max-w-4xl mx-auto">
+        <section className="relative overflow-hidden text-center py-8">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(55%_60%_at_50%_0%,hsl(var(--primary)/0.08),transparent_70%)]"
+          />
+          <div className="relative max-w-4xl mx-auto">
             <div className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-lg bg-primary/10">
               <FileText className="h-8 w-8 text-primary" />
             </div>
+            <span className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary">
+              <Shield className="h-3.5 w-3.5" />
+              No uploads. Runs entirely in your browser.
+            </span>
             <h1 className="text-5xl font-heading font-bold mb-6 text-foreground">
               PDF Tools
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Powerful PDF manipulation tools that work entirely in your browser. No uploads, no servers – your files stay private.
+              Powerful PDF manipulation tools that work entirely in your browser. No uploads, no servers, your files stay private.
             </p>
           </div>
         </section>
@@ -121,29 +78,10 @@ const PdfToolsPage = () => {
             <p className="text-muted-foreground">Select a tool to get started</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {pdfTools.map((tool) => {
-              const Icon = tool.icon;
-              return (
-                <Card
-                  key={tool.id}
-                  className="group cursor-pointer transition-all hover:opacity-90 hover:shadow-elegant"
-                  onClick={() => navigate(`/pdf-tools/${tool.id}`)}
-                >
-                  <CardHeader className="text-center pb-2">
-                    <div className="inline-flex items-center justify-center w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 group-hover:bg-primary/15 transition-colors">
-                      <Icon className="h-6 w-6 text-primary" />
-                    </div>
-                    <CardTitle className="text-lg">{tool.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-center pt-0">
-                    <CardDescription className="text-sm">
-                      {tool.description}
-                    </CardDescription>
-                  </CardContent>
-                </Card>
-              );
-            })}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {pdfTools.map((tool) => (
+              <ToolLinkCard key={tool.id} tool={tool} />
+            ))}
           </div>
         </section>
 

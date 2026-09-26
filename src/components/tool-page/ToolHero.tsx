@@ -61,7 +61,7 @@ function CtaButton({ cta, variant }: { cta: ToolCta; variant: "default" | "outli
 export function ToolHero({ hero }: { hero: ToolHeroContent }) {
   return (
     <section className="relative overflow-hidden border-b border-border/60">
-      {/* Decorative only — kept out of the a11y tree and cheap enough not to affect LCP. */}
+      {/* Decorative only, kept out of the a11y tree and cheap enough not to affect LCP. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_0%,hsl(var(--primary)/0.10),transparent_70%)]"

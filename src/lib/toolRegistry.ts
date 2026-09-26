@@ -1,70 +1,11 @@
 
-import { JsonFormatterTool } from "@/components/tools/implementations/JsonFormatterTool";
-import { CaseConverterTool } from "@/components/tools/implementations/CaseConverterTool";
-import { WordCounterTool } from "@/components/tools/implementations/WordCounterTool";
-import { TextDiffTool } from "@/components/tools/implementations/TextDiffTool";
-import { DuplicateRemoverTool } from "@/components/tools/implementations/DuplicateRemoverTool";
-import { LineBreakRemoverTool } from "@/components/tools/implementations/LineBreakRemoverTool";
-import { TextReplacerTool } from "@/components/tools/implementations/TextReplacerTool";
-import { SlugConverterTool } from "@/components/tools/implementations/SlugConverterTool";
-import { JsonStringifyTool } from "@/components/tools/implementations/JsonStringifyTool";
-import { JsonParseTool } from "@/components/tools/implementations/JsonParseTool";
-import { HtmlFormatterTool } from "@/components/tools/implementations/HtmlFormatterTool";
-import { SqlFormatterTool } from "@/components/tools/implementations/SqlFormatterTool";
-import { RegexTesterTool } from "@/components/tools/implementations/RegexTesterTool";
-import { EncryptionTool } from "@/components/tools/implementations/EncryptionTool";
-import { CsvJsonConverterTool } from "@/components/tools/implementations/CsvJsonConverterTool";
-import { YamlJsonConverterTool } from "@/components/tools/implementations/YamlJsonConverterTool";
-import { XmlJsonConverterTool } from "@/components/tools/implementations/XmlJsonConverterTool";
-import { JsonSchemaValidatorTool } from "@/components/tools/implementations/JsonSchemaValidatorTool";
-import { JsonMergerTool } from "@/components/tools/implementations/JsonMergerTool";
-import { JsonFlattenerTool } from "@/components/tools/implementations/JsonFlattenerTool";
-import { CssFormatterTool } from "@/components/tools/implementations/CssFormatterTool";
-import { HtmlJsxConverterTool } from "@/components/tools/implementations/HtmlJsxConverterTool";
-import { ColorConverterTool } from "@/components/tools/implementations/ColorConverterTool";
-import { GradientGeneratorTool } from "@/components/tools/implementations/GradientGeneratorTool";
-import { BoxShadowGeneratorTool } from "@/components/tools/implementations/BoxShadowGeneratorTool";
-import { HashGeneratorTool } from "@/components/tools/implementations/HashGeneratorTool";
-import { PasswordGeneratorTool } from "@/components/tools/implementations/PasswordGeneratorTool";
-import { UuidGeneratorTool } from "@/components/tools/implementations/UuidGeneratorTool";
-import { EnvFormatterTool } from "@/components/tools/implementations/EnvFormatterTool";
-import { JwtDecoderTool } from "@/components/tools/implementations/JwtDecoderTool";
 import FakeDataGeneratorTool from "@/components/tools/implementations/FakeDataGeneratorTool";
 import HttpRequestComposerTool from "@/components/tools/implementations/HttpRequestComposerTool";
 import UserAgentGeneratorTool from "@/components/tools/implementations/UserAgentGeneratorTool";
 import TimestampConverterTool from "@/components/tools/implementations/TimestampConverterTool";
 import GitignoreGeneratorTool from "@/components/tools/implementations/GitignoreGeneratorTool";
 import DockerfileFormatterTool from "@/components/tools/implementations/DockerfileFormatterTool";
-import { YamlFormatterTool } from "@/components/tools/implementations/YamlFormatterTool";
-import { NginxConfigGeneratorTool } from "@/components/tools/implementations/NginxConfigGeneratorTool";
-import { CronExpressionBuilderTool } from "@/components/tools/implementations/CronExpressionBuilderTool";
-import { CodeExplainerTool } from "@/components/tools/implementations/CodeExplainerTool";
-import { JsonFixerTool } from "@/components/tools/implementations/JsonFixerTool";
 import IpAddressTool from "@/components/tools/implementations/IpAddressTool";
-import { RegexGeneratorTool } from "@/components/tools/implementations/RegexGeneratorTool";
-import { UrlEncoderTool } from "@/components/tools/implementations/UrlEncoderTool";
-import { Base64Tool } from "@/components/tools/implementations/Base64Tool";
-import { HtmlEntityEncoderTool } from "@/components/tools/implementations/HtmlEntityEncoderTool";
-import { NumberBaseConverterTool } from "@/components/tools/implementations/NumberBaseConverterTool";
-import { MarkdownPreviewTool } from "@/components/tools/implementations/MarkdownPreviewTool";
-import { LoremIpsumGeneratorTool } from "@/components/tools/implementations/LoremIpsumGeneratorTool";
-import { StringEscapeTool } from "@/components/tools/implementations/StringEscapeTool";
-import { TomlFormatterTool } from "@/components/tools/implementations/TomlFormatterTool";
-import { XmlFormatterTool } from "@/components/tools/implementations/XmlFormatterTool";
-import { CsvFormatterTool } from "@/components/tools/implementations/CsvFormatterTool";
-import { CssUnitConverterTool } from "@/components/tools/implementations/CssUnitConverterTool";
-import { ChmodCalculatorTool } from "@/components/tools/implementations/ChmodCalculatorTool";
-import { MimeTypeLookupTool } from "@/components/tools/implementations/MimeTypeLookupTool";
-import { UnicodeInspectorTool } from "@/components/tools/implementations/UnicodeInspectorTool";
-import { JwtGeneratorTool } from "@/components/tools/implementations/JwtGeneratorTool";
-import { QrCodeGeneratorTool } from "@/components/tools/implementations/QrCodeGeneratorTool";
-import { TextSorterTool } from "@/components/tools/implementations/TextSorterTool";
-import { JsonMinifierTool } from "@/components/tools/implementations/JsonMinifierTool";
-import { ColorPaletteGeneratorTool } from "@/components/tools/implementations/ColorPaletteGeneratorTool";
-import { TextToBinaryTool } from "@/components/tools/implementations/TextToBinaryTool";
-import { IpCidrCalculatorTool } from "@/components/tools/implementations/IpCidrCalculatorTool";
-import { NumberFormatterTool } from "@/components/tools/implementations/NumberFormatterTool";
-import { DnsLookupTool } from "@/components/tools/implementations/DnsLookupTool";
 
 // Tool registry for workflow execution
 export const toolRegistry: Record<string, { run: (input: string) => Promise<string> }> = {
@@ -193,9 +134,8 @@ export const toolRegistry: Record<string, { run: (input: string) => Promise<stri
   "xml-json-converter": {
     run: async (input: string) => {
       try {
-        const xml2js = await import('xml2js');
-        const parser = new xml2js.Parser();
-        const result = await parser.parseStringPromise(input);
+        const { xmlToJson } = await import('@/lib/xmlJson');
+        const result = xmlToJson(input, { preserveAttributes: true, explicitArray: false });
         return JSON.stringify(result, null, 2);
       } catch {
         throw new Error("Invalid XML format");
@@ -539,73 +479,4 @@ export const toolRegistry: Record<string, { run: (input: string) => Promise<stri
 };
 
 // Component registry for tool page rendering
-export const componentRegistry: Record<string, React.ComponentType<any>> = {
-  "json-formatter": JsonFormatterTool,
-  "case-converter": CaseConverterTool,
-  "word-counter": WordCounterTool,
-  "text-diff": TextDiffTool,
-  "duplicate-remover": DuplicateRemoverTool,
-  "line-break-remover": LineBreakRemoverTool,
-  "text-replacer": TextReplacerTool,
-  "slug-converter": SlugConverterTool,
-  "json-stringify": JsonStringifyTool,
-  "json-parse": JsonParseTool,
-  "html-formatter": HtmlFormatterTool,
-  "sql-formatter": SqlFormatterTool,
-  "regex-tester": RegexTesterTool,
-  "encryption-tool": EncryptionTool,
-  "csv-json-converter": CsvJsonConverterTool,
-  "yaml-json-converter": YamlJsonConverterTool,
-  "xml-json-converter": XmlJsonConverterTool,
-  "json-schema-validator": JsonSchemaValidatorTool,
-  "json-merger": JsonMergerTool,
-  "json-flattener": JsonFlattenerTool,
-  "css-minifier": CssFormatterTool,
-  "html-jsx-converter": HtmlJsxConverterTool,
-  "color-converter": ColorConverterTool,
-  "gradient-generator": GradientGeneratorTool,
-  "box-shadow-generator": BoxShadowGeneratorTool,
-  "hash-generator": HashGeneratorTool,
-  "password-generator": PasswordGeneratorTool,
-  "uuid-generator": UuidGeneratorTool,
-  "env-formatter": EnvFormatterTool,
-  "jwt-decoder": JwtDecoderTool,
-  "fake-data-generator": FakeDataGeneratorTool,
-  "http-request-composer": HttpRequestComposerTool,
-  "user-agent-generator": UserAgentGeneratorTool,
-  "timestamp-converter": TimestampConverterTool,
-  "gitignore-generator": GitignoreGeneratorTool,
-  "dockerfile-formatter": DockerfileFormatterTool,
-  "yaml-formatter": YamlFormatterTool,
-  "nginx-config-generator": NginxConfigGeneratorTool,
-  "cron-expression-builder": CronExpressionBuilderTool,
-  // Previously unregistered
-  "code-explainer": CodeExplainerTool,
-  "json-fixer": JsonFixerTool,
-  "ip-address": IpAddressTool,
-  "regex-generator": RegexGeneratorTool,
-  // Phase 2 new dev tools
-  "url-encoder": UrlEncoderTool,
-  "base64-tool": Base64Tool,
-  "html-entity-encoder": HtmlEntityEncoderTool,
-  "number-base-converter": NumberBaseConverterTool,
-  "markdown-preview": MarkdownPreviewTool,
-  "lorem-ipsum-generator": LoremIpsumGeneratorTool,
-  "string-escape": StringEscapeTool,
-  "toml-formatter": TomlFormatterTool,
-  "xml-formatter": XmlFormatterTool,
-  "csv-formatter": CsvFormatterTool,
-  "css-unit-converter": CssUnitConverterTool,
-  "chmod-calculator": ChmodCalculatorTool,
-  "mime-type-lookup": MimeTypeLookupTool,
-  "unicode-inspector": UnicodeInspectorTool,
-  "jwt-generator": JwtGeneratorTool,
-  "qr-code-generator": QrCodeGeneratorTool,
-  "text-sorter": TextSorterTool,
-  "json-minifier": JsonMinifierTool,
-  "color-palette-generator": ColorPaletteGeneratorTool,
-  "text-to-binary": TextToBinaryTool,
-  "ip-cidr-calculator": IpCidrCalculatorTool,
-  "number-formatter": NumberFormatterTool,
-  "dns-lookup": DnsLookupTool,
-};
+

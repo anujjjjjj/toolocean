@@ -6,7 +6,7 @@
  * verbatim, so both `build:client` and the prerender pass pick it up with no extra
  * wiring, and `vite dev` serves the same file the deploy will.
  *
- * Reads src/data/toolCatalog.ts — the same file the app routes on — so the
+ * Reads src/data/toolCatalog.ts. The same file the app routes on, so the
  * sitemap cannot drift from reality. The previous version kept its own hand-typed
  * copy of every category's tool ids, which had already fallen out of sync.
  *
@@ -37,6 +37,18 @@ const devSlugs = JSON.parse(readFileSync(resolve(ROOT, "src/data/tools.json"), "
 );
 const toolSlugs = [...devSlugs, ...categorySlugs];
 
+/*
+ * Modifier and comparison landing pages. Parsed from the same data module the app
+ * routes and prerenders from, so a page cannot end up in the sitemap without a
+ * matching static file. Which is exactly how /workflow-builder came to be the one
+ * advertised URL that answered 404.
+ */
+const landingSource = readFileSync(resolve(ROOT, "src/data/landingPages.ts"), "utf-8");
+const landingSlugs = [...landingSource.matchAll(/^\s{4}slug: "([a-z0-9-]+)",$/gm)].map(([, slug]) => slug);
+if (landingSlugs.length === 0) {
+  throw new Error("Could not parse any landing page slugs from src/data/landingPages.ts");
+}
+
 const CATEGORY_INDEXES = [
   "/dev-tools",
   "/pdf-tools",
@@ -59,9 +71,9 @@ const CATEGORY_INDEXES = [
  * credibility and returning nothing. Bing does use it, which is why the fix is to
  * make it true rather than to drop it.
  *
- * A missing date is better than a wrong one: if git history is unavailable — no
+ * A missing date is better than a wrong one: if git history is unavailable, no
  * repo, or a clone too shallow to reach the commit that last touched a file, which
- * is how most CI checkouts behave — the element is omitted for that URL instead of
+ * is how most CI checkouts behave. The element is omitted for that URL instead of
  * being filled in with a guess.
  */
 const gitDateCache = new Map();
@@ -123,17 +135,31 @@ const routes = [
     changefreq: "weekly",
     source: LISTING_SOURCE[path],
   })),
-  {
-    path: "/workflow-builder",
-    priority: "0.5",
+  /*
+   * /all-tools is the HTML sitemap. High priority because it is the page that
+   * distributes crawl equity to the whole catalogue.
+   *
+   * /workflow-builder is deliberately absent: it is noindex. Its prerendered
+   * body is 40 words of empty state because the page is an app whose content is
+   * produced at runtime, and there is no query it could win.
+   */
+  { path: "/all-tools", priority: "0.9", changefreq: "weekly", source: "src/data/toolCatalog.ts" },
+  /*
+   * Landing pages rank higher than the tool pages here because they target the
+   * qualified queries this site can actually win, and each one is an entry point
+   * into several tools rather than just one.
+   */
+  ...landingSlugs.map((slug) => ({
+    path: `/${slug}`,
+    priority: "0.9",
     changefreq: "monthly",
-    source: "src/pages/WorkflowBuilderPage.tsx",
-  },
-  // Trust pages. Low priority — they exist for readers and for E-E-A-T, not to rank.
+    source: "src/data/landingPages.ts",
+  })),
+  // Trust pages. Low priority. They exist for readers and for E-E-A-T, not to rank.
   { path: "/about", priority: "0.4", changefreq: "yearly", source: "src/pages/AboutPage.tsx" },
   { path: "/privacy", priority: "0.3", changefreq: "yearly", source: "src/pages/PrivacyPage.tsx" },
   { path: "/terms", priority: "0.3", changefreq: "yearly", source: "src/pages/TermsPage.tsx" },
-  // Tool pages are the money pages — they matter more than the listings.
+  // Tool pages are the money pages. They matter more than the listings.
   ...toolSlugs.map((slug) => ({
     path: `/${slug}`,
     priority: "0.8",

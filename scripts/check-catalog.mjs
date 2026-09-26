@@ -6,11 +6,50 @@
  * unreachable, which is exactly the class of bug that is invisible in review and
  * obvious in production. Runs before every build.
  */
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+
+/*
+ * Every file the build text-parses must exist AND be tracked by git.
+ *
+ * src/data/landingPages.ts was once untracked while generate-sitemap.mjs read it
+ * with a bare readFileSync and prerenderRoutes.ts imported it. The working copy
+ * built fine; a clean checkout died with ENOENT before Vite ever ran, so three
+ * weeks of commits could not be deployed and nobody noticed, because the only
+ * machine anyone built on was the one holding the untracked file.
+ */
+const BUILD_INPUTS = [
+  "src/data/toolCatalog.ts",
+  "src/data/tools.json",
+  "src/data/toolSeo.ts",
+  "src/data/staticPageSeo.ts",
+  "src/data/landingPages.ts",
+];
+
+const untracked = [];
+for (const rel of BUILD_INPUTS) {
+  if (!existsSync(resolve(ROOT, rel))) {
+    untracked.push(`  ${rel}  (missing)`);
+    continue;
+  }
+  try {
+    execFileSync("git", ["ls-files", "--error-unmatch", rel], { cwd: ROOT, stdio: "ignore" });
+  } catch {
+    untracked.push(`  ${rel}  (exists but untracked)`);
+  }
+}
+
+if (untracked.length > 0) {
+  console.error(
+    `\n✗ ${untracked.length} build input(s) would not survive a clean checkout:\n${untracked.join("\n")}\n\n` +
+      `The build reads these directly. Commit them, or a fresh clone fails before Vite starts.\n`,
+  );
+  process.exit(1);
+}
 
 const catalogSource = readFileSync(resolve(ROOT, "src/data/toolCatalog.ts"), "utf-8");
 const categoryTools = [...catalogSource.matchAll(/\{ id: "([^"]+)", category: "([^"]+)"/g)].map(
@@ -35,7 +74,7 @@ for (const tool of all) {
 
 if (collisions.length > 0) {
   console.error(
-    `\n✗ Tool slug collision — these ids resolve to the same root URL:\n${collisions.join("\n")}\n\n` +
+    `\n✗ Tool slug collision. These ids resolve to the same root URL:\n${collisions.join("\n")}\n\n` +
       `Give one of each pair a distinct id, or cross-list it via CROSS_LISTED in src/data/toolCatalog.ts.\n`,
   );
   process.exit(1);
@@ -59,4 +98,51 @@ if (missingSeo.length > 0) {
   process.exit(1);
 }
 
-console.log(`✓ catalog: ${all.length} tools, unique slugs, all have SEO content`);
+/*
+ * Icon names in authored content must exist in the tool-page icon map.
+ *
+ * resolveIcon falls back to a wrench for anything it does not recognise, which
+ * is the right runtime behaviour and a terrible authoring experience: a typo
+ * ships a wrench beside a feature card and nothing anywhere reports it. With
+ * content being written for 114 tools, that fails quietly at scale.
+ */
+const iconSource = readFileSync(resolve(ROOT, "src/components/tool-page/icons.ts"), "utf-8");
+const iconMap = iconSource.slice(iconSource.indexOf("const ICONS"));
+/*
+ * Matches both `Wrench,` shorthand and `Infinity: InfinityIcon,` aliases. The
+ * first version of this only caught the shorthand, so it reported a correctly
+ * registered icon as missing.
+ */
+const knownIcons = new Set(
+  [...iconMap.matchAll(/^\s{2}([A-Z][A-Za-z0-9]*)\s*(?:,|:)/gm)].map(([, name]) => name),
+);
+
+const contentDir = resolve(ROOT, "src/data/toolContent");
+const unknownIcons = [];
+if (existsSync(contentDir)) {
+  const walk = (dir) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const full = resolve(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (entry.name.endsWith(".ts")) {
+        const body = readFileSync(full, "utf-8");
+        for (const [, name] of body.matchAll(/\bicon:\s*"([^"]+)"/g)) {
+          if (!knownIcons.has(name)) unknownIcons.push(`  ${name}  (${entry.name})`);
+        }
+      }
+    }
+  };
+  walk(contentDir);
+}
+
+if (unknownIcons.length > 0) {
+  console.error(
+    `\n✗ ${unknownIcons.length} icon name(s) are not in src/components/tool-page/icons.ts, ` +
+      `so they would silently render a wrench:\n${[...new Set(unknownIcons)].join("\n")}\n`,
+  );
+  process.exit(1);
+}
+
+console.log(
+  `✓ catalog: ${all.length} tools, unique slugs, all have SEO content, ${BUILD_INPUTS.length} build inputs tracked, icons resolve`,
+);

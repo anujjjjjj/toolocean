@@ -11,7 +11,7 @@ export function ToolFooterCta({ category }: { category: ToolCategoryRef }) {
           Explore more browser-first tools
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-          Every tool on ToolOcean runs the same way this one does — the work happens in your tab, and
+          Every tool on ToolOcean runs the same way this one does. The work happens in your tab, and
           your files stay on your machine.
         </p>
         <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">

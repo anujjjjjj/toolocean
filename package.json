@@ -10,10 +10,15 @@
     "build:client": "vite build",
     "build:ssg": "vite build --ssr src/entry-ssg.tsx --outDir dist-ssg",
     "prerender": "node scripts/prerender.mjs",
-    "build": "npm run check:catalog && npm run sitemap && npm run build:client && npm run build:ssg && npm run prerender",
+    "build": "npm run typecheck && npm run check:catalog && npm run sitemap && npm run build:client && npm run build:ssg && npm run check:content && npm run prerender && npm run check:links",
     "build:dev": "npm run check:catalog && npm run sitemap && vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check:links": "node scripts/check-links.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json",
+    "check:content": "node scripts/check-content.mjs",
+    "serve:dist": "node scripts/serve-dist.mjs",
+    "check:hydration": "node --experimental-websocket scripts/check-hydration.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -52,8 +57,8 @@
     "crypto-js": "^4.2.0",
     "date-fns": "^3.6.0",
     "docx": "^9.6.1",
+    "dompurify": "^3.4.14",
     "embla-carousel-react": "^8.3.0",
-    "gif-encoder-2": "^1.0.5",
     "input-otp": "^1.2.4",
     "js-yaml": "^4.1.0",
     "jszip": "^3.10.1",
@@ -79,7 +84,6 @@
     "turndown": "^7.2.2",
     "vaul": "^0.9.3",
     "xlsx": "^0.18.5",
-    "xml2js": "^0.6.2",
     "zod": "^3.23.8"
   },
   "devDependencies": {

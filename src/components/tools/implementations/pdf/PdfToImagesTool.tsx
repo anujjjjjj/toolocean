@@ -150,7 +150,11 @@ export function PdfToImagesTool() {
                     throw new Error("Could not get canvas context");
                 }
 
+                // pdfjs v5 requires `canvas` alongside `canvasContext`; omitting it
+                // was a type error the build never surfaced, because `npm run build`
+                // does not typecheck.
                 await page.render({
+                    canvas,
                     canvasContext: context,
                     viewport: viewport,
                 }).promise;

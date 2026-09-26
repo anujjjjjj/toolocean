@@ -24,7 +24,7 @@ export interface CodeEditorProps {
   readOnly?: boolean;
   /** 1-based line to highlight in the gutter, e.g. the line a parse error points at. */
   errorLine?: number | null;
-  /** Accessible name. Required — this is a form control. */
+  /** Accessible name. Required. This is a form control. */
   label: string;
   /** id of an element describing the field (error text, hints). */
   describedBy?: string;

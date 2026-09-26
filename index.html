@@ -19,22 +19,18 @@
     <meta name="twitter:image" content="/favicon.svg" />
 
     <!--
-      Typography: Instrument Sans for headings, DM Sans for body.
+      Typography: Urbanist for everything, headings and body alike, self-hosted
+      from /fonts so there is no third-party origin on the critical path. No
+      extra DNS lookup, no second TLS handshake, and no render-blocking
+      stylesheet that has to parse before the font file is even discovered.
 
-      Both families are requested in a single stylesheet. As two separate <link>
-      elements this was two render-blocking round trips to a third-party origin
-      before any text could paint — on a page whose LCP element is the H1, that is
-      the largest remaining lever on Largest Contentful Paint.
+      Only the latin subset is preloaded. latin-ext is declared in the CSS with
+      its own unicode-range and is fetched only by a reader who actually needs
+      one of those characters.
 
-      display=swap renders immediately in the fallback face and swaps when the
-      webfont lands, so a slow font never blocks content.
+      The @font-face rule lives in src/index.css.
     -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Instrument+Sans:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/urbanist-latin.woff2" crossorigin />
   </head>
 
   <body>

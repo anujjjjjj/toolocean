@@ -179,7 +179,7 @@ export function JwtGeneratorTool() {
                     </div>
                   ))}
                   <p className="text-xs text-muted-foreground">
-                    Signature is not verified client-side — this tool only decodes the payload.
+                    Signature is not verified client-side. This tool only decodes the payload.
                   </p>
                 </div>
               )}

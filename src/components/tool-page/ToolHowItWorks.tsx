@@ -5,7 +5,7 @@ import type { ToolStep } from "@/types/toolContent";
  * Renders as an ordered list so the sequence survives CSS being stripped and so
  * the markup matches the HowTo JSON-LD emitted from the same `steps` array.
  * Keeping one source of truth is what stops the structured data from drifting
- * out of sync with the visible content — a manual-action risk if it does.
+ * out of sync with the visible content. A manual-action risk if it does.
  */
 export function ToolHowItWorks({ steps, heading, lede }: { steps: ToolStep[]; heading: string; lede?: string }) {
   if (steps.length === 0) return null;

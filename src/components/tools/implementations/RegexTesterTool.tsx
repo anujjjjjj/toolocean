@@ -17,6 +17,9 @@ interface Match {
   groups: string[];
 }
 
+/** Hard cap on reported matches; see the zero-length-match guard in testRegex. */
+const MAX_MATCHES = 10_000;
+
 export function RegexTesterTool() {
   const [pattern, setPattern] = useState("");
   const [testString, setTestString] = useState("");
@@ -57,6 +60,19 @@ export function RegexTesterTool() {
             index: match.index,
             groups: match.slice(1)
           });
+
+          /*
+           * A zero-length match does not advance lastIndex, so patterns that can
+           * match empty, .*, a*, \b, \d*, looped forever here and pushed into
+           * `results` until the tab died. `.*` is the first thing most people type
+           * into a regex tester, so this froze the page on close to the most
+           * common input there is.
+           */
+          if (match.index === regex.lastIndex) regex.lastIndex++;
+
+          // Backstop for pathological patterns that still produce absurd match
+          // counts. Nobody is reading match 10,001.
+          if (results.length >= MAX_MATCHES) break;
         }
       } else {
         const match = regex.exec(testString);
@@ -103,21 +119,34 @@ export function RegexTesterTool() {
     toast({ title: "Matches copied to clipboard!" });
   };
 
+  /*
+   * The result of this goes into dangerouslySetInnerHTML, so every span of the
+   * user's test string has to be escaped before the <mark> wrappers go on.
+   * Previously the raw string was spliced in verbatim, which meant pasting
+   * `<img src=x onerror=...>` as the test string executed it.
+   *
+   * Building from disjoint slices rather than splicing into a running string also
+   * removes the offset bookkeeping, which silently corrupted the output whenever
+   * matches overlapped.
+   */
   const getHighlightedText = () => {
-    if (!matches.length || !testString) return testString;
-    
-    let result = testString;
-    let offset = 0;
-    
-    matches.forEach(match => {
-      const start = match.index + offset;
-      const end = start + match.match.length;
-      const highlighted = `<mark class="bg-yellow-200 dark:bg-yellow-800">${match.match}</mark>`;
-      result = result.substring(0, start) + highlighted + result.substring(end);
-      offset += highlighted.length - match.match.length;
-    });
-    
-    return result;
+    const escape = (value: string) =>
+      value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+    if (!matches.length || !testString) return escape(testString);
+
+    let cursor = 0;
+    let result = "";
+
+    for (const match of matches) {
+      // Matches arrive in index order; skip any that overlap one already emitted.
+      if (match.index < cursor) continue;
+      result += escape(testString.slice(cursor, match.index));
+      result += `<mark class="bg-yellow-200 dark:bg-yellow-800">${escape(match.match)}</mark>`;
+      cursor = match.index + match.match.length;
+    }
+
+    return result + escape(testString.slice(cursor));
   };
 
   return (

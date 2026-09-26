@@ -8,7 +8,7 @@ import type { ToolBadgeKey, ToolFeature, ToolStep } from "@/types/toolContent";
  * per-tool authoring can focus on what is actually specific to that tool
  * (examples, use cases, real FAQs).
  *
- * Every claim here is factually true of every tool in the category — the site is
+ * Every claim here is factually true of every tool in the category, the site is
  * a static bundle with no backend, so "nothing is uploaded" is a description of
  * the architecture, not marketing. That distinction is what keeps shared copy on
  * the right side of the thin-content line: it is boilerplate because the fact is
@@ -23,22 +23,28 @@ export interface CategoryProfile {
   /** Plural/mass form used mid-sentence. */
   subjectPlural: string;
   badges: ToolBadgeKey[];
-  features: ToolFeature[];
+  /** Appended after a tool's own authored cards, never replacing them. */
+  sharedFeatures: ToolFeature[];
   howItWorks: ToolStep[];
 }
 
-/** Shared by every category — the privacy architecture does not vary. */
-function privacyFeatures(subjectPlural: string): ToolFeature[] {
+/*
+ * Shared by every category. The privacy architecture does not vary.
+ *
+ * Cut from five cards to two. The other three ("no queue wait", "keeps working
+ * offline", "safe for confidential files") were 169 words repeated byte-for-byte
+ * on every page in a category, and they say things the hero badges already say
+ * and the per-tool FAQs can say better with specifics. What is left is the pair
+ * of claims that are structural facts about the site rather than marketing, so
+ * repeating them identically is correct: they are boilerplate because the fact
+ * is boilerplate.
+ */
+function sharedFeatures(subjectPlural: string): ToolFeature[] {
   return [
     {
       icon: "CloudOff",
       title: "Your data never leaves the tab",
       body: `There is no upload step and no server to receive one. The page loads once, then all work on your ${subjectPlural} happens in local JavaScript.`,
-    },
-    {
-      icon: "Zap",
-      title: "No upload or queue wait",
-      body: "Processing starts the moment you press the button. You are not waiting on a network round-trip or a shared job queue, so results are effectively instant.",
     },
     {
       icon: "Infinity",
@@ -47,32 +53,6 @@ function privacyFeatures(subjectPlural: string): ToolFeature[] {
     },
   ];
 }
-
-const FILE_FEATURES: ToolFeature[] = [
-  {
-    icon: "WifiOff",
-    title: "Keeps working offline",
-    body: "Once the page has loaded you can go offline and it still works, because the code that does the job is already on your machine.",
-  },
-  {
-    icon: "ShieldCheck",
-    title: "Safe for confidential files",
-    body: "Contracts, invoices, medical scans, and internal documents can be processed without them ever being transmitted — which is often the difference between being allowed to use a tool at work and not.",
-  },
-];
-
-const TEXT_FEATURES: ToolFeature[] = [
-  {
-    icon: "WifiOff",
-    title: "Keeps working offline",
-    body: "Once the page has loaded you can go offline and it still works, because the code that does the job is already on your machine.",
-  },
-  {
-    icon: "ShieldCheck",
-    title: "Safe for secrets and production data",
-    body: "API responses, tokens, and customer records can be inspected without pasting them into someone else's server log — the usual reason these tools are banned internally.",
-  },
-];
 
 function textSteps(subject: string, verb: string, output: string): ToolStep[] {
   return [
@@ -95,7 +75,7 @@ function fileSteps(subject: string, verb: string): ToolStep[] {
   return [
     {
       title: `Choose your ${subject}`,
-      body: `Pick a file from your device or drag it onto the page. It is read locally — the file is never transmitted.`,
+      body: `Pick a file from your device or drag it onto the page. It is read locally. The file is never transmitted.`,
     },
     {
       title: verb,
@@ -116,7 +96,7 @@ export const CATEGORY_PROFILES: Record<CategoryKey, CategoryProfile> = {
     subject: "text",
     subjectPlural: "text",
     badges: BASE_BADGES,
-    features: [...privacyFeatures("input"), ...TEXT_FEATURES],
+    sharedFeatures: sharedFeatures("input"),
     howItWorks: textSteps("input", "Run the tool", "result"),
   },
   pdf: {
@@ -124,7 +104,7 @@ export const CATEGORY_PROFILES: Record<CategoryKey, CategoryProfile> = {
     subject: "PDF",
     subjectPlural: "PDFs",
     badges: BASE_BADGES,
-    features: [...privacyFeatures("PDFs"), ...FILE_FEATURES],
+    sharedFeatures: sharedFeatures("PDFs"),
     howItWorks: fileSteps("PDF", "Set your options"),
   },
   image: {
@@ -132,7 +112,7 @@ export const CATEGORY_PROFILES: Record<CategoryKey, CategoryProfile> = {
     subject: "image",
     subjectPlural: "images",
     badges: BASE_BADGES,
-    features: [...privacyFeatures("images"), ...FILE_FEATURES],
+    sharedFeatures: sharedFeatures("images"),
     howItWorks: fileSteps("image", "Adjust and preview"),
   },
   video: {
@@ -140,7 +120,7 @@ export const CATEGORY_PROFILES: Record<CategoryKey, CategoryProfile> = {
     subject: "video",
     subjectPlural: "videos",
     badges: BASE_BADGES,
-    features: [...privacyFeatures("videos"), ...FILE_FEATURES],
+    sharedFeatures: sharedFeatures("videos"),
     howItWorks: fileSteps("video", "Choose the range and settings"),
   },
   audio: {
@@ -148,7 +128,7 @@ export const CATEGORY_PROFILES: Record<CategoryKey, CategoryProfile> = {
     subject: "audio file",
     subjectPlural: "audio files",
     badges: BASE_BADGES,
-    features: [...privacyFeatures("audio files"), ...FILE_FEATURES],
+    sharedFeatures: sharedFeatures("audio files"),
     howItWorks: fileSteps("audio file", "Set the range and settings"),
   },
   spreadsheet: {
@@ -156,7 +136,7 @@ export const CATEGORY_PROFILES: Record<CategoryKey, CategoryProfile> = {
     subject: "spreadsheet",
     subjectPlural: "spreadsheets",
     badges: BASE_BADGES,
-    features: [...privacyFeatures("spreadsheets"), ...FILE_FEATURES],
+    sharedFeatures: sharedFeatures("spreadsheets"),
     howItWorks: fileSteps("spreadsheet", "Pick the sheet and columns"),
   },
   archive: {
@@ -164,7 +144,7 @@ export const CATEGORY_PROFILES: Record<CategoryKey, CategoryProfile> = {
     subject: "archive",
     subjectPlural: "archives",
     badges: BASE_BADGES,
-    features: [...privacyFeatures("archives"), ...FILE_FEATURES],
+    sharedFeatures: sharedFeatures("archives"),
     howItWorks: fileSteps("ZIP file", "Inspect the contents"),
   },
   csv: {
@@ -172,7 +152,7 @@ export const CATEGORY_PROFILES: Record<CategoryKey, CategoryProfile> = {
     subject: "CSV",
     subjectPlural: "CSV data",
     badges: BASE_BADGES,
-    features: [...privacyFeatures("CSV data"), ...TEXT_FEATURES],
+    sharedFeatures: sharedFeatures("CSV data"),
     howItWorks: textSteps("CSV", "Convert or validate", "result"),
   },
   compression: {
@@ -180,7 +160,7 @@ export const CATEGORY_PROFILES: Record<CategoryKey, CategoryProfile> = {
     subject: "text",
     subjectPlural: "data",
     badges: BASE_BADGES,
-    features: [...privacyFeatures("data"), ...TEXT_FEATURES],
+    sharedFeatures: sharedFeatures("data"),
     howItWorks: textSteps("data", "Compress or decompress", "output"),
   },
   converter: {
@@ -188,7 +168,7 @@ export const CATEGORY_PROFILES: Record<CategoryKey, CategoryProfile> = {
     subject: "input",
     subjectPlural: "data",
     badges: BASE_BADGES,
-    features: [...privacyFeatures("data"), ...TEXT_FEATURES],
+    sharedFeatures: sharedFeatures("data"),
     howItWorks: textSteps("input", "Convert", "output"),
   },
 };

@@ -81,10 +81,10 @@ export function QrCodeGeneratorTool() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="L">L — Low (7%)</SelectItem>
-                  <SelectItem value="M">M — Medium (15%)</SelectItem>
-                  <SelectItem value="Q">Q — Quartile (25%)</SelectItem>
-                  <SelectItem value="H">H — High (30%)</SelectItem>
+                  <SelectItem value="L">L, Low (7%)</SelectItem>
+                  <SelectItem value="M">M, Medium (15%)</SelectItem>
+                  <SelectItem value="Q">Q, Quartile (25%)</SelectItem>
+                  <SelectItem value="H">H, High (30%)</SelectItem>
                 </SelectContent>
               </Select>
             </div>

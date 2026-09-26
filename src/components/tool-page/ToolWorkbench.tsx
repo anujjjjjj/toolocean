@@ -1,6 +1,7 @@
 import { Suspense, useEffect, useState, type ComponentType } from "react";
 import { useWorkbenchAnalytics } from "@/hooks/useWorkbenchAnalytics";
-import { WORKBENCH_ID } from "@/lib/toolActions";
+import { WORKBENCH_ID, subscribeToToolActions } from "@/lib/toolActions";
+import { ToolErrorBoundary } from "./ToolErrorBoundary";
 import { cn } from "@/lib/utils";
 
 /**
@@ -10,7 +11,7 @@ import { cn } from "@/lib/utils";
  * the right size from first paint, so swapping the real editor in shifts little.
  *
  * Responsive because the two-pane tools stack below md, which roughly doubles
- * their height — a single fixed value is wrong on one breakpoint or the other.
+ * their height. A single fixed value is wrong on one breakpoint or the other.
  * These are averages across the catalogue, so a given tool may still shift a
  * little; a per-tool `reservedHeight` on ToolPageContent would remove the rest.
  */
@@ -26,7 +27,7 @@ function WorkbenchSkeleton({ label }: { label: string }) {
     >
       {/*
         aria-live so assistive tech announces the tool becoming ready, but the
-        visual treatment stays quiet — a spinner here would compete with the
+        visual treatment stays quiet. A spinner here would compete with the
         hero for attention on a page most people reach from search.
       */}
       <p className="text-sm text-muted-foreground" role="status" aria-live="polite">
@@ -63,6 +64,51 @@ export function ToolWorkbench({ component: Tool, label }: ToolWorkbenchProps) {
 
   useEffect(() => setMounted(true), []);
 
+  /*
+   * Generic handling for the hero CTAs.
+   *
+   * The toolActions bus was designed as opt-in, and exactly one of the 114 tools
+   * ever opted in, so on 113 pages "Start with your own data" and "Open a file"
+   * scrolled here and then did nothing, and "Choose a PDF" looked like a file
+   * picker that never opened. Rather than adding the same effect to 114 files (and
+   * needing it again for every tool added later), the workbench honours the two
+   * structural intents itself: every tool has a first input, and every file tool
+   * has a file input.
+   *
+   * A tool that subscribes directly still wins. This runs a tick later and backs
+   * off if the tool already moved focus into itself.
+   */
+  useEffect(() => {
+    if (!mounted) return;
+
+    return subscribeToToolActions((action) => {
+      if (action.type !== "focus" && action.type !== "upload") return;
+
+      window.setTimeout(() => {
+        const root = document.getElementById(WORKBENCH_ID);
+        if (!root) return;
+
+        if (action.type === "upload") {
+          const picker = root.querySelector<HTMLInputElement>('input[type="file"]');
+          // Falls through to focus when the tool has no file input, which is the
+          // right behaviour for "Open a file" on a paste-only tool.
+          if (picker) {
+            picker.click();
+            return;
+          }
+        }
+
+        // The tool handled it already; leave its choice of target alone.
+        if (root.contains(document.activeElement) && document.activeElement !== document.body) return;
+
+        const field = root.querySelector<HTMLTextAreaElement | HTMLInputElement>(
+          'textarea:not([readonly]):not([disabled]), input[type="text"]:not([readonly]):not([disabled]), input[type="url"]:not([readonly]), input[type="number"]:not([readonly]), input:not([type]):not([readonly])',
+        );
+        field?.focus();
+      }, 0);
+    });
+  }, [mounted]);
+
   return (
     <section
       ref={analyticsRef}
@@ -74,9 +120,11 @@ export function ToolWorkbench({ component: Tool, label }: ToolWorkbenchProps) {
     >
       <div className="container mx-auto max-w-6xl px-4">
         {mounted ? (
-          <Suspense fallback={<WorkbenchSkeleton label={`Loading ${label}…`} />}>
-            <Tool />
-          </Suspense>
+          <ToolErrorBoundary label={label}>
+            <Suspense fallback={<WorkbenchSkeleton label={`Loading ${label}…`} />}>
+              <Tool />
+            </Suspense>
+          </ToolErrorBoundary>
         ) : (
           <WorkbenchSkeleton label={`Loading ${label}…`} />
         )}

@@ -5,20 +5,20 @@
  * The layout must not know that the JSON formatter has a file input, so instead
  * of prop-drilling refs through six presentational components, the hero fires an
  * intent and the mounted tool decides how to honour it. Any future tool opts in
- * by calling onToolAction() — tools that ignore an intent simply do nothing.
+ * by calling onToolAction(), tools that ignore an intent simply do nothing.
  */
 
 export type ToolAction =
   | { type: "focus" }
   | { type: "upload" }
-  /** "Try this example" — hands sample text from the page copy to the live tool. */
+  /** "Try this example", hands sample text from the page copy to the live tool. */
   | { type: "load"; payload: string };
 
 export type ToolActionType = ToolAction["type"];
 
 const EVENT_NAME = "toolocean:tool-action";
 
-/** Anchor id of the workbench section — used for scroll + skip-link targets. */
+/** Anchor id of the workbench section, used for scroll + skip-link targets. */
 export const WORKBENCH_ID = "tool-workbench";
 
 export function emitToolAction(action: ToolAction) {

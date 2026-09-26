@@ -5,8 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Upload, Loader2, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-// @ts-expect-error no types for gif-encoder-2
-import GIFEncoder from "gif-encoder-2";
+import { encodeGif } from "@/lib/gifEncoder";
 
 export function VideoToGifTool() {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
@@ -63,12 +62,8 @@ export function VideoToGifTool() {
       canvas.height = h;
       const ctx = canvas.getContext("2d")!;
 
-      const encoder = new GIFEncoder(w, h);
-      encoder.setDelay(Math.round(1000 / fps));
-      encoder.setRepeat(0); // loop forever
-      encoder.start();
-
       const frameInterval = gifDuration / totalFrames;
+      const frames: ImageData[] = [];
 
       for (let i = 0; i < totalFrames; i++) {
         const targetTime = startTime + i * frameInterval;
@@ -79,18 +74,28 @@ export function VideoToGifTool() {
           video.onseeked = () => {
             video.onseeked = null;
             ctx.drawImage(video, 0, 0, w, h);
-            encoder.addFrame(ctx);
+            frames.push(ctx.getImageData(0, 0, w, h));
             resolve();
           };
         });
 
-        setProgress(Math.round(((i + 1) / totalFrames) * 100));
+        // Capture is roughly the first half of the work, encoding the rest, so the
+        // bar does not sit at 100% while quantisation runs.
+        setProgress(Math.round(((i + 1) / totalFrames) * 50));
       }
 
-      encoder.finish();
-      // Use encoder.out.data directly (plain number array) to avoid Node.js Buffer dependency
-      const data = new Uint8Array(encoder.out.data as number[]);
-      const blob = new Blob([data], { type: "image/gif" });
+      setProgress(60);
+      // Yield once so the progress paint lands before the encoder blocks the thread.
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      const blob = encodeGif(frames, {
+        width: w,
+        height: h,
+        delay: Math.round(1000 / fps),
+        repeat: 0,
+      });
+
+      setProgress(100);
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
       a.download = `output_${startTime.toFixed(1)}s_${gifDuration}s.gif`;

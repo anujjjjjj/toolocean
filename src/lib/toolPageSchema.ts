@@ -81,7 +81,7 @@ export function buildToolPageGraph(content: ToolPageContent) {
       url: pageUrl,
       description: content.seo.description,
       applicationCategory: "DeveloperApplication",
-      // A browser tool genuinely has no OS requirement — this is not filler.
+      // A browser tool genuinely has no OS requirement, this is not filler.
       operatingSystem: "Any",
       browserRequirements: "Requires JavaScript. Works in Chrome, Firefox, Safari and Edge.",
       isAccessibleForFree: true,

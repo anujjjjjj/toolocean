@@ -9,7 +9,7 @@ import { lazy, type ComponentType, type LazyExoticComponent } from "react";
  * recharts before anything could render.
  *
  * Each entry here becomes its own Vite chunk, so a visitor downloads the page
- * shell plus exactly one tool. Import specifiers must stay literal strings —
+ * shell plus exactly one tool. Import specifiers must stay literal strings,
  * Vite needs them statically analysable to split the chunks.
  *
  * Components exported as named bindings are unwrapped into the { default } shape

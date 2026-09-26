@@ -1,13 +1,28 @@
 import { Section } from "./Section";
+import { cn } from "@/lib/utils";
 import { resolveIcon } from "./icons";
 import type { ToolFeature } from "@/types/toolContent";
 
 export function ToolFeatures({ features, heading, lede }: { features: ToolFeature[]; heading: string; lede?: string }) {
   if (features.length === 0) return null;
 
+  /*
+   * The grid follows the count instead of always being three wide. An authored
+   * page has four cards plus the two shared ones and wants three columns; a page
+   * that has not been authored yet has only the shared pair, and a three-column
+   * grid would leave a third of the row as an empty bordered cell.
+   */
+  const columns =
+    features.length % 3 === 0 ? "sm:grid-cols-2 lg:grid-cols-3" : "sm:grid-cols-2";
+
   return (
     <Section id="features" heading={heading} lede={lede}>
-      <ul className="grid gap-px overflow-hidden rounded-xl border border-border/70 bg-border/70 sm:grid-cols-2 lg:grid-cols-3">
+      <ul
+        className={cn(
+          "grid gap-px overflow-hidden rounded-xl border border-border/70 bg-border/70",
+          columns,
+        )}
+      >
         {features.map((feature) => {
           const Icon = resolveIcon(feature.icon);
           return (

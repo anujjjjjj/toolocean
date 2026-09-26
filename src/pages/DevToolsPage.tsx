@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Code, Shield, Zap, ArrowLeft } from "lucide-react";
 import { useSEO } from "@/hooks/useSEO";
 import { CATEGORY_PAGE_SEO } from "@/data/staticPageSeo";
-import { buildBreadcrumbJsonLd } from "@/lib/jsonLd";
+import { buildCategoryGraph } from "@/lib/sitePageSchema";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 
 const BREADCRUMB_ITEMS = [
@@ -21,7 +21,7 @@ const DevToolsPage = () => {
     useSEO({
       ...CATEGORY_PAGE_SEO["/dev-tools"],
         path: "/dev-tools",
-        jsonLd: [buildBreadcrumbJsonLd(BREADCRUMB_ITEMS)],
+        jsonLd: [buildCategoryGraph("/dev-tools")].filter(Boolean),
     });
 
     return (

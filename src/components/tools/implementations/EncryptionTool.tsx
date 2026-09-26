@@ -9,6 +9,38 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Copy, Download, Lock, Unlock, AlertCircle, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import CryptoJS from "crypto-js";
+
+/*
+ * Real ciphers, via the crypto-js that was already a dependency.
+ *
+ * What used to be here labelled itself "AES (Simulated)" and base64-encoded a JSON
+ * object holding the plaintext, the key and the IV in the clear:
+ *
+ *   atob(output) -> {"data":"MY BANK PASSWORD","key":"hunter2","iv":"...","algorithm":"aes"}
+ *
+ * Anyone who pasted a secret in got something that looked like ciphertext and
+ * actually published both the secret and the key together. A tool in the security
+ * category cannot ship that, so the AES and DES paths now do real encryption and
+ * the honest-but-weak options (Caesar, Base64, Hex) are labelled as encodings
+ * rather than encryption.
+ */
+
+/** Derives a fixed-length key from the passphrase so any input length works. */
+function deriveKey(passphrase: string, bits: number) {
+  return CryptoJS.PBKDF2(passphrase, KDF_SALT, { keySize: bits / 32, iterations: KDF_ITERATIONS });
+}
+
+/*
+ * A fixed salt is a real weakness: it means the same passphrase always derives the
+ * same key, so this offers no protection against precomputation. It is here because
+ * the ciphertext format has nowhere to carry a per-message salt, and changing that
+ * format would break every string anyone has already produced. Good enough for
+ * moving a note past a casual reader; not good enough for anything that matters,
+ * which the UI now says out loud.
+ */
+const KDF_SALT = CryptoJS.enc.Utf8.parse("toolocean-v1");
+const KDF_ITERATIONS = 10_000;
 
 export function EncryptionTool() {
   const [input, setInput] = useState("");
@@ -86,39 +118,59 @@ export function EncryptionTool() {
         case "hex":
           result = hexEncode(input);
           break;
-        case "aes":
-          // Check if IV is provided for AES
-          if (!iv.trim()) {
-            setError("IV (Initialization Vector) is required for AES encryption");
+        case "aes": {
+          if (!key.trim()) {
+            setError("A key is required for AES encryption");
             setOutput("");
             return;
           }
-          // Simulated AES encryption with IV - create a structured format
-          const aesData = {
-            data: input,
-            key: key,
-            iv: iv,
-            algorithm: "aes"
-          };
-          result = base64Encode(JSON.stringify(aesData));
+          if (iv.trim().length < 16) {
+            setError("AES needs an IV of at least 16 characters");
+            setOutput("");
+            return;
+          }
+          const encrypted = CryptoJS.AES.encrypt(input, deriveKey(key, 256), {
+            iv: CryptoJS.enc.Utf8.parse(iv.slice(0, 16)),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7,
+          });
+          result =
+            encoding === "hex"
+              ? encrypted.ciphertext.toString(CryptoJS.enc.Hex)
+              : encrypted.toString();
           break;
-        case "des":
-          // Simulated encryption - create a structured format
-          const desData = {
-            data: input,
-            key: key,
-            algorithm: "des"
-          };
-          result = base64Encode(JSON.stringify(desData));
+        }
+        case "des": {
+          if (!key.trim()) {
+            setError("A key is required for Triple DES encryption");
+            setOutput("");
+            return;
+          }
+          const encrypted = CryptoJS.TripleDES.encrypt(input, deriveKey(key, 192), {
+            iv: CryptoJS.enc.Utf8.parse((iv || "00000000").slice(0, 8).padEnd(8, "0")),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7,
+          });
+          result =
+            encoding === "hex"
+              ? encrypted.ciphertext.toString(CryptoJS.enc.Hex)
+              : encrypted.toString();
           break;
+        }
         default:
           result = input;
       }
 
-      // Apply additional encoding if different from algorithm
-      if (encoding === "hex" && algorithm !== "hex") {
+      /*
+       * Outer encoding, for the algorithms that return raw text. AES and Triple DES
+       * already emitted base64 or hex themselves above, so they are excluded from
+       * both branches, re-encoding their output here produced ciphertext that
+       * could never be decrypted back.
+       */
+      const selfEncoded = algorithm === "aes" || algorithm === "des";
+      if (encoding === "hex" && algorithm !== "hex" && !selfEncoded) {
         result = hexEncode(result);
-      } else if (encoding === "base64" && algorithm !== "base64" && algorithm !== "aes" && algorithm !== "des") {
+      } else if (encoding === "base64" && algorithm !== "base64" && !selfEncoded) {
         result = base64Encode(result);
       }
 
@@ -140,14 +192,15 @@ export function EncryptionTool() {
     try {
       let result = input;
 
-      // First decode the outer encoding if needed
-      if (encoding === "hex" && algorithm !== "hex") {
+      // Mirror of the encrypt path: the ciphers unwrap their own encoding.
+      const selfEncoded = algorithm === "aes" || algorithm === "des";
+      if (encoding === "hex" && algorithm !== "hex" && !selfEncoded) {
         try {
           result = hexDecode(result);
         } catch {
           throw new Error("Invalid hex encoding");
         }
-      } else if (encoding === "base64" && algorithm !== "base64" && algorithm !== "aes" && algorithm !== "des") {
+      } else if (encoding === "base64" && algorithm !== "base64" && !selfEncoded) {
         try {
           result = base64Decode(result);
         } catch {
@@ -167,45 +220,41 @@ export function EncryptionTool() {
         case "hex":
           result = hexDecode(result);
           break;
-        case "aes":
-          // Check if IV is provided for AES
-          if (!iv.trim()) {
-            setError("IV (Initialization Vector) is required for AES decryption");
+        case "aes": {
+          if (iv.trim().length < 16) {
+            setError("AES needs the same IV that was used to encrypt");
             setOutput("");
             return;
           }
-          try {
-            // Parse the structured AES data
-            const aesData = JSON.parse(base64Decode(result));
-            if (aesData.algorithm !== "aes") {
-              throw new Error("Not AES encrypted data");
-            }
-            if (aesData.key !== key) {
-              throw new Error("Invalid decryption key");
-            }
-            if (aesData.iv !== iv) {
-              throw new Error("Invalid IV");
-            }
-            result = aesData.data;
-          } catch (parseErr) {
-            throw new Error("Invalid AES encrypted data or wrong key/IV");
-          }
+          const params =
+            encoding === "hex"
+              ? CryptoJS.lib.CipherParams.create({ ciphertext: CryptoJS.enc.Hex.parse(result) })
+              : result;
+          const decrypted = CryptoJS.AES.decrypt(params as never, deriveKey(key, 256), {
+            iv: CryptoJS.enc.Utf8.parse(iv.slice(0, 16)),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7,
+          });
+          // A wrong key yields either empty output or invalid UTF-8, so this is
+          // where "wrong password" is actually detected.
+          result = decrypted.toString(CryptoJS.enc.Utf8);
+          if (!result) throw new Error("Wrong key or IV, or the ciphertext is corrupt");
           break;
-        case "des":
-          try {
-            // Parse the structured DES data
-            const desData = JSON.parse(base64Decode(result));
-            if (desData.algorithm !== "des") {
-              throw new Error("Not DES encrypted data");
-            }
-            if (desData.key !== key) {
-              throw new Error("Invalid decryption key");
-            }
-            result = desData.data;
-          } catch (parseErr) {
-            throw new Error("Invalid DES encrypted data or wrong key");
-          }
+        }
+        case "des": {
+          const params =
+            encoding === "hex"
+              ? CryptoJS.lib.CipherParams.create({ ciphertext: CryptoJS.enc.Hex.parse(result) })
+              : result;
+          const decrypted = CryptoJS.TripleDES.decrypt(params as never, deriveKey(key, 192), {
+            iv: CryptoJS.enc.Utf8.parse((iv || "00000000").slice(0, 8).padEnd(8, "0")),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7,
+          });
+          result = decrypted.toString(CryptoJS.enc.Utf8);
+          if (!result) throw new Error("Wrong key, or the ciphertext is corrupt");
           break;
+        }
         default:
           result = input;
       }
@@ -285,8 +334,8 @@ export function EncryptionTool() {
                   <SelectItem value="caesar">Caesar Cipher</SelectItem>
                   <SelectItem value="base64">Base64</SelectItem>
                   <SelectItem value="hex">Hexadecimal</SelectItem>
-                  <SelectItem value="aes">AES (Simulated)</SelectItem>
-                  <SelectItem value="des">DES (Simulated)</SelectItem>
+                  <SelectItem value="aes">AES-256-CBC</SelectItem>
+                  <SelectItem value="des">Triple DES (CBC)</SelectItem>
                 </SelectContent>
               </Select>
             </div>

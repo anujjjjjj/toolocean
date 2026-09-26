@@ -51,7 +51,7 @@ export function NumberFormatterTool() {
 
   const format = (n: string): string => {
     const num = parseFloat(n.replace(/,/g, ""));
-    if (isNaN(num)) return "—";
+    if (isNaN(num)) return ", ";
     try {
       return new Intl.NumberFormat(locale, getOptions()).format(num);
     } catch {

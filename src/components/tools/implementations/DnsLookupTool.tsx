@@ -67,7 +67,7 @@ export function DnsLookupTool() {
         <CardHeader><CardTitle>DNS Lookup</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Uses Google DNS-over-HTTPS — queries are sent to Google's servers.
+            Uses Google DNS-over-HTTPS. Queries are sent to Google's servers.
           </p>
 
           <div className="flex gap-2 items-end">

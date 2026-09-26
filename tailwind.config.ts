@@ -19,8 +19,8 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				sans: ['DM Sans', 'system-ui', 'sans-serif'],
-				heading: ['Instrument Sans', 'system-ui', 'sans-serif'],
+				sans: ['Urbanist', 'system-ui', 'sans-serif'],
+				heading: ['Urbanist', 'system-ui', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',

@@ -1,12 +1,11 @@
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import { ConsentBanner } from "@/components/analytics/ConsentBanner";
-import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CommandPaletteProvider, useCommandPalette } from "@/contexts/CommandPaletteContext";
-import { CommandPalette } from "@/components/layout/CommandPalette";
 import { LegacyToolRedirect } from "@/components/routing/LegacyToolRedirect";
 import { CATEGORY_ROUTE } from "@/data/toolCatalog";
+import { LANDING_PAGES } from "@/data/landingPages";
 import Index from "./pages/Index";
 // Eager: ToolRoutePage and LegacyToolRedirect import it statically anyway.
 import NotFound from "./pages/NotFound";
@@ -19,14 +18,14 @@ import NotFound from "./pages/NotFound";
  * category listings and the workflow builder as well. The prerender still emits
  * complete HTML because entry-ssg.tsx renders with renderToPipeableStream and
  * waits for onAllReady, which resolves every Suspense boundary before serialising
- * — renderToString cannot do this and would have emitted the empty fallback.
+ *, renderToString cannot do this and would have emitted the empty fallback.
  *
  * On the client, hydrateRoot keeps the server markup on screen while a lazy chunk
  * is still in flight, so the split costs nothing visually.
  */
 const ToolRoutePage = lazy(() => import("./pages/ToolRoutePage"));
+const LandingRoutePage = lazy(() => import("./pages/LandingRoutePage"));
 const DevToolsPage = lazy(() => import("./pages/DevToolsPage"));
-const WorkflowPage = lazy(() => import("./pages/WorkflowPage"));
 const WorkflowBuilderPage = lazy(() => import("./pages/WorkflowBuilderPage"));
 const PdfToolsPage = lazy(() => import("./pages/PdfToolsPage"));
 const CsvToolsPage = lazy(() => import("./pages/CsvToolsPage"));
@@ -37,6 +36,7 @@ const SpreadsheetToolsPage = lazy(() => import("./pages/SpreadsheetToolsPage"));
 const CompressionToolsPage = lazy(() => import("./pages/CompressionToolsPage"));
 const ArchiveToolsPage = lazy(() => import("./pages/ArchiveToolsPage"));
 const ConverterToolsPage = lazy(() => import("./pages/ConverterToolsPage"));
+const AllToolsPage = lazy(() => import("./pages/AllToolsPage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
 const PrivacyPage = lazy(() => import("./pages/PrivacyPage"));
 const TermsPage = lazy(() => import("./pages/TermsPage"));
@@ -71,9 +71,49 @@ function GlobalKeyboardHandler() {
   return null;
 }
 
+/*
+ * The palette and the toaster are loaded on first use, not on first paint.
+ *
+ * Rendering CommandPalette unconditionally pulled cmdk, all of src/data/tools.json
+ * and the 78 statically imported lucide icons in toolIcons.ts into the entry
+ * chunk, on all 136 pages, for a dialog that only appears when someone presses
+ * Cmd+K. The toaster is used by a handful of tools and paid the same tax.
+ *
+ * `hasOpened` latches so the chunk is fetched once and the dialog keeps its
+ * mounted state across subsequent opens.
+ */
+const CommandPalette = lazy(() =>
+  import("@/components/layout/CommandPalette").then((m) => ({ default: m.CommandPalette })),
+);
+const Toaster = lazy(() => import("@/components/ui/toaster").then((m) => ({ default: m.Toaster })));
+
 function GlobalCommandPalette() {
   const { isOpen, closePalette } = useCommandPalette();
-  return <CommandPalette open={isOpen} onOpenChange={closePalette} />;
+  const [hasOpened, setHasOpened] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) setHasOpened(true);
+  }, [isOpen]);
+
+  if (!hasOpened) return null;
+
+  return (
+    <Suspense fallback={null}>
+      <CommandPalette open={isOpen} onOpenChange={closePalette} />
+    </Suspense>
+  );
+}
+
+/** Mounted only after hydration, so it never reaches the prerendered HTML. */
+function DeferredToaster() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
+  return (
+    <Suspense fallback={null}>
+      <Toaster />
+    </Suspense>
+  );
 }
 
 export function AppRoutes() {
@@ -82,10 +122,10 @@ export function AppRoutes() {
       <CommandPaletteProvider>
         <GlobalKeyboardHandler />
         <GlobalCommandPalette />
-        <Toaster />
+        <DeferredToaster />
         {/*
           Renders null until after mount, so it stays out of the prerendered HTML
-          and cannot cause a hydration mismatch. Page views are not tracked here —
+          and cannot cause a hydration mismatch. Page views are not tracked here,
           useSEO owns that; see the comment there for why.
         */}
         <ConsentBanner />
@@ -104,10 +144,10 @@ export function AppRoutes() {
               <Route key={listing.path} path={listing.path} element={listing.element} />
             ))}
 
-            <Route path="/workflows" element={<WorkflowPage />} />
             <Route path="/workflow-builder" element={<WorkflowBuilderPage />} />
 
             {/* About/Privacy/Terms. Static segments outrank /:slug regardless of order. */}
+            <Route path="/all-tools" element={<AllToolsPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
@@ -118,6 +158,15 @@ export function AppRoutes() {
             */}
             {Object.values(CATEGORY_ROUTE).map((prefix) => (
               <Route key={prefix} path={`${prefix}/:slug`} element={<LegacyToolRedirect />} />
+            ))}
+
+            {/*
+              Modifier and comparison landing pages, also at the root. Registered
+              as explicit static paths rather than a second dynamic route so they
+              outrank /:slug and cannot be shadowed by it.
+            */}
+            {LANDING_PAGES.map((page) => (
+              <Route key={page.slug} path={`/${page.slug}`} element={<LandingRoutePage />} />
             ))}
 
             {/*

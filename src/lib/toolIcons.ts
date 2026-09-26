@@ -84,8 +84,8 @@ import {
  *
  * This file exists to replace `import * as Icons from "lucide-react"`. That
  * namespace import is not tree-shakeable: it pulled all ~1,500 lucide icons into
- * the main chunk — 1,547 module references and the single largest contributor to
- * a 1.2 MB entry bundle — even though the catalog only uses 75 of them.
+ * the main chunk, 1,547 module references and the single largest contributor to
+ * a 1.2 MB entry bundle, even though the catalog only uses 75 of them.
  *
  * Regenerate by collecting the distinct `icon` values across tools.json and
  * toolCatalog.ts. scripts/check-catalog.mjs fails the build if a tool references

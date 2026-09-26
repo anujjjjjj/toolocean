@@ -10,17 +10,17 @@ import {
 import { CATEGORY_PROFILES } from "@/data/toolCategoryProfiles";
 import { getToolSeo } from "@/data/toolSeo";
 import { TOOL_CONTENT_OVERRIDES } from "@/data/toolContent";
-import type { RelatedToolLink, ToolFaqEntry, ToolPageContent } from "@/types/toolContent";
+import type { RelatedToolLink, ToolFaqEntry, ToolPageContent, ToolSpec } from "@/types/toolContent";
 
 /**
  * Produces a complete, non-thin ToolPageContent for any tool in the catalog.
  *
  * Three layers, most specific winning:
- *   1. Hand-authored override  (src/data/toolContent/*) — examples, use cases,
+ *   1. Hand-authored override  (src/data/toolContent/*), examples, use cases,
  *      bespoke FAQs and hero copy for tools worth the writing time.
- *   2. Existing per-tool SEO   (src/data/toolSeo.ts) — already covers all 116
+ *   2. Existing per-tool SEO   (src/data/toolSeo.ts), already covers all 116
  *      tools with a real title, description, keywords and 2–4 genuine FAQs.
- *   3. Category profile        (toolCategoryProfiles.ts) — the privacy/offline
+ *   3. Category profile        (toolCategoryProfiles.ts), the privacy/offline
  *      facts and the paste→run→copy flow, which really are identical per category.
  *
  * Sections with nothing truthful to say render nothing at all. That is a
@@ -68,6 +68,40 @@ function deriveRelated(tool: CatalogTool, limit = 6): RelatedToolLink[] {
 }
 
 /**
+ * "a" or "an" for a noun.
+ *
+ * The CTA used to interpolate a bare "a", which shipped "Choose a image" on ten
+ * pages, "Choose a archive" on three and "Choose a audio file" on two, in a
+ * button, above the fold, on pages whose whole job is to look trustworthy to
+ * someone arriving from search.
+ */
+function indefiniteArticle(noun: string): string {
+  // Acronyms read by letter take the article of the letter sound: "an SVG", "a PDF".
+  const acronym = /^[A-Z]{2,}$/.test(noun.split(" ")[0]);
+  const head = acronym ? noun[0] : noun[0].toLowerCase();
+  const vowelSounding = acronym ? "AEFHILMNORSX".includes(head) : "aeiou".includes(head);
+  return vowelSounding ? "an" : "a";
+}
+
+/**
+ * The handful of tools that genuinely need the network, and what they call.
+ *
+ * Without this the generated category FAQ told every visitor their input "is never
+ * transmitted" and that there "are no outbound requests", on the same page where
+ * the tool's own FAQ correctly said it queries Google DNS. Two contradictory
+ * answers side by side, the second trivially disproved by following the
+ * instructions in the first, both inside FAQPage structured data.
+ *
+ * The "everything is local" claim is the most valuable thing this site says. It is
+ * worth spending three honest exceptions to keep the other 111 credible.
+ */
+const NETWORK_TOOLS: Record<string, string> = {
+  "dns-lookup": "Google's public DNS resolver at dns.google",
+  "ip-address": "the ipapi.co and ipify.org lookup services",
+  "http-request-composer": "whatever URL you point it at, directly from your browser",
+};
+
+/**
  * Category-level FAQs appended after the tool's own.
  *
  * These are real questions with real answers that happen to have the same answer
@@ -77,25 +111,65 @@ function deriveRelated(tool: CatalogTool, limit = 6): RelatedToolLink[] {
 function categoryFaqs(tool: CatalogTool): ToolFaqEntry[] {
   const profile = CATEGORY_PROFILES[tool.category];
   const isFile = profile.ioMode === "file";
+  const outbound = NETWORK_TOOLS[tool.id];
 
   return [
     {
+      topic: "privacy",
       question: `Is my ${profile.subject} uploaded to a server?`,
-      answer: `No. ${tool.name} is a static page with no backend. Your ${profile.subject} is read and processed by JavaScript running in this tab, and it is never transmitted. You can confirm this by opening your browser's network panel while you use the tool — there are no outbound requests.`,
+      answer: outbound
+        ? `${tool.name} is a static page with no backend of its own, and nothing you type is stored or logged here. It is one of the few tools on this site that does have to reach the network: answering the question at all means querying ${outbound}, so the value you enter is sent there. Every other tool in the catalogue is fully local.`
+        : `No. ${tool.name} is a static page with no backend. Your ${profile.subject} is read and processed by JavaScript running in this tab, and it is never transmitted. You can confirm this by opening your browser's network panel while you use the tool. There are no outbound requests.`,
     },
     {
+      topic: "size",
       question: isFile ? "Is there a file size limit?" : "How much data can I paste in?",
       answer: isFile
         ? "There is no limit imposed by us, because there is no server tier to enforce one. The real constraint is your device's available memory, since the whole file is held in RAM while it is processed. Very large files are slower on phones than on a laptop."
         : "There is no server-side cap. Very large inputs are limited only by your device's memory and will make the page feel slower, since the work happens on the main thread. In practice a few megabytes of text is comfortable.",
     },
     {
+      topic: "offline",
       question: "Does it work offline?",
-      answer: "Yes, once the page has loaded. The code that does the work is already in your browser at that point, so you can disconnect and keep using it. Reloading the page while offline needs the browser cache to still hold it.",
+      answer: outbound
+        ? `No, and it is the exception. This tool has to query ${outbound} to answer, so it needs a connection even after the page has loaded. The rest of the catalogue keeps working with the network off.`
+        : "Yes, once the page has loaded. The code that does the work is already in your browser at that point, so you can disconnect and keep using it. Reloading the page while offline needs the browser cache to still hold it.",
     },
     {
+      topic: "account",
       question: "Do I need to create an account?",
       answer: "No. There is no sign-up, no email, and no usage tracking tied to an identity. The tool works the first time you open it.",
+    },
+  ];
+}
+
+/**
+ * The "what happens to your data" table.
+ *
+ * Generated rather than authored because the answers are properties of the
+ * architecture, not of the tool, and a generated answer that is identical
+ * everywhere is the correct output when the fact is identical everywhere. The
+ * three tools that genuinely reach the network are the reason this is a function
+ * and not a constant: they have to say so in the same table, in the same words,
+ * rather than quietly matching the others.
+ */
+function defaultSpecs(tool: CatalogTool): ToolSpec[] {
+  const profile = CATEGORY_PROFILES[tool.category];
+  const outbound = NETWORK_TOOLS[tool.id];
+  const isFile = profile.ioMode === "file";
+
+  return [
+    { label: "Read via", value: isFile ? "The browser File API, on your device" : "Typed or pasted into the page" },
+    { label: "Held in", value: "Your browser tab's memory for as long as it is open" },
+    { label: "Stored", value: "Nothing. No cookies, no database, no server-side copy" },
+    {
+      label: "Transmitted",
+      value: outbound ? `The value you enter, to ${outbound}` : "Nothing leaves your device",
+    },
+    { label: "Retained after you close the tab", value: "Nothing" },
+    {
+      label: "Works offline",
+      value: outbound ? "No. This tool needs the network to answer" : "Yes, once the page has loaded",
     },
   ];
 }
@@ -103,7 +177,7 @@ function categoryFaqs(tool: CatalogTool): ToolFaqEntry[] {
 /** Reuses the already-authored SEO title as a natural H1 by dropping the modifier clause. */
 function deriveH1(seoTitle: string | undefined, fallback: string): string {
   if (!seoTitle) return fallback;
-  const [head] = seoTitle.split(/\s+[—–|]\s+/);
+  const [head] = seoTitle.split(/\s+[, –|]\s+/);
   return head?.trim() || fallback;
 }
 
@@ -120,19 +194,31 @@ export function resolveToolContent(slug: string): ToolPageContent | null {
 
   // An override's SEO fields win over the toolSeo.ts baseline, which is itself a
   // fallback for the catalog entry.
-  const title = override?.seo?.title ?? seo.title ?? `${tool.name} — Free Online Tool`;
+  const title = override?.seo?.title ?? seo.title ?? `${tool.name}, Free Online Tool`;
   const description = override?.seo?.description ?? seo.description ?? tool.description;
   const keywords = override?.seo?.keywords ?? seo.keywords ?? tool.keywords;
   const h1 = override?.hero?.h1 ?? deriveH1(title, tool.name);
 
-  // Tool-specific FAQs first — they are the ones a visitor came for. Category
+  // Tool-specific FAQs first. They are the ones a visitor came for. Category
   // FAQs backfill, deduplicated so an authored privacy answer wins over the
   // generic one.
   const authoredFaqs = override?.faqs ?? seo.faqs ?? [];
+  /*
+   * Deduplicate by subject, not by wording.
+   *
+   * Matching question strings does not work: an authored "Is my contract really
+   * private?" never matches the generated "Is my PDF uploaded to a server?", so
+   * both rendered, two answers to the same question side by side, inside
+   * FAQPage structured data. An authored entry tagged with a topic now
+   * suppresses the generated one on that topic.
+   */
   const seenQuestions = new Set(authoredFaqs.map((faq) => faq.question.toLowerCase()));
+  const claimedTopics = new Set(authoredFaqs.map((faq) => faq.topic).filter(Boolean));
   const faqs = [
     ...authoredFaqs,
-    ...categoryFaqs(tool).filter((faq) => !seenQuestions.has(faq.question.toLowerCase())),
+    ...categoryFaqs(tool).filter(
+      (faq) => !seenQuestions.has(faq.question.toLowerCase()) && !claimedTopics.has(faq.topic),
+    ),
   ];
 
   return {
@@ -155,20 +241,35 @@ export function resolveToolContent(slug: string): ToolPageContent | null {
       primaryCta:
         override?.hero?.primaryCta ??
         (profile.ioMode === "file"
-          ? { label: `Choose a ${profile.subject}`, action: "upload" }
+          ? { label: `Choose ${indefiniteArticle(profile.subject)} ${profile.subject}`, action: "upload" }
           : { label: "Start with your own data", action: "scroll" }),
       secondaryCta:
         override?.hero?.secondaryCta ??
         (profile.ioMode === "file" ? undefined : { label: "Open a file", action: "upload" }),
     },
     intro: override?.intro,
-    features: override?.features ?? profile.features,
+    /*
+     * Authored cards first, then the shared pair, composed, not replaced.
+     * Previously an override had to restate the architectural claims to keep
+     * them, and a tool with no override got five identical cards and nothing
+     * specific to itself.
+     */
+    features: [
+      ...(override?.features ?? []),
+      ...(override?.dropSharedFeatures ? [] : profile.sharedFeatures),
+    ].slice(0, 6),
     howItWorks: override?.howItWorks ?? profile.howItWorks,
-    // Never invented — an unauthored tool simply has no Examples section.
+    // Never invented. An unauthored tool simply has no Examples section.
     examples: override?.examples ?? [],
     useCases: override?.useCases ?? [],
     faqs,
     related: override?.related ?? deriveRelated(tool),
     headings: override?.headings,
+    specs: override?.specs ?? defaultSpecs(tool),
+    measurements: override?.measurements,
+    limitations: override?.limitations,
+    comparison: override?.comparison,
+    scenarios: override?.scenarios,
+    tier: override?.tier,
   };
 }

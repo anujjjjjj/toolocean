@@ -32,8 +32,8 @@ function setCanonical(url: string) {
  * navigation, where no new document is fetched and nothing else would update the
  * title, canonical, or structured data.
  *
- * Values come from resolveSeo() — the same function the build-time prerender
- * uses — so the static HTML and the runtime DOM cannot disagree.
+ * Values come from resolveSeo(). The same function the build-time prerender
+ * uses, so the static HTML and the runtime DOM cannot disagree.
  */
 export function useSEO(options: SEOOptions) {
   const { title, description, path, keywords, image, noindex, jsonLd } = options;
@@ -51,8 +51,8 @@ export function useSEO(options: SEOOptions) {
      * route had rendered, reporting the previous page's document.title. Passing
      * the value explicitly removes the race entirely.
      *
-     * Every page reaches this — 14 of 15 call useSEO directly and ToolRoutePage
-     * delegates to ToolPageLayout, which does — so a new page gets tracked by
+     * Every page reaches this, 14 of 15 call useSEO directly and ToolRoutePage
+     * delegates to ToolPageLayout, which does, so a new page gets tracked by
      * virtue of having SEO tags at all, with nothing extra to remember.
      */
     trackPageview(path, seo.fullTitle);
