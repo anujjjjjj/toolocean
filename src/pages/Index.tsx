@@ -237,7 +237,7 @@ const Index = () => {
           <div className="mx-auto grid max-w-5xl grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             <Link
               to="/workflow-builder"
-              className="group order-first rounded-2xl border border-border/60 bg-card p-5 text-left transition-all hover:-translate-y-0.5 hover:border-foreground/15 hover:shadow-elegant sm:col-span-2 lg:col-span-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="group order-first flex h-full flex-col rounded-2xl border border-border/60 bg-card p-5 text-left transition-all hover:-translate-y-0.5 hover:border-foreground/15 hover:shadow-elegant sm:col-span-2 lg:col-span-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <div className="mb-3.5 flex h-9 w-9 items-center justify-center rounded-lg" style={{ background: "hsl(var(--primary))" }}>
                 <Workflow className="h-[18px] w-[18px] text-white" />
@@ -246,7 +246,7 @@ const Index = () => {
               <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted-foreground">
                 Chain tools together into an automated pipeline.
               </p>
-              <div className="mt-4 flex items-center justify-between">
+              <div className="mt-auto flex items-center justify-between pt-4">
                 <span className="text-sm font-semibold text-primary">Create workflow →</span>
                 <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-[10.5px] font-bold text-primary">
                   <ShieldCheck className="h-2.5 w-2.5" />
@@ -261,14 +261,14 @@ const Index = () => {
                 <Link
                   key={key}
                   to={CATEGORY_INDEX[key]}
-                  className="group rounded-2xl border border-border/60 bg-card p-5 text-left transition-all hover:-translate-y-0.5 hover:border-foreground/15 hover:shadow-elegant focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="group flex h-full flex-col rounded-2xl border border-border/60 bg-card p-5 text-left transition-all hover:-translate-y-0.5 hover:border-foreground/15 hover:shadow-elegant focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <div className="mb-3.5 flex h-9 w-9 items-center justify-center rounded-lg" style={{ background: CATEGORY_BADGE_COLOR[key] }}>
                     <Icon className="h-[18px] w-[18px] text-white" />
                   </div>
                   <h3 className="text-[15px] font-bold">{CATEGORY_LABEL[key]}</h3>
                   <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted-foreground">{blurb}</p>
-                  <div className="mt-4 flex items-center justify-between">
+                  <div className="mt-auto flex items-center justify-between pt-4">
                     <span className="text-sm font-semibold text-primary">
                       {count} {count === 1 ? "tool" : "tools"} →
                     </span>

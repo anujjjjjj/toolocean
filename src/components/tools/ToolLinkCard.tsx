@@ -30,7 +30,7 @@ export function ToolLinkCard({ tool }: { tool: CatalogTool }) {
   return (
     <Link
       to={toolPath(tool)}
-      className="group block rounded-2xl border border-border/60 bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-foreground/15 hover:shadow-elegant focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="group flex h-full flex-col rounded-2xl border border-border/60 bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-foreground/15 hover:shadow-elegant focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       <div className="mb-3.5 flex h-9 w-9 items-center justify-center rounded-lg" style={{ background: badgeColor }}>
         <Icon className="h-[18px] w-[18px] text-white" />
@@ -39,10 +39,12 @@ export function ToolLinkCard({ tool }: { tool: CatalogTool }) {
       <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted-foreground line-clamp-2">
         {tool.description}
       </p>
-      <span className="mt-3 inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-[10.5px] font-bold text-primary">
-        <ShieldCheck className="h-2.5 w-2.5" />
-        In browser
-      </span>
+      <div className="mt-auto pt-3">
+        <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-[10.5px] font-bold text-primary">
+          <ShieldCheck className="h-2.5 w-2.5" />
+          In browser
+        </span>
+      </div>
     </Link>
   );
 }
