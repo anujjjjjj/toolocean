@@ -1,81 +1,31 @@
 /*
  * Self-hosted typography.
  *
- * Previously both families came from a render-blocking stylesheet on
- * fonts.googleapis.com, with the woff2 files a second request discovered only
- * after that stylesheet parsed. A third-party DNS lookup, TLS handshake and two
- * chained round trips before any text could paint, on a page whose LCP element
- * is the H1.
- *
- * Both are variable fonts, so one file per subset covers every weight used: DM
- * Sans at 400/500/600 for body, Instrument Sans at 600/700 for headings.
- * Instrument Sans 400 and 500 were being requested and never used.
+ * One family for everything now (Urbanist), not a heading/body split, so one
+ * variable-weight file per subset covers every weight used (400-800) instead
+ * of the two families this replaced needing four files between them.
  *
  * The unicode-range values are Google's own, so latin-ext is only fetched by a
  * reader who actually hits one of those characters.
  */
 
 @font-face {
-  font-family: 'DM Sans';
+  font-family: 'Urbanist';
   font-style: normal;
-  font-weight: 400 600;
+  font-weight: 400 800;
   font-display: swap;
-  src: url('/fonts/dm-sans-latin.woff2') format('woff2');
+  src: url('/fonts/urbanist-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
-  font-family: 'DM Sans';
+  font-family: 'Urbanist';
   font-style: normal;
-  font-weight: 400 600;
+  font-weight: 400 800;
   font-display: swap;
-  src: url('/fonts/dm-sans-latin-ext.woff2') format('woff2');
+  src: url('/fonts/urbanist-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
-
-@font-face {
-  font-family: 'Instrument Sans';
-  font-style: normal;
-  font-weight: 600 700;
-  font-display: swap;
-  src: url('/fonts/instrument-sans-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
-  font-family: 'Instrument Sans';
-  font-style: normal;
-  font-weight: 600 700;
-  font-display: swap;
-  src: url('/fonts/instrument-sans-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-/*
- * No metric-matched fallback faces here, deliberately, this was tried and
- * measured, and it made things worse.
- *
- * The usual advice is to add an @font-face over Arial with size-adjust and
- * ascent/descent overrides so the pre-swap and post-swap text occupy the same
- * space. Computed from these fonts' own head/hhea/OS-2 tables that gives
- * size-adjust 125.05% for DM Sans and 134.12% for Instrument Sans.
- *
- * Measured in headless Chrome with the webfonts blocked, so only the fallback
- * renders. Which is exactly what a reader sees during the swap window:
- *
- *   plain system fallback   document height 4083px   (settled: 4083px)
- *   Arial + the overrides   document height 4204px   (settled: 4083px)
- *
- * The stack's existing -apple-system fallback already wraps identically to
- * DM Sans; scaling Arial to match average character width introduced 121px of
- * reflow that was not there before. Average character width is a crude proxy,
- * and it was a worse one here than the platform default.
- *
- * The premise was also wrong for this codebase: the H1 carries an explicit
- * line-height (48px), so it cannot change height when the font swaps regardless
- * of metrics. If this is revisited, measure on Windows and Linux too, the
- * finding above is macOS only.
- */
 
 @tailwind base;
 @tailwind components;
@@ -97,10 +47,13 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 220 15% 12%;
 
-    /* Refined Primary - deep marine teal, not the brighter mint of the previous pass */
-    --primary: 176 79% 27%;
+    /* Primary action color, copied from ilovepdf.com's red at the user's request.
+       Used for the logo, CTAs, and the trust badges alike: an earlier pass kept
+       the old teal for the logo and trust copy, and it read as two competing
+       brand colors, so everything is one red now. */
+    --primary: 2 78% 54%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 176 70% 38%;
+    --primary-glow: 2 78% 62%;
 
     --secondary: 220 14% 96%;
     --secondary-foreground: 220 15% 12%;
@@ -116,20 +69,20 @@ All colors MUST be HSL.
 
     --border: 220 14% 90%;
     --input: 220 14% 90%;
-    --ring: 176 79% 27%;
+    --ring: 2 78% 54%;
 
     /* Design System Tokens */
     --radius: 0.5rem;
 
     /* Subtle gradients - use sparingly */
-    --gradient-primary: linear-gradient(135deg, hsl(176 79% 27%), hsl(176 70% 38%));
-    --gradient-ocean: linear-gradient(135deg, hsl(176 79% 27%), hsl(185 60% 40%));
+    --gradient-primary: linear-gradient(135deg, hsl(2 78% 54%), hsl(2 78% 62%));
+    --gradient-ocean: linear-gradient(135deg, hsl(2 78% 54%), hsl(15 70% 55%));
     --gradient-subtle: linear-gradient(180deg, hsl(0 0% 98%), hsl(220 14% 97%));
 
     /* Refined shadows - softer, subtler */
     --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.04);
-    --shadow-glow: 0 0 20px hsl(176 79% 27% / 0.15);
-    --shadow-elegant: 0 6px 16px -10px hsl(176 79% 27% / 0.45);
+    --shadow-glow: 0 0 20px hsl(2 78% 54% / 0.15);
+    --shadow-elegant: 0 10px 24px -14px hsl(2 78% 54% / 0.35);
     
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -163,9 +116,9 @@ All colors MUST be HSL.
     --popover: 220 14% 11%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 176 65% 45%;
+    --primary: 2 82% 62%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 176 60% 55%;
+    --primary-glow: 2 82% 68%;
 
     --secondary: 220 14% 14%;
     --secondary-foreground: 0 0% 98%;
@@ -181,17 +134,17 @@ All colors MUST be HSL.
 
     --border: 220 14% 18%;
     --input: 220 14% 14%;
-    --ring: 176 65% 45%;
+    --ring: 2 82% 62%;
 
     /* Dark Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(176 65% 45%), hsl(176 60% 55%));
-    --gradient-ocean: linear-gradient(135deg, hsl(176 65% 45%), hsl(185 55% 50%));
+    --gradient-primary: linear-gradient(135deg, hsl(2 82% 62%), hsl(2 82% 68%));
+    --gradient-ocean: linear-gradient(135deg, hsl(2 82% 62%), hsl(15 70% 60%));
     --gradient-subtle: linear-gradient(180deg, hsl(220 14% 9%), hsl(220 14% 11%));
 
     /* Dark Shadows */
     --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.3);
-    --shadow-glow: 0 0 20px hsl(176 65% 45% / 0.25);
-    --shadow-elegant: 0 6px 16px -10px hsl(176 65% 45% / 0.5);
+    --shadow-glow: 0 0 20px hsl(2 82% 62% / 0.25);
+    --shadow-elegant: 0 10px 24px -14px hsl(2 82% 62% / 0.4);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -210,12 +163,12 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-weight: 600;
+    font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 700;
   }
 }
 /*

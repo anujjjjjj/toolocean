@@ -1,6 +1,7 @@
-import { Moon, Sun, Waves, ChevronDown, Search } from "lucide-react";
+import { Moon, Sun, ChevronDown, Search, ShieldCheck, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Logo } from "./Logo";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +14,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useCommandPalette } from "@/contexts/CommandPaletteContext";
 
 interface HeaderProps {
@@ -36,9 +37,18 @@ const toolCategories = [
 
 export function Header({ minimal = false }: HeaderProps) {
   const [darkMode, setDarkMode] = useState(false);
-  const navigate = useNavigate();
+  const [promoDismissed, setPromoDismissed] = useState(false);
   const location = useLocation();
   const { openPalette } = useCommandPalette();
+
+  useEffect(() => {
+    setPromoDismissed(sessionStorage.getItem("promoBarDismissed") === "true");
+  }, []);
+
+  const dismissPromo = () => {
+    setPromoDismissed(true);
+    sessionStorage.setItem("promoBarDismissed", "true");
+  };
 
   useEffect(() => {
     const isDark = document.documentElement.classList.contains('dark');
@@ -81,7 +91,30 @@ export function Header({ minimal = false }: HeaderProps) {
   const isHomePage = location.pathname === '/';
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/95 backdrop-blur-sm">
+    <div className="sticky top-0 z-50 w-full">
+      {/*
+        Promoted heavily and on its own bar rather than folded into the nav row:
+        "runs in your browser" is the one claim iLovePDF-style competitors can't
+        make, so it gets top billing on every page, not just the homepage hero.
+      */}
+      {!minimal && !promoDismissed && (
+        <div className="flex items-center justify-center gap-2 bg-foreground px-4 py-2 text-center text-xs font-semibold text-background">
+          <ShieldCheck className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+          <span>
+            <b>100% in your browser.</b> Every tool runs on your device. Files are never uploaded, ever.
+          </span>
+          <button
+            type="button"
+            onClick={dismissPromo}
+            className="ml-1 shrink-0 rounded p-0.5 text-background/60 hover:text-background"
+            aria-label="Dismiss"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      )}
+
+      <header className="w-full border-b border-border/60 bg-background/95 backdrop-blur-sm">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between gap-4">
         {/* Logo - Top Left */}
         <Link
@@ -89,19 +122,9 @@ export function Header({ minimal = false }: HeaderProps) {
           className="flex items-center space-x-2.5 hover:opacity-70 transition-opacity shrink-0"
           aria-label="ToolOcean home"
         >
-          <Waves className="h-5 w-5 text-primary" />
+          <Logo className="h-7 w-7" />
           <span className="text-lg font-heading font-semibold text-foreground">ToolOcean</span>
         </Link>
-
-        {/* Center - Subtle tagline (optional) */}
-        <div
-          className="hidden lg:flex items-center justify-center flex-1 cursor-pointer"
-          onClick={() => navigate("/")}
-        >
-          <p className="text-xs text-muted-foreground/70">
-            Your data never leaves your browser
-          </p>
-        </div>
 
         {/* Navigation - Top Right */}
         <nav className="flex items-center gap-1 shrink-0">
@@ -183,6 +206,7 @@ export function Header({ minimal = false }: HeaderProps) {
           </Button>
         </nav>
       </div>
-    </header>
+      </header>
+    </div>
   );
 }

@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import { ShieldCheck } from "lucide-react";
 import { getToolIcon } from "@/lib/toolIcons";
 import { toolPath, type CatalogTool } from "@/data/toolCatalog";
+import { CATEGORY_BADGE_COLOR } from "@/lib/categoryBadgeColor";
 
 /**
  * A tool as a real anchor.
@@ -16,27 +18,31 @@ import { toolPath, type CatalogTool } from "@/data/toolCatalog";
  * through toolPath() so it points at the flat canonical slug instead of a
  * legacy /<category>-tools/<id> URL that would answer with a redirect.
  *
- * Deliberately built from a bare div/link rather than the Card primitive:
- * Card's default header+content padding (24px each) is what made a grid of
- * these read as mostly whitespace with a name floating in it.
+ * Icon badge is colored per category (ilovepdf.com's pattern) rather than a
+ * single uniform tint, and carries a small "in browser" tag: the one claim an
+ * upload-based competitor can't make, so it goes on every card, not just the
+ * hero.
  */
 export function ToolLinkCard({ tool }: { tool: CatalogTool }) {
   const Icon = getToolIcon(tool.icon);
+  const badgeColor = CATEGORY_BADGE_COLOR[tool.category];
 
   return (
     <Link
       to={toolPath(tool)}
-      className="group flex items-start gap-3 rounded-lg border border-border/60 bg-card p-3.5 transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-elegant focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="group block rounded-2xl border border-border/60 bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-foreground/15 hover:shadow-elegant focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary/10 transition-colors group-hover:bg-primary">
-        <Icon className="h-4 w-4 text-primary transition-colors group-hover:text-primary-foreground" />
+      <div className="mb-3.5 flex h-9 w-9 items-center justify-center rounded-lg" style={{ background: badgeColor }}>
+        <Icon className="h-[18px] w-[18px] text-white" />
       </div>
-      <div className="min-w-0">
-        <h3 className="text-sm font-semibold leading-tight">{tool.name}</h3>
-        <p className="mt-0.5 text-xs leading-snug text-muted-foreground line-clamp-2">
-          {tool.description}
-        </p>
-      </div>
+      <h3 className="text-[15px] font-bold leading-tight">{tool.name}</h3>
+      <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted-foreground line-clamp-2">
+        {tool.description}
+      </p>
+      <span className="mt-3 inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-[10.5px] font-bold text-primary">
+        <ShieldCheck className="h-2.5 w-2.5" />
+        In browser
+      </span>
     </Link>
   );
 }

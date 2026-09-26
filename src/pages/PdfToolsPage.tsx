@@ -49,16 +49,24 @@ const PdfToolsPage = () => {
         <Breadcrumbs items={BREADCRUMB_ITEMS} />
 
         {/* Hero Section */}
-        <section className="text-center py-8">
-          <div className="max-w-4xl mx-auto">
+        <section className="relative overflow-hidden text-center py-8">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(55%_60%_at_50%_0%,hsl(var(--primary)/0.08),transparent_70%)]"
+          />
+          <div className="relative max-w-4xl mx-auto">
             <div className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-lg bg-primary/10">
               <FileText className="h-8 w-8 text-primary" />
             </div>
+            <span className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary">
+              <Shield className="h-3.5 w-3.5" />
+              No uploads. Runs entirely in your browser.
+            </span>
             <h1 className="text-5xl font-heading font-bold mb-6 text-foreground">
               PDF Tools
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Powerful PDF manipulation tools that work entirely in your browser. No uploads, no servers – your files stay private.
+              Powerful PDF manipulation tools that work entirely in your browser. No uploads, no servers, your files stay private.
             </p>
           </div>
         </section>
@@ -70,7 +78,7 @@ const PdfToolsPage = () => {
             <p className="text-muted-foreground">Select a tool to get started</p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {pdfTools.map((tool) => (
               <ToolLinkCard key={tool.id} tool={tool} />
             ))}

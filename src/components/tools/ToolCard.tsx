@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { getToolIcon } from "@/lib/toolIcons";
 import { Link } from "react-router-dom";
+import { ShieldCheck } from "lucide-react";
+import { CATEGORY_BADGE_COLOR } from "@/lib/categoryBadgeColor";
 
 interface Tool {
   id: string;
@@ -30,37 +32,38 @@ export function ToolCard({ tool, onAddToWorkflow, showWorkflowButton = false }: 
   const href = `/${tool.id}`;
 
   return (
-    <div className="group relative flex flex-col gap-2.5 rounded-lg border border-border/60 bg-card p-3.5 transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-elegant">
-      <div className="flex items-start gap-3">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary/10 transition-colors group-hover:bg-primary">
-          <Icon className="h-4 w-4 text-primary transition-colors group-hover:text-primary-foreground" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <h3 className="text-sm font-semibold leading-tight">
-            <Link to={href} className="after:absolute after:inset-0 after:content-['']">
-              {tool.name}
-            </Link>
-          </h3>
-          {tool.featured && (
-            <span className="mt-1 inline-block rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-medium text-primary">
-              Featured
-            </span>
-          )}
-        </div>
+    <div className="group relative rounded-2xl border border-border/60 bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-foreground/15 hover:shadow-elegant">
+      <div className="mb-3.5 flex h-9 w-9 items-center justify-center rounded-lg" style={{ background: CATEGORY_BADGE_COLOR.dev }}>
+        <Icon className="h-[18px] w-[18px] text-white" />
       </div>
-
-      <p className="text-xs leading-snug text-muted-foreground line-clamp-2">{tool.description}</p>
-
-      {showWorkflowButton && onAddToWorkflow && (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onAddToWorkflow(tool.id)}
-          className="relative z-10 h-7 w-fit text-xs"
-        >
-          + Workflow
-        </Button>
+      <h3 className="text-[15px] font-bold leading-tight">
+        <Link to={href} className="after:absolute after:inset-0 after:content-['']">
+          {tool.name}
+        </Link>
+      </h3>
+      {tool.featured && (
+        <span className="mt-1 inline-block rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold text-primary">
+          Featured
+        </span>
       )}
+      <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted-foreground line-clamp-2">{tool.description}</p>
+
+      <div className="mt-3 flex items-center justify-between">
+        <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-[10.5px] font-bold text-primary">
+          <ShieldCheck className="h-2.5 w-2.5" />
+          In browser
+        </span>
+        {showWorkflowButton && onAddToWorkflow && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onAddToWorkflow(tool.id)}
+            className="relative z-10 h-7 w-fit text-xs"
+          >
+            + Workflow
+          </Button>
+        )}
+      </div>
 
       {/* Keywords for search (hidden) */}
       <div className="hidden">

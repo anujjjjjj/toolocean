@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import { Waves } from "lucide-react";
 import { CATEGORY_INDEX, CATEGORY_LABEL, type CategoryKey } from "@/data/toolCatalog";
 import { LANDING_PAGES } from "@/data/landingPages";
+import { Logo } from "./Logo";
 
 /**
  * Site footer.
@@ -39,7 +39,7 @@ export function Footer() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-2">
             <Link to="/" className="inline-flex items-center gap-2 text-foreground">
-              <Waves className="h-5 w-5 text-primary" aria-hidden="true" />
+              <Logo className="h-6 w-6" />
               <span className="font-heading text-lg font-semibold">ToolOcean</span>
             </Link>
             <p className="mt-3 max-w-sm text-sm text-muted-foreground">
