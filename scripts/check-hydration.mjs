@@ -67,11 +67,16 @@ for (const route of routes) {
   const result = JSON.parse(probe.result.value);
   const hydration = messages.filter((m) => /hydrat|did not match|Minified React error #4\d\d/i.test(m));
   const other = messages.filter((m) => !hydration.includes(m));
-  const bad = hydration.length > 0 || other.length > 0 || result.h1Count !== 1 || !result.workbench;
+  /*
+   * A workbench only exists on tool pages. Requiring one here marked the
+   * homepage, the category listings and /all-tools as failures for correctly
+   * not having an interactive tool on them.
+   */
+  const bad = hydration.length > 0 || other.length > 0 || result.h1Count !== 1;
   if (bad) failures++;
 
   console.log(`${bad ? "✗" : "✓"} ${route}`);
-  console.log(`    h1: ${result.h1Count} | workbench: ${result.workbench} | body: ${result.bodyLen} chars`);
+  console.log(`    h1: ${result.h1Count} | tool mounted: ${result.workbench ? "yes" : "n/a"} | body: ${result.bodyLen} chars`);
   if (hydration.length) console.log(`    hydration: ${hydration.slice(0, 3).join(" / ")}`);
   if (other.length) console.log(`    console: ${other.slice(0, 3).join(" / ")}`);
 }

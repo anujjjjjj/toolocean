@@ -67,16 +67,16 @@ export function ToolHero({ hero }: { hero: ToolHeroContent }) {
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_0%,hsl(var(--primary)/0.10),transparent_70%)]"
       />
 
-      <div className="container relative mx-auto max-w-3xl px-4 py-14 text-center sm:py-20">
-        <h1 className="font-heading text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+      <div className="container relative mx-auto max-w-3xl px-4 py-10 text-center sm:py-16 md:py-20">
+        <h1 className="font-heading text-[1.75rem] font-semibold leading-[1.15] tracking-tight text-foreground sm:text-4xl md:text-5xl">
           {hero.h1}
         </h1>
 
-        <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+        <p className="mx-auto mt-4 max-w-2xl text-[0.9375rem] leading-relaxed text-muted-foreground sm:mt-5 sm:text-lg">
           {hero.subtitle}
         </p>
 
-        <ul className="mt-7 flex flex-wrap items-center justify-center gap-2">
+        <ul className="mt-6 flex flex-wrap items-center justify-center gap-2 sm:mt-7">
           {hero.badges.map((key) => {
             const badge = BADGES[key];
             if (!badge) return null;
@@ -85,9 +85,9 @@ export function ToolHero({ hero }: { hero: ToolHeroContent }) {
               <li key={key}>
                 <span
                   title={badge.title}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-soft"
+                  className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-border/70 bg-card px-3.5 py-1.5 text-xs font-medium text-muted-foreground shadow-soft"
                 >
-                  <Icon className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+                  <Icon className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
                   {badge.label}
                 </span>
               </li>
@@ -95,7 +95,7 @@ export function ToolHero({ hero }: { hero: ToolHeroContent }) {
           })}
         </ul>
 
-        <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:mt-9 sm:flex-row">
           <CtaButton cta={hero.primaryCta} variant="default" />
           {hero.secondaryCta && <CtaButton cta={hero.secondaryCta} variant="outline" />}
         </div>

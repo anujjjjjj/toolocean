@@ -58,10 +58,10 @@ const AudioToolsPage = () => {
               <Shield className="h-3.5 w-3.5" />
               No uploads. Runs entirely in your browser.
             </span>
-            <h1 className="text-5xl font-heading font-bold mb-6 text-foreground">
+            <h1 className="font-heading text-[2rem] font-bold leading-tight tracking-tight text-foreground mb-4 sm:text-4xl sm:mb-6 md:text-5xl">
               Audio Tools
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            <p className="mx-auto mb-8 max-w-2xl text-base text-muted-foreground sm:text-lg md:text-xl">
               Cut and merge audio files in your browser. No uploads to servers, everything runs locally.
             </p>
           </div>
@@ -69,7 +69,7 @@ const AudioToolsPage = () => {
 
         <section className="space-y-6">
           <div className="text-center">
-            <h2 className="text-3xl font-bold mb-4">Available Tools</h2>
+            <h2 className="font-heading text-2xl font-bold tracking-tight sm:text-3xl mb-4">Available Tools</h2>
             <p className="text-muted-foreground">Select a tool to get started</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">

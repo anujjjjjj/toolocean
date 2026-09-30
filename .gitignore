@@ -38,3 +38,6 @@ public/sitemap.xml
 
 # Claude Code scratch worktrees
 .claude/worktrees/
+
+# Local design screenshots, regenerated on demand.
+.screenshots/

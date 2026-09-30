@@ -100,29 +100,29 @@ const Index = () => {
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_45%_at_82%_0%,hsl(var(--primary)/0.10),transparent_70%)]"
           />
-          <div className="container relative mx-auto flex min-h-[62vh] flex-col items-center justify-center px-4 py-20 text-center">
+          <div className="container relative mx-auto flex flex-col items-center justify-center px-4 py-14 text-center sm:min-h-[62vh] sm:py-20">
           {/* Logo */}
-          <div className="mb-8">
-            <Logo className="mx-auto h-14 w-14" />
+          <div className="mb-6 sm:mb-8">
+            <Logo className="mx-auto h-12 w-12 sm:h-14 sm:w-14" />
           </div>
 
-          <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-4 py-2 text-sm font-bold text-primary">
+          <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3.5 py-1.5 text-[0.8125rem] font-bold text-primary sm:mb-6 sm:px-4 sm:py-2 sm:text-sm">
             <ShieldCheck className="h-4 w-4" />
             No uploads. No accounts. 100% on your device.
           </span>
 
           {/* Title */}
-          <h1 className="text-6xl md:text-7xl font-heading font-bold mb-6 text-foreground">
+          <h1 className="font-heading text-[2.5rem] font-bold leading-[1.05] tracking-tight text-foreground mb-5 sm:text-6xl md:text-7xl sm:mb-6">
             ToolOcean
           </h1>
 
           {/* Tagline */}
-          <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl">
+          <p className="mb-8 max-w-2xl text-lg text-muted-foreground sm:mb-12 sm:text-xl md:text-2xl">
             Every tool you need, right in your browser.
           </p>
 
           {/* Search Bar - Centered & Prominent */}
-          <div className="w-full max-w-2xl mb-10">
+          <div className="mb-8 w-full max-w-2xl sm:mb-10">
             <div className="relative group">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5 group-focus-within:text-primary transition-colors" />
               <Input
@@ -136,7 +136,7 @@ const Index = () => {
           </div>
 
           {/* Quick Action Buttons - Reduced */}
-          <div className="flex flex-wrap gap-3 justify-center">
+          <div className="grid w-full max-w-md grid-cols-2 gap-3 sm:flex sm:w-auto sm:max-w-none sm:flex-wrap sm:justify-center">
             <Button size="lg" asChild>
               <Link to="/workflow-builder">
                 <Workflow className="h-4 w-4 mr-2" />
@@ -149,7 +149,7 @@ const Index = () => {
                 Dev Tools
               </Link>
             </Button>
-            <Button size="lg" variant="outline" asChild>
+            <Button size="lg" variant="outline" className="col-span-2 sm:col-span-1" asChild>
               <Link to="/pdf-tools">
                 <FileText className="h-4 w-4 mr-2" />
                 PDF Tools
@@ -246,10 +246,12 @@ const Index = () => {
               <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted-foreground">
                 Chain tools together into an automated pipeline.
               </p>
-              <div className="mt-auto flex items-center justify-between pt-4">
-                <span className="text-sm font-semibold text-primary">Create workflow →</span>
-                <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-[10.5px] font-bold text-primary">
-                  <ShieldCheck className="h-2.5 w-2.5" />
+              <div className="mt-auto flex flex-wrap items-center justify-between gap-x-3 gap-y-2 pt-4">
+                {/* Shorter than "Create workflow" so it fits the same row as the
+                    tag at the narrowest card width, matching the other cards. */}
+                <span className="whitespace-nowrap text-sm font-semibold text-primary">Open builder →</span>
+                <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-primary/10 px-2.5 py-1 text-[10.5px] font-bold text-primary">
+                  <ShieldCheck className="h-2.5 w-2.5 shrink-0" />
                   In browser
                 </span>
               </div>
@@ -268,12 +270,12 @@ const Index = () => {
                   </div>
                   <h3 className="text-[15px] font-bold">{CATEGORY_LABEL[key]}</h3>
                   <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted-foreground">{blurb}</p>
-                  <div className="mt-auto flex items-center justify-between pt-4">
-                    <span className="text-sm font-semibold text-primary">
+                  <div className="mt-auto flex flex-wrap items-center justify-between gap-x-3 gap-y-2 pt-4">
+                    <span className="whitespace-nowrap text-sm font-semibold text-primary">
                       {count} {count === 1 ? "tool" : "tools"} →
                     </span>
-                    <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-[10.5px] font-bold text-primary">
-                      <ShieldCheck className="h-2.5 w-2.5" />
+                    <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-primary/10 px-2.5 py-1 text-[10.5px] font-bold text-primary">
+                      <ShieldCheck className="h-2.5 w-2.5 shrink-0" />
                       In browser
                     </span>
                   </div>
