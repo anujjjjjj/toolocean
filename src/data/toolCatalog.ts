@@ -100,6 +100,11 @@ const CATEGORY_TOOLS: CatalogTool[] = [
   { id: "pdf-rotate", category: "pdf", name: "PDF Rotate", description: "Rotate PDF pages by 90°, 180°, or 270°", icon: "RotateCw", keywords: ["pdf","rotate"] },
   { id: "pdf-watermark", category: "pdf", name: "PDF Watermark", description: "Add text or image watermark to PDF pages", icon: "Droplets", keywords: ["pdf","watermark"] },
   { id: "pdf-reorder", category: "pdf", name: "PDF Page Reorder", description: "Rearrange PDF pages with drag and drop", icon: "ArrowUpDown", keywords: ["pdf","reorder","pages"] },
+  { id: "pdf-sign", category: "pdf", name: "Sign PDF", description: "Draw, type, or place an image of a signature on a PDF page", icon: "PenLine", keywords: ["pdf","sign","signature","visual"] },
+  { id: "pdf-encrypt", category: "pdf", name: "Encrypt PDF", description: "Password-protect a PDF with AES-256 in the browser", icon: "Lock", keywords: ["pdf","encrypt","password","protect"] },
+  { id: "pdf-unlock", category: "pdf", name: "Unlock PDF", description: "Remove a known password or owner restrictions from your own PDF", icon: "LockOpen", keywords: ["pdf","unlock","decrypt","password"] },
+  { id: "pdf-metadata", category: "pdf", name: "PDF Metadata", description: "View, edit, or strip PDF Info and XMP metadata", icon: "FileSearch", keywords: ["pdf","metadata","xmp","author"] },
+  { id: "pdf-form-fill", category: "pdf", name: "Fill PDF Form", description: "Fill AcroForm fields and optionally flatten them", icon: "ListChecks", keywords: ["pdf","form","fill","flatten","acroform"] },
 
   // ---- Image ----
   { id: "image-resizer", category: "image", name: "Image Resizer", description: "Resize images with width, height, or aspect ratio", icon: "Maximize2", keywords: ["image","resize","dimensions"] },

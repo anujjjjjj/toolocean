@@ -29,9 +29,9 @@ export const CATEGORY_PAGE_SEO: Record<string, StaticPageSeo> = {
       "Format, convert, encode, and transform your data with free browser-based developer utilities. No uploads, no sign-up, everything runs client-side.",
   },
   "/pdf-tools": {
-    title: "PDF Tools - Merge, Split, Compress & Convert PDFs Online Free",
+    title: "PDF Tools - Merge, Sign, Encrypt & Fill Forms Offline",
     description:
-      "Free browser-based PDF tools: merge, split, compress, rotate, watermark, and convert PDFs to images. No uploads, files stay on your device.",
+      "Thirteen free browser PDF tools: merge, split, compress, sign, encrypt, unlock, metadata, and form fill. No uploads, files stay on your device.",
   },
   "/csv-tools": {
     title: "CSV Tools - Convert, Validate & Merge CSV Files Online Free",
@@ -100,14 +100,14 @@ export const INFO_PAGE_SEO: Record<string, StaticPageSeo> = {
       "Chain ToolOcean's text tools into a repeatable pipeline: format, convert, and transform in sequence. Runs entirely in your browser with no uploads.",
   },
   "/all-tools": {
-    title: "All 114 Free Browser Tools - Complete List",
+    title: "All 119 Free Browser Tools - Complete List",
     description:
       "Every ToolOcean tool in one place, grouped by category: PDF, image, video, audio, CSV, spreadsheet, archive, compression, converters and developer utilities.",
   },
   "/about": {
     title: "About ToolOcean - Who Builds It and How It Works",
     description:
-      "ToolOcean is a free collection of 114 browser-based tools built and maintained by Anuj Kabra. Learn why every tool runs client-side and nothing is ever uploaded.",
+      "ToolOcean is a free collection of 119 browser-based tools built and maintained by Anuj Kabra. Learn why every tool runs client-side and nothing is ever uploaded.",
   },
   "/privacy": {
     title: "Privacy Policy - What ToolOcean Does and Doesn't Collect",

@@ -31,6 +31,11 @@ export function getAllToolsForPalette(): { category: string; tools: PaletteTool[
     { id: "pdf-rotate", name: "PDF Rotate", description: "Rotate PDF pages", keywords: ["pdf", "rotate"], path: "/pdf-tools/pdf-rotate", icon: "RotateCw", category: "PDF Tools" },
     { id: "pdf-watermark", name: "PDF Watermark", description: "Add watermark to PDF", keywords: ["pdf", "watermark"], path: "/pdf-tools/pdf-watermark", icon: "Droplets", category: "PDF Tools" },
     { id: "pdf-reorder", name: "PDF Page Reorder", description: "Rearrange PDF pages", keywords: ["pdf", "reorder", "pages"], path: "/pdf-tools/pdf-reorder", icon: "ArrowUpDown", category: "PDF Tools" },
+    { id: "pdf-sign", name: "Sign PDF", description: "Place a visual signature on a page", keywords: ["pdf", "sign", "signature"], path: "/pdf-sign", icon: "PenLine", category: "PDF Tools" },
+    { id: "pdf-encrypt", name: "Encrypt PDF", description: "Password-protect a PDF", keywords: ["pdf", "encrypt", "password"], path: "/pdf-encrypt", icon: "Lock", category: "PDF Tools" },
+    { id: "pdf-unlock", name: "Unlock PDF", description: "Remove a known password or owner restrictions", keywords: ["pdf", "unlock", "password"], path: "/pdf-unlock", icon: "LockOpen", category: "PDF Tools" },
+    { id: "pdf-metadata", name: "PDF Metadata", description: "View or strip Info and XMP metadata", keywords: ["pdf", "metadata", "xmp"], path: "/pdf-metadata", icon: "FileSearch", category: "PDF Tools" },
+    { id: "pdf-form-fill", name: "Fill PDF Form", description: "Fill AcroForm fields and flatten", keywords: ["pdf", "form", "fill", "flatten"], path: "/pdf-form-fill", icon: "ListChecks", category: "PDF Tools" },
   ];
 
   const csvTools: PaletteTool[] = [

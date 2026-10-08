@@ -44,7 +44,7 @@ const CATEGORY_PILLS: { path: string; label: string }[] = [
  */
 const CATEGORY_CARDS: { key: CategoryKey; icon: typeof Code; blurb: string }[] = [
   { key: "dev", icon: Code, blurb: "JSON formatters, encoders, converters, and more utilities for developers." },
-  { key: "pdf", icon: FileText, blurb: "Merge, split, compress, rotate, watermark, and convert PDF files." },
+  { key: "pdf", icon: FileText, blurb: "Merge, split, compress, sign, encrypt, unlock, and fill PDF forms." },
   { key: "image", icon: Image, blurb: "Resize, crop, compress, and convert images without losing the originals." },
   { key: "csv", icon: FileSpreadsheet, blurb: "Convert, validate, and merge CSV files with full control over delimiters." },
   { key: "spreadsheet", icon: FileSpreadsheet, blurb: "Read Excel files, extract columns, and convert sheets to CSV or JSON." },

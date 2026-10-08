@@ -9,6 +9,7 @@ import {
 } from "@/data/toolCatalog";
 import { CATEGORY_PAGE_SEO, HOME_SEO, INFO_PAGE_SEO } from "@/data/staticPageSeo";
 import { WEBSITE_ID, buildBreadcrumbNode, buildSiteNodes } from "@/lib/schemaNodes";
+import { PDF_HUB_FAQS } from "@/data/pdfHubContent";
 
 /**
  * Graphs for the pages that are not tools and not landing pages: the homepage,
@@ -89,7 +90,7 @@ export function buildCategoryGraph(path: string) {
   const breadcrumbId = `${pageUrl}#breadcrumb`;
   const tools = toolsInCategory(key);
 
-  return graph([
+  const nodes: Record<string, unknown>[] = [
     ...buildSiteNodes(),
     {
       "@type": "CollectionPage",
@@ -120,7 +121,28 @@ export function buildCategoryGraph(path: string) {
       ],
       breadcrumbId,
     ),
-  ]);
+  ];
+
+  if (path === "/pdf-tools") {
+    nodes.push({
+      "@type": "FAQPage",
+      "@id": `${pageUrl}#faq`,
+      isPartOf: { "@id": pageId },
+      mainEntity: PDF_HUB_FAQS.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer.replace(
+            /\[([^\]]+)\]\((\/[^)\s]+)\)/g,
+            (_match, label: string, faqPath: string) => `${label} (${SITE_URL}${faqPath})`,
+          ),
+        },
+      })),
+    });
+  }
+
+  return graph(nodes);
 }
 
 /** /all-tools, /about, /privacy, /terms: WebPage + BreadcrumbList. */

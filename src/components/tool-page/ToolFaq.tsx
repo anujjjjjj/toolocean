@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+import { Link } from "react-router-dom";
 import {
   Accordion,
   AccordionContent,
@@ -6,6 +8,24 @@ import {
 } from "@/components/ui/accordion";
 import { Section } from "./Section";
 import type { ToolFaqEntry } from "@/types/toolContent";
+
+/** Renders `[label](/path)` as an in-app link. Anything else stays text. */
+function FaqAnswer({ text }: { text: string }) {
+  const nodes: ReactNode[] = [];
+  let cursor = 0;
+  for (const match of text.matchAll(/\[([^\]]+)\]\((\/[^)\s]+)\)/g)) {
+    const index = match.index ?? 0;
+    if (index > cursor) nodes.push(text.slice(cursor, index));
+    nodes.push(
+      <Link key={`${match[2]}-${index}`} to={match[2]} className="font-medium text-primary hover:underline">
+        {match[1]}
+      </Link>,
+    );
+    cursor = index + match[0].length;
+  }
+  if (cursor < text.length) nodes.push(text.slice(cursor));
+  return <>{nodes}</>;
+}
 
 /**
  * Two non-obvious constraints drive this component:
@@ -33,7 +53,7 @@ export function ToolFaq({ faqs, heading, lede }: { faqs: ToolFaqEntry[]; heading
               {faq.question}
             </AccordionTrigger>
             <AccordionContent forceMount className="text-sm leading-relaxed text-muted-foreground">
-              {faq.answer}
+              <FaqAnswer text={faq.answer} />
             </AccordionContent>
           </AccordionItem>
         ))}

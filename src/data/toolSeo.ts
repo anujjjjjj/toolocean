@@ -1536,6 +1536,36 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       },
     ],
   },
+  "pdf-sign": {
+    title: "Sign a PDF Visually, With No Upload",
+    description:
+      "Draw, type, or place a signature image on one PDF page and download the copy. A visual mark only, made in the browser, with no certificate and no account.",
+    keywords: ["sign pdf", "sign pdf without uploading", "add signature to pdf", "visual pdf signature", "draw signature on pdf"],
+  },
+  "pdf-encrypt": {
+    title: "Encrypt a PDF Offline, No Account",
+    description:
+      "Set an open password and an optional owner password on a PDF, with permission flags, using AES-256 in the browser. The file stays on the device.",
+    keywords: ["password protect pdf", "encrypt pdf", "encrypt pdf offline", "pdf owner password", "aes-256 pdf"],
+  },
+  "pdf-unlock": {
+    title: "Unlock Your Own PDF, No Upload",
+    description:
+      "Remove a password you already know, or clear owner restrictions on a PDF that opens, and download an unencrypted copy. No password search.",
+    keywords: ["unlock pdf", "remove pdf password", "decrypt pdf offline", "remove pdf restrictions", "unlock pdf no upload"],
+  },
+  "pdf-metadata": {
+    title: "View and Strip PDF Metadata Offline",
+    description:
+      "See the title, author, producer, dates, and keywords stored in a PDF, then edit those fields or strip them and download. Inspection stays in the browser.",
+    keywords: ["pdf metadata viewer", "remove pdf metadata", "pdf author remover", "strip pdf metadata", "pdf xmp viewer"],
+  },
+  "pdf-form-fill": {
+    title: "Fill a PDF Form in the Browser",
+    description:
+      "Fill text, checkbox, radio, and dropdown fields on an AcroForm PDF, optionally flatten them, and download. The form stays on your device.",
+    keywords: ["fill pdf form", "fill pdf form offline", "flatten pdf form", "acroform filler", "fillable pdf no upload"],
+  },
   "pdf-reorder": {
     title: "Reorder PDF Pages Online: Rearrange & Delete Pages",
     description:
