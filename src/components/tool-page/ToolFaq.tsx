@@ -48,7 +48,13 @@ export function ToolFaq({ faqs, heading, lede }: { faqs: ToolFaqEntry[]; heading
     <Section id="faq" heading={heading} lede={lede}>
       <Accordion type="multiple" className="mx-auto max-w-3xl">
         {faqs.map((faq, index) => (
-          <AccordionItem key={faq.question} value={`faq-${index}`}>
+          <AccordionItem
+            key={faq.question}
+            value={`faq-${index}`}
+            {...(faq.topic && ["privacy", "size", "offline", "account"].includes(faq.topic)
+              ? { "data-seo-chrome": "true" }
+              : {})}
+          >
             <AccordionTrigger className="text-left font-heading text-base font-medium hover:no-underline">
               {faq.question}
             </AccordionTrigger>

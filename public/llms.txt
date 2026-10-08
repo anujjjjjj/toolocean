@@ -1,6 +1,6 @@
 # ToolOcean
 
-> 119 file and developer utilities that run entirely in the browser. No upload, no
+> 118 file and developer utilities that run entirely in the browser. No upload, no
 > account, no server. Every tool processes your data locally in JavaScript and
 > WebAssembly, so files never leave the device.
 

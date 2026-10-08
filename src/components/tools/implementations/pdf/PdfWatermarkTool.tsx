@@ -7,8 +7,6 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Upload, Download, FileText, Loader2, Droplets } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
-
 export function PdfWatermarkTool() {
     const [pdfFile, setPdfFile] = useState<File | null>(null);
     const [pageCount, setPageCount] = useState(0);
@@ -22,6 +20,7 @@ export function PdfWatermarkTool() {
     const { toast } = useToast();
 
     const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { PDFDocument } = await import("pdf-lib");
         const file = event.target.files?.[0];
         if (!file) return;
 
@@ -62,6 +61,7 @@ export function PdfWatermarkTool() {
     };
 
     const applyWatermark = async () => {
+        const { PDFDocument, rgb, StandardFonts } = await import("pdf-lib");
         if (!pdfFile || !watermarkText.trim()) {
             toast({
                 title: "Missing watermark text",

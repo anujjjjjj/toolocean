@@ -10,6 +10,7 @@ import {
 import { CATEGORY_PAGE_SEO, HOME_SEO, INFO_PAGE_SEO } from "@/data/staticPageSeo";
 import { WEBSITE_ID, buildBreadcrumbNode, buildSiteNodes } from "@/lib/schemaNodes";
 import { PDF_HUB_FAQS } from "@/data/pdfHubContent";
+import { HUB_GUIDES } from "@/data/hubGuides";
 
 /**
  * Graphs for the pages that are not tools and not landing pages: the homepage,
@@ -123,12 +124,13 @@ export function buildCategoryGraph(path: string) {
     ),
   ];
 
-  if (path === "/pdf-tools") {
+  const hubFaqs = path === "/pdf-tools" ? PDF_HUB_FAQS : (HUB_GUIDES[path]?.faqs ?? []);
+  if (hubFaqs.length > 0) {
     nodes.push({
       "@type": "FAQPage",
       "@id": `${pageUrl}#faq`,
       isPartOf: { "@id": pageId },
-      mainEntity: PDF_HUB_FAQS.map((faq) => ({
+      mainEntity: hubFaqs.map((faq) => ({
         "@type": "Question",
         name: faq.question,
         acceptedAnswer: {

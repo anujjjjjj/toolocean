@@ -8,9 +8,9 @@ import type { ToolPageContent } from "@/types/toolContent";
 export const pdfUnlockContent: Partial<ToolPageContent> = {
   tier: "A",
   seo: {
-    title: "Unlock Your Own PDF, No Upload",
+    title: "Remove PDF Password You Know – No Upload",
     description:
-      "Remove a password you already know, or clear owner restrictions on a PDF that opens, and download an unencrypted copy. The file stays in the browser. There is no password search.",
+      "Remove a PDF password you already know, or clear owner restrictions when the file already opens. One attempt, no wordlist, and the copy downloads from this tab.",
     keywords: [
       "unlock pdf",
       "remove pdf password",
@@ -23,7 +23,7 @@ export const pdfUnlockContent: Partial<ToolPageContent> = {
     dateModified: "2026-10-08",
   },
   hero: {
-    h1: "Unlock a PDF you can already open",
+    h1: "Remove a PDF password you know",
     subtitle:
       "Clear owner restrictions, or decrypt a file when you know the password. The copy that downloads has no encryption dictionary. This page does not guess passwords.",
     badges: ["browser-first", "no-uploads", "offline", "free"],

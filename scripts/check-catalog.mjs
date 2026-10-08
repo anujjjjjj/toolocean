@@ -146,3 +146,43 @@ if (unknownIcons.length > 0) {
 console.log(
   `✓ catalog: ${all.length} tools, unique slugs, all have SEO content, ${BUILD_INPUTS.length} build inputs tracked, icons resolve`,
 );
+
+/*
+ * Title length is a warning, not a failure. Google truncates around 60 characters,
+ * and the brand suffix is only appended when the result still fits (see titleWithBrand).
+ */
+const BRAND = " | ToolOcean";
+const MAX_TITLE = 60;
+function visibleTitle(title) {
+  if (title.includes("ToolOcean")) return title;
+  const branded = `${title}${BRAND}`;
+  return branded.length <= MAX_TITLE ? branded : title;
+}
+const longTitles = [];
+const collect = (source, label) => {
+  for (const match of source.matchAll(/title:\s*(?:"([^"]+)"|`([^`]+)`)/g)) {
+    const raw = match[1] ?? match[2];
+    if (!raw || raw.includes("${")) continue;
+    const visible = visibleTitle(raw);
+    if (visible.length > MAX_TITLE) longTitles.push(`  ${visible.length}  ${label}  ${visible}`);
+  }
+};
+collect(seoSource, "toolSeo");
+collect(readFileSync(resolve(ROOT, "src/data/staticPageSeo.ts"), "utf8"), "static");
+const contentDirForTitles = resolve(ROOT, "src/data/toolContent");
+if (existsSync(contentDirForTitles)) {
+  for (const entry of readdirSync(contentDirForTitles)) {
+    if (!entry.endsWith(".ts")) continue;
+    const body = readFileSync(resolve(contentDirForTitles, entry), "utf8");
+    const seoBlock = body.match(/seo:\s*\{[\s\S]*?\n  \},/);
+    if (seoBlock) collect(seoBlock[0], entry);
+  }
+}
+if (longTitles.length > 0) {
+  console.warn(
+    `\n! ${longTitles.length} title(s) are over ${MAX_TITLE} characters in the SERP. Not a build failure.\n` +
+      longTitles.slice(0, 40).join("\n") +
+      (longTitles.length > 40 ? `\n  … ${longTitles.length - 40} more` : "") +
+      "\n",
+  );
+}

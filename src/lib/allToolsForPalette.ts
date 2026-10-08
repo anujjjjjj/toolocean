@@ -39,7 +39,8 @@ export function getAllToolsForPalette(): { category: string; tools: PaletteTool[
   ];
 
   const csvTools: PaletteTool[] = [
-    { id: "csv-converter", name: "CSV ⇄ JSON Converter", description: "Convert between CSV and JSON", keywords: ["csv", "json", "convert"], path: "/csv-tools/csv-converter", icon: "ArrowUpDown", category: "CSV Tools" },
+    { id: "csv-to-json", name: "CSV to JSON", description: "Convert CSV to a JSON array", keywords: ["csv", "json", "convert"], path: "/csv-to-json", icon: "ArrowUpDown", category: "CSV Tools" },
+    { id: "json-to-csv", name: "JSON to CSV", description: "Convert a JSON array to CSV", keywords: ["json", "csv", "convert"], path: "/json-to-csv", icon: "ArrowUpDown", category: "CSV Tools" },
     { id: "csv-validator", name: "CSV Validator", description: "Validate CSV format and consistency", keywords: ["csv", "validate"], path: "/csv-tools/csv-validator", icon: "CheckCircle", category: "CSV Tools" },
     { id: "csv-merge", name: "CSV Merge", description: "Combine multiple CSV files", keywords: ["csv", "merge", "combine"], path: "/csv-tools/csv-merge", icon: "Merge", category: "CSV Tools" },
   ];
@@ -86,10 +87,13 @@ export function getAllToolsForPalette(): { category: string; tools: PaletteTool[
   const converterTools: PaletteTool[] = [
     { id: "md-to-docx", name: "Markdown to DOCX", description: "Convert Markdown to Word DOCX", keywords: ["markdown", "docx", "word", "convert"], path: "/converter-tools/md-to-docx", icon: "FileText", category: "Converter Tools" },
     { id: "markdown-html", name: "Markdown ↔ HTML", description: "Convert between Markdown and HTML", keywords: ["markdown", "html", "convert"], path: "/converter-tools/markdown-html", icon: "ArrowUpDown", category: "Converter Tools" },
-    { id: "json-toml", name: "JSON ↔ TOML", description: "Convert between JSON and TOML", keywords: ["json", "toml", "convert", "config"], path: "/converter-tools/json-toml", icon: "Code", category: "Converter Tools" },
-    { id: "json-yaml", name: "JSON ↔ YAML", description: "Convert between JSON and YAML", keywords: ["json", "yaml", "convert"], path: "/converter-tools/json-yaml", icon: "Code", category: "Converter Tools" },
-    { id: "json-xml", name: "JSON ↔ XML", description: "Convert between JSON and XML", keywords: ["json", "xml", "convert"], path: "/converter-tools/json-xml", icon: "Code", category: "Converter Tools" },
-    { id: "json-csv", name: "JSON ↔ CSV", description: "Convert between JSON arrays and CSV", keywords: ["json", "csv", "convert"], path: "/converter-tools/json-csv", icon: "Code", category: "Converter Tools" },
+    { id: "csv-to-json", name: "CSV to JSON", description: "Convert CSV to a JSON array", keywords: ["csv", "json", "convert"], path: "/csv-to-json", icon: "ArrowUpDown", category: "Converter Tools" },
+    { id: "json-to-csv", name: "JSON to CSV", description: "Convert a JSON array to CSV", keywords: ["json", "csv", "convert"], path: "/json-to-csv", icon: "ArrowUpDown", category: "Converter Tools" },
+    { id: "yaml-to-json", name: "YAML to JSON", description: "Convert YAML to JSON", keywords: ["yaml", "json", "convert"], path: "/yaml-to-json", icon: "Code", category: "Converter Tools" },
+    { id: "json-to-yaml", name: "JSON to YAML", description: "Convert JSON to YAML", keywords: ["json", "yaml", "convert"], path: "/json-to-yaml", icon: "Code", category: "Converter Tools" },
+    { id: "xml-to-json", name: "XML to JSON", description: "Convert XML to JSON", keywords: ["xml", "json", "convert"], path: "/xml-to-json", icon: "Code", category: "Converter Tools" },
+    { id: "json-to-xml", name: "JSON to XML", description: "Convert JSON to XML", keywords: ["json", "xml", "convert"], path: "/json-to-xml", icon: "Code", category: "Converter Tools" },
+    { id: "json-to-toml", name: "JSON to TOML", description: "Convert JSON to TOML and swap back", keywords: ["json", "toml", "convert", "config"], path: "/json-to-toml", icon: "Code", category: "Converter Tools" },
     { id: "color-converter", name: "Color Format Converter", description: "HEX, RGB, HSL, and CMYK", keywords: ["color", "hex", "rgb", "hsl", "cmyk", "convert"], path: "/converter-tools/color-converter", icon: "Palette", category: "Converter Tools" },
     { id: "timestamp-converter", name: "Timestamp Converter", description: "Unix, ISO, and locale dates", keywords: ["timestamp", "unix", "epoch", "iso", "date"], path: "/converter-tools/timestamp-converter", icon: "Clock", category: "Converter Tools" },
     { id: "html-markdown", name: "HTML to Markdown", description: "Convert HTML into clean Markdown", keywords: ["html", "markdown", "convert"], path: "/converter-tools/html-markdown", icon: "ArrowUpDown", category: "Converter Tools" },

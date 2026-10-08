@@ -25,8 +25,10 @@ export function ToolFeatures({ features, heading, lede }: { features: ToolFeatur
       >
         {features.map((feature) => {
           const Icon = resolveIcon(feature.icon);
+          const shared =
+            feature.title === "Your data never leaves the tab" || feature.title === "No caps or paywalls";
           return (
-            <li key={feature.title} className="bg-card p-6">
+            <li key={feature.title} className="bg-card p-6" {...(shared ? { "data-seo-chrome": "true" } : {})}>
               <Icon className="h-5 w-5 text-primary" aria-hidden="true" />
               <h3 className="mt-4 font-heading text-base font-semibold text-foreground">{feature.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{feature.body}</p>

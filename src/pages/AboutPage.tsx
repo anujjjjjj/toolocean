@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { useSEO } from "@/hooks/useSEO";
 import { buildInfoPageGraph } from "@/lib/sitePageSchema";
-import { INFO_PAGE_SEO } from "@/data/staticPageSeo";
+import { CATEGORY_PAGE_SEO, INFO_PAGE_SEO } from "@/data/staticPageSeo";
+import { TOOL_CATALOG } from "@/data/toolCatalog";
+import { LANDING_PAGES } from "@/data/landingPages";
 import { Code, InfoPageLayout, P, Section, UL } from "@/components/layout/InfoPageLayout";
 
 /**
@@ -16,6 +18,10 @@ import { Code, InfoPageLayout, P, Section, UL } from "@/components/layout/InfoPa
  * the tool count comes from the catalog, the bundle sizes from the build output
  * recorded in docs/SEO.md.
  */
+const toolCount = TOOL_CATALOG.length;
+const pageCount =
+  1 + Object.keys(CATEGORY_PAGE_SEO).length + Object.keys(INFO_PAGE_SEO).length + LANDING_PAGES.length + toolCount;
+
 const AboutPage = () => {
   useSEO({
     ...INFO_PAGE_SEO["/about"],
@@ -26,11 +32,11 @@ const AboutPage = () => {
   return (
     <InfoPageLayout
       title="About ToolOcean"
-      intro="119 browser tools that do their work on your device instead of on someone's server."
+      intro={`${toolCount} browser tools that do their work on your device instead of on someone's server.`}
     >
       <Section id="what" heading="What this is">
         <P>
-          ToolOcean is a collection of 119 free utilities across ten categories, developer tools,
+          ToolOcean is a collection of {toolCount} free utilities across ten categories, developer tools,
           PDF, image, audio, video, CSV, spreadsheet, compression, archive and format converters.
           There is no account, no upload step, no watermark, no daily quota and no paid tier.
         </P>
@@ -77,13 +83,13 @@ const AboutPage = () => {
         </P>
         <UL>
           <li>
-            Every one of the 141 pages is prerendered to static HTML at build time, so the content
+            Every one of the {pageCount} pages is prerendered to static HTML at build time, so the content
             is present before any JavaScript runs, better for slow connections, and for anything
             that reads the page without executing scripts.
           </li>
           <li>
             Each tool is a separate bundle, loaded only when you open it. Opening one tool does not
-            download the other 118. The shared entry bundle is about 130 kB compressed.
+            download the other {toolCount - 1}. The shared entry bundle is about 130 kB compressed.
           </li>
           <li>
             No analytics or fonts block the page from rendering, and the analytics tag is only
@@ -136,7 +142,7 @@ const AboutPage = () => {
 
       <Section id="start" heading="Where to start">
         <P>
-          Press <Code>Cmd</Code>+<Code>K</Code> anywhere on the site to search all 119 tools, or
+          Press <Code>Cmd</Code>+<Code>K</Code> anywhere on the site to search all {toolCount} tools, or
           browse the categories from the footer. The most fully documented tool is the{" "}
           <Link to="/json-formatter" className="text-primary underline underline-offset-4">
             JSON Formatter

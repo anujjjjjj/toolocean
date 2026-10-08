@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,9 +10,15 @@ import { Copy, Download, ArrowUpDown, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export function CsvJsonConverterTool() {
+  const { slug } = useParams();
+  const routeMode: "csv-to-json" | "json-to-csv" = slug === "json-to-csv" ? "json-to-csv" : "csv-to-json";
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
-  const [mode, setMode] = useState<"csv-to-json" | "json-to-csv">("csv-to-json");
+  const [mode, setMode] = useState<"csv-to-json" | "json-to-csv">(routeMode);
+
+  useEffect(() => {
+    setMode(routeMode);
+  }, [routeMode]);
   const [delimiter, setDelimiter] = useState(",");
   const [customDelimiter, setCustomDelimiter] = useState("");
   const [hasHeader, setHasHeader] = useState(true);

@@ -6,8 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Upload, Download, FileText, Loader2, Scissors } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { PDFDocument } from "pdf-lib";
-
 export function PdfSplitTool() {
     const [pdfFile, setPdfFile] = useState<File | null>(null);
     const [pageCount, setPageCount] = useState(0);
@@ -17,6 +15,7 @@ export function PdfSplitTool() {
     const { toast } = useToast();
 
     const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { PDFDocument } = await import("pdf-lib");
         const file = event.target.files?.[0];
         if (!file) return;
 
@@ -70,6 +69,7 @@ export function PdfSplitTool() {
     };
 
     const splitPdf = async () => {
+        const { PDFDocument } = await import("pdf-lib");
         if (!pdfFile) return;
 
         const pages = parsePageRange(pageRange, pageCount);

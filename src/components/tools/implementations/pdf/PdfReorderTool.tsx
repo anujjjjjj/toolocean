@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Upload, Download, FileText, Loader2, GripVertical, ArrowUpDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { PDFDocument } from "pdf-lib";
-
 interface PageItem {
     index: number;
     originalIndex: number;
@@ -20,6 +18,7 @@ export function PdfReorderTool() {
     const { toast } = useToast();
 
     const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { PDFDocument } = await import("pdf-lib");
         const file = event.target.files?.[0];
         if (!file) return;
 
@@ -79,6 +78,7 @@ export function PdfReorderTool() {
     };
 
     const reorderPdf = async () => {
+        const { PDFDocument } = await import("pdf-lib");
         if (!pdfFile || pages.length === 0) return;
 
         setIsProcessing(true);

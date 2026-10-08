@@ -10,7 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { Download, FileText, ListChecks, Loader2, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { downloadPdf, pdfDownloadName } from "@/lib/pdf/downloadPdf";
-import { fillPdfForm, inspectPdfForm, type FormFieldInfo, type FormValues } from "@/lib/pdf/fillPdfForm";
+import type { FormFieldInfo, FormValues } from "@/lib/pdf/fillPdfForm";
 
 export function PdfFormFillTool() {
     const { toast } = useToast();
@@ -28,6 +28,7 @@ export function PdfFormFillTool() {
         if (!next) return;
         try {
             const data = new Uint8Array(await next.arrayBuffer());
+            const { inspectPdfForm } = await import("@/lib/pdf/fillPdfForm");
             const found = await inspectPdfForm(data);
             setFile(next);
             setBytes(data);
@@ -53,6 +54,7 @@ export function PdfFormFillTool() {
         if (!file || !bytes) return;
         setBusy(true);
         try {
+            const { fillPdfForm } = await import("@/lib/pdf/fillPdfForm");
             const filled = await fillPdfForm(bytes, values, flatten);
             downloadPdf(filled, pdfDownloadName(file.name, flatten ? "filled-flat" : "filled"));
             toast({

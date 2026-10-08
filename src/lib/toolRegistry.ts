@@ -483,5 +483,45 @@ export const toolRegistry: Record<string, { run: (input: string) => Promise<stri
   "zip-preview": { run: async () => { throw new Error("This tool requires file input. Use it from Archive tools."); } },
 };
 
+// Directional ids share the run that the old combined tool used. Saved workflows
+// still name csv-json-converter, yaml-json-converter, and xml-json-converter.
+toolRegistry["csv-to-json"] = toolRegistry["csv-json-converter"];
+toolRegistry["yaml-to-json"] = toolRegistry["yaml-json-converter"];
+toolRegistry["xml-to-json"] = toolRegistry["xml-json-converter"];
+toolRegistry["json-to-csv"] = {
+  run: async (input: string) => {
+    const data = JSON.parse(input);
+    if (!Array.isArray(data) || data.length === 0) throw new Error("JSON must be an array of objects");
+    const headers = Object.keys(data[0] as Record<string, unknown>);
+    const rows = data.map((row) =>
+      headers
+        .map((header) => {
+          const value = String((row as Record<string, unknown>)[header] ?? "");
+          return value.includes(",") ? `"${value.replace(/"/g, '""')}"` : value;
+        })
+        .join(","),
+    );
+    return [headers.join(","), ...rows].join("\n");
+  },
+};
+toolRegistry["json-to-yaml"] = {
+  run: async (input: string) => {
+    const yaml = await import("js-yaml");
+    return yaml.dump(JSON.parse(input), { indent: 2, lineWidth: 120, noRefs: true, sortKeys: false });
+  },
+};
+toolRegistry["json-to-xml"] = {
+  run: async (input: string) => {
+    const { jsonToXml } = await import("@/lib/xmlJson");
+    return jsonToXml(input);
+  },
+};
+toolRegistry["json-to-toml"] = {
+  run: async (input: string) => {
+    const { stringify } = await import("smol-toml");
+    return stringify(JSON.parse(input));
+  },
+};
+
 // Component registry for tool page rendering
 

@@ -6,17 +6,10 @@ import { Upload, Download, FileText, Loader2, Shrink } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import * as pdfjsLib from "pdfjs-dist";
-
-// Same worker wiring as PdfToImagesTool, rasterising needs pdf.js to render.
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-    "pdfjs-dist/build/pdf.worker.min.mjs",
-    import.meta.url,
-).toString();
+import { useToast } from "@/hooks/use-toast";
+import { loadPdfJs, prefetchPdfJs, prefetchPdfLib } from "@/lib/pdf/lazyPdf";
 
 type CompressionMode = "lossless" | "raster";
-import { useToast } from "@/hooks/use-toast";
-import { PDFDocument } from "pdf-lib";
 
 export function PdfCompressTool() {
     const [pdfFile, setPdfFile] = useState<File | null>(null);
@@ -62,6 +55,7 @@ export function PdfCompressTool() {
      * because it is the only mode that cannot lose anything.
      */
     const compressLossless = async (bytes: ArrayBuffer) => {
+        const { PDFDocument } = await import("pdf-lib");
         const pdfDoc = await PDFDocument.load(bytes);
         pdfDoc.setTitle("");
         pdfDoc.setAuthor("");
@@ -85,6 +79,8 @@ export function PdfCompressTool() {
      * for a scan, which was already pixels, and a bad one for a text document.
      */
     const compressRaster = async (bytes: ArrayBuffer, onPage: (n: number, total: number) => void) => {
+        const pdfjsLib = await loadPdfJs();
+        const { PDFDocument } = await import("pdf-lib");
         const source = await pdfjsLib.getDocument({ data: bytes }).promise;
         const out = await PDFDocument.create();
         // Renders at 144 dpi rather than the 72 dpi default, so the result still
@@ -219,6 +215,14 @@ export function PdfCompressTool() {
                     <CardContent className="pt-6">
                         <div
                             className="flex flex-col items-center justify-center py-10 cursor-pointer"
+                            onMouseEnter={() => {
+                                prefetchPdfLib();
+                                prefetchPdfJs();
+                            }}
+                            onFocus={() => {
+                                prefetchPdfLib();
+                                prefetchPdfJs();
+                            }}
                             onClick={() => fileInputRef.current?.click()}
                         >
                             <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center mb-4">
@@ -234,6 +238,14 @@ export function PdfCompressTool() {
                             type="file"
                             accept=".pdf,application/pdf"
                             onChange={handleFileSelect}
+                            onMouseEnter={() => {
+                                prefetchPdfLib();
+                                prefetchPdfJs();
+                            }}
+                            onFocus={() => {
+                                prefetchPdfLib();
+                                prefetchPdfJs();
+                            }}
                             className="hidden"
                         />
                     </CardContent>

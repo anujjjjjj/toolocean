@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Upload, Download, X, FileImage, GripVertical, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { PDFDocument } from "pdf-lib";
-
 interface ImageFile {
     id: string;
     file: File;
@@ -99,6 +97,7 @@ export function ImagesToPdfTool() {
     };
 
     const convertToPdf = async () => {
+        const { PDFDocument } = await import("pdf-lib");
         if (images.length === 0) {
             toast({
                 title: "No images",

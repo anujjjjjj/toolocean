@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Download, FileText, Loader2, PenLine, Trash2, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { applySignatureImage, readPdfPageCount } from "@/lib/pdf/signPdf";
 import { downloadPdf, pdfDownloadName } from "@/lib/pdf/downloadPdf";
 
 /**
@@ -101,6 +100,7 @@ export function PdfSignTool() {
         }
         try {
             const bytes = new Uint8Array(await next.arrayBuffer());
+            const { readPdfPageCount } = await import("@/lib/pdf/signPdf");
             const count = await readPdfPageCount(bytes);
             setFile(next);
             setPdfBytes(bytes);
@@ -221,6 +221,7 @@ export function PdfSignTool() {
         if (!file || !pdfBytes || !signaturePng) return;
         setBusy(true);
         try {
+            const { applySignatureImage } = await import("@/lib/pdf/signPdf");
             const bytes = await applySignatureImage(pdfBytes, signaturePng, {
                 pageIndex,
                 xRatio,

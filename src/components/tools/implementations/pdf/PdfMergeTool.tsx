@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Upload, X, Download, FileText, GripVertical, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { PDFDocument } from "pdf-lib";
-
 interface PdfFile {
     id: string;
     file: File;
@@ -21,6 +19,7 @@ export function PdfMergeTool() {
     const { toast } = useToast();
 
     const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { PDFDocument } = await import("pdf-lib");
         const files = event.target.files;
         if (!files) return;
 
@@ -89,6 +88,7 @@ export function PdfMergeTool() {
     };
 
     const mergePdfs = async () => {
+        const { PDFDocument } = await import("pdf-lib");
         if (pdfFiles.length < 2) {
             toast({
                 title: "Need more files",

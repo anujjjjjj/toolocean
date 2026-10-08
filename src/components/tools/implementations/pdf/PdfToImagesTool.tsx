@@ -14,14 +14,8 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import * as pdfjsLib from "pdfjs-dist";
 import JSZip from "jszip";
-
-// Configure pdfjs worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-    "pdfjs-dist/build/pdf.worker.min.mjs",
-    import.meta.url,
-).toString();
+import { loadPdfJs, prefetchPdfJs } from "@/lib/pdf/lazyPdf";
 
 interface ConvertedImage {
     pageNumber: number;
@@ -53,6 +47,7 @@ export function PdfToImagesTool() {
 
             try {
                 const arrayBuffer = await pdfFile.arrayBuffer();
+                const pdfjsLib = await loadPdfJs();
                 const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
                 setTotalPages(pdf.numPages);
             } catch (error) {
@@ -121,6 +116,7 @@ export function PdfToImagesTool() {
 
         try {
             const arrayBuffer = await pdfFile.arrayBuffer();
+            const pdfjsLib = await loadPdfJs();
             const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
             const pagesToConvert = parsePageRange(pageRange, totalPages);
@@ -265,6 +261,8 @@ export function PdfToImagesTool() {
                     <CardContent className="pt-6">
                         <div
                             className="flex flex-col items-center justify-center py-10 cursor-pointer"
+                            onMouseEnter={() => prefetchPdfJs()}
+                            onFocus={() => prefetchPdfJs()}
                             onClick={() => fileInputRef.current?.click()}
                         >
                             <div className="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center mb-4">

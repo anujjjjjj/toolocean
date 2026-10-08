@@ -881,60 +881,117 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   // ---------------------------------------------------------------------------
   // Developer tools, Data & Format Converters (/tools/)
   // ---------------------------------------------------------------------------
-  "csv-json-converter": {
-    title: "CSV to JSON Converter: Two-Way, with Custom Delimiters",
+  "csv-to-json": {
+    title: "CSV to JSON – Delimiters and a Header Row",
     description:
-      "Convert CSV to JSON and JSON back to CSV with configurable delimiters and header handling. Free, instant, and processed entirely inside your browser.",
-    keywords: ["csv to json", "json to csv", "csv json converter", "convert csv online", "csv parser", "csv to json array"],
+      "Open a CSV on this device, or paste it, and turn each row into a JSON object. Choose comma, semicolon, tab, pipe, or your own delimiter, and say whether row one is the keys.",
+    keywords: ["csv to json", "csv to json array", "csv parser", "semicolon csv to json", "convert csv locally"],
     faqs: [
-      privacyFaq("data"),
+      privacyFaq("CSV"),
       {
-        question: "How are CSV headers handled?",
+        question: "When does the first row become keys?",
         answer:
-          "The first row becomes the object keys, producing an array of objects. Converting back writes those keys as the header row, so a round trip preserves the structure.",
+          "Leave the header switch on and row one is the property names. Switch it off and the keys are column_1, column_2, and so on, which is what you want for a file that is only values.",
       },
       {
-        question: "What happens to commas inside a value?",
+        question: "Can I point this at a semicolon export?",
         answer:
-          "Values containing the delimiter, quotes, or newlines are wrapped in double quotes with internal quotes doubled, following RFC 4180 so spreadsheets read the file correctly.",
+          "Yes. The delimiter list includes semicolon, tab, and pipe, plus a box for a character the list does not have. European spreadsheet exports usually want the semicolon.",
       },
     ],
   },
-  "yaml-json-converter": {
-    title: "YAML to JSON Converter: Two-Way with Validation",
+  "json-to-csv": {
+    title: "JSON to CSV – An Array of Objects",
     description:
-      "Convert YAML to JSON and JSON to YAML with validation and clear error messages. Ideal for Kubernetes manifests, CI pipelines, and application config files.",
-    keywords: ["yaml to json", "json to yaml", "yaml converter", "convert yaml online", "yaml parser", "kubernetes yaml to json"],
+      "Paste a JSON array of objects, or open a .json file locally, and download CSV. Keys on the first object become the header line. A cell that contains the delimiter is quoted.",
+    keywords: ["json to csv", "json array to csv", "json to spreadsheet", "convert json to csv locally"],
     faqs: [
-      privacyFaq("configuration"),
+      privacyFaq("JSON"),
       {
-        question: "Why does my YAML indentation cause errors?",
+        question: "What if later objects have extra keys?",
         answer:
-          "YAML forbids tabs for indentation and requires consistent spacing per nesting level. A single stray tab or misaligned key breaks the whole document.",
+          "The header is taken from the first object. A later key that the first object never had is dropped from the row. Put every column on the first object, even if the value is empty.",
       },
       {
-        question: "Do YAML comments survive the conversion?",
+        question: "Why did a nested object become useless text?",
         answer:
-          "No. JSON has no comment syntax, so comments are lost converting to JSON and cannot be recovered on the way back. Keep the original file if the comments matter.",
+          "CSV has no nesting. Flatten the document with the JSON flattener first, then come back and turn the flat array into rows.",
       },
     ],
   },
-  "xml-json-converter": {
-    title: "XML to JSON Converter: Two-Way with Attribute Handling",
+  "yaml-to-json": {
+    title: "YAML to JSON – Parse, Then Pretty-Print",
     description:
-      "Convert XML to JSON and JSON to XML, with control over how attributes and text nodes are mapped. Free online converter that keeps your documents local.",
-    keywords: ["xml to json", "json to xml", "xml json converter", "convert xml online", "xml parser", "xml attributes to json"],
+      "Load a YAML file or paste a manifest and see JSON if it parses. A badge tells you the document was accepted. Comments are not carried into the JSON.",
+    keywords: ["yaml to json", "kubernetes yaml to json", "yaml parser", "convert yaml locally"],
     faqs: [
-      privacyFaq("document"),
+      privacyFaq("YAML"),
       {
-        question: "How are XML attributes represented in JSON?",
+        question: "Why did a tab break the whole file?",
         answer:
-          "Attributes are mapped to prefixed keys (commonly @name) so they stay distinguishable from child elements, and element text is placed in a dedicated text key.",
+          "YAML indentation is spaces. One tab, or a level that does not line up with its parent, makes the parser stop. The error text on the page is the parser's own message.",
       },
       {
-        question: "Why is XML to JSON not perfectly reversible?",
+        question: "Where did the comments go?",
         answer:
-          "XML distinguishes attributes, elements, ordering, and namespaces; JSON has only objects and arrays. Some structure is inevitably flattened, so a round trip may not be byte-identical.",
+          "JSON cannot store them. The original YAML is the file to keep if those notes still matter. This page does not invent a comment field.",
+      },
+    ],
+  },
+  "json-to-yaml": {
+    title: "JSON to YAML – Config You Can Read",
+    description:
+      "Turn JSON into YAML with a two-space indent. Handy for a manifest you would rather edit by hand. The swap control on the page still accepts YAML if that is what you pasted.",
+    keywords: ["json to yaml", "json to kubernetes yaml", "convert json to yaml locally"],
+    faqs: [
+      privacyFaq("JSON"),
+      {
+        question: "Will yes and no stay strings?",
+        answer:
+          "A JSON string stays a string in the YAML this page writes. A later tool that still speaks YAML 1.1 might read an unquoted yes as a boolean if you edit it by hand. Quote those words if you are unsure.",
+      },
+      {
+        question: "Are keys sorted?",
+        answer:
+          "No. They stay in the order the JSON object had, which is the order you will see in the YAML.",
+      },
+    ],
+  },
+  "xml-to-json": {
+    title: "XML to JSON – Attributes Stay Optional",
+    description:
+      "Open an XML file locally or paste it. Attributes can be kept as their own keys, and repeated elements can be forced into arrays. The page shows an error if the XML does not parse.",
+    keywords: ["xml to json", "xml attributes to json", "convert xml locally", "xml parser"],
+    faqs: [
+      privacyFaq("XML"),
+      {
+        question: "What does the attribute switch change?",
+        answer:
+          "On, attributes are kept distinct from child elements so a name=\"x\" does not disappear into the element text. Off, you get a simpler tree and you lose that distinction.",
+      },
+      {
+        question: "Why force arrays?",
+        answer:
+          "A single child is easy to mistake for one object, until a second sibling appears and the shape changes. Explicit arrays keep one child and many children in the same shape.",
+      },
+    ],
+  },
+  "json-to-xml": {
+    title: "JSON to XML – Objects Become Elements",
+    description:
+      "Paste JSON and download XML. Objects become elements, arrays become repeated tags, and this direction does not invent attributes. Open the XML to JSON page if you are starting from markup.",
+    keywords: ["json to xml", "json to xml elements", "convert json to xml locally"],
+    faqs: [
+      privacyFaq("JSON"),
+      {
+        question: "Can I choose attribute names on the way out?",
+        answer:
+          "No. This direction writes elements. If the JSON already uses a convention such as keys that start with @, that convention is not turned back into attributes here.",
+      },
+      {
+        question: "Why is a round trip not the same file?",
+        answer:
+          "Element order, namespaces, and the attribute-versus-child choice do not all fit in JSON. Expect a useful document, not a byte match.",
       },
     ],
   },
@@ -1537,34 +1594,34 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     ],
   },
   "pdf-sign": {
-    title: "Sign a PDF Visually, With No Upload",
+    title: "Sign PDF Online Free – Draw or Type, No Upload",
     description:
-      "Draw, type, or place a signature image on one PDF page and download the copy. A visual mark only, made in the browser, with no certificate and no account.",
-    keywords: ["sign pdf", "sign pdf without uploading", "add signature to pdf", "visual pdf signature", "draw signature on pdf"],
+      "Draw or type a signature, or place a PNG, on one page and download. The mark is visual ink only, with no certificate, and the PDF stays in this tab.",
+    keywords: ["sign pdf online free", "sign pdf", "add signature to pdf", "draw signature on pdf", "visual pdf signature"],
   },
   "pdf-encrypt": {
-    title: "Encrypt a PDF Offline, No Account",
+    title: "Password Protect PDF (AES-256) – No Upload",
     description:
-      "Set an open password and an optional owner password on a PDF, with permission flags, using AES-256 in the browser. The file stays on the device.",
-    keywords: ["password protect pdf", "encrypt pdf", "encrypt pdf offline", "pdf owner password", "aes-256 pdf"],
+      "Password-protect a PDF with AES-256 in this tab. Set an open password and optional permission flags, then download. The file and password stay on the device.",
+    keywords: ["password protect pdf", "encrypt pdf", "aes-256 pdf", "pdf owner password", "protect pdf no upload"],
   },
   "pdf-unlock": {
-    title: "Unlock Your Own PDF, No Upload",
+    title: "Remove PDF Password You Know – No Upload",
     description:
-      "Remove a password you already know, or clear owner restrictions on a PDF that opens, and download an unencrypted copy. No password search.",
-    keywords: ["unlock pdf", "remove pdf password", "decrypt pdf offline", "remove pdf restrictions", "unlock pdf no upload"],
+      "Remove a PDF password you already know, or clear owner restrictions when the file already opens. One attempt, no wordlist, and the copy downloads from this tab.",
+    keywords: ["remove pdf password", "unlock pdf", "decrypt pdf", "remove pdf restrictions", "unlock pdf no upload"],
   },
   "pdf-metadata": {
-    title: "View and Strip PDF Metadata Offline",
+    title: "Edit PDF Metadata Online – No Upload",
     description:
-      "See the title, author, producer, dates, and keywords stored in a PDF, then edit those fields or strip them and download. Inspection stays in the browser.",
-    keywords: ["pdf metadata viewer", "remove pdf metadata", "pdf author remover", "strip pdf metadata", "pdf xmp viewer"],
+      "Edit PDF metadata in this tab: title, author, producer, dates, and keywords. Change the fields you want or strip them, then download. The file is not uploaded.",
+    keywords: ["edit pdf metadata", "pdf metadata viewer", "remove pdf metadata", "strip pdf metadata", "pdf document properties"],
   },
   "pdf-form-fill": {
-    title: "Fill a PDF Form in the Browser",
+    title: "Fill PDF Form Online – No Upload, Flatten",
     description:
-      "Fill text, checkbox, radio, and dropdown fields on an AcroForm PDF, optionally flatten them, and download. The form stays on your device.",
-    keywords: ["fill pdf form", "fill pdf form offline", "flatten pdf form", "acroform filler", "fillable pdf no upload"],
+      "Fill a PDF form online when it is already an AcroForm. Text, checkbox, radio, and dropdown. Flatten the answers or keep the fields editable. Nothing uploads.",
+    keywords: ["fill pdf form online", "fill pdf form", "flatten pdf form", "acroform filler", "fillable pdf no upload"],
   },
   "pdf-reorder": {
     title: "Reorder PDF Pages Online: Rearrange & Delete Pages",
@@ -1589,25 +1646,6 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   // ---------------------------------------------------------------------------
   // CSV tools (/csv-tools/)
   // ---------------------------------------------------------------------------
-  "csv-converter": {
-    title: "CSV to JSON Converter Online: Two-Way & Free",
-    description:
-      "Convert CSV to JSON or JSON back to CSV with custom delimiters and header handling. Free online converter that processes your file entirely in the browser.",
-    keywords: ["csv to json converter", "json to csv online", "csv converter free", "convert csv file", "csv to json array"],
-    faqs: [
-      privacyFaq("CSV"),
-      {
-        question: "Which delimiters are supported?",
-        answer:
-          "Comma, semicolon, tab, and pipe. Semicolons matter for CSV exported by European spreadsheet locales, where the comma is the decimal separator.",
-      },
-      {
-        question: "How are quoted fields handled?",
-        answer:
-          "Quoted fields containing commas, newlines, or escaped quotes are parsed per RFC 4180, so values are not split in the wrong place.",
-      },
-    ],
-  },
   "csv-validator": {
     title: "CSV Validator: Check Format, Headers & Row Consistency",
     description:
@@ -2226,79 +2264,22 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       },
     ],
   },
-  "json-toml": {
-    title: "JSON to TOML Converter: Two-Way & Free Online",
+  "json-to-toml": {
+    title: "JSON to TOML – Config, Still Swappable",
     description:
-      "Convert JSON to TOML and TOML back to JSON for Cargo, pyproject, and app configuration files. Free two-way converter with no upload.",
-    keywords: ["json to toml", "toml to json", "toml converter online", "convert config to toml", "cargo toml converter"],
+      "Turn JSON into TOML for Cargo, pyproject, or an app config, and swap the same page back toward JSON. Comments in TOML disappear on that trip because JSON has nowhere to put them.",
+    keywords: ["json to toml", "toml to json", "cargo toml converter", "pyproject toml", "convert config to toml"],
     faqs: [
       privacyFaq("configuration"),
       {
-        question: "Do TOML comments survive a round trip?",
+        question: "Is there a separate TOML-to-JSON address?",
         answer:
-          "No. TOML allows comments and JSON has nowhere to put them, so they are discarded in the conversion and there is no way to rebuild them afterwards. Convert a copy when the comments still matter.",
+          "No. This is the one page. The swap button flips the boxes. The address stays /json-to-toml so there is a single canonical URL.",
       },
       {
-        question: "How are nested objects represented in TOML?",
+        question: "How are tables written?",
         answer:
-          "Nested objects become table headers such as [tool.poetry], and arrays of objects become [[array]] table blocks.",
-      },
-    ],
-  },
-  "json-yaml": {
-    title: "JSON to YAML Converter: Two-Way & Free Online",
-    description:
-      "Convert JSON to YAML and YAML back to JSON with validation. Ideal for Kubernetes manifests, GitHub Actions workflows, and Docker Compose files.",
-    keywords: ["json to yaml", "yaml to json converter", "convert yaml online", "kubernetes json to yaml", "yaml json two way"],
-    faqs: [
-      privacyFaq("configuration"),
-      {
-        question: "Why is YAML preferred for config files?",
-        answer:
-          "It supports comments, needs fewer punctuation characters, and reads more naturally for hand-edited files. Which is why most infrastructure tooling standardised on it.",
-      },
-      {
-        question: "What should I watch for converting to YAML?",
-        answer:
-          "Strings that look like booleans or numbers (no, yes, 1.10) can be coerced by YAML 1.1 parsers. Quote them explicitly to keep them as strings.",
-      },
-    ],
-  },
-  "json-xml": {
-    title: "JSON to XML Converter: Two-Way & Free Online",
-    description:
-      "Convert JSON to XML and XML back to JSON, with sensible handling of attributes and text nodes. Free online converter that keeps documents on your device.",
-    keywords: ["json to xml", "xml to json converter", "convert xml online free", "json xml two way", "xml data converter"],
-    faqs: [
-      privacyFaq("document"),
-      {
-        question: "How are JSON arrays written as XML?",
-        answer:
-          "Each array element becomes a repeated child element with the same tag name, which is the conventional XML representation of a list.",
-      },
-      {
-        question: "Why can a round trip change the structure?",
-        answer:
-          "XML distinguishes attributes, elements, and ordering while JSON does not, so some of that detail is flattened in one direction and cannot be reconstructed in the other.",
-      },
-    ],
-  },
-  "json-csv": {
-    title: "JSON to CSV Converter: Two-Way & Free Online",
-    description:
-      "Convert a JSON array of objects into CSV, or turn CSV rows back into JSON. Free two-way converter with RFC 4180 quoting and no upload.",
-    keywords: ["json to csv", "csv to json converter", "json array to csv", "convert json to spreadsheet", "json csv online"],
-    faqs: [
-      privacyFaq("data"),
-      {
-        question: "What JSON shape is required?",
-        answer:
-          "An array of flat objects. Keys across all objects form the header row, and missing keys are written as empty cells.",
-      },
-      {
-        question: "How do nested values convert?",
-        answer:
-          "CSV is flat, so flatten nested objects to dot-notation keys first with the JSON Flattener, then convert the result here.",
+          "A nested object becomes a [table] header. An array of objects becomes [[table]] blocks. That is smol-toml's ordinary output, not a custom dialect.",
       },
     ],
   },

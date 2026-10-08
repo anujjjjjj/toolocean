@@ -56,15 +56,24 @@ function relatednessScore(tool: CatalogTool, candidate: CatalogTool): number {
 }
 
 function deriveRelated(tool: CatalogTool, limit = 6): RelatedToolLink[] {
-  return TOOL_CATALOG.map((candidate) => ({ candidate, score: relatednessScore(tool, candidate) }))
+  const seen = new Set<string>();
+  const links: RelatedToolLink[] = [];
+  const ranked = TOOL_CATALOG.map((candidate) => ({ candidate, score: relatednessScore(tool, candidate) }))
     .filter((entry) => entry.score > 0)
-    .sort((a, b) => b.score - a.score || a.candidate.name.localeCompare(b.candidate.name))
-    .slice(0, limit)
-    .map(({ candidate }) => ({
+    .sort((a, b) => b.score - a.score || a.candidate.name.localeCompare(b.candidate.name));
+
+  for (const { candidate } of ranked) {
+    const path = toolPath(candidate);
+    if (seen.has(path)) continue;
+    seen.add(path);
+    links.push({
       name: candidate.name,
-      path: toolPath(candidate),
+      path,
       description: candidate.description,
-    }));
+    });
+    if (links.length === limit) break;
+  }
+  return links;
 }
 
 /**

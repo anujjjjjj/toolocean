@@ -1,11 +1,12 @@
 import { Suspense, lazy, useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { ConsentBanner } from "@/components/analytics/ConsentBanner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CommandPaletteProvider, useCommandPalette } from "@/contexts/CommandPaletteContext";
 import { LegacyToolRedirect } from "@/components/routing/LegacyToolRedirect";
 import { CATEGORY_ROUTE } from "@/data/toolCatalog";
 import { LANDING_PAGES } from "@/data/landingPages";
+import { SLUG_REDIRECTS } from "@/data/slugRedirects";
 import Index from "./pages/Index";
 // Eager: ToolRoutePage and LegacyToolRedirect import it statically anyway.
 import NotFound from "./pages/NotFound";
@@ -167,6 +168,10 @@ export function AppRoutes() {
             */}
             {LANDING_PAGES.map((page) => (
               <Route key={page.slug} path={`/${page.slug}`} element={<LandingRoutePage />} />
+            ))}
+
+            {Object.entries(SLUG_REDIRECTS).map(([from, to]) => (
+              <Route key={from} path={`/${from}`} element={<Navigate to={to} replace />} />
             ))}
 
             {/*

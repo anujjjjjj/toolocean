@@ -291,66 +291,6 @@
       ]
     },
     {
-      "id": "csv-json-converter",
-      "name": "CSV ⇄ JSON Converter",
-      "description": "Convert between CSV and JSON formats with customizable delimiters",
-      "category": "data-converters",
-      "icon": "FileSpreadsheet",
-      "inputs": [
-        "text"
-      ],
-      "outputs": [
-        "text"
-      ],
-      "keywords": [
-        "csv",
-        "json",
-        "convert",
-        "delimiter",
-        "data"
-      ]
-    },
-    {
-      "id": "yaml-json-converter",
-      "name": "YAML ⇄ JSON Converter",
-      "description": "Convert between YAML and JSON formats with validation",
-      "category": "data-converters",
-      "icon": "FileText",
-      "inputs": [
-        "text"
-      ],
-      "outputs": [
-        "text"
-      ],
-      "keywords": [
-        "yaml",
-        "json",
-        "convert",
-        "format",
-        "data"
-      ]
-    },
-    {
-      "id": "xml-json-converter",
-      "name": "XML ⇄ JSON Converter",
-      "description": "Convert between XML and JSON formats with attribute handling",
-      "category": "data-converters",
-      "icon": "FileCode",
-      "inputs": [
-        "text"
-      ],
-      "outputs": [
-        "text"
-      ],
-      "keywords": [
-        "xml",
-        "json",
-        "convert",
-        "format",
-        "data"
-      ]
-    },
-    {
       "id": "json-schema-validator",
       "name": "JSON Schema Validator",
       "description": "Validate JSON data against JSON Schema with detailed error reporting",

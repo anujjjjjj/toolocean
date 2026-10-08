@@ -1,6 +1,6 @@
 # ToolOcean
 
-**119 file and developer tools that run entirely in your browser.** No upload, no
+**118 file and developer tools that run entirely in your browser.** No upload, no
 account, no server. [toolocean.co](https://toolocean.co)
 
 Most online file tools work by uploading your document to a server, processing it
@@ -61,7 +61,7 @@ collapsing the app back into one large entry chunk.
 
 **One tool per chunk.** `src/lib/lazyToolRegistry.ts` maps each slug to its own
 lazy import, so a visitor downloads the page shell plus exactly one tool rather
-than all 119 plus pdf-lib, pdfjs, xlsx and docx.
+than all 118 plus pdf-lib, pdfjs, xlsx and docx.
 
 **The tools render only after mount.** The prerender runs in Node, where Canvas,
 FileReader and Web Audio do not exist. `ToolWorkbench` renders a correctly-sized
@@ -70,7 +70,7 @@ render identical, so hydration is clean and there is no layout shift.
 
 **Content is derived, not duplicated.** `toolContentResolver.ts` layers
 hand-authored copy over per-tool SEO over category defaults, so every page gets real
-titles, FAQs and internal links without 119 copies of the same wiring.
+titles, FAQs and internal links without a copy of the wiring for every tool.
 
 ## Running it
 

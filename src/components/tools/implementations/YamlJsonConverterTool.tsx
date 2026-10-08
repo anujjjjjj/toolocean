@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,9 +9,15 @@ import { useToast } from "@/hooks/use-toast";
 import * as yaml from 'js-yaml';
 
 export function YamlJsonConverterTool() {
+  const { slug } = useParams();
+  const routeMode: "yaml-to-json" | "json-to-yaml" = slug === "json-to-yaml" ? "json-to-yaml" : "yaml-to-json";
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
-  const [mode, setMode] = useState<"yaml-to-json" | "json-to-yaml">("yaml-to-json");
+  const [mode, setMode] = useState<"yaml-to-json" | "json-to-yaml">(routeMode);
+
+  useEffect(() => {
+    setMode(routeMode);
+  }, [routeMode]);
   const [isValid, setIsValid] = useState<boolean | null>(null);
   const [error, setError] = useState("");
   const { toast } = useToast();
