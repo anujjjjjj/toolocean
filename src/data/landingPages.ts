@@ -57,6 +57,11 @@ export interface LandingPage {
     rows: LandingComparisonRow[];
   };
   faqs: ToolFaqEntry[];
+  /** When set, the page renders that tool with the ceiling already chosen. */
+  embed?: { tool: "image-compressor" | "pdf-compress"; targetBytes: number };
+  /** Key in targetSizeMeasurements.json. The visible byte counts are read from that file. */
+  measurementKey?: string;
+  howTo?: { name: string; steps: { title: string; body: string }[] };
 }
 
 /** Shared closing paragraph fragments, so the honesty stays consistent. */
@@ -453,6 +458,220 @@ export const LANDING_PAGES: LandingPage[] = [
         question: "Can it do multiple sheets?",
         answer:
           "The CSV to Excel conversion produces a single sheet, since a CSV is a single table by definition. Going the other way, the Excel tools read every sheet in a workbook and let you pick.",
+      },
+    ],
+  },
+  {
+    slug: "compress-pdf-to-100kb",
+    seo: {
+      title: "Compress PDF to 100 KB – No Upload",
+      description:
+        "Fit a PDF under 100 KB in the browser. Lossless first when that is enough, otherwise the pages become JPEG pictures. 1 KB is 1024 bytes. Nothing is uploaded.",
+      keywords: ["compress pdf to 100kb", "pdf under 100kb", "reduce pdf to 100 kb"],
+    },
+    h1: "Compress a PDF to 100 KB",
+    footerLabel: "PDF to 100 KB",
+    lede: "The control below is already set to 100 KB, which is 102,400 bytes. A lossless rewrite is tried first. Rasterising is only the fallback, and it means the text can no longer be selected.",
+    tools: ["pdf-compress"],
+    embed: { tool: "pdf-compress", targetBytes: 100 * 1024 },
+    measurementKey: "compress-pdf-to-100kb",
+    howTo: {
+      name: "How to compress a PDF to 100 KB",
+      steps: [
+        { title: "Open the file", body: "Choose a PDF from this device. The bytes stay in the tab." },
+        { title: "Leave the ceiling at 100 KB", body: "The chip is already selected. 1 KB means 1024 bytes, so the ceiling is 102400 bytes." },
+        { title: "Download and read the note", body: "If the note says the text is still selectable, the lossless rewrite fit. If it says pages were rasterised, the copy is pictures." },
+      ],
+    },
+    sections: [
+      {
+        heading: "What 100 KB is on this page",
+        body: [
+          "The button labelled 100 KB means 100 times 1024 bytes, not 100 times 1000. A form that asks for 100 KB and then rejects 100000-byte files is using the binary unit, and that is the unit written next to the field.",
+          "The fixture for this address is a one-page letter set in Helvetica. The measured result is printed under the tool, from the same JSON the build stores, rather than typed in by hand. A letter that small usually fits a lossless rewrite, so the text stays selectable. A photograph embedded in a PDF will not, and the 200 KB page records that other path.",
+        ],
+      },
+      {
+        heading: "When the file cannot stay text",
+        body: [
+          "If stripping metadata still leaves the file over 102400 bytes, the pages are drawn and saved as JPEG. That is the only way this browser tool reaches a hard ceiling on a scan. The download note says the text is no longer selectable. Do not use that copy for a contract you still need to search.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is 100 KB exactly 100000 bytes?",
+        answer: "No. On this page 1 KB is 1024 bytes, so 100 KB is 102400 bytes. The note under the tool states the unit.",
+      },
+      {
+        question: "Will the words still be selectable?",
+        answer: "Only when the lossless rewrite already fits under 102400 bytes. The result note says which path ran. A raster copy is pictures of the pages.",
+      },
+    ],
+  },
+  {
+    slug: "compress-pdf-to-200kb",
+    seo: {
+      title: "Compress PDF to 200 KB – No Upload",
+      description:
+        "Fit a PDF under 200 KB in the browser. A photo-heavy file is rasterised when a lossless rewrite cannot fit. Text in that copy is not selectable. Nothing is uploaded.",
+      keywords: ["compress pdf to 200kb", "pdf under 200kb", "reduce pdf size to 200 kb"],
+    },
+    h1: "Compress a PDF to 200 KB",
+    footerLabel: "PDF to 200 KB",
+    lede: "200 KB here is 204,800 bytes. The tool opens on that chip. A one-page noise photograph used as the fixture does not fit a lossless pass, so the measured copy is a raster and the text is not selectable.",
+    tools: ["pdf-compress"],
+    embed: { tool: "pdf-compress", targetBytes: 200 * 1024 },
+    measurementKey: "compress-pdf-to-200kb",
+    howTo: {
+      name: "How to compress a PDF to 200 KB",
+      steps: [
+        { title: "Choose the PDF", body: "The file is read locally. There is no upload step." },
+        { title: "Keep 200 KB selected", body: "That chip is the default on this address. Other ceilings live on the main compress page." },
+        { title: "Read whether text survived", body: "Lossless means you can still select the words. Raster means the pages are JPEG pictures under the ceiling." },
+      ],
+    },
+    sections: [
+      {
+        heading: "Why this page is not the 100 KB page",
+        body: [
+          "The ceiling is twice as large, 204800 bytes, and the fixture is different on purpose. This one embeds a noisy JPEG that starts well above 200 KB. The engine rasterises it. The byte count under the tool is that run, not a promise about your file.",
+          "A text letter will often still take the lossless path at this ceiling, the same way it does at 100 KB. The note on the download is the authority for the file you just made.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Does 200 KB mean 200000 bytes?",
+        answer: "No. 1 KB is 1024 bytes, so the chip is 204800 bytes.",
+      },
+      {
+        question: "Why did my scan become unselectable?",
+        answer: "The lossless rewrite did not fit under 204800 bytes, so each page was painted and stored as a JPEG. That is stated in the result note.",
+      },
+    ],
+  },
+  {
+    slug: "compress-image-to-20kb",
+    seo: {
+      title: "Compress Image to 20 KB – No Upload",
+      description:
+        "Shrink a JPEG toward 20 KB in the browser. Quality is searched, then the picture is scaled if it still will not fit. 1 KB is 1024 bytes. Nothing is uploaded.",
+      keywords: ["compress image to 20kb", "reduce image to 20kb", "jpeg under 20 kb"],
+    },
+    h1: "Compress an image to 20 KB",
+    footerLabel: "Image to 20 KB",
+    lede: "20 KB is 20,480 bytes. The compressor opens on that chip and writes JPEG unless you switch it to WebP. A noisy 1200 by 800 fixture had to be scaled down before it fit.",
+    tools: ["image-compressor"],
+    embed: { tool: "image-compressor", targetBytes: 20 * 1024 },
+    measurementKey: "compress-image-to-20kb",
+    howTo: {
+      name: "How to compress an image to 20 KB",
+      steps: [
+        { title: "Select the picture", body: "PNG, JPEG, or WebP. HEIC is not decoded here." },
+        { title: "Leave 20 KB selected", body: "The ceiling is 20480 bytes. Transparency is painted onto white before encoding." },
+        { title: "Download and check the note", body: "The note reports the byte size, whether it landed under the ceiling, and any JPEG comment padding." },
+      ],
+    },
+    sections: [
+      {
+        heading: "Scaling is part of hitting 20 KB",
+        body: [
+          "A detailed photograph often cannot reach 20480 bytes by lowering JPEG quality alone. This page's fixture is 1200 by 800 noise. The measured run scaled it. Your photo may stay full size if it is already simple, or shrink if it is not. The note names the outcome.",
+          "There is no HEIC decoder and no promise of a visually identical thumbnail. 20 KB is a small file for a camera photo.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Will a phone photo stay sharp at 20 KB?",
+        answer: "Usually not. The search lowers quality and then pixel dimensions until the file is at or under 20480 bytes. Fine detail goes first.",
+      },
+      {
+        question: "What does the padding note mean?",
+        answer: "Only if you set a minimum and the JPEG would have been smaller than that floor. Comment bytes are added and counted in the note. The 20 KB fixture did not use a minimum.",
+      },
+    ],
+  },
+  {
+    slug: "compress-image-to-50kb",
+    seo: {
+      title: "Compress Image to 50 KB – No Upload",
+      description:
+        "Shrink a JPEG toward 50 KB in the browser without uploading it. The search keeps the highest quality that still fits. 1 KB is 1024 bytes.",
+      keywords: ["compress image to 50kb", "image under 50kb", "jpeg 50 kb"],
+    },
+    h1: "Compress an image to 50 KB",
+    footerLabel: "Image to 50 KB",
+    lede: "50 KB is 51,200 bytes. The same 1200 by 800 noise fixture used for the 20 KB page fit here without scaling, at a low JPEG quality. That measured size is shown under the tool.",
+    tools: ["image-compressor"],
+    embed: { tool: "image-compressor", targetBytes: 50 * 1024 },
+    measurementKey: "compress-image-to-50kb",
+    howTo: {
+      name: "How to compress an image to 50 KB",
+      steps: [
+        { title: "Pick the image", body: "The decode happens in the tab. Several files download as one ZIP." },
+        { title: "Confirm the 50 KB chip", body: "It is selected when this page opens. 50 KB is 51200 bytes." },
+        { title: "Save the file the note describes", body: "Within the target means the bytes are at or under 51200. Over the target means even the smallest try missed." },
+      ],
+    },
+    sections: [
+      {
+        heading: "Why 50 KB kept the full pixel size",
+        body: [
+          "The fixture is identical to the 20 KB run: deterministic noise, 1200 by 800. At 51200 bytes the binary search found a JPEG quality that fit without reducing the dimensions. At 20480 bytes it did not. A real photograph with smooth sky will behave differently, and the note is about your file.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Can I ask for WebP instead of JPEG?",
+        answer: "Yes. The WebP switch is on the tool. WebP is not padded with comment bytes if you also set a minimum.",
+      },
+      {
+        question: "Is the 50 KB figure a guarantee?",
+        answer: "No. It is the output of one noise fixture, printed from the measurement file. Your picture gets its own search.",
+      },
+    ],
+  },
+  {
+    slug: "compress-image-to-100kb",
+    seo: {
+      title: "Compress Image to 100 KB – No Upload",
+      description:
+        "Shrink a JPEG toward 100 KB in the browser. Highest quality that fits, then scale only if needed. 1 KB is 1024 bytes. Nothing is uploaded.",
+      keywords: ["compress image to 100kb", "reduce jpg to 100kb", "image under 100 kb"],
+    },
+    h1: "Compress an image to 100 KB",
+    footerLabel: "Image to 100 KB",
+    lede: "100 KB is 102,400 bytes. On the 1200 by 800 noise fixture the search stayed at full resolution. The byte count under the tool is that run.",
+    tools: ["image-compressor"],
+    embed: { tool: "image-compressor", targetBytes: 100 * 1024 },
+    measurementKey: "compress-image-to-100kb",
+    howTo: {
+      name: "How to compress an image to 100 KB",
+      steps: [
+        { title: "Select one or more images", body: "A single file downloads directly. More than one is zipped." },
+        { title: "Use the 100 KB ceiling", body: "This page preselects it. 100 KB is 102400 bytes." },
+        { title: "Read the size in the note", body: "Quality and scale are chosen so the file lands at or under the ceiling when that is possible." },
+      ],
+    },
+    sections: [
+      {
+        heading: "A wider ceiling than 20 KB or 50 KB",
+        body: [
+          "The fixture did not need to lose pixels to fit under 102400 bytes. Quality alone was enough. That is specific to this noise image. A 4000-pixel camera file may still be scaled. The compressor says so in the note instead of pretending every picture behaves like the fixture.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Does this upload the photo to hit 100 KB?",
+        answer: "No. Encoding runs on a canvas in the tab, in a worker when the browser has OffscreenCanvas, otherwise on the main thread.",
+      },
+      {
+        question: "Can I set a minimum as well as 100 KB?",
+        answer: "Yes. A JPEG under that floor is padded with comment bytes, and the padding is included in the reported size. It will not pad past the ceiling.",
       },
     ],
   },

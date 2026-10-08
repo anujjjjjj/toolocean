@@ -62,6 +62,21 @@ export function buildLandingPageGraph(page: LandingPage) {
     },
   ];
 
+  if (page.howTo && page.howTo.steps.length > 0) {
+    graph.push({
+      "@type": "HowTo",
+      "@id": `${pageUrl}#howto`,
+      name: page.howTo.name,
+      step: page.howTo.steps.map((step, index) => ({
+        "@type": "HowToStep",
+        position: index + 1,
+        name: step.title,
+        text: step.body,
+        url: `${pageUrl}#how-it-works`,
+      })),
+    });
+  }
+
   if (page.faqs.length > 0) {
     graph.push({
       "@type": "FAQPage",

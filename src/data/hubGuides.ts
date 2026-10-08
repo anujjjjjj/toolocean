@@ -27,8 +27,8 @@ export const HUB_GUIDES: Record<string, HubGuideContent> = {
     paragraphs: [
       "These pages edit a picture you already have. The browser decodes it, draws it to a canvas, and offers a download. That covers the ordinary jobs: a new pixel size, a tighter JPEG, a crop, a turn, a text stamp, or a switch between PNG, JPEG, and WebP. It does not cover the jobs that need a model or a format the canvas cannot read.",
       "HEIC from an iPhone is not accepted. AVIF is not a target. Nothing here removes a background, rebuilds a face, or invents pixels to upscale. If a listing elsewhere promises those, it is a different product, and it usually uploads the photo to do it.",
-      "The compressor is a quality slider that always writes JPEG. It does not aim at a file size such as 50 KB. Re-encoding also drops the camera's EXIF and GPS as a side effect of drawing the pixels again. That is not a metadata eraser, and it will not scrub a name that is painted into the picture.",
-      "The resizer speaks pixels. It does not take centimetres, inches, or a print DPI. A 300-pixel square is 300 pixels on a screen; how large that is on paper depends on the printer, which this page does not set.",
+      "The compressor still has a JPEG quality slider. Exact size is a separate mode: it searches quality, then scales, and can pad a JPEG that undershoots a minimum you set. 1 KB is 1024 bytes. Re-encoding drops EXIF and GPS because the pixels are drawn again. That is not a metadata eraser, and it will not scrub a name painted into the picture.",
+      "The resizer takes pixels, centimetres, millimetres, or inches, plus a DPI. The default for pixels is 96, with 200 and 300 as presets. A JPEG download stores that DPI in the JFIF header. A PNG download stays pixels only.",
     ],
     tableCaption: "Pick the page that matches the job",
     rows: [
@@ -36,13 +36,13 @@ export const HUB_GUIDES: Record<string, HubGuideContent> = {
         task: "Change width or height",
         tool: "Image resizer",
         path: "/image-resizer",
-        limit: "Pixels only. No centimetres, millimetres, inches, or DPI.",
+        limit: "Pixels, cm, mm, or inches, with a DPI. JPEG stores JFIF density. PNG does not.",
       },
       {
         task: "Make a photo lighter",
         tool: "Image compressor",
         path: "/image-compressor",
-        limit: "JPEG quality only. No exact kilobyte target. EXIF drops because the file is re-encoded.",
+        limit: "Quality slider, or an exact ceiling in KB (1024 bytes). EXIF drops because the file is re-encoded.",
       },
       {
         task: "PNG, JPEG, or WebP",
@@ -103,7 +103,7 @@ export const HUB_GUIDES: Record<string, HubGuideContent> = {
       {
         question: "Can I hit an exact size such as 20 KB?",
         answer:
-          "Not on these pages today. The compressor exposes JPEG quality, and the byte size is whatever that quality produces. If you need a hard ceiling, check the downloaded size and lower the slider, or keep the original and try again.",
+          "Yes, on the compressor's exact-size mode and on [compress an image to 20 KB](/compress-image-to-20kb), [50 KB](/compress-image-to-50kb), and [100 KB](/compress-image-to-100kb). 1 KB is 1024 bytes. The search may shrink the pixel dimensions. A minimum, if you set one, can pad a JPEG with comment bytes, and the page says when it did.",
       },
       {
         question: "Will compression strip the location from a phone photo?",
@@ -118,7 +118,7 @@ export const HUB_GUIDES: Record<string, HubGuideContent> = {
       {
         question: "Can I resize for a 4 by 6 print?",
         answer:
-          "Only if you already know the pixel size you want. This resizer has no centimetre field and does not write a print resolution. A print shop's pixel recipe is something you calculate before you type the numbers.",
+          "Switch the unit to inches or centimetres and set the DPI, often 300 for a print shop. The page converts that into pixels and, for a JPEG, writes the DPI into the JFIF header. It still does not talk to the printer.",
       },
       {
         question: "Is there background removal or an upscaler?",
