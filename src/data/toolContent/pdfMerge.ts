@@ -207,7 +207,7 @@ export const pdfMergeContent: Partial<ToolPageContent> = {
     {
       question: "Can I merge a password-protected PDF?",
       answer:
-        "Not while it is still protected. A document encrypted with an open password cannot have its pages read without that password being applied first, so remove the protection in whatever application you normally open it with, then merge the unprotected copy.",
+        "Not while the encryption dictionary is still there. Page objects cannot be copied until they can be read. When the secret is one you already have, [Unlock PDF](/pdf-unlock) writes a clear copy, and that copy is what you drop into the list here.",
     },
     {
       question: "Is there a limit on the number of files or total size?",

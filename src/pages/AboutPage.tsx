@@ -26,11 +26,11 @@ const AboutPage = () => {
   return (
     <InfoPageLayout
       title="About ToolOcean"
-      intro="114 browser tools that do their work on your device instead of on someone's server."
+      intro="119 browser tools that do their work on your device instead of on someone's server."
     >
       <Section id="what" heading="What this is">
         <P>
-          ToolOcean is a collection of 114 free utilities across ten categories, developer tools,
+          ToolOcean is a collection of 119 free utilities across ten categories, developer tools,
           PDF, image, audio, video, CSV, spreadsheet, compression, archive and format converters.
           There is no account, no upload step, no watermark, no daily quota and no paid tier.
         </P>
@@ -72,18 +72,18 @@ const AboutPage = () => {
       <Section id="how" heading="How it is built">
         <P>
           React and TypeScript, bundled with Vite, using established libraries for the heavy work:
-          pdf-lib and PDF.js for documents, SheetJS for spreadsheets, JSZip for archives, and the
+          pdf-lib, PDF.js, and @cantoo/pdf-lib for documents, SheetJS for spreadsheets, JSZip for archives, and the
           browser's own Canvas and Web Audio APIs for images and sound.
         </P>
         <UL>
           <li>
-            Every one of the 125 pages is prerendered to static HTML at build time, so the content
+            Every one of the 141 pages is prerendered to static HTML at build time, so the content
             is present before any JavaScript runs, better for slow connections, and for anything
             that reads the page without executing scripts.
           </li>
           <li>
             Each tool is a separate bundle, loaded only when you open it. Opening one tool does not
-            download the other 113. The shared entry bundle is about 130 kB compressed.
+            download the other 118. The shared entry bundle is about 130 kB compressed.
           </li>
           <li>
             No analytics or fonts block the page from rendering, and the analytics tag is only
@@ -107,6 +107,20 @@ const AboutPage = () => {
         </P>
       </Section>
 
+      <Section id="limits" heading="What it does not do">
+        <P>
+          OCR, in-place text editing, redaction, and high-fidelity PDF to Word are not here. Those
+          need a different kind of program, and the hosted PDF suites do them. A visual signature
+          is here, and it is only a mark drawn on the page. It is not a certified or qualified
+          electronic signature, and the sign tool says so before you download.
+        </P>
+        <P>
+          Three tools do use the network, and say so on their own pages: DNS Lookup, IP Address
+          Lookup, and HTTP Request Composer. Everything else, including every PDF tool, stays on
+          the device.
+        </P>
+      </Section>
+
       <Section id="accuracy" heading="On accuracy">
         <P>
           The tools are useful but not infallible. Compression re-encodes images, format conversion
@@ -122,7 +136,7 @@ const AboutPage = () => {
 
       <Section id="start" heading="Where to start">
         <P>
-          Press <Code>Cmd</Code>+<Code>K</Code> anywhere on the site to search all 114 tools, or
+          Press <Code>Cmd</Code>+<Code>K</Code> anywhere on the site to search all 119 tools, or
           browse the categories from the footer. The most fully documented tool is the{" "}
           <Link to="/json-formatter" className="text-primary underline underline-offset-4">
             JSON Formatter

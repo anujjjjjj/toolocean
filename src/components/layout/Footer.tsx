@@ -43,7 +43,7 @@ export function Footer() {
               <span className="font-heading text-lg font-semibold">ToolOcean</span>
             </Link>
             <p className="mt-3 max-w-sm text-sm text-muted-foreground">
-              114 free browser tools for developers, documents, images, audio and data. Every
+              119 free browser tools for developers, documents, images, audio and data. Every
               one runs entirely on your device. Nothing is uploaded, and there is no account.
             </p>
           </div>

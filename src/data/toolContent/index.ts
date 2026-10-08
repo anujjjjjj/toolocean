@@ -12,6 +12,12 @@ import { imagesToPdfContent } from "./imagesToPdf";
 import { pdfRotateContent } from "./pdfRotate";
 import { pdfWatermarkContent } from "./pdfWatermark";
 import { pdfReorderContent } from "./pdfReorder";
+import { pdfCompressContent } from "./pdfCompress";
+import { pdfSignContent } from "./pdfSign";
+import { pdfEncryptContent } from "./pdfEncrypt";
+import { pdfUnlockContent } from "./pdfUnlock";
+import { pdfMetadataContent } from "./pdfMetadata";
+import { pdfFormFillContent } from "./pdfFormFill";
 
 /**
  * Hand-authored page content, keyed by tool slug.
@@ -40,6 +46,12 @@ export const TOOL_CONTENT_OVERRIDES: Record<string, Partial<ToolPageContent>> = 
   "pdf-rotate": pdfRotateContent,
   "pdf-watermark": pdfWatermarkContent,
   "pdf-reorder": pdfReorderContent,
+  "pdf-compress": pdfCompressContent,
+  "pdf-sign": pdfSignContent,
+  "pdf-encrypt": pdfEncryptContent,
+  "pdf-unlock": pdfUnlockContent,
+  "pdf-metadata": pdfMetadataContent,
+  "pdf-form-fill": pdfFormFillContent,
 };
 
 /**

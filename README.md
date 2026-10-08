@@ -1,6 +1,6 @@
 # ToolOcean
 
-**114 file and developer tools that run entirely in your browser.** No upload, no
+**119 file and developer tools that run entirely in your browser.** No upload, no
 account, no server. [toolocean.co](https://toolocean.co)
 
 Most online file tools work by uploading your document to a server, processing it
@@ -20,7 +20,7 @@ send anything to.
 | Category | Tools |
 |---|---|
 | [Developer](https://toolocean.co/dev-tools) | JSON, YAML, XML, TOML, CSV, regex, hashing, encoding, JWT, timestamps, colour, text transforms |
-| [PDF](https://toolocean.co/pdf-tools) | Merge, split, compress, rotate, reorder, watermark, PDF ↔ images |
+| [PDF](https://toolocean.co/pdf-tools) | Merge, split, compress, rotate, reorder, watermark, sign (visual only), encrypt, unlock, metadata, form fill, PDF ↔ images |
 | [Image](https://toolocean.co/image-tools) | Resize, compress, crop, convert, rotate, watermark, filters, colour picker, favicons |
 | [Spreadsheet](https://toolocean.co/spreadsheet-tools) | Excel ↔ CSV, JSON → Excel, workbook reader, column extractor |
 | [Video / Audio](https://toolocean.co/video-tools) | Trim, thumbnail, metadata, GIF, audio cut and merge |
@@ -34,8 +34,11 @@ Press <kbd>⌘</kbd><kbd>K</kbd> anywhere to jump to any of them.
 Stated up front, because these are the cases where a hosted service is genuinely the
 better answer:
 
-- **No OCR, e-signatures, or high-fidelity PDF → Word.** Those need real server
-  compute. Smallpdf and iLovePDF do them properly.
+- **No OCR, no in-place text editing, no redaction, and no high-fidelity PDF → Word.**
+  Those need real server compute. Smallpdf and iLovePDF do them properly.
+- **No certified or qualified e-signature.** [Sign PDF](https://toolocean.co/pdf-sign)
+  places a visual mark (drawn, typed, or an image) and says so on the page. It does
+  not write a certificate.
 - **Three tools do use the network**, and say so on their own pages: DNS Lookup
   (dns.google), IP Address Lookup (ipapi.co, ipify.org), and HTTP Request Composer
   (whatever URL you point it at). Everything else is fully local.
@@ -58,7 +61,7 @@ collapsing the app back into one large entry chunk.
 
 **One tool per chunk.** `src/lib/lazyToolRegistry.ts` maps each slug to its own
 lazy import, so a visitor downloads the page shell plus exactly one tool rather
-than all 114 plus pdf-lib, pdfjs, xlsx and docx.
+than all 119 plus pdf-lib, pdfjs, xlsx and docx.
 
 **The tools render only after mount.** The prerender runs in Node, where Canvas,
 FileReader and Web Audio do not exist. `ToolWorkbench` renders a correctly-sized
@@ -67,7 +70,7 @@ render identical, so hydration is clean and there is no layout shift.
 
 **Content is derived, not duplicated.** `toolContentResolver.ts` layers
 hand-authored copy over per-tool SEO over category defaults, so every page gets real
-titles, FAQs and internal links without 114 copies of the same wiring.
+titles, FAQs and internal links without 119 copies of the same wiring.
 
 ## Running it
 

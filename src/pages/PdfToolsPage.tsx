@@ -1,10 +1,10 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { FileText, Merge, Split, Shrink, Image, RotateCw, Droplets, ArrowUpDown, ArrowLeft, Shield, Zap, Gift } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { FileText, ArrowLeft, Shield, Zap, Gift } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ToolFaq } from "@/components/tool-page/ToolFaq";
+import { PDF_HUB_FAQS } from "@/data/pdfHubContent";
 import { useSEO } from "@/hooks/useSEO";
 import { CATEGORY_PAGE_SEO } from "@/data/staticPageSeo";
 import { buildCategoryGraph } from "@/lib/sitePageSchema";
@@ -66,9 +66,27 @@ const PdfToolsPage = () => {
               PDF Tools
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Powerful PDF manipulation tools that work entirely in your browser. No uploads, no servers, your files stay private.
+              Thirteen PDF tools that run in the tab. Merge and split, compress a scan, protect a file with AES-256, unlock one you already know the password for, read or strip metadata, fill an AcroForm, or place a visual signature. Nothing is uploaded.
             </p>
           </div>
+        </section>
+
+        <section className="max-w-3xl mx-auto space-y-4 text-muted-foreground">
+          <h2 className="text-2xl font-heading font-semibold text-foreground">What this collection is for</h2>
+          <p>
+            These pages are for the PDF jobs that do not need a server: joining a packet, pulling pages out, turning a scan around, stamping a watermark, or sending a smaller copy of a photograph-of-paper. The newer ones cover the next questions people ask after that. A form that is already an AcroForm can be filled and, if you want the answers locked in, flattened. A file can be given an open password. A file you can already open can have that password taken off again. The Info dictionary and the XMP packet can be read, edited, or stripped.
+          </p>
+          <p>
+            The signature tool is the one to read carefully. It puts ink on a page, from a drawing, a typed name, or an image, and the page says it is not a certified or qualified electronic signature. If a process asks for a certificate, this hub will not produce one.
+          </p>
+          <p>
+            OCR, editing text in place, redaction, and converting a PDF into an editable Word document are not here. Hosted suites still do those, and they upload the file to do it. The trade is written out on the{" "}
+            <Link to="/smallpdf-alternative" className="font-medium text-primary hover:underline">Smallpdf alternative</Link>
+            {" "}and{" "}
+            <Link to="/ilovepdf-alternative" className="font-medium text-primary hover:underline">iLovePDF alternative</Link>
+            {" "}pages. If the only job is combining documents without an upload, start at{" "}
+            <Link to="/merge-pdf-without-uploading" className="font-medium text-primary hover:underline">merge PDFs without uploading</Link>.
+          </p>
         </section>
 
         {/* PDF Tools Grid */}
@@ -117,6 +135,12 @@ const PdfToolsPage = () => {
             </div>
           </div>
         </section>
+
+        <ToolFaq
+          faqs={PDF_HUB_FAQS}
+          heading="Questions about the PDF tools"
+          lede="What runs locally, what a signature is, and what this hub still does not do."
+        />
       </main>
 
       <Footer />

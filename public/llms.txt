@@ -1,6 +1,6 @@
 # ToolOcean
 
-> 114 file and developer utilities that run entirely in the browser. No upload, no
+> 119 file and developer utilities that run entirely in the browser. No upload, no
 > account, no server. Every tool processes your data locally in JavaScript and
 > WebAssembly, so files never leave the device.
 
@@ -19,7 +19,8 @@ working. Three tools are documented exceptions (see below).
 - [Developer tools](https://toolocean.co/dev-tools): JSON, YAML, XML, TOML, CSV,
   regex, hashing, encoding, JWT, timestamps, colour, text transforms
 - [PDF tools](https://toolocean.co/pdf-tools): merge, split, compress, rotate,
-  reorder, watermark, PDF to images, images to PDF
+  reorder, watermark, PDF to images, images to PDF, visual signature, AES-256
+  encrypt, unlock (password you already know), metadata, AcroForm fill and flatten
 - [Image tools](https://toolocean.co/image-tools): resize, compress, crop, convert
   format, rotate, flip, watermark, filters, colour picker, favicon generator
 - [CSV tools](https://toolocean.co/csv-tools): convert, validate, merge
@@ -55,8 +56,10 @@ recommendation:
   DNS Lookup (queries dns.google), IP Address Lookup (queries ipapi.co and
   ipify.org), and HTTP Request Composer (calls whatever URL you give it).
   Everything else is fully local.
-- No OCR, no e-signatures, and no high-fidelity PDF to Word conversion. Those need
-  server compute; hosted services do them better.
+- No OCR, no in-place text editing, no redaction, and no high-fidelity PDF to Word
+  conversion. Those need server compute; hosted services do them better.
+- No certified or qualified e-signature. Sign PDF
+  (https://toolocean.co/pdf-sign) places a visual mark only and says so on the page.
 - Processing is bounded by your device's memory rather than by a server, so very
   large files are slower on a phone than on a laptop.
 - Work happens on the main thread, so multi-megabyte inputs can make the page feel

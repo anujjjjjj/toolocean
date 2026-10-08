@@ -81,7 +81,7 @@ export const LANDING_PAGES: LandingPage[] = [
     footerLabel: "Merge PDFs",
     lede:
       "Most online PDF mergers upload your document to their server, merge it there, and hand back a download link. This one does the merge in the browser tab you already have open, so the file never goes anywhere.",
-    tools: ["pdf-merge", "pdf-split", "pdf-reorder", "pdf-compress"],
+    tools: ["pdf-merge", "pdf-split", "pdf-reorder", "pdf-compress", "pdf-unlock"],
     sections: [
       {
         heading: "Why the upload matters",
@@ -101,7 +101,7 @@ export const LANDING_PAGES: LandingPage[] = [
         heading: "What you give up",
         body: [
           "Honestly, two things. The work happens on your device, so a very large document is bounded by your available memory rather than by a server with 64 GB of RAM. On a phone with a lot of tabs open, a few hundred megabytes is where it starts to struggle.",
-          "And the first load has to fetch the PDF library, which is a few hundred kilobytes. After that it is cached and the tool opens instantly, including with the network off.",
+          "And the first load has to fetch the PDF library, which is a few hundred kilobytes. After that it is cached and the tool opens instantly, including with the network off. A file that still asks for a password is refused. Unlock PDF removes a password you already know, on the same machine, and the clear copy is what you merge.",
         ],
       },
     ],
@@ -251,7 +251,19 @@ export const LANDING_PAGES: LandingPage[] = [
     footerLabel: "Smallpdf alternative",
     lede:
       "Smallpdf is a good product. It is also a server-side one with a free tier designed to run out, which makes it the wrong shape for confidential documents and for anyone who just needs to merge something twice a day.",
-    tools: ["pdf-merge", "pdf-split", "pdf-compress", "pdf-rotate", "pdf-watermark", "pdf-to-images"],
+    tools: [
+      "pdf-merge",
+      "pdf-split",
+      "pdf-compress",
+      "pdf-sign",
+      "pdf-encrypt",
+      "pdf-unlock",
+      "pdf-form-fill",
+      "pdf-metadata",
+      "pdf-rotate",
+      "pdf-watermark",
+      "pdf-to-images",
+    ],
     sections: [
       {
         heading: "The two differences that actually matter",
@@ -263,7 +275,7 @@ export const LANDING_PAGES: LandingPage[] = [
       {
         heading: "Where Smallpdf is still the better choice",
         body: [
-          "It has substantially more features, including OCR, e-signature workflows, and true PDF-to-Word conversion with layout reconstruction. Those are genuinely hard problems and some of them need real server compute.",
+          "It has substantially more features, including OCR, certified e-signature workflows, in-place text editing, redaction, and true PDF-to-Word conversion with layout reconstruction. Those are genuinely hard problems and some of them need real server compute. A visual mark placed on a page here is not a substitute for that e-signature product.",
           "It also has a team behind it, a support address, and an enterprise agreement you can sign. If you need someone accountable, that matters more than where the bytes are processed.",
         ],
       },
@@ -280,7 +292,19 @@ export const LANDING_PAGES: LandingPage[] = [
         { capability: "Free tier limits", them: "Metered free tasks per day", us: "No counter, no metering" },
         { capability: "Account required", them: "For most workflows", us: "Never" },
         { capability: "Works offline", them: "No", us: "Yes, once the page has loaded" },
-        { capability: "OCR and e-signatures", them: "Yes", us: "No" },
+        { capability: "Password-protect a PDF (AES-256)", them: "Yes", us: "Yes, in the browser" },
+        { capability: "Unlock a PDF you already know the password for", them: "Yes", us: "Yes. No password search" },
+        { capability: "Fill an AcroForm and flatten it", them: "Yes", us: "Yes, in the browser" },
+        { capability: "View or strip document metadata", them: "Yes", us: "Yes. Info dictionary and a shallow XMP read" },
+        {
+          capability: "Signature",
+          them: "Certified e-sign workflows",
+          us: "A visual mark only. Not a certificate",
+        },
+        { capability: "OCR", them: "Yes", us: "Not available" },
+        { capability: "In-place text editing", them: "Yes", us: "Not available" },
+        { capability: "Redaction", them: "Yes", us: "Not available" },
+        { capability: "PDF to Word", them: "Yes", us: "Not available" },
         { capability: "Support and enterprise agreements", them: "Yes", us: "No" },
       ],
     },
@@ -293,7 +317,7 @@ export const LANDING_PAGES: LandingPage[] = [
       {
         question: "Can it replace Smallpdf entirely?",
         answer:
-          "For merge, split, compress, rotate, watermark, reorder and PDF-to-image, yes. For OCR, e-signature workflows and high-fidelity PDF-to-Word, no, and it would be dishonest to claim otherwise.",
+          "For merge, split, compress, rotate, watermark, reorder, PDF-to-image, a visual signature, password protection, unlock, metadata, and AcroForm filling, yes. For OCR, certified e-signatures, in-place text editing, redaction, and high-fidelity PDF-to-Word, no, and it would be dishonest to claim otherwise.",
       },
     ],
   },
@@ -314,7 +338,19 @@ export const LANDING_PAGES: LandingPage[] = [
     footerLabel: "iLovePDF alternative",
     lede:
       "iLovePDF covers a lot of ground and does it well. Every task still starts by uploading your document, and the free tier is bounded. If your blocker is either of those, the core tools here do the same jobs locally.",
-    tools: ["pdf-merge", "pdf-split", "pdf-compress", "pdf-reorder", "images-to-pdf", "pdf-watermark"],
+    tools: [
+      "pdf-merge",
+      "pdf-split",
+      "pdf-compress",
+      "pdf-reorder",
+      "pdf-sign",
+      "pdf-encrypt",
+      "pdf-unlock",
+      "pdf-form-fill",
+      "pdf-metadata",
+      "images-to-pdf",
+      "pdf-watermark",
+    ],
     sections: [
       {
         heading: "What changes when the processing is local",
@@ -326,8 +362,8 @@ export const LANDING_PAGES: LandingPage[] = [
       {
         heading: "An honest scope check",
         body: [
-          "iLovePDF has a far larger catalogue, including OCR, PDF repair, and conversions to and from Office formats that genuinely need heavy server-side work. Those are not here and are not planned.",
-          "What is here is the set most people actually open these sites for: merge, split, compress, reorder, rotate, watermark, images to PDF, and PDF to images.",
+          "iLovePDF has a far larger catalogue, including OCR, PDF repair, in-place text editing, redaction, and conversions to and from Office formats that genuinely need heavy server-side work. Those are not here and are not planned. Certified e-signatures are not here either. The sign tool places a visual mark and says so on the page.",
+          "What is here is the set most people actually open these sites for: merge, split, compress, reorder, rotate, watermark, images to PDF, PDF to images, plus password protection, unlock, metadata, form filling, and a visual signature.",
         ],
       },
     ],
@@ -339,7 +375,19 @@ export const LANDING_PAGES: LandingPage[] = [
         { capability: "Free tier limits", them: "Metered tasks, larger files need Premium", us: "No metering" },
         { capability: "Account required", them: "For higher limits and some tools", us: "Never" },
         { capability: "Works offline", them: "No", us: "Yes, once the page has loaded" },
-        { capability: "Office conversion and OCR", them: "Yes", us: "No" },
+        { capability: "Password-protect a PDF (AES-256)", them: "Yes", us: "Yes, in the browser" },
+        { capability: "Unlock a PDF you already know the password for", them: "Yes", us: "Yes. No password search" },
+        { capability: "Fill an AcroForm and flatten it", them: "Yes", us: "Yes, in the browser" },
+        { capability: "View or strip document metadata", them: "Yes", us: "Yes. Info dictionary and a shallow XMP read" },
+        {
+          capability: "Signature",
+          them: "E-sign tools on their site",
+          us: "A visual mark only. Not a certificate",
+        },
+        { capability: "OCR", them: "Yes", us: "Not available" },
+        { capability: "In-place text editing", them: "Yes", us: "Not available" },
+        { capability: "Redaction", them: "Yes", us: "Not available" },
+        { capability: "PDF to Word and other Office conversion", them: "Yes", us: "Not available" },
         { capability: "Mobile apps", them: "Yes", us: "No, it is a website" },
       ],
     },

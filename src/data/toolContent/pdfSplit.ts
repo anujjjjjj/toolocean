@@ -228,7 +228,7 @@ export const pdfSplitContent: Partial<ToolPageContent> = {
     {
       question: "Can I extract from an encrypted PDF?",
       answer:
-        "Not while the encryption is in place. A document that needs a password to open cannot have its page objects read until it has been decrypted, so open it in your usual PDF application, save an unprotected copy, and extract from that.",
+        "Not while the file still demands a password. The page tree cannot be read, so the ranges you type have nothing to copy. Clear it via [the unlock tool](/pdf-unlock), then extract from the download it writes. The locked original stays put on disk.",
     },
     {
       question: "Is there a maximum document size?",
