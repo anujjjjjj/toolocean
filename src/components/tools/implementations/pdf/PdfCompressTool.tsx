@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,19 +8,37 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { loadPdfJs, prefetchPdfJs, prefetchPdfLib } from "@/lib/pdf/lazyPdf";
+import { KILOBYTE, parseSize } from "@/lib/targetSize/parseSize";
 
-type CompressionMode = "lossless" | "raster";
+type CompressionMode = "lossless" | "raster" | "exact";
 
-export function PdfCompressTool() {
+const EXACT_PRESETS = [
+    { label: "100 KB", bytes: 100 * KILOBYTE },
+    { label: "200 KB", bytes: 200 * KILOBYTE },
+    { label: "500 KB", bytes: 500 * KILOBYTE },
+    { label: "1 MB", bytes: 1 * KILOBYTE * KILOBYTE },
+    { label: "2 MB", bytes: 2 * KILOBYTE * KILOBYTE },
+];
+
+export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } } = {}) {
     const [pdfFile, setPdfFile] = useState<File | null>(null);
     const [originalSize, setOriginalSize] = useState(0);
     const [isProcessing, setIsProcessing] = useState(false);
     const [quality, setQuality] = useState([70]);
-    const [mode, setMode] = useState<CompressionMode>("lossless");
+    const [mode, setMode] = useState<CompressionMode>(preset ? "exact" : "lossless");
+    const [targetBytes, setTargetBytes] = useState(preset?.targetBytes ?? 200 * KILOBYTE);
+    const [customSize, setCustomSize] = useState("");
+    const [exactNote, setExactNote] = useState<string | null>(null);
     const [result, setResult] = useState<{ before: number; after: number } | null>(null);
     const [progress, setProgress] = useState<{ page: number; total: number } | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
+
+    useEffect(() => {
+        if (!preset) return;
+        setMode("exact");
+        setTargetBytes(preset.targetBytes);
+    }, [preset]);
 
     const formatSize = (bytes: number) => {
         if (bytes < 1024) return `${bytes} B`;
@@ -126,10 +144,25 @@ export function PdfCompressTool() {
 
         try {
             const arrayBuffer = await pdfFile.arrayBuffer();
-            const compressedBytes =
-                mode === "raster"
-                    ? await compressRaster(arrayBuffer, (n, total) => setProgress({ page: n, total }))
-                    : await compressLossless(arrayBuffer);
+            let exactMessage: string | null = null;
+            let compressedBytes: Uint8Array;
+            if (mode === "exact") {
+                const { compressPdfToTarget } = await import("@/lib/targetSize/compressPdfToTarget");
+                const exact = await compressPdfToTarget(arrayBuffer, targetBytes);
+                compressedBytes = exact.bytes;
+                exactMessage = exact.textSelectable
+                    ? `Lossless rewrite fit under the target, so text is still selectable. ${formatSize(exact.bytes.byteLength)}.`
+                    : exact.withinTarget
+                      ? `Pages were rasterised to fit. Text is no longer selectable. ${formatSize(exact.bytes.byteLength)}.`
+                      : `The smallest raster copy is still ${formatSize(exact.bytes.byteLength)}, over the target. Text is no longer selectable.`;
+                setExactNote(exactMessage);
+            } else {
+                setExactNote(null);
+                compressedBytes =
+                    mode === "raster"
+                        ? await compressRaster(arrayBuffer, (n, total) => setProgress({ page: n, total }))
+                        : await compressLossless(arrayBuffer);
+            }
 
             const blob = new Blob([compressedBytes], { type: "application/pdf" });
             const newSize = blob.size;
@@ -308,6 +341,17 @@ export function PdfCompressTool() {
                                         </Label>
                                     </div>
                                     <div className="flex items-start gap-3 rounded-lg border border-border/70 p-3">
+                                        <RadioGroupItem value="exact" id="mode-exact" className="mt-1" />
+                                        <Label htmlFor="mode-exact" className="cursor-pointer font-normal">
+                                            <span className="font-medium">Exact size</span>
+                                            <span className="mt-1 block text-sm text-muted-foreground">
+                                                Tries a lossless rewrite first. If that already fits, text stays
+                                                selectable. Otherwise pages become JPEG pictures and text cannot be
+                                                selected. 1 KB = 1024 bytes.
+                                            </span>
+                                        </Label>
+                                    </div>
+                                    <div className="flex items-start gap-3 rounded-lg border border-border/70 p-3">
                                         <RadioGroupItem value="raster" id="mode-raster" className="mt-1" />
                                         <Label htmlFor="mode-raster" className="cursor-pointer font-normal">
                                             <span className="font-medium">Re-encode pages as images</span>
@@ -321,6 +365,51 @@ export function PdfCompressTool() {
                                     </div>
                                 </RadioGroup>
                             </div>
+
+                            {mode === "exact" && (
+                                <div className="space-y-3">
+                                    <p className="text-sm text-muted-foreground">1 KB = 1024 bytes.</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {EXACT_PRESETS.map((item) => (
+                                            <Button
+                                                key={item.bytes}
+                                                type="button"
+                                                size="sm"
+                                                variant={targetBytes === item.bytes ? "default" : "outline"}
+                                                data-analytics-label={`pdf-target-${item.label.replace(/\s+/g, "-").toLowerCase()}`}
+                                                onClick={() => setTargetBytes(item.bytes)}
+                                            >
+                                                {item.label}
+                                            </Button>
+                                        ))}
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <input
+                                            value={customSize}
+                                            onChange={(event) => setCustomSize(event.target.value)}
+                                            placeholder="Custom, e.g. 350 KB"
+                                            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
+                                            aria-label="Custom PDF size"
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            data-analytics-label="pdf-target-custom"
+                                            onClick={() => {
+                                                const parsed = parseSize(customSize);
+                                                if (!parsed) {
+                                                    toast({ title: "Unrecognised size", description: "Use a number with KB or MB. 1 KB = 1024 bytes.", variant: "destructive" });
+                                                    return;
+                                                }
+                                                setTargetBytes(parsed);
+                                            }}
+                                        >
+                                            Use
+                                        </Button>
+                                    </div>
+                                    {exactNote && <p className="text-sm text-muted-foreground">{exactNote}</p>}
+                                </div>
+                            )}
 
                             {mode === "raster" && (
                                 <div className="space-y-4">
@@ -360,6 +449,7 @@ export function PdfCompressTool() {
                                 onClick={compressPdf}
                                 disabled={isProcessing}
                                 className="w-full"
+                                data-analytics-label={mode === "exact" ? "pdf-exact-size" : mode === "raster" ? "pdf-raster" : "pdf-lossless"}
                             >
                                 {isProcessing ? (
                                     <>
@@ -369,7 +459,7 @@ export function PdfCompressTool() {
                                 ) : (
                                     <>
                                         <Download className="h-4 w-4 mr-2" />
-                                        {mode === "raster" ? "Compress & Download" : "Optimise & Download"}
+                                        {mode === "exact" ? "Fit to size & Download" : mode === "raster" ? "Compress & Download" : "Optimise & Download"}
                                     </>
                                 )}
                             </Button>

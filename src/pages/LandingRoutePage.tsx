@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Header } from "@/components/layout/Header";
@@ -9,7 +10,36 @@ import { useSEO } from "@/hooks/useSEO";
 import { findLandingPage, type LandingPage } from "@/data/landingPages";
 import { findToolBySlug } from "@/data/toolCatalog";
 import { buildLandingPageGraph } from "@/lib/landingPageSchema";
+import measurements from "@/data/targetSizeMeasurements.json";
+import { formatBytes } from "@/lib/targetSize/parseSize";
 import NotFound from "./NotFound";
+
+const ImageCompressorTool = lazy(() =>
+  import("@/components/tools/implementations/image/ImageCompressorTool").then((m) => ({ default: m.ImageCompressorTool })),
+);
+const PdfCompressTool = lazy(() =>
+  import("@/components/tools/implementations/pdf/PdfCompressTool").then((m) => ({ default: m.PdfCompressTool })),
+);
+
+type FixtureRow = {
+  fixture: string;
+  outputBytes: number;
+  targetBytes: number;
+  withinTarget: boolean;
+  mode?: string;
+  textSelectable?: boolean;
+  quality?: number;
+  scale?: number;
+  width?: number;
+  height?: number;
+  padded?: boolean;
+  paddingBytes?: number;
+};
+
+const FIXTURES: Record<string, FixtureRow> = {
+  ...(measurements.images as Record<string, FixtureRow>),
+  ...(measurements.pdfs as Record<string, FixtureRow>),
+};
 
 /**
  * The one route behind every modifier and comparison landing page.
@@ -128,8 +158,35 @@ const LandingRoutePage = () => {
           why it is safe, and for the crawler.
         */}
         <Section id="tools" heading="Start here" lede="Every one of these runs entirely in your browser.">
+          {page.embed && (
+            <div className="mb-8 rounded-lg border border-border/70 bg-card p-4">
+              <Suspense fallback={<p className="text-sm text-muted-foreground">Loading the tool…</p>}>
+                {page.embed.tool === "image-compressor" ? (
+                  <ImageCompressorTool preset={{ targetBytes: page.embed.targetBytes }} />
+                ) : (
+                  <PdfCompressTool preset={{ targetBytes: page.embed.targetBytes }} />
+                )}
+              </Suspense>
+              {page.measurementKey && FIXTURES[page.measurementKey] && (
+                <FixtureNote row={FIXTURES[page.measurementKey]} />
+              )}
+            </div>
+          )}
           <ToolLinks page={page} />
         </Section>
+
+        {page.howTo && (
+          <Section id="how-it-works" heading={page.howTo.name}>
+            <ol className="max-w-3xl list-decimal space-y-3 pl-5 text-muted-foreground">
+              {page.howTo.steps.map((step) => (
+                <li key={step.title}>
+                  <span className="font-medium text-foreground">{step.title}. </span>
+                  {step.body}
+                </li>
+              ))}
+            </ol>
+          </Section>
+        )}
 
         {page.sections.map((section, index) => (
           <Section
@@ -165,5 +222,23 @@ const LandingRoutePage = () => {
     </div>
   );
 };
+
+function FixtureNote({ row }: { row: FixtureRow }) {
+  const detail = [
+    `Fixture: ${row.fixture}.`,
+    `Target ${formatBytes(row.targetBytes)} (${row.targetBytes} bytes).`,
+    `Output ${formatBytes(row.outputBytes)} (${row.outputBytes} bytes).`,
+    row.withinTarget ? "The output was within the target." : "The output was still over the target.",
+    row.mode ? `PDF path: ${row.mode}.` : "",
+    row.textSelectable === true ? "Text stayed selectable." : "",
+    row.textSelectable === false ? "Text is not selectable in that copy." : "",
+    row.width ? `Pixels ${row.width}×${row.height}, scale ${row.scale}, JPEG quality ${row.quality}.` : "",
+    row.padded ? `Padding ${row.paddingBytes} bytes.` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return <p className="mt-4 text-sm text-muted-foreground">{detail} 1 KB = 1024 bytes. These figures are the stored fixture run, not a prediction for a different file.</p>;
+}
 
 export default LandingRoutePage;

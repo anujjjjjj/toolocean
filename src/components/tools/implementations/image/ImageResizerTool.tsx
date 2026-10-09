@@ -14,6 +14,22 @@ const EXTENSION: Record<string, string> = {
   "image/webp": "webp",
 };
 
+type LengthUnit = "px" | "cm" | "mm" | "in";
+
+function toPixels(value: number, unit: LengthUnit, dpi: number): number {
+  if (unit === "px") return Math.max(1, Math.round(value));
+  if (unit === "in") return Math.max(1, Math.round(value * dpi));
+  if (unit === "cm") return Math.max(1, Math.round((value / 2.54) * dpi));
+  return Math.max(1, Math.round((value / 25.4) * dpi));
+}
+
+function fromPixels(pixels: number, unit: LengthUnit, dpi: number): string {
+  if (unit === "px") return String(pixels);
+  const inches = pixels / dpi;
+  const value = unit === "in" ? inches : unit === "cm" ? inches * 2.54 : inches * 25.4;
+  return String(Math.round(value * 100) / 100);
+}
+
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -25,6 +41,8 @@ export function ImageResizerTool() {
   const [width, setWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
   const [aspectLock, setAspectLock] = useState(true);
+  const [unit, setUnit] = useState<LengthUnit>("px");
+  const [dpi, setDpi] = useState(96);
   const [originalSize, setOriginalSize] = useState({ w: 0, h: 0 });
   const [sourceType, setSourceType] = useState<string>("image/png");
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -90,10 +108,16 @@ export function ImageResizerTool() {
        * of the job.
        */
       canvas.toBlob(
-        (blob) => {
+        async (blob) => {
           if (!blob) return;
+          let body: Blob = blob;
+          if (sourceType === "image/jpeg") {
+            const { setJfifDensity } = await import("@/lib/targetSize/jpeg");
+            const marked = setJfifDensity(new Uint8Array(await blob.arrayBuffer()), dpi);
+            body = new Blob([marked], { type: "image/jpeg" });
+          }
           const a = document.createElement("a");
-          a.href = URL.createObjectURL(blob);
+          a.href = URL.createObjectURL(body);
           a.download = `resized-${width}x${height}.${EXTENSION[sourceType] ?? "png"}`;
           a.click();
           URL.revokeObjectURL(a.href);
@@ -112,10 +136,13 @@ export function ImageResizerTool() {
   return (
     <div className="space-y-6">
       <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileSelect} />
-      <Button onClick={() => fileInputRef.current?.click()} variant="outline">
+      <Button onClick={() => fileInputRef.current?.click()} variant="outline" data-analytics-label="resizer-select">
         <Upload className="h-4 w-4 mr-2" />
         Select Image
       </Button>
+      <p className="text-sm text-muted-foreground">
+        Size the result in px, cm, mm, or inches. DPI defaults to 96, with 200 and 300 presets. A JPEG download stores that DPI in the JFIF header. PNG stays pixels only.
+      </p>
 
       {imageUrl && (
         <>
@@ -127,21 +154,40 @@ export function ImageResizerTool() {
               </p>
             </div>
             <div className="space-y-4 min-w-[200px]">
+              <div className="flex flex-wrap gap-2">
+                {(["px", "cm", "mm", "in"] as LengthUnit[]).map((item) => (
+                  <Button key={item} type="button" size="sm" variant={unit === item ? "default" : "outline"} data-analytics-label={`resizer-unit-${item}`} onClick={() => setUnit(item)}>
+                    {item}
+                  </Button>
+                ))}
+              </div>
               <div>
-                <Label>Width</Label>
+                <Label>DPI</Label>
+                <Input type="number" value={dpi} min={1} onChange={(e) => setDpi(Math.max(1, parseInt(e.target.value) || 96))} />
+                <div className="mt-2 flex gap-2">
+                  {[96, 200, 300].map((value) => (
+                    <Button key={value} type="button" size="sm" variant={dpi === value ? "default" : "outline"} data-analytics-label={`resizer-dpi-${value}`} onClick={() => setDpi(value)}>
+                      {value}
+                    </Button>
+                  ))}
+                </div>
+                <p className="mt-1 text-xs text-muted-foreground">Pixels are the default, at 96 DPI. JPEG downloads store this DPI in the JFIF header. PNG stays pixels only.</p>
+              </div>
+              <div>
+                <Label>Width ({unit})</Label>
                 <Input
                   type="number"
-                  value={width}
-                  onChange={(e) => handleWidthChange(parseInt(e.target.value) || 0)}
+                  value={fromPixels(width, unit, dpi)}
+                  onChange={(e) => handleWidthChange(toPixels(parseFloat(e.target.value) || 0, unit, dpi))}
                   min={1}
                 />
               </div>
               <div>
-                <Label>Height</Label>
+                <Label>Height ({unit})</Label>
                 <Input
                   type="number"
-                  value={height}
-                  onChange={(e) => handleHeightChange(parseInt(e.target.value) || 0)}
+                  value={fromPixels(height, unit, dpi)}
+                  onChange={(e) => handleHeightChange(toPixels(parseFloat(e.target.value) || 0, unit, dpi))}
                   min={1}
                 />
               </div>
@@ -152,7 +198,7 @@ export function ImageResizerTool() {
             </div>
           </div>
           <canvas ref={canvasRef} className="hidden" />
-          <Button onClick={resizeAndDownload}>
+          <Button onClick={resizeAndDownload} data-analytics-label="resizer-download">
             <Download className="h-4 w-4 mr-2" />
             Download Resized Image
           </Button>

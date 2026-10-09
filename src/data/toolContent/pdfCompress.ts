@@ -241,6 +241,12 @@ export const pdfCompressContent: Partial<ToolPageContent> = {
     },
     {
       topic: "size",
+      question: "Can I open the page already aimed at 100 KB or 200 KB?",
+      answer:
+        "Yes. [Compress a PDF to 100 KB](/compress-pdf-to-100kb) and [compress a PDF to 200 KB](/compress-pdf-to-200kb) load this same tool with that ceiling selected. 1 KB is 1024 bytes. Lossless is attempted before any page is turned into a picture.",
+    },
+    {
+      topic: "size",
       question: "What is the largest PDF this will accept?",
       answer:
         "Nothing in the page checks a maximum. The scan fixture was about 10 MB and finished. A few hundred megabytes has to fit in memory twice, once as the source and once as the rendered bitmaps, and a phone will fail that sooner than a laptop will.",

@@ -314,3 +314,14 @@ output is what gets inspected:
 - `npm run indexnow` reads the committed public key file. It is not part of the build.
 - `check:uniqueness` fails a new or changed page under 40% unique 6-word shingles
   unless that exact text is on the allowlist.
+
+### 2026-10-08 — Exact size presets
+
+- Image compressor, PDF compress, and images-to-PDF can aim at a byte ceiling.
+  1 KB is 1024 bytes. JPEG under a minimum can be padded with comment bytes.
+- PDF exact size tries a lossless rewrite first. Raster output says text is not selectable.
+- The resizer accepts px, cm, mm, and inches plus DPI, and writes JFIF density on JPEG.
+- Five preset pages (`/compress-pdf-to-100kb`, `/compress-pdf-to-200kb`,
+  `/compress-image-to-20kb`, `/compress-image-to-50kb`, `/compress-image-to-100kb`)
+  open the tool on that ceiling. Byte counts on those pages come from
+  `src/data/targetSizeMeasurements.json`.

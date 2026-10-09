@@ -1,0 +1,85 @@
+{
+  "kb": 1024,
+  "images": {
+    "compress-image-to-20kb": {
+      "fixture": "1200x800 deterministic noise, JPEG",
+      "sourceWidth": 1200,
+      "sourceHeight": 800,
+      "targetBytes": 20480,
+      "outputBytes": 20387,
+      "quality": 0.134,
+      "scale": 0.75,
+      "width": 900,
+      "height": 600,
+      "padded": false,
+      "paddingBytes": 0,
+      "withinTarget": true,
+      "mime": "image/jpeg"
+    },
+    "compress-image-to-50kb": {
+      "fixture": "1200x800 deterministic noise, JPEG",
+      "sourceWidth": 1200,
+      "sourceHeight": 800,
+      "targetBytes": 51200,
+      "outputBytes": 49225,
+      "quality": 0.075,
+      "scale": 1,
+      "width": 1200,
+      "height": 800,
+      "padded": false,
+      "paddingBytes": 0,
+      "withinTarget": true,
+      "mime": "image/jpeg"
+    },
+    "compress-image-to-100kb": {
+      "fixture": "1200x800 deterministic noise, JPEG",
+      "sourceWidth": 1200,
+      "sourceHeight": 800,
+      "targetBytes": 102400,
+      "outputBytes": 98119,
+      "quality": 0.152,
+      "scale": 1,
+      "width": 1200,
+      "height": 800,
+      "padded": false,
+      "paddingBytes": 0,
+      "withinTarget": true,
+      "mime": "image/jpeg"
+    }
+  },
+  "pdfs": {
+    "compress-pdf-to-100kb": {
+      "fixture": "one-page Helvetica letter",
+      "sourceBytes": 911,
+      "targetBytes": 102400,
+      "outputBytes": 860,
+      "mode": "lossless",
+      "textSelectable": true,
+      "scale": 1,
+      "quality": 1,
+      "withinTarget": true
+    },
+    "compress-pdf-to-200kb": {
+      "fixture": "one-page embedded noise JPEG",
+      "sourceBytes": 400456,
+      "targetBytes": 204800,
+      "outputBytes": 202673,
+      "mode": "raster",
+      "textSelectable": false,
+      "scale": 1.4,
+      "quality": 0.292,
+      "withinTarget": true
+    },
+    "compress-pdf-to-100kb-photo": {
+      "fixture": "one-page embedded noise JPEG",
+      "sourceBytes": 400456,
+      "targetBytes": 102400,
+      "outputBytes": 100447,
+      "mode": "raster",
+      "textSelectable": false,
+      "scale": 0.98,
+      "quality": 0.292,
+      "withinTarget": true
+    }
+  }
+}

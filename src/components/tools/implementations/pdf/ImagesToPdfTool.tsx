@@ -14,6 +14,7 @@ interface ImageFile {
 export function ImagesToPdfTool() {
     const [images, setImages] = useState<ImageFile[]>([]);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [limitText, setLimitText] = useState("");
     const [draggedItem, setDraggedItem] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
@@ -110,14 +111,29 @@ export function ImagesToPdfTool() {
         setIsProcessing(true);
 
         try {
+            const { parseSize, KILOBYTE, formatBytes } = await import("@/lib/targetSize/parseSize");
+            const limitBytes = limitText.trim() ? parseSize(limitText) : null;
+            if (limitText.trim() && !limitBytes) {
+                toast({ title: "Unrecognised limit", description: "Use a number with KB or MB. 1 KB = 1024 bytes.", variant: "destructive" });
+                setIsProcessing(false);
+                return;
+            }
             const pdfDoc = await PDFDocument.create();
+            const budget = limitBytes ? Math.max(8 * KILOBYTE, limitBytes - 2048 - images.length * 400) : null;
+            const perImage = budget ? Math.floor(budget / images.length) : null;
 
             for (const imageFile of images) {
                 const arrayBuffer = await imageFile.file.arrayBuffer();
                 const uint8Array = new Uint8Array(arrayBuffer);
 
                 let image;
-                if (imageFile.file.type === "image/png") {
+                if (perImage) {
+                    const { encodeImageToTarget } = await import("@/lib/targetSize/encodeImageToTarget");
+                    const bitmap = await createImageBitmap(imageFile.file);
+                    const encoded = await encodeImageToTarget(bitmap, { targetBytes: perImage, mime: "image/jpeg" });
+                    bitmap.close();
+                    image = await pdfDoc.embedJpg(encoded.bytes);
+                } else if (imageFile.file.type === "image/png") {
                     image = await pdfDoc.embedPng(uint8Array);
                 } else if (imageFile.file.type === "image/jpeg" || imageFile.file.type === "image/jpg") {
                     image = await pdfDoc.embedJpg(uint8Array);
@@ -156,6 +172,13 @@ export function ImagesToPdfTool() {
             }
 
             const pdfBytes = await pdfDoc.save();
+            if (limitBytes && pdfBytes.byteLength > limitBytes) {
+                toast({
+                    title: "Still over the limit",
+                    description: `The PDF is ${formatBytes(pdfBytes.byteLength)}. The ceiling was ${formatBytes(limitBytes)}. 1 KB = 1024 bytes.`,
+                    variant: "destructive",
+                });
+            }
             const blob = new Blob([pdfBytes], { type: "application/pdf" });
             const url = URL.createObjectURL(blob);
 
@@ -167,10 +190,12 @@ export function ImagesToPdfTool() {
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
 
-            toast({
-                title: "PDF created successfully",
-                description: `Combined ${images.length} image(s) into a PDF`,
-            });
+            if (!limitBytes || pdfBytes.byteLength <= limitBytes) {
+                toast({
+                    title: "PDF created successfully",
+                    description: `Combined ${images.length} image(s) into a PDF${limitBytes ? ` (${formatBytes(pdfBytes.byteLength)})` : ""}`,
+                });
+            }
         } catch (error) {
             console.error(error);
             const errorMessage = error instanceof Error ? error.message : "An error occurred while creating the PDF";
@@ -260,6 +285,18 @@ export function ImagesToPdfTool() {
                             ))}
                         </div>
 
+                        <div className="space-y-2">
+                            <label htmlFor="pdf-byte-limit" className="text-sm font-medium">Keep the PDF under (optional)</label>
+                            <input
+                                id="pdf-byte-limit"
+                                value={limitText}
+                                onChange={(event) => setLimitText(event.target.value)}
+                                placeholder="e.g. 200 KB"
+                                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
+                            />
+                            <p className="text-xs text-muted-foreground">1 KB = 1024 bytes. When set, each picture is re-encoded as JPEG so the PDF can land under that ceiling. Leave blank to embed the original bytes.</p>
+                        </div>
+
                         <div className="flex gap-3">
                             <Button
                                 onClick={() => fileInputRef.current?.click()}
@@ -273,6 +310,7 @@ export function ImagesToPdfTool() {
                                 onClick={convertToPdf}
                                 disabled={images.length === 0 || isProcessing}
                                 className="flex-1"
+                                data-analytics-label={limitText.trim() ? "images-to-pdf-under-limit" : "images-to-pdf"}
                             >
                                 {isProcessing ? (
                                     <>

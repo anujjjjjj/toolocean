@@ -80,6 +80,9 @@ const PdfToolsPage = () => {
             The signature tool is the one to read carefully. It puts ink on a page, from a drawing, a typed name, or an image, and the page says it is not a certified or qualified electronic signature. If a process asks for a certificate, this hub will not produce one.
           </p>
           <p>
+            Two ceilings are preselected: <Link to="/compress-pdf-to-100kb" className="text-primary underline">compress a PDF to 100 KB</Link> and <Link to="/compress-pdf-to-200kb" className="text-primary underline">to 200 KB</Link>. 1 KB is 1024 bytes. Lossless is tried first. If the file still does not fit, the pages become pictures and the text is no longer selectable.
+          </p>
+          <p>
             OCR, editing text in place, redaction, and converting a PDF into an editable Word document are not here. Hosted suites still do those, and they upload the file to do it. The trade is written out on the{" "}
             <Link to="/smallpdf-alternative" className="font-medium text-primary hover:underline">Smallpdf alternative</Link>
             {" "}and{" "}
