@@ -8,9 +8,9 @@ import type { ToolPageContent } from "@/types/toolContent";
 export const pdfEncryptContent: Partial<ToolPageContent> = {
   tier: "A",
   seo: {
-    title: "Encrypt a PDF Offline, No Account",
+    title: "Password Protect PDF (AES-256) – No Upload",
     description:
-      "Set an open password and an optional owner password on a PDF, with permission flags, using AES-256 in the browser. The file and the password stay on the device.",
+      "Password-protect a PDF with AES-256 in this tab. Set an open password and optional permission flags, then download. The file and password stay on the device.",
     keywords: [
       "password protect pdf",
       "encrypt pdf",
@@ -23,7 +23,7 @@ export const pdfEncryptContent: Partial<ToolPageContent> = {
     dateModified: "2026-10-08",
   },
   hero: {
-    h1: "Password-protect a PDF",
+    h1: "Password protect a PDF",
     subtitle:
       "Give the file an open password, and optionally a different owner password that controls printing, copying, and editing. The cipher is AES-256. The work stays in the tab.",
     badges: ["browser-first", "no-uploads", "offline", "free"],

@@ -8,9 +8,9 @@ import type { ToolPageContent } from "@/types/toolContent";
 export const pdfSignContent: Partial<ToolPageContent> = {
   tier: "A",
   seo: {
-    title: "Sign a PDF Visually, With No Upload",
+    title: "Sign PDF Online Free – Draw or Type, No Upload",
     description:
-      "Draw, type, or place an image of your signature on one PDF page and download the copy. A visual mark only, made in the tab, with no account and no certificate.",
+      "Draw or type a signature, or place a PNG, on one page and download. The mark is visual ink only, with no certificate, and the PDF stays in this tab.",
     keywords: [
       "sign pdf",
       "sign pdf without uploading",
@@ -23,7 +23,7 @@ export const pdfSignContent: Partial<ToolPageContent> = {
     dateModified: "2026-10-08",
   },
   hero: {
-    h1: "Sign a PDF in the browser",
+    h1: "Sign a PDF online free",
     subtitle:
       "Draw a mark, type a name in a script face, or drop in a PNG, then put it on one page and download. The result is ink on the page. It is not a certified or qualified electronic signature.",
     badges: ["browser-first", "no-uploads", "offline", "free"],

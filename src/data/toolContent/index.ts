@@ -18,6 +18,15 @@ import { pdfEncryptContent } from "./pdfEncrypt";
 import { pdfUnlockContent } from "./pdfUnlock";
 import { pdfMetadataContent } from "./pdfMetadata";
 import { pdfFormFillContent } from "./pdfFormFill";
+import {
+  csvToJsonContent,
+  jsonToCsvContent,
+  jsonToTomlContent,
+  jsonToXmlContent,
+  jsonToYamlContent,
+  xmlToJsonContent,
+  yamlToJsonContent,
+} from "./directionalConverters";
 
 /**
  * Hand-authored page content, keyed by tool slug.
@@ -52,6 +61,13 @@ export const TOOL_CONTENT_OVERRIDES: Record<string, Partial<ToolPageContent>> = 
   "pdf-unlock": pdfUnlockContent,
   "pdf-metadata": pdfMetadataContent,
   "pdf-form-fill": pdfFormFillContent,
+  "csv-to-json": csvToJsonContent,
+  "json-to-csv": jsonToCsvContent,
+  "yaml-to-json": yamlToJsonContent,
+  "json-to-yaml": jsonToYamlContent,
+  "xml-to-json": xmlToJsonContent,
+  "json-to-xml": jsonToXmlContent,
+  "json-to-toml": jsonToTomlContent,
 };
 
 /**

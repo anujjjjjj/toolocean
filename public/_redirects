@@ -10,6 +10,30 @@
 # listing pages (/pdf-tools) are untouched because these patterns all require a
 # second path segment.
 
+# Retired converter slugs. One canonical page per direction. These sit above the
+# category splats so /tools/csv-json-converter does not stop at the old flat slug.
+/csv-converter                 /csv-to-json           301!
+/csv-json-converter            /csv-to-json           301!
+/tools/csv-json-converter      /csv-to-json           301!
+/csv-tools/csv-converter       /csv-to-json           301!
+/tools/csv-converter           /csv-to-json           301!
+/json-csv                      /json-to-csv           301!
+/converter-tools/json-csv      /json-to-csv           301!
+/yaml-json-converter           /yaml-to-json          301!
+/tools/yaml-json-converter     /yaml-to-json          301!
+/json-yaml                     /json-to-yaml          301!
+/converter-tools/json-yaml     /json-to-yaml          301!
+/xml-json-converter            /xml-to-json           301!
+/tools/xml-json-converter      /xml-to-json           301!
+/json-xml                      /json-to-xml           301!
+/converter-tools/json-xml      /json-to-xml           301!
+/json-toml                     /json-to-toml          301!
+/converter-tools/json-toml     /json-to-toml          301!
+/tools/json-toml               /json-to-toml          301!
+
+# Host canonicalization for toolocean.vercel.app lives in vercel.json. This file's
+# host syntax is Netlify-specific and would be misread by other static hosts.
+
 /tools/*                 /:splat   301!
 /pdf-tools/*             /:splat   301!
 /csv-tools/*             /:splat   301!

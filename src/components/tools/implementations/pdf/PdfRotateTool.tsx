@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Upload, Download, FileText, Loader2, RotateCw, RotateCcw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { PDFDocument, degrees } from "pdf-lib";
-
 export function PdfRotateTool() {
     const [pdfFile, setPdfFile] = useState<File | null>(null);
     const [pageCount, setPageCount] = useState(0);
@@ -15,6 +13,7 @@ export function PdfRotateTool() {
     const { toast } = useToast();
 
     const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { PDFDocument } = await import("pdf-lib");
         const file = event.target.files?.[0];
         if (!file) return;
 
@@ -57,6 +56,7 @@ export function PdfRotateTool() {
     };
 
     const applyRotations = async () => {
+        const { PDFDocument, degrees } = await import("pdf-lib");
         if (!pdfFile) return;
 
         setIsProcessing(true);

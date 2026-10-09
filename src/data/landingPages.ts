@@ -421,7 +421,7 @@ export const LANDING_PAGES: LandingPage[] = [
     footerLabel: "CSV to Excel",
     lede:
       "CSV exports are almost always the sensitive kind: customer lists, payroll runs, transaction histories, anything pulled out of an internal dashboard. That is exactly the category of file that should not be pasted into an online converter.",
-    tools: ["csv-to-excel", "excel-to-csv", "csv-json-converter", "csv-validator", "column-extractor"],
+    tools: ["csv-to-excel", "excel-to-csv", "csv-to-json", "csv-validator", "column-extractor"],
     sections: [
       {
         heading: "The file you are converting is the problem",

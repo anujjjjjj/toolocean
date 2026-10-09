@@ -121,17 +121,19 @@ const CATEGORY_TOOLS: CatalogTool[] = [
   // ---- Converter ----
   { id: "md-to-docx", category: "converter", name: "Markdown → DOCX", description: "Convert Markdown files to Microsoft Word DOCX format", icon: "FileText", keywords: ["markdown","docx","word","convert"] },
   { id: "markdown-html", category: "converter", name: "Markdown ↔ HTML", description: "Convert between Markdown and HTML formats bidirectionally", icon: "ArrowUpDown", keywords: ["markdown","html","convert"] },
-  { id: "json-toml", category: "converter", name: "JSON ↔ TOML", description: "Convert between JSON and TOML configuration formats", icon: "Code", keywords: ["json","toml","convert","config"] },
-  { id: "json-yaml", category: "converter", name: "JSON ↔ YAML", description: "Convert between JSON and YAML data formats", icon: "Code", keywords: ["json","yaml","convert"] },
-  { id: "json-xml", category: "converter", name: "JSON ↔ XML", description: "Convert between JSON and XML data formats", icon: "Code", keywords: ["json","xml","convert"] },
-  { id: "json-csv", category: "converter", name: "JSON ↔ CSV", description: "Convert between JSON arrays and CSV format", icon: "Code", keywords: ["json","csv","convert"] },
+  { id: "csv-to-json", category: "converter", name: "CSV to JSON", description: "Convert CSV to a JSON array, with delimiters and an optional header", icon: "ArrowUpDown", keywords: ["csv","json","convert","delimiter"] },
+  { id: "json-to-csv", category: "converter", name: "JSON to CSV", description: "Convert a JSON array of objects into CSV rows", icon: "ArrowUpDown", keywords: ["json","csv","convert"] },
+  { id: "yaml-to-json", category: "converter", name: "YAML to JSON", description: "Convert YAML to JSON and show whether the document parsed", icon: "Code", keywords: ["yaml","json","convert"] },
+  { id: "json-to-yaml", category: "converter", name: "JSON to YAML", description: "Convert JSON to YAML for config files", icon: "Code", keywords: ["json","yaml","convert"] },
+  { id: "xml-to-json", category: "converter", name: "XML to JSON", description: "Convert XML to JSON, keeping attributes when you ask", icon: "Code", keywords: ["xml","json","convert","attributes"] },
+  { id: "json-to-xml", category: "converter", name: "JSON to XML", description: "Convert JSON objects into XML elements", icon: "Code", keywords: ["json","xml","convert"] },
+  { id: "json-to-toml", category: "converter", name: "JSON to TOML", description: "Convert JSON to TOML, and swap back to JSON on the same page", icon: "Code", keywords: ["json","toml","convert","config"] },
   { id: "html-markdown", category: "converter", name: "HTML → Markdown", description: "Convert HTML to clean Markdown format", icon: "ArrowUpDown", keywords: ["html","markdown","convert"] },
   { id: "csv-markdown", category: "converter", name: "CSV → Markdown Table", description: "Convert CSV data into a formatted Markdown table", icon: "ArrowUpDown", keywords: ["csv","markdown","table","convert"] },
   { id: "svg-png", category: "converter", name: "SVG → PNG", description: "Render SVG to a high-resolution PNG image", icon: "Image", keywords: ["svg","png","render","convert","image"] },
   { id: "url-parser", category: "converter", name: "URL Parser / Builder", description: "Parse, inspect, and build URLs with query parameters", icon: "Link", keywords: ["url","parse","query","params","builder"] },
 
   // ---- CSV ----
-  { id: "csv-converter", category: "csv", name: "CSV ⇄ JSON Converter", description: "Convert between CSV and JSON with customizable delimiters", icon: "ArrowUpDown", keywords: ["csv","json","convert"] },
   { id: "csv-validator", category: "csv", name: "CSV Validator", description: "Validate CSV format, headers, and row consistency", icon: "CheckCircle", keywords: ["csv","validate"] },
   { id: "csv-merge", category: "csv", name: "CSV Merge", description: "Combine multiple CSV files into one", icon: "Merge", keywords: ["csv","merge","combine"] },
 
@@ -175,6 +177,8 @@ export const TOOL_CATALOG: CatalogTool[] = [...DEV_TOOLS, ...CATEGORY_TOOLS];
 const CROSS_LISTED: Record<string, CategoryKey[]> = {
   "color-converter": ["converter"],
   "timestamp-converter": ["converter"],
+  "csv-to-json": ["csv"],
+  "json-to-csv": ["csv"],
 };
 
 /**

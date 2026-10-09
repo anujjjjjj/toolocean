@@ -14,8 +14,6 @@ import {
   FileImage,
   ArrowLeft,
   Shield,
-  Zap,
-  Gift,
   RotateCw,
   Stamp,
   Sparkles,
@@ -27,6 +25,7 @@ import { buildCategoryGraph } from "@/lib/sitePageSchema";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
 import { ToolLinkCard } from "@/components/tools/ToolLinkCard";
 import { toolsInCategory } from "@/data/toolCatalog";
+import { HubGuide } from "@/components/category/HubGuide";
 
 const BREADCRUMB_ITEMS = [
   { name: "Home", path: "/" },
@@ -94,31 +93,8 @@ const ImageToolsPage = () => {
           </div>
         </section>
 
-        <section className="py-12">
-          <div className="grid md:grid-cols-3 gap-8 text-center">
-            <div className="space-y-3">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10">
-                <Shield className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-semibold text-lg">100% Secure</h3>
-              <p className="text-muted-foreground text-sm">All processing happens in your browser. Your images never leave your device.</p>
-            </div>
-            <div className="space-y-3">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10">
-                <Zap className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-semibold text-lg">Lightning Fast</h3>
-              <p className="text-muted-foreground text-sm">No upload wait times. Process images instantly with Canvas API.</p>
-            </div>
-            <div className="space-y-3">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10">
-                <Gift className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-semibold text-lg">Completely Free</h3>
-              <p className="text-muted-foreground text-sm">No limits, no sign-up required.</p>
-            </div>
-          </div>
-        </section>
+        <HubGuide path="/image-tools" />
+
       </main>
 
       <Footer />

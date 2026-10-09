@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { CATEGORY_INDEX, CATEGORY_LABEL, type CategoryKey } from "@/data/toolCatalog";
+import { CATEGORY_INDEX, CATEGORY_LABEL, TOOL_CATALOG, type CategoryKey } from "@/data/toolCatalog";
 import { LANDING_PAGES } from "@/data/landingPages";
 import { Logo } from "./Logo";
 
@@ -43,7 +43,7 @@ export function Footer() {
               <span className="font-heading text-lg font-semibold">ToolOcean</span>
             </Link>
             <p className="mt-3 max-w-sm text-sm text-muted-foreground">
-              119 free browser tools for developers, documents, images, audio and data. Every
+              {TOOL_CATALOG.length} free browser tools for developers, documents, images, audio and data. Every
               one runs entirely on your device. Nothing is uploaded, and there is no account.
             </p>
           </div>

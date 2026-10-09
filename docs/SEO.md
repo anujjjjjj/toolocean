@@ -293,3 +293,24 @@ output is what gets inspected:
 3. In GA4, register `tool` and `action` as **custom dimensions** (Admin → Custom
    definitions, scope: Event). Until you do, the events arrive but their parameters
    are not reportable.
+
+## Changelog
+
+### 2026-10-08 — Phase 1 foundations
+
+- Search titles for sign, encrypt, unlock, metadata, and form fill name the query
+  ("password protect PDF", "remove PDF password", "sign PDF online free", "edit PDF
+  metadata", "fill PDF form online") and stay within 60 characters with the brand.
+- `titleWithBrand` omits ` | ToolOcean` when adding it would pass 60 characters.
+  `check:catalog` warns, and does not fail, when a title is still longer.
+- Thin hubs (image first, then audio, video, CSV, spreadsheet, compression, archive,
+  converters) replace the shared three-card block with a task table and FAQs.
+- `toolocean.vercel.app` 301s to `https://toolocean.co` with the path preserved.
+  Preview hosts are not included.
+- CSV, YAML, and XML each have one page per direction. TOML is `/json-to-toml`.
+  Old slugs 301. Saved workflow ids still resolve.
+- pdf-lib, PDF.js, and `@cantoo/pdf-lib` load after a file is chosen or a run
+  starts, not with the tool's first paint.
+- `npm run indexnow` reads the committed public key file. It is not part of the build.
+- `check:uniqueness` fails a new or changed page under 40% unique 6-word shingles
+  unless that exact text is on the allowlist.

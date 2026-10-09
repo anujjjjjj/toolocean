@@ -18,6 +18,9 @@ dist-ssg
 # dirty working tree after each build and a meaningless diff in every commit.
 public/sitemap.xml
 
+# Last IndexNow submission, keyed by URL. Local to whoever runs npm run indexnow.
+.indexnow-state.json
+
 # Local env files. .env.example is committed as the template; the GA measurement
 # ID is not a secret (it ships in the client bundle) but the file still stays out
 # of git so a fork does not inherit someone else's analytics property.

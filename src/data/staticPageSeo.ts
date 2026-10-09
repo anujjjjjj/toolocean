@@ -1,3 +1,7 @@
+import { TOOL_CATALOG } from "@/data/toolCatalog";
+
+const TOOL_COUNT = TOOL_CATALOG.length;
+
 /**
  * SEO copy for the non-tool pages: the homepage and the ten category listings.
  *
@@ -24,54 +28,54 @@ export const HOME_SEO: StaticPageSeo = {
 
 export const CATEGORY_PAGE_SEO: Record<string, StaticPageSeo> = {
   "/dev-tools": {
-    title: "Developer Tools - Free Online JSON, Text & Encoding Utilities",
+    title: "Developer Tools – JSON, Text, Encoding",
     description:
-      "Format, convert, encode, and transform your data with free browser-based developer utilities. No uploads, no sign-up, everything runs client-side.",
+      "Format JSON, encode and decode, hash, and transform text in the browser. Three tools on this hub do call the network, and their pages say so.",
   },
   "/pdf-tools": {
-    title: "PDF Tools - Merge, Sign, Encrypt & Fill Forms Offline",
+    title: "PDF Tools – Merge, Sign, Encrypt, No Upload",
     description:
-      "Thirteen free browser PDF tools: merge, split, compress, sign, encrypt, unlock, metadata, and form fill. No uploads, files stay on your device.",
+      "Merge, split, compress, sign, password-protect, unlock, edit metadata, and fill AcroForm PDFs in the tab. No upload. OCR and PDF-to-Word are not here.",
   },
   "/csv-tools": {
-    title: "CSV Tools - Convert, Validate & Merge CSV Files Online Free",
+    title: "CSV Tools – Convert, Validate, Merge",
     description:
-      "Free browser-based CSV tools: convert CSV to JSON, validate CSV format, and merge multiple CSV files. No uploads. Everything runs in your browser.",
+      "Turn CSV into JSON or JSON into CSV, check that rows line up, and stack files that share columns. Workbooks are on the spreadsheet hub.",
   },
   "/audio-tools": {
-    title: "Audio Tools - Cut & Merge Audio Files Online Free",
+    title: "Audio Tools – Cut and Merge, No Upload",
     description:
-      "Free browser-based audio tools: trim and merge audio files with the Web Audio API. No uploads. Your audio never leaves your device.",
+      "Trim a recording to a start and end, or place clips one after another, with the Web Audio API. No fades, no noise removal, no upload.",
   },
   "/image-tools": {
-    title: "Image Tools - Resize, Compress & Convert Images Online Free",
+    title: "Image Tools – Resize, Compress, No Upload",
     description:
-      "Free browser-based image tools: resize, compress, crop, convert format, watermark, and apply filters. No uploads, images never leave your device.",
+      "Resize in pixels, compress a JPEG, crop, and convert PNG, JPEG, or WebP in the browser. No HEIC, no background removal, no exact-kilobyte mode.",
   },
   "/video-tools": {
-    title: "Video Tools - Trim, Extract Thumbnails & Convert to GIF Free",
+    title: "Video Tools – Trim, Thumbnail, GIF",
     description:
-      "Free browser-based video tools: trim clips, extract thumbnails, view metadata, and convert video to GIF. No uploads. Your videos never leave your device.",
+      "Trim a clip, save one frame, read duration and dimensions, or turn a short stretch into a GIF. No timeline editor and no upload.",
   },
   "/spreadsheet-tools": {
-    title: "Spreadsheet & Excel Tools - Convert & Export Online Free",
+    title: "Spreadsheet Tools – Excel and CSV",
     description:
-      "Free browser-based spreadsheet tools: read Excel files, convert CSV to Excel, export to CSV, and extract columns. No uploads, powered by SheetJS in your browser.",
+      "Read an xlsx, pull columns, and convert between CSV, JSON, and Excel in the tab. Formulas are not recalculated. Files stay on the device.",
   },
   "/compression-tools": {
-    title: "Compression Tools - Gzip & LZ-String Compress Online Free",
+    title: "Compression Tools – Gzip and LZ-String",
     description:
-      "Free browser-based compression tools: gzip compress/decompress and LZ-String compression for URLs and localStorage. No uploads, all client-side.",
+      "Gzip or LZ-String a pasted string for a URL or localStorage. Photo and PDF compression live on their own hubs. Output here is text, not a .gz file.",
   },
   "/archive-tools": {
-    title: "Archive Tools - Extract, Create & Preview ZIP Files Online Free",
+    title: "Archive Tools – ZIP, No Upload",
     description:
-      "Free browser-based ZIP tools: extract files, create new archives, and preview ZIP contents without extracting. No uploads, powered by JSZip in your browser.",
+      "List, extract, or create a ZIP in the browser. No RAR or 7z, and password-protected entries are not opened or guessed.",
   },
   "/converter-tools": {
-    title: "Converter Tools - Convert File Formats & Data Online Free",
+    title: "Converter Tools – JSON, YAML, XML, TOML",
     description:
-      "Free browser-based converters: Markdown to DOCX, JSON to TOML/YAML/XML/CSV, HTML to Markdown, colors, timestamps, and more. No uploads required.",
+      "One page per direction for CSV, YAML, and XML, plus JSON to TOML. Old combined addresses redirect. Parsing stays in the tab.",
   },
 };
 
@@ -100,14 +104,13 @@ export const INFO_PAGE_SEO: Record<string, StaticPageSeo> = {
       "Chain ToolOcean's text tools into a repeatable pipeline: format, convert, and transform in sequence. Runs entirely in your browser with no uploads.",
   },
   "/all-tools": {
-    title: "All 119 Free Browser Tools - Complete List",
+    title: `All ${TOOL_COUNT} Free Browser Tools - Complete List`,
     description:
       "Every ToolOcean tool in one place, grouped by category: PDF, image, video, audio, CSV, spreadsheet, archive, compression, converters and developer utilities.",
   },
   "/about": {
     title: "About ToolOcean - Who Builds It and How It Works",
-    description:
-      "ToolOcean is a free collection of 119 browser-based tools built and maintained by Anuj Kabra. Learn why every tool runs client-side and nothing is ever uploaded.",
+    description: `ToolOcean is a free collection of ${TOOL_COUNT} browser-based tools built and maintained by Anuj Kabra. Every tool runs client-side. Files are not uploaded.`,
   },
   "/privacy": {
     title: "Privacy Policy - What ToolOcean Does and Doesn't Collect",

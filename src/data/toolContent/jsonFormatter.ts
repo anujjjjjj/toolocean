@@ -311,7 +311,7 @@ export const jsonFormatterContent: Partial<ToolPageContent> = {
     },
     {
       name: "JSON ⇄ YAML Converter",
-      path: "/yaml-json-converter",
+      path: "/yaml-to-json",
       description: "Move config between JSON and the YAML that CI systems prefer.",
     },
     {
@@ -321,7 +321,7 @@ export const jsonFormatterContent: Partial<ToolPageContent> = {
     },
     {
       name: "JSON ⇄ XML Converter",
-      path: "/xml-json-converter",
+      path: "/xml-to-json",
       description: "Translate between JSON and XML when integrating with older APIs.",
     },
   ],

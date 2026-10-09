@@ -8,9 +8,9 @@ import type { ToolPageContent } from "@/types/toolContent";
 export const pdfFormFillContent: Partial<ToolPageContent> = {
   tier: "A",
   seo: {
-    title: "Fill a PDF Form in the Browser",
+    title: "Fill PDF Form Online – No Upload, Flatten",
     description:
-      "Fill text, checkbox, radio, and dropdown fields on an AcroForm PDF, optionally flatten them, and download. The form stays on your device. No account.",
+      "Fill a PDF form online when it is already an AcroForm. Text, checkbox, radio, and dropdown. Flatten the answers or keep the fields editable. Nothing uploads.",
     keywords: [
       "fill pdf form",
       "fill pdf form offline",
@@ -23,7 +23,7 @@ export const pdfFormFillContent: Partial<ToolPageContent> = {
     dateModified: "2026-10-08",
   },
   hero: {
-    h1: "Fill a PDF form",
+    h1: "Fill a PDF form online",
     subtitle:
       "Open an AcroForm, type into the fields it already has, and download. Flatten if the next person should see the answers as page content rather than as a form they can still edit.",
     badges: ["browser-first", "no-uploads", "offline", "free"],

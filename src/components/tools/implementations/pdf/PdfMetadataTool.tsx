@@ -6,13 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Download, Eraser, FileSearch, FileText, Loader2, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { downloadPdf, pdfDownloadName } from "@/lib/pdf/downloadPdf";
-import {
-    readPdfMetadata,
-    stripPdfMetadata,
-    writePdfMetadata,
-    type EditablePdfInfo,
-    type PdfMetadataReport,
-} from "@/lib/pdf/pdfMetadata";
+import type { EditablePdfInfo, PdfMetadataReport } from "@/lib/pdf/pdfMetadata";
 
 const EMPTY: EditablePdfInfo = {
     title: "",
@@ -40,6 +34,7 @@ export function PdfMetadataTool() {
         if (!next) return;
         try {
             const data = new Uint8Array(await next.arrayBuffer());
+            const { readPdfMetadata } = await import("@/lib/pdf/pdfMetadata");
             const found = await readPdfMetadata(data);
             setFile(next);
             setBytes(data);
@@ -61,6 +56,7 @@ export function PdfMetadataTool() {
         if (!file || !bytes) return;
         setBusy(true);
         try {
+            const { readPdfMetadata, stripPdfMetadata, writePdfMetadata } = await import("@/lib/pdf/pdfMetadata");
             const next = mode === "strip" ? await stripPdfMetadata(bytes) : await writePdfMetadata(bytes, edited);
             downloadPdf(next, pdfDownloadName(file.name, mode === "strip" ? "metadata-removed" : "metadata"));
             const found = await readPdfMetadata(next);

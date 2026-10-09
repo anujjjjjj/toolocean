@@ -7,7 +7,7 @@ import { Download, FileText, Loader2, LockOpen, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { downloadPdf, pdfDownloadName } from "@/lib/pdf/downloadPdf";
 import { isPdfPasswordRejected } from "@/lib/pdf/pdfErrors";
-import { inspectPdfEncryption, unlockPdf, type EncryptionInspection, type PreservedPdfInfo } from "@/lib/pdf/unlockPdf";
+import type { EncryptionInspection, PreservedPdfInfo } from "@/lib/pdf/unlockPdf";
 
 const COPY: Record<EncryptionInspection, { title: string; body: string }> = {
     none: {
@@ -40,6 +40,7 @@ export function PdfUnlockTool() {
         setBusy(true);
         try {
             const data = new Uint8Array(await next.arrayBuffer());
+            const { inspectPdfEncryption } = await import("@/lib/pdf/unlockPdf");
             const inspection = await inspectPdfEncryption(data);
             setFile(next);
             setBytes(data);
@@ -66,6 +67,7 @@ export function PdfUnlockTool() {
         try {
             const attempt = kind === "user-password" ? password : undefined;
             const preserved = await readPreservedInfo(bytes, attempt ?? "");
+            const { unlockPdf } = await import("@/lib/pdf/unlockPdf");
             const unlocked = await unlockPdf(bytes, attempt, preserved);
             downloadPdf(unlocked, pdfDownloadName(file.name, "unlocked"));
             toast({

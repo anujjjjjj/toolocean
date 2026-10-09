@@ -29,8 +29,21 @@ export interface ResolvedSeo {
   jsonLd: object[];
 }
 
+/** Google's usual cutoff. A longer branded title gets truncated in the SERP. */
+const MAX_TITLE_LENGTH = 60;
+
+/**
+ * Append " | ToolOcean" only when the result still fits in the SERP title.
+ * A title that already names the site is left alone, even if it is long.
+ */
+export function titleWithBrand(title: string): string {
+  if (title.includes(SITE_NAME)) return title;
+  const branded = `${title} | ${SITE_NAME}`;
+  return branded.length <= MAX_TITLE_LENGTH ? branded : title;
+}
+
 export function resolveSeo(input: SeoInput): ResolvedSeo {
-  const fullTitle = input.title.includes(SITE_NAME) ? input.title : `${input.title} | ${SITE_NAME}`;
+  const fullTitle = titleWithBrand(input.title);
   const canonical = `${SITE_URL}${input.path}`;
   const rawImage = input.image ?? DEFAULT_OG_IMAGE;
   // OG consumers reject relative URLs, so always emit an absolute one.

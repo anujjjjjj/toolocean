@@ -1,5 +1,6 @@
 import { Navigate, useParams } from "react-router-dom";
 import { findToolBySlug, toolPath } from "@/data/toolCatalog";
+import { SLUG_REDIRECTS } from "@/data/slugRedirects";
 import NotFound from "@/pages/NotFound";
 
 /**
@@ -16,6 +17,9 @@ import NotFound from "@/pages/NotFound";
  */
 export function LegacyToolRedirect() {
   const { slug } = useParams<{ slug: string }>();
+  if (slug && SLUG_REDIRECTS[slug]) {
+    return <Navigate to={SLUG_REDIRECTS[slug]} replace />;
+  }
   const tool = slug ? findToolBySlug(slug) : undefined;
 
   if (!tool) return <NotFound />;

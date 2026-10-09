@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,9 +11,15 @@ import { useToast } from "@/hooks/use-toast";
 import { xmlToJson, jsonToXml } from "@/lib/xmlJson";
 
 export function XmlJsonConverterTool() {
+  const { slug } = useParams();
+  const routeMode: "xml-to-json" | "json-to-xml" = slug === "json-to-xml" ? "json-to-xml" : "xml-to-json";
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
-  const [mode, setMode] = useState<"xml-to-json" | "json-to-xml">("xml-to-json");
+  const [mode, setMode] = useState<"xml-to-json" | "json-to-xml">(routeMode);
+
+  useEffect(() => {
+    setMode(routeMode);
+  }, [routeMode]);
   const [isValid, setIsValid] = useState<boolean | null>(null);
   const [error, setError] = useState("");
   const [preserveAttributes, setPreserveAttributes] = useState(true);

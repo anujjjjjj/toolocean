@@ -8,9 +8,9 @@ import type { ToolPageContent } from "@/types/toolContent";
 export const pdfMetadataContent: Partial<ToolPageContent> = {
   tier: "A",
   seo: {
-    title: "View and Strip PDF Metadata Offline",
+    title: "Edit PDF Metadata Online – No Upload",
     description:
-      "See the title, author, producer, dates, and keywords stored in a PDF, then edit those fields or strip them and download. Inspection stays in the browser.",
+      "Edit PDF metadata in this tab: title, author, producer, dates, and keywords. Change the fields you want or strip them, then download. The file is not uploaded.",
     keywords: [
       "pdf metadata viewer",
       "remove pdf metadata",
@@ -23,7 +23,7 @@ export const pdfMetadataContent: Partial<ToolPageContent> = {
     dateModified: "2026-10-08",
   },
   hero: {
-    h1: "See what a PDF says about itself",
+    h1: "Edit PDF metadata",
     subtitle:
       "Read the document information and the XMP packet, change the fields you want to keep, or strip them and download a copy. The file is not uploaded to be inspected.",
     badges: ["browser-first", "no-uploads", "offline", "free"],
