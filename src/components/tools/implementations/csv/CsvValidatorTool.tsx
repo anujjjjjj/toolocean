@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CheckCircle, XCircle, AlertCircle } from "lucide-react";
+import { parseCsv, resolveDelimiter } from "@/lib/csv/parseCsv";
 
 interface ValidationResult {
   valid: boolean;
@@ -31,12 +32,25 @@ export function CsvValidatorTool() {
       return;
     }
 
-    const actualDelimiter = delimiter === "custom" ? customDelimiter : delimiter;
-    const lines = input.trim().split("\n").filter((line) => line.trim());
     const errors: string[] = [];
     const warnings: string[] = [];
 
-    if (lines.length === 0) {
+    let parsed: string[][];
+    try {
+      parsed = parseCsv(input, resolveDelimiter(delimiter, customDelimiter)).filter((row) =>
+        row.some((cell) => cell.trim() !== ""),
+      );
+    } catch (error) {
+      setResult({
+        valid: false,
+        errors: [error instanceof Error ? error.message : "Could not parse CSV"],
+        warnings: [],
+        stats: { rows: 0, columns: 0 },
+      });
+      return;
+    }
+
+    if (parsed.length === 0) {
       setResult({
         valid: false,
         errors: ["File is empty"],
@@ -46,21 +60,22 @@ export function CsvValidatorTool() {
       return;
     }
 
-    const firstLineCols = lines[0].split(actualDelimiter).length;
+    const firstLineCols = parsed[0].length;
     let headerRow: string[] | undefined;
-    let dataRows = lines;
+    let dataRows = parsed;
 
-    if (hasHeader && lines.length > 1) {
-      headerRow = lines[0].split(actualDelimiter).map((h) => h.trim());
-      dataRows = lines.slice(1);
-    } else if (hasHeader && lines.length === 1) {
+    if (hasHeader && parsed.length > 1) {
+      headerRow = parsed[0].map((header) => header.trim());
+      dataRows = parsed.slice(1);
+    } else if (hasHeader && parsed.length === 1) {
+      headerRow = parsed[0].map((header) => header.trim());
+      dataRows = [];
       warnings.push("Only header row present, no data rows");
     }
 
-    const columnCounts = dataRows.map((line) => line.split(actualDelimiter).length);
-    const inconsistentRows = columnCounts
-      .map((count, i) => (count !== firstLineCols ? i + (hasHeader ? 2 : 1) : -1))
-      .filter((i) => i >= 0);
+    const inconsistentRows = dataRows
+      .map((row, index) => (row.length !== firstLineCols ? index + (hasHeader ? 2 : 1) : -1))
+      .filter((index) => index >= 0);
 
     if (inconsistentRows.length > 0) {
       errors.push(`Row(s) ${inconsistentRows.slice(0, 5).join(", ")}${inconsistentRows.length > 5 ? "..." : ""} have different column count (expected ${firstLineCols})`);

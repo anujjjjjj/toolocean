@@ -17,7 +17,11 @@ import { InfoPageLayout, P, Section, UL } from "@/components/layout/InfoPageLayo
 const LAST_UPDATED = "18 August 2026";
 
 const TermsPage = () => {
-  useSEO({ ...INFO_PAGE_SEO["/terms"], path: "/terms" });
+  useSEO({
+    ...INFO_PAGE_SEO["/terms"],
+    path: "/terms",
+    jsonLd: [buildInfoPageGraph("/terms")].filter(Boolean),
+  });
 
   return (
     <InfoPageLayout

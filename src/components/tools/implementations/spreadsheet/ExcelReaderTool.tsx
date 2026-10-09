@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import * as XLSX from "xlsx";
+import { parseCsv } from "@/lib/csv/parseCsv";
 
 export function ExcelReaderTool() {
   const [workbook, setWorkbook] = useState<XLSX.WorkBook | null>(null);
@@ -18,8 +19,16 @@ export function ExcelReaderTool() {
     const reader = new FileReader();
     reader.onload = (ev) => {
       try {
-        const buf = ev.target?.result;
-        const wb = XLSX.read(buf, { type: "array" });
+        const buf = ev.target?.result as ArrayBuffer;
+        const name = file.name.toLowerCase();
+        const wb = name.endsWith(".csv") || name.endsWith(".txt") || name.endsWith(".tsv")
+          ? XLSX.utils.book_new()
+          : XLSX.read(buf, { type: "array" });
+        if (name.endsWith(".csv") || name.endsWith(".txt") || name.endsWith(".tsv")) {
+          const text = new TextDecoder().decode(buf);
+          const rows = parseCsv(text, name.endsWith(".tsv") ? "\t" : ",");
+          XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows), "Sheet1");
+        }
         setWorkbook(wb);
         const names = wb.SheetNames;
         setSheetNames(names);

@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Upload, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import * as XLSX from "xlsx";
+import { parseCsv } from "@/lib/csv/parseCsv";
 
 export function CsvToExcelTool() {
   const [csv, setCsv] = useState("");
@@ -27,22 +28,7 @@ export function CsvToExcelTool() {
 
   const convertAndDownload = () => {
     try {
-      const lines = csv.trim().split(/\r?\n/);
-      const rows = lines.map((line) => {
-        const parts: string[] = [];
-        let current = "";
-        let inQuotes = false;
-        for (let i = 0; i < line.length; i++) {
-          const c = line[i];
-          if (c === '"') inQuotes = !inQuotes;
-          else if ((c === delimiter || c === ",") && !inQuotes) {
-            parts.push(current.trim());
-            current = "";
-          } else current += c;
-        }
-        parts.push(current.trim());
-        return parts;
-      });
+      const rows = parseCsv(csv, delimiter || ",");
       const ws = XLSX.utils.aoa_to_sheet(rows);
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Sheet1");

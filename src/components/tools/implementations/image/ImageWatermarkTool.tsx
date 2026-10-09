@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Upload, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { readImageFiles } from "@/lib/image/readImageFiles";
 
 const POSITIONS = ["top-left", "top-center", "top-right", "center", "bottom-left", "bottom-center", "bottom-right"] as const;
 type Position = typeof POSITIONS[number];
@@ -22,14 +23,19 @@ export function ImageWatermarkTool() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = "";
     if (!file) return;
-    const url = URL.createObjectURL(file);
+    const { accepted, errors } = await readImageFiles([file]);
+    if (!accepted[0]) {
+      toast({ title: "Could not read that image", description: errors[0] ?? "Please select an image file", variant: "destructive" });
+      return;
+    }
+    const url = URL.createObjectURL(accepted[0]);
     const img = new Image();
     img.onload = () => { imgRef.current = img; setImageSrc(url); };
     img.src = url;
-    e.target.value = "";
   };
 
   const renderWatermark = () => {

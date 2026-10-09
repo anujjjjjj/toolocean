@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Upload, Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { readImageFiles } from "@/lib/image/readImageFiles";
 
 interface PickedColor {
   hex: string;
@@ -51,9 +52,18 @@ export function ImageColorPickerTool() {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
+    const { accepted, errors } = await readImageFiles([file]);
+    if (!accepted[0]) {
+      toast({
+        title: "Could not read that image",
+        description: errors[0] ?? "The file may be corrupt or in a format this browser cannot decode.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     try {
-      const bitmap = await createImageBitmap(file);
+      const bitmap = await createImageBitmap(accepted[0]);
       bitmapRef.current?.close();
       bitmapRef.current = bitmap;
       setPicked(null);

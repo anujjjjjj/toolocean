@@ -6,24 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Copy, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
-function parseCsvLine(line: string, delim: string): string[] {
-  const cells: string[] = [];
-  let cur = "", inQ = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') { if (inQ && line[i + 1] === '"') { cur += '"'; i++; } else inQ = !inQ; }
-    else if (ch === delim && !inQ) { cells.push(cur); cur = ""; }
-    else cur += ch;
-  }
-  cells.push(cur);
-  return cells;
-}
+import { parseCsv } from "@/lib/csv/parseCsv";
 
 function csvToMarkdown(csv: string, delim: string): string {
-  const rows = csv.split(/\r?\n/).filter((l) => l.trim());
-  if (!rows.length) return "";
-  const parsed = rows.map((r) => parseCsvLine(r, delim));
+  const parsed = parseCsv(csv, delim).filter((row) => row.some((cell) => cell.trim() !== ""));
+  if (!parsed.length) return "";
   const cols = Math.max(...parsed.map((r) => r.length));
   const widths = Array.from({ length: cols }, (_, i) =>
     Math.max(...parsed.map((r) => (r[i] || "").length), 3)
@@ -37,9 +24,10 @@ function csvToMarkdown(csv: string, delim: string): string {
 }
 
 function properCsvToMarkdown(csv: string, delim: string): string {
-  const rows = csv.split(/\r?\n/).filter((l) => l.trim());
-  if (!rows.length) return "";
-  const parsed = rows.map((r) => parseCsvLine(r, delim));
+  const parsed = parseCsv(csv, delim)
+    .filter((row) => row.some((cell) => cell.trim() !== ""))
+    .map((row) => row.map((cell) => cell.replace(/\r?\n/g, " ")));
+  if (!parsed.length) return "";
   const cols = Math.max(...parsed.map((r) => r.length));
   const widths = Array.from({ length: cols }, (_, i) =>
     Math.max(...parsed.map((r) => (r[i] || "").trim().length), 3)

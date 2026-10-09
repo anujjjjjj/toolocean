@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Upload, Download, X, FileImage, GripVertical, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { readImageFiles } from "@/lib/image/readImageFiles";
 interface ImageFile {
     id: string;
     file: File;
@@ -19,17 +20,16 @@ export function ImagesToPdfTool() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
 
-    const processFiles = (files: FileList | File[]) => {
-        for (const file of Array.from(files)) {
-            if (!file.type.startsWith("image/")) {
-                toast({
-                    title: "Invalid file type",
-                    description: `${file.name} is not an image file`,
-                    variant: "destructive",
-                });
-                continue;
-            }
-
+    const processFiles = async (files: FileList | File[]) => {
+        const { accepted, errors } = await readImageFiles(Array.from(files));
+        if (errors.length) {
+            toast({
+                title: "Could not read an image",
+                description: errors.join(" "),
+                variant: "destructive",
+            });
+        }
+        for (const file of accepted) {
             const preview = URL.createObjectURL(file);
             const newImage: ImageFile = {
                 id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
@@ -37,7 +37,6 @@ export function ImagesToPdfTool() {
                 name: file.name,
                 preview,
             };
-
             setImages((prev) => [...prev, newImage]);
         }
     };

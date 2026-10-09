@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Upload, Download, Crop } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { readImageFiles } from "@/lib/image/readImageFiles";
 
 export function ImageCropTool() {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -18,10 +19,16 @@ export function ImageCropTool() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = "";
     if (!file) return;
-    const url = URL.createObjectURL(file);
+    const { accepted, errors } = await readImageFiles([file]);
+    if (!accepted[0]) {
+      toast({ title: "Could not read that image", description: errors[0] ?? "Please select an image file", variant: "destructive" });
+      return;
+    }
+    const url = URL.createObjectURL(accepted[0]);
     const img = new Image();
     img.onload = () => {
       imgRef.current = img;
@@ -30,7 +37,6 @@ export function ImageCropTool() {
       setCrop({ x: 0, y: 0, w: img.naturalWidth, h: img.naturalHeight });
     };
     img.src = url;
-    e.target.value = "";
   };
 
   const getCanvasCoords = (e: React.MouseEvent<HTMLCanvasElement>) => {

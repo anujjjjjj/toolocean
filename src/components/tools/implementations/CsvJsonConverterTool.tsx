@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Copy, Download, ArrowUpDown, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { csvToRecords, resolveDelimiter } from "@/lib/csv/parseCsv";
 import { markToolSuccess } from "@/lib/toolResult";
 
 export function CsvJsonConverterTool() {
@@ -38,30 +39,7 @@ export function CsvJsonConverterTool() {
   };
 
   const csvToJson = (csvText: string, delim: string, withHeader: boolean) => {
-    const lines = csvText.trim().split('\n');
-    if (lines.length === 0) return [];
-
-    const actualDelimiter = delim === 'custom' ? customDelimiter : delim;
-    const headers = withHeader ? lines[0].split(actualDelimiter).map(h => h.trim().replace(/"/g, '')) : null;
-    const dataLines = withHeader ? lines.slice(1) : lines;
-
-    return dataLines.map((line, index) => {
-      const values = line.split(actualDelimiter).map(v => v.trim().replace(/"/g, ''));
-      
-      if (headers) {
-        const obj: any = {};
-        headers.forEach((header, i) => {
-          obj[header] = values[i] || '';
-        });
-        return obj;
-      } else {
-        const obj: any = {};
-        values.forEach((value, i) => {
-          obj[`column_${i + 1}`] = value;
-        });
-        return obj;
-      }
-    });
+    return csvToRecords(csvText, resolveDelimiter(delim, customDelimiter), withHeader);
   };
 
   const jsonToCsv = (jsonText: string, delim: string) => {
