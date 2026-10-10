@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { VisitorCount } from "@/components/home/VisitorCount";
 import { Link } from "react-router-dom";
 import { useCommandPalette } from "@/contexts/CommandPaletteContext";
 import { useSEO } from "@/hooks/useSEO";
@@ -158,6 +159,7 @@ const Index = () => {
           </div>
         </details>
         </div>
+        <VisitorCount />
       </main>
       <Footer />
     </div>

@@ -3,27 +3,25 @@ interface LogoProps {
 }
 
 /**
- * Ink square and two waves. The lower stroke is the ochre mark from the lock;
- * it is a graphic, not text.
+ * Horizon mark: ink tile, paper waves, sun on the waterline.
+ * Fills follow the site theme (the `.dark` class), not only the OS scheme,
+ * so the header stays correct after the theme toggle. The favicon SVG uses
+ * prefers-color-scheme because a browser tab has no site class to read.
  */
 export function Logo({ className }: LogoProps) {
   return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
-      <rect width="24" height="24" rx="7" fill="var(--ink)" />
-      <path
-        d="M4.5 14.5c2.5-3 4.5-3 7.5 0s5 3 7.5 0"
+    <svg viewBox="0 0 32 32" className={className} aria-hidden="true">
+      <rect width="32" height="32" rx="7" className="fill-[#16130F] dark:fill-[#F6F1E7]" />
+      <path fill="#F2B705" d="M10.5 15.6a5.5 5.5 0 0 1 11 0z" />
+      <g
         fill="none"
-        stroke="var(--bg)"
-        strokeWidth="2"
+        strokeWidth="1.8"
         strokeLinecap="round"
-      />
-      <path
-        d="M4.5 10c2.5-3 4.5-3 7.5 0s5 3 7.5 0"
-        fill="none"
-        stroke="#C99A4B"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
+        className="stroke-[#F6F1E7] dark:stroke-[#16130F]"
+      >
+        <path d="M5.2 20.2c1.9-1.9 3.3-1.9 5.2 0s3.3 1.9 5.2 0 3.3-1.9 5.2 0 3.3 1.9 5.2 0" />
+        <path d="M5.2 24.8c1.9-1.9 3.3-1.9 5.2 0s3.3 1.9 5.2 0 3.3-1.9 5.2 0 3.3 1.9 5.2 0" />
+      </g>
     </svg>
   );
 }

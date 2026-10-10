@@ -198,6 +198,46 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* One-row category ledger. Hairline rules, no motion, figures in Geist Mono. */
+  .hub-ledger {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    flex-wrap: nowrap;
+    width: 100%;
+    max-width: 42rem;
+    margin-inline: auto;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    color: var(--muted-ink);
+    font-size: 11px;
+    line-height: 1.2;
+  }
+
+  .hub-ledger > div {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    padding: 8px 6px;
+    white-space: nowrap;
+  }
+
+  .hub-ledger > div + div {
+    border-left: 1px solid var(--line);
+  }
+
+  @media (min-width: 768px) {
+    .hub-ledger {
+      font-size: 13px;
+    }
+
+    .hub-ledger > div {
+      gap: 8px;
+      padding: 10px 16px;
+    }
+  }
+
   .paper-drop {
     position: relative;
     display: flex;

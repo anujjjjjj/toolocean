@@ -9,10 +9,9 @@ import { Code, InfoPageLayout, P, Section, UL } from "@/components/layout/InfoPa
 /**
  * About page.
  *
- * Exists mainly to close the E-E-A-T gap flagged in docs/SEO.md: a named person
- * accountable for the site, and a concrete explanation of how it works. Vague
- * "we are passionate about tools" copy would add nothing, the specifics are the
- * whole point, because they are checkable.
+ * Exists mainly to close the E-E-A-T gap flagged in docs/SEO.md: the brand is
+ * accountable for the site, and the page explains how it works in specifics
+ * that can be checked. Vague "we are passionate about tools" copy would add nothing.
  *
  * Every number here is verifiable from the repository rather than asserted:
  * the tool count comes from the catalog, the bundle sizes from the build output
@@ -41,7 +40,7 @@ const AboutPage = () => {
           There is no account, no upload step, no watermark, no daily quota and no paid tier.
         </P>
         <P>
-          It is maintained by <strong className="text-foreground">Anuj Kabra</strong>, who writes and
+          It is maintained by <strong className="text-foreground">ToolOcean</strong>, which writes and
           runs all of it.
         </P>
       </Section>

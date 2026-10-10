@@ -1,3 +1,5 @@
+import { trackUmamiPageview } from "@/lib/umami";
+
 /**
  * Google Analytics 4, wired for a site whose entire pitch is that nothing leaves
  * the browser.
@@ -177,15 +179,18 @@ export function initAnalytics(): void {
  *              a lazily-loaded route and report the previous page's title.
  */
 export function trackPageview(path: string, title: string): void {
-  if (!isBrowser() || !MEASUREMENT_ID) return;
+  if (!isBrowser()) return;
   if (path === lastTrackedPath) return;
   lastTrackedPath = path;
 
-  gtag("event", "page_view", {
-    page_path: path,
-    page_location: window.location.href,
-    page_title: title,
-  });
+  if (MEASUREMENT_ID) {
+    gtag("event", "page_view", {
+      page_path: path,
+      page_location: window.location.href,
+      page_title: title,
+    });
+  }
+  trackUmamiPageview(path, title);
 }
 
 export function trackEvent(name: string, params?: AnalyticsParams): void {

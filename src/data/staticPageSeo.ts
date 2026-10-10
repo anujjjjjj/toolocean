@@ -110,7 +110,7 @@ export const INFO_PAGE_SEO: Record<string, StaticPageSeo> = {
   },
   "/about": {
     title: "About ToolOcean - Who Builds It and How It Works",
-    description: `ToolOcean is a free collection of ${TOOL_COUNT} browser-based tools built and maintained by Anuj Kabra. Every tool runs client-side. Files are not uploaded.`,
+    description: `ToolOcean is a free collection of ${TOOL_COUNT} browser-based tools. Every tool runs client-side. Files are not uploaded.`,
   },
   "/privacy": {
     title: "Privacy Policy - What ToolOcean Does and Doesn't Collect",

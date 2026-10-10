@@ -1,7 +1,8 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
-import { FileText, ArrowLeft, Shield } from "lucide-react";
+import { FileText, ArrowLeft } from "lucide-react";
+import { HubHeader } from "@/components/category/HubHeader";
 import { Link, useNavigate } from "react-router-dom";
 import { NativeFaq } from "@/components/tool-page/NativeFaq";
 import { PDF_HUB_FAQS } from "@/data/pdfHubContent";
@@ -36,7 +37,7 @@ const PdfToolsPage = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="container mx-auto px-4 py-8 space-y-12">
+      <main className="container mx-auto px-4 py-4 space-y-5 md:py-6">
         {/* Back Button */}
         <Button
           variant="ghost"
@@ -46,31 +47,19 @@ const PdfToolsPage = () => {
           Back to All Tools
         </Button>
 
-        <Breadcrumbs items={BREADCRUMB_ITEMS} />
+        <Breadcrumbs items={BREADCRUMB_ITEMS} className="mb-0" />
 
-        {/* Hero Section */}
-        <section className="text-center py-8">
-          <div className="relative max-w-4xl mx-auto">
-            <div className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-lg bg-primary/10">
-              <FileText className="h-8 w-8 text-primary" />
-            </div>
-            <span className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary">
-              <Shield className="h-3.5 w-3.5" />
-              No uploads. Runs entirely in your browser.
-            </span>
-            <h1 className="mb-6 text-[28px] font-semibold leading-[1.15] tracking-[-0.02em] text-foreground md:text-[34px]">
-              PDF Tools
-            </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Thirteen PDF tools that run in the tab. Merge and split, compress a scan, protect a file with AES-256, unlock one you already know the password for, read or strip metadata, fill an AcroForm, or place a visual signature. Nothing is uploaded.
-            </p>
-          </div>
-        </section>
+        <HubHeader
+          category="pdf"
+          title="PDF Tools"
+          icon={FileText}
+          description="Thirteen PDF tools that run in the tab. Merge and split, compress a scan, protect a file with AES-256, unlock one you already know the password for, read or strip metadata, fill an AcroForm, or place a visual signature."
+        />
 
         {/* PDF Tools Grid */}
-        <section className="space-y-6">
+        <section className="space-y-3">
           <div className="text-center">
-            <h2 className="text-3xl font-bold mb-4">Available Tools</h2>
+            <h2 className="mb-1 text-2xl font-semibold">Available Tools</h2>
             <p className="text-muted-foreground">Select a tool to get started</p>
           </div>
 
