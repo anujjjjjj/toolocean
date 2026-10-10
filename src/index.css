@@ -460,3 +460,26 @@
   }
   .paper-drop.is-over .paper-drop-icon { transform: none; }
 }
+
+/*
+ * Theme toggle. The circle is a snapshot, so it does not move layout.
+ * theme-fade is the 200ms crossfade where View Transitions are missing.
+ * The group stays one snapshot so an open palette is not duplicated.
+ */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-new(root) { z-index: 2; }
+::view-transition-old(root) { z-index: 1; }
+
+html.theme-fade,
+html.theme-fade body,
+html.theme-fade body * {
+  transition: background-color 200ms linear, color 200ms linear, border-color 200ms linear, outline-color 200ms linear, fill 200ms linear, stroke 200ms linear !important;
+}
+
+@media (pointer: coarse) {
+  .theme-toggle { width: 44px; height: 44px; }
+}

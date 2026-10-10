@@ -1,8 +1,9 @@
 import { Moon, Search, Sun } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCommandPalette } from "@/contexts/CommandPaletteContext";
 import { TOOL_CATALOG } from "@/data/toolCatalog";
+import { readTheme, toggleThemeFrom, type ThemeName } from "@/lib/themeTransition";
 import { Logo } from "./Logo";
 import { tipJarUrl } from "./TipJar";
 
@@ -12,21 +13,17 @@ interface HeaderProps {
 
 export function Header({ minimal = false }: HeaderProps) {
   const { openPalette } = useCommandPalette();
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<ThemeName>("light");
+  const themeButton = useRef<HTMLButtonElement>(null);
   const tipUrl = tipJarUrl();
   const shortcut = "⌘K";
 
   useEffect(() => {
-    setTheme(document.documentElement.classList.contains("dark") ? "dark" : "light");
+    setTheme(readTheme());
   }, []);
 
   const toggleTheme = () => {
-    const next = document.documentElement.classList.contains("dark") ? "light" : "dark";
-    document.documentElement.classList.toggle("dark", next === "dark");
-    document.documentElement.style.colorScheme = next;
-    localStorage.setItem("theme", next);
-    localStorage.setItem("darkMode", next === "dark" ? "true" : "false");
-    setTheme(next);
+    setTheme(toggleThemeFrom(themeButton.current));
   };
 
   return (
@@ -60,14 +57,15 @@ export function Header({ minimal = false }: HeaderProps) {
             </a>
           )}
           <button
+            ref={themeButton}
             type="button"
-            className="theme inline-flex h-9 w-9 items-center justify-center rounded-[10px] text-muted-foreground hover:bg-secondary hover:text-foreground"
+            className="theme-toggle inline-flex h-9 w-9 items-center justify-center rounded-[10px] text-muted-foreground hover:bg-secondary hover:text-foreground"
             onClick={toggleTheme}
-            aria-label="Toggle theme"
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             aria-pressed={theme === "dark"}
           >
-            <span className="moon dark:hidden"><Moon className="h-4 w-4" /></span>
-            <span className="sun hidden dark:inline-flex"><Sun className="h-4 w-4" /></span>
+            <span className="dark:hidden"><Moon className="h-4 w-4" aria-hidden="true" /></span>
+            <span className="hidden dark:inline-flex"><Sun className="h-4 w-4" aria-hidden="true" /></span>
           </button>
         </nav>
       </div>
