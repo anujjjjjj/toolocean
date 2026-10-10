@@ -2,8 +2,18 @@
   "note": "Lean tool pages allowed over 180 visible words. The three-step instructions are kept in full; trimming them would hide the procedure.",
   "budget": 180,
   "pages": {
+    "/images-to-pdf": { "words": 207 },
     "/pdf-merge": { "words": 204 },
+    "/pdf-encrypt": { "words": 202 },
+    "/zip-extractor": { "words": 199 },
     "/pdf-sign": { "words": 198 },
-    "/image-compressor": { "words": 186 }
+    "/pdf-split": { "words": 195 },
+    "/pdf-to-images": { "words": 195 },
+    "/image-format-converter": { "words": 191 },
+    "/pdf-watermark": { "words": 189 },
+    "/zip-creator": { "words": 187 },
+    "/image-compressor": { "words": 186 },
+    "/image-resizer": { "words": 185 },
+    "/json-formatter": { "words": 185 }
   }
 }

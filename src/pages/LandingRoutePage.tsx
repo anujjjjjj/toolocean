@@ -1,15 +1,19 @@
-import { lazy, Suspense } from "react";
-import { useLocation, Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { lazy, Suspense, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
-import { Section } from "@/components/tool-page/Section";
-import { ToolFaq } from "@/components/tool-page/ToolFaq";
+import { FileDropzone } from "@/components/ui/file-dropzone";
+import { NativeFaq } from "@/components/tool-page/NativeFaq";
+import { ToolLinkCard } from "@/components/tools/ToolLinkCard";
+import { useStashedFileRoot } from "@/hooks/useStashedFileInput";
 import { useSEO } from "@/hooks/useSEO";
 import { findLandingPage, type LandingPage } from "@/data/landingPages";
 import { findToolBySlug } from "@/data/toolCatalog";
 import { buildLandingPageGraph } from "@/lib/landingPageSchema";
+import { shellDropzoneCopy } from "@/lib/leanShell";
+import { prefetchPdfJs, prefetchPdfLib } from "@/lib/pdf/lazyPdf";
+import { prefetchTool } from "@/lib/prefetchTool";
 import measurements from "@/data/targetSizeMeasurements.json";
 import { formatBytes } from "@/lib/targetSize/parseSize";
 import NotFound from "./NotFound";
@@ -41,35 +45,13 @@ const FIXTURES: Record<string, FixtureRow> = {
   ...(measurements.pdfs as Record<string, FixtureRow>),
 };
 
-/**
- * The one route behind every modifier and comparison landing page.
- *
- * These sit at the site root alongside the tools rather than under a /guides/
- * prefix, because the URL is part of what ranks: /merge-pdf-without-uploading
- * matches the query it targets, and burying it a level down adds nothing for a
- * reader and dilutes the match.
- */
 function ToolLinks({ page }: { page: LandingPage }) {
-  const tools = page.tools.map((slug) => findToolBySlug(slug)).filter(Boolean);
+  const tools = page.tools.map((slug) => findToolBySlug(slug)).filter((tool) => tool != null);
   if (!tools.length) return null;
-
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       {tools.map((tool) => (
-        <Link
-          key={tool!.id}
-          to={`/${tool!.id}`}
-          className="group flex items-start justify-between gap-4 rounded-lg border border-border/70 bg-card p-4 transition-colors hover:border-primary/50 hover:bg-muted/50"
-        >
-          <div>
-            <h3 className="font-heading text-base font-medium">{tool!.name}</h3>
-            <p className="mt-1 text-sm text-muted-foreground">{tool!.description}</p>
-          </div>
-          <ArrowRight
-            className="mt-1 h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary"
-            aria-hidden="true"
-          />
-        </Link>
+        <ToolLinkCard key={tool.id} tool={tool} />
       ))}
     </div>
   );
@@ -77,30 +59,21 @@ function ToolLinks({ page }: { page: LandingPage }) {
 
 function ComparisonTable({ comparison }: { comparison: NonNullable<LandingPage["comparison"]> }) {
   return (
-    // Scrolls inside its own box rather than pushing the page sideways on a phone.
-    <div className="overflow-x-auto rounded-lg border border-border/70">
+    <div className="overflow-x-auto">
       <table className="w-full min-w-[36rem] text-left text-sm">
-        <thead className="bg-muted/50">
-          <tr>
-            <th scope="col" className="px-4 py-3 font-medium">
-              Capability
-            </th>
-            <th scope="col" className="px-4 py-3 font-medium">
-              {comparison.competitor}
-            </th>
-            <th scope="col" className="px-4 py-3 font-medium">
-              This site
-            </th>
+        <thead>
+          <tr className="border-b border-border text-foreground">
+            <th scope="col" className="px-4 py-3 font-medium">Capability</th>
+            <th scope="col" className="px-4 py-3 font-medium">{comparison.competitor}</th>
+            <th scope="col" className="px-4 py-3 font-medium">This site</th>
           </tr>
         </thead>
         <tbody>
           {comparison.rows.map((row) => (
             <tr key={row.capability} className="border-t border-border/60">
-              <th scope="row" className="px-4 py-3 font-normal">
-                {row.capability}
-              </th>
-              <td className="px-4 py-3 text-muted-foreground">{row.them}</td>
-              <td className="px-4 py-3 text-muted-foreground">{row.us}</td>
+              <th scope="row" className="px-4 py-3 font-normal">{row.capability}</th>
+              <td className="px-4 py-3">{row.them}</td>
+              <td className="px-4 py-3">{row.us}</td>
             </tr>
           ))}
         </tbody>
@@ -109,17 +82,45 @@ function ComparisonTable({ comparison }: { comparison: NonNullable<LandingPage["
   );
 }
 
+function EmbeddedTool({ tool, targetBytes }: { tool: "image-compressor" | "pdf-compress"; targetBytes: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useStashedFileRoot(ref, true);
+  const drop = shellDropzoneCopy(tool);
+  const warm = () => {
+    prefetchTool(tool, "hover");
+    if (tool === "pdf-compress") {
+      prefetchPdfLib();
+      prefetchPdfJs();
+    }
+  };
+  return (
+    <div ref={ref} data-lean-embed={tool} className="mb-8">
+      {drop && (
+        <FileDropzone
+          accept={drop.accept}
+          multiple={drop.multiple}
+          title={drop.title}
+          hint={drop.hint}
+          buttonLabel={tool === "pdf-compress" ? "Choose a PDF" : "Choose an image"}
+          onIntent={warm}
+        />
+      )}
+      <Suspense fallback={null}>
+        {tool === "image-compressor" ? (
+          <ImageCompressorTool preset={{ targetBytes }} />
+        ) : (
+          <PdfCompressTool preset={{ targetBytes }} />
+        )}
+      </Suspense>
+    </div>
+  );
+}
+
 const LandingRoutePage = () => {
-  /*
-   * These are registered as explicit static paths (so they outrank the /:slug tool
-   * route), which means there is no route param to read, useParams() returns {}
-   * here. The slug has to come from the pathname.
-   */
   const { pathname } = useLocation();
   const slug = pathname.replace(/^\//, "").replace(/\/$/, "");
   const page = findLandingPage(slug);
 
-  // Hooks must run unconditionally, so the 404 branch comes after useSEO.
   useSEO({
     title: page?.seo.title ?? "Page Not Found",
     description: page?.seo.description ?? "",
@@ -131,93 +132,89 @@ const LandingRoutePage = () => {
 
   if (!page) return <NotFound />;
 
+  const steps = page.howTo?.steps ?? [];
+  const visibleSteps = steps.slice(0, 3);
+  const extraSteps = steps.slice(3);
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex min-h-screen flex-col bg-background">
       <Header />
+      <main className="mx-auto w-full max-w-[1120px] px-5 pb-16 md:px-8">
+        <Breadcrumbs items={[{ name: "Home", path: "/" }, { name: page.h1, path: `/${page.slug}` }]} />
+        <header className="pb-6 pt-2">
+          <h1 className="max-w-[28ch] text-[28px] font-semibold leading-[1.15] tracking-[-0.02em] text-foreground md:text-[34px]">
+            {page.h1}
+          </h1>
+          <p className="mt-2 max-w-[62ch] text-muted-foreground">{page.lede}</p>
+        </header>
 
-      <main>
-        <div className="container mx-auto max-w-5xl px-4 pt-6">
-          <Breadcrumbs
-            items={[
-              { name: "Home", path: "/" },
-              { name: page.h1, path: `/${page.slug}` },
-            ]}
-          />
-        </div>
-
-        <div className="border-b border-border/60 py-10 sm:py-14">
-          <div className="container mx-auto max-w-5xl px-4">
-            <h1 className="font-heading text-3xl font-semibold tracking-tight sm:text-4xl">{page.h1}</h1>
-            <p className="mt-4 max-w-2xl text-lg leading-relaxed text-muted-foreground">{page.lede}</p>
-          </div>
-        </div>
-
-        {/*
-          Tools first. Someone arriving on "merge pdf without uploading" wants the
-          merger, not an essay; the prose below is for the people who want to know
-          why it is safe, and for the crawler.
-        */}
-        <Section id="tools" heading="Start here" lede="Every one of these runs entirely in your browser.">
+        <section id="tools" aria-labelledby="tools-heading" className="pb-10">
+          <h2 id="tools-heading" className="mb-2 text-xl font-semibold tracking-[-0.015em]">Start here</h2>
+          <p className="mb-4 text-sm text-muted-foreground">Every one of these runs entirely in your browser.</p>
           {page.embed && (
-            <div className="mb-8 rounded-lg border border-border/70 bg-card p-4">
-              <Suspense fallback={<p className="text-sm text-muted-foreground">Loading the tool…</p>}>
-                {page.embed.tool === "image-compressor" ? (
-                  <ImageCompressorTool preset={{ targetBytes: page.embed.targetBytes }} />
-                ) : (
-                  <PdfCompressTool preset={{ targetBytes: page.embed.targetBytes }} />
-                )}
-              </Suspense>
+            <>
+              <EmbeddedTool tool={page.embed.tool} targetBytes={page.embed.targetBytes} />
               {page.measurementKey && FIXTURES[page.measurementKey] && (
                 <FixtureNote row={FIXTURES[page.measurementKey]} />
               )}
-            </div>
+            </>
           )}
           <ToolLinks page={page} />
-        </Section>
+        </section>
 
-        {page.howTo && (
-          <Section id="how-it-works" heading={page.howTo.name}>
-            <ol className="max-w-3xl list-decimal space-y-3 pl-5 text-muted-foreground">
-              {page.howTo.steps.map((step) => (
+        {page.howTo && visibleSteps.length > 0 && (
+          <section id="how-it-works" aria-labelledby="how-it-works-heading" className="pb-10">
+            <h2 id="how-it-works-heading" className="mb-4 text-xl font-semibold tracking-[-0.015em]">
+              {page.howTo.name}
+            </h2>
+            <ol className="paper-steps">
+              {visibleSteps.map((step, index) => (
                 <li key={step.title}>
-                  <span className="font-medium text-foreground">{step.title}. </span>
-                  {step.body}
+                  <span className="paper-step-n" aria-hidden="true">{index + 1}</span>
+                  <div>
+                    <b className="block text-[15px] font-medium">{step.title}</b>
+                    <span className="text-sm text-muted-foreground">{step.body}</span>
+                  </div>
                 </li>
               ))}
             </ol>
-          </Section>
+          </section>
         )}
 
-        {page.sections.map((section, index) => (
-          <Section
-            key={section.heading}
-            id={`section-${index}`}
-            heading={section.heading}
-            muted={index % 2 === 0}
-          >
-            <div className="max-w-3xl space-y-4">
-              {section.body.map((paragraph) => (
-                <p key={paragraph.slice(0, 40)} className="leading-relaxed text-muted-foreground">
-                  {paragraph}
-                </p>
+        <div className="paper-acc">
+          <details>
+            <summary><h2>About this page</h2></summary>
+            <div className="acc-body">
+              {extraSteps.length > 0 && (
+                <ol>
+                  {extraSteps.map((step) => (
+                    <li key={step.title}><strong>{step.title}. </strong>{step.body}</li>
+                  ))}
+                </ol>
+              )}
+              {page.sections.map((section) => (
+                <div key={section.heading}>
+                  <h3>{section.heading}</h3>
+                  {section.body.map((paragraph) => (
+                    <p key={paragraph.slice(0, 40)}>{paragraph}</p>
+                  ))}
+                </div>
               ))}
+              {page.comparison && (
+                <div>
+                  <h3>{page.comparison.heading}</h3>
+                  <ComparisonTable comparison={page.comparison} />
+                  <p>
+                    Compiled from {page.comparison.competitor}'s own published documentation. Their product
+                    changes; if something here is out of date, it is an error rather than a claim.
+                  </p>
+                </div>
+              )}
             </div>
-          </Section>
-        ))}
-
-        {page.comparison && (
-          <Section id="comparison" heading={page.comparison.heading} muted>
-            <ComparisonTable comparison={page.comparison} />
-            <p className="mt-4 max-w-3xl text-sm text-muted-foreground">
-              Compiled from {page.comparison.competitor}'s own published documentation. Their product
-              changes; if something here is out of date, it is an error rather than a claim.
-            </p>
-          </Section>
-        )}
-
-        <ToolFaq faqs={page.faqs} heading="Frequently asked questions" />
+          </details>
+        </div>
+        <NativeFaq faqs={page.faqs} heading="Frequently asked questions" />
       </main>
-
       <Footer />
     </div>
   );
@@ -238,7 +235,7 @@ function FixtureNote({ row }: { row: FixtureRow }) {
     .filter(Boolean)
     .join(" ");
 
-  return <p className="mt-4 text-sm text-muted-foreground">{detail} 1 KB = 1024 bytes. These figures are the stored fixture run, not a prediction for a different file.</p>;
+  return <p className="mb-6 text-sm text-muted-foreground">{detail} 1 KB = 1024 bytes. These figures are the stored fixture run, not a prediction for a different file.</p>;
 }
 
 export default LandingRoutePage;

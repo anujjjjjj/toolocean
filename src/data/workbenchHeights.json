@@ -1,0 +1,457 @@
+{
+  "note": "Settled #tool-workbench height in px at 390 and 1440, plus 8px. Reserves space so the steps do not move when the tool chunk arrives. The five proof slugs are reserved in src/index.css instead.",
+  "pages": {
+    "json-formatter": {
+      "sm": 845,
+      "lg": 682
+    },
+    "case-converter": {
+      "sm": 576,
+      "lg": 551
+    },
+    "word-counter": {
+      "sm": 1144,
+      "lg": 806
+    },
+    "text-diff": {
+      "sm": 1262,
+      "lg": 684
+    },
+    "duplicate-remover": {
+      "sm": 1604,
+      "lg": 882
+    },
+    "line-break-remover": {
+      "sm": 1604,
+      "lg": 882
+    },
+    "text-replacer": {
+      "sm": 1844,
+      "lg": 1033
+    },
+    "slug-converter": {
+      "sm": 1104,
+      "lg": 582
+    },
+    "json-stringify": {
+      "sm": 1520,
+      "lg": 798
+    },
+    "json-parse": {
+      "sm": 1484,
+      "lg": 762
+    },
+    "html-formatter": {
+      "sm": 1532,
+      "lg": 810
+    },
+    "sql-formatter": {
+      "sm": 1532,
+      "lg": 810
+    },
+    "regex-tester": {
+      "sm": 985,
+      "lg": 756
+    },
+    "encryption-tool": {
+      "sm": 1865,
+      "lg": 1054
+    },
+    "json-schema-validator": {
+      "sm": 1586,
+      "lg": 864
+    },
+    "json-merger": {
+      "sm": 2397,
+      "lg": 953
+    },
+    "json-flattener": {
+      "sm": 1719,
+      "lg": 997
+    },
+    "css-minifier": {
+      "sm": 470,
+      "lg": 470
+    },
+    "html-jsx-converter": {
+      "sm": 386,
+      "lg": 386
+    },
+    "color-converter": {
+      "sm": 316,
+      "lg": 316
+    },
+    "gradient-generator": {
+      "sm": 758,
+      "lg": 654
+    },
+    "box-shadow-generator": {
+      "sm": 942,
+      "lg": 530
+    },
+    "hash-generator": {
+      "sm": 438,
+      "lg": 438
+    },
+    "password-generator": {
+      "sm": 390,
+      "lg": 390
+    },
+    "uuid-generator": {
+      "sm": 390,
+      "lg": 226
+    },
+    "env-formatter": {
+      "sm": 430,
+      "lg": 430
+    },
+    "jwt-decoder": {
+      "sm": 314,
+      "lg": 314
+    },
+    "fake-data-generator": {
+      "sm": 300,
+      "lg": 223
+    },
+    "http-request-composer": {
+      "sm": 286,
+      "lg": 286
+    },
+    "user-agent-generator": {
+      "sm": 310,
+      "lg": 226
+    },
+    "timestamp-converter": {
+      "sm": 316,
+      "lg": 316
+    },
+    "gitignore-generator": {
+      "sm": 478,
+      "lg": 414
+    },
+    "dockerfile-formatter": {
+      "sm": 466,
+      "lg": 442
+    },
+    "yaml-formatter": {
+      "sm": 1480,
+      "lg": 758
+    },
+    "nginx-config-generator": {
+      "sm": 1247,
+      "lg": 706
+    },
+    "cron-expression-builder": {
+      "sm": 1835,
+      "lg": 927
+    },
+    "code-explainer": {
+      "sm": 1536,
+      "lg": 814
+    },
+    "json-fixer": {
+      "sm": 1532,
+      "lg": 810
+    },
+    "ip-address": {
+      "sm": 591,
+      "lg": 591
+    },
+    "regex-generator": {
+      "sm": 1420,
+      "lg": 713
+    },
+    "url-encoder": {
+      "sm": 382,
+      "lg": 374
+    },
+    "base64-tool": {
+      "sm": 382,
+      "lg": 366
+    },
+    "html-entity-encoder": {
+      "sm": 382,
+      "lg": 366
+    },
+    "number-base-converter": {
+      "sm": 545,
+      "lg": 505
+    },
+    "markdown-preview": {
+      "sm": 1508,
+      "lg": 798
+    },
+    "lorem-ipsum-generator": {
+      "sm": 179,
+      "lg": 179
+    },
+    "string-escape": {
+      "sm": 471,
+      "lg": 455
+    },
+    "toml-formatter": {
+      "sm": 398,
+      "lg": 398
+    },
+    "xml-formatter": {
+      "sm": 398,
+      "lg": 398
+    },
+    "csv-formatter": {
+      "sm": 463,
+      "lg": 463
+    },
+    "css-unit-converter": {
+      "sm": 1016,
+      "lg": 587
+    },
+    "chmod-calculator": {
+      "sm": 682,
+      "lg": 533
+    },
+    "mime-type-lookup": {
+      "sm": 299,
+      "lg": 259
+    },
+    "unicode-inspector": {
+      "sm": 250,
+      "lg": 226
+    },
+    "jwt-generator": {
+      "sm": 500,
+      "lg": 500
+    },
+    "qr-code-generator": {
+      "sm": 588,
+      "lg": 588
+    },
+    "text-sorter": {
+      "sm": 527,
+      "lg": 487
+    },
+    "json-minifier": {
+      "sm": 398,
+      "lg": 398
+    },
+    "color-palette-generator": {
+      "sm": 995,
+      "lg": 684
+    },
+    "text-to-binary": {
+      "sm": 431,
+      "lg": 415
+    },
+    "ip-cidr-calculator": {
+      "sm": 311,
+      "lg": 311
+    },
+    "number-formatter": {
+      "sm": 786,
+      "lg": 697
+    },
+    "dns-lookup": {
+      "sm": 235,
+      "lg": 215
+    },
+    "pdf-split": {
+      "sm": 228,
+      "lg": 248
+    },
+    "pdf-to-images": {
+      "sm": 228,
+      "lg": 248
+    },
+    "images-to-pdf": {
+      "sm": 313,
+      "lg": 292
+    },
+    "pdf-rotate": {
+      "sm": 228,
+      "lg": 248
+    },
+    "pdf-watermark": {
+      "sm": 228,
+      "lg": 248
+    },
+    "pdf-reorder": {
+      "sm": 228,
+      "lg": 248
+    },
+    "pdf-encrypt": {
+      "sm": 228,
+      "lg": 248
+    },
+    "pdf-unlock": {
+      "sm": 368,
+      "lg": 320
+    },
+    "pdf-metadata": {
+      "sm": 228,
+      "lg": 248
+    },
+    "pdf-form-fill": {
+      "sm": 228,
+      "lg": 248
+    },
+    "image-resizer": {
+      "sm": 372,
+      "lg": 352
+    },
+    "image-format-converter": {
+      "sm": 288,
+      "lg": 308
+    },
+    "image-to-base64": {
+      "sm": 329,
+      "lg": 308
+    },
+    "image-crop": {
+      "sm": 362,
+      "lg": 382
+    },
+    "color-picker": {
+      "sm": 362,
+      "lg": 382
+    },
+    "favicon-generator": {
+      "sm": 228,
+      "lg": 248
+    },
+    "image-rotate-flip": {
+      "sm": 450,
+      "lg": 382
+    },
+    "image-watermark": {
+      "sm": 771,
+      "lg": 621
+    },
+    "image-filters": {
+      "sm": 778,
+      "lg": 590
+    },
+    "md-to-docx": {
+      "sm": 964,
+      "lg": 900
+    },
+    "markdown-html": {
+      "sm": 1634,
+      "lg": 912
+    },
+    "json-to-csv": {
+      "sm": 1767,
+      "lg": 1045
+    },
+    "yaml-to-json": {
+      "sm": 1634,
+      "lg": 912
+    },
+    "json-to-yaml": {
+      "sm": 1634,
+      "lg": 912
+    },
+    "xml-to-json": {
+      "sm": 1731,
+      "lg": 969
+    },
+    "json-to-xml": {
+      "sm": 1634,
+      "lg": 912
+    },
+    "json-to-toml": {
+      "sm": 1634,
+      "lg": 912
+    },
+    "html-markdown": {
+      "sm": 398,
+      "lg": 398
+    },
+    "csv-markdown": {
+      "sm": 433,
+      "lg": 433
+    },
+    "svg-png": {
+      "sm": 653,
+      "lg": 673
+    },
+    "url-parser": {
+      "sm": 627,
+      "lg": 481
+    },
+    "csv-validator": {
+      "sm": 1184,
+      "lg": 953
+    },
+    "csv-merge": {
+      "sm": 654,
+      "lg": 553
+    },
+    "excel-reader": {
+      "sm": 288,
+      "lg": 308
+    },
+    "csv-to-excel": {
+      "sm": 644,
+      "lg": 664
+    },
+    "excel-to-csv": {
+      "sm": 362,
+      "lg": 382
+    },
+    "column-extractor": {
+      "sm": 228,
+      "lg": 248
+    },
+    "json-to-excel": {
+      "sm": 748,
+      "lg": 683
+    },
+    "video-thumbnail": {
+      "sm": 288,
+      "lg": 308
+    },
+    "video-trimmer": {
+      "sm": 228,
+      "lg": 248
+    },
+    "video-to-gif": {
+      "sm": 228,
+      "lg": 248
+    },
+    "video-metadata": {
+      "sm": 228,
+      "lg": 248
+    },
+    "audio-cutter": {
+      "sm": 326,
+      "lg": 346
+    },
+    "audio-merge": {
+      "sm": 437,
+      "lg": 384
+    },
+    "gzip-compress": {
+      "sm": 275,
+      "lg": 275
+    },
+    "gzip-decompress": {
+      "sm": 539,
+      "lg": 559
+    },
+    "lz-string-compress": {
+      "sm": 471,
+      "lg": 455
+    },
+    "zip-extractor": {
+      "sm": 288,
+      "lg": 308
+    },
+    "zip-creator": {
+      "sm": 309,
+      "lg": 308
+    },
+    "zip-preview": {
+      "sm": 288,
+      "lg": 308
+    }
+  }
+}

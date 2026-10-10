@@ -45,7 +45,7 @@ const DevToolsPage = () => {
                     <div className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-lg bg-primary/10">
                         <Code className="h-8 w-8 text-primary" />
                     </div>
-                    <h1 className="text-4xl font-heading font-bold mb-4 text-foreground">
+                    <h1 className="mb-4 text-[28px] font-semibold leading-[1.15] tracking-[-0.02em] text-foreground md:text-[34px]">
                         Developer Tools
                     </h1>
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">

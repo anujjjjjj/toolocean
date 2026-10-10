@@ -6,7 +6,6 @@ import { Slider } from "@/components/ui/slider";
 import { Upload, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { KILOBYTE, formatBytes, parseSize } from "@/lib/targetSize/parseSize";
-import { useStashedFileInput } from "@/hooks/useStashedFileInput";
 import { markToolSuccess } from "@/lib/toolResult";
 import type { TargetMime } from "@/lib/targetSize/types";
 
@@ -31,7 +30,6 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
   const [note, setNote] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  useStashedFileInput(fileInputRef);
   const { toast } = useToast();
 
   useEffect(() => {

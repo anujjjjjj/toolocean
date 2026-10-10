@@ -1,9 +1,9 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
-import { FileText, ArrowLeft, Shield, Zap, Gift } from "lucide-react";
+import { FileText, ArrowLeft, Shield } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { ToolFaq } from "@/components/tool-page/ToolFaq";
+import { NativeFaq } from "@/components/tool-page/NativeFaq";
 import { PDF_HUB_FAQS } from "@/data/pdfHubContent";
 import { useSEO } from "@/hooks/useSEO";
 import { CATEGORY_PAGE_SEO } from "@/data/staticPageSeo";
@@ -49,11 +49,7 @@ const PdfToolsPage = () => {
         <Breadcrumbs items={BREADCRUMB_ITEMS} />
 
         {/* Hero Section */}
-        <section className="relative overflow-hidden text-center py-8">
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(55%_60%_at_50%_0%,hsl(var(--primary)/0.08),transparent_70%)]"
-          />
+        <section className="text-center py-8">
           <div className="relative max-w-4xl mx-auto">
             <div className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-lg bg-primary/10">
               <FileText className="h-8 w-8 text-primary" />
@@ -62,34 +58,13 @@ const PdfToolsPage = () => {
               <Shield className="h-3.5 w-3.5" />
               No uploads. Runs entirely in your browser.
             </span>
-            <h1 className="text-5xl font-heading font-bold mb-6 text-foreground">
+            <h1 className="mb-6 text-[28px] font-semibold leading-[1.15] tracking-[-0.02em] text-foreground md:text-[34px]">
               PDF Tools
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
               Thirteen PDF tools that run in the tab. Merge and split, compress a scan, protect a file with AES-256, unlock one you already know the password for, read or strip metadata, fill an AcroForm, or place a visual signature. Nothing is uploaded.
             </p>
           </div>
-        </section>
-
-        <section className="max-w-3xl mx-auto space-y-4 text-muted-foreground">
-          <h2 className="text-2xl font-heading font-semibold text-foreground">What this collection is for</h2>
-          <p>
-            These pages are for the PDF jobs that do not need a server: joining a packet, pulling pages out, turning a scan around, stamping a watermark, or sending a smaller copy of a photograph-of-paper. The newer ones cover the next questions people ask after that. A form that is already an AcroForm can be filled and, if you want the answers locked in, flattened. A file can be given an open password. A file you can already open can have that password taken off again. The Info dictionary and the XMP packet can be read, edited, or stripped.
-          </p>
-          <p>
-            The signature tool is the one to read carefully. It puts ink on a page, from a drawing, a typed name, or an image, and the page says it is not a certified or qualified electronic signature. If a process asks for a certificate, this hub will not produce one.
-          </p>
-          <p>
-            Two ceilings are preselected: <Link to="/compress-pdf-to-100kb" className="text-primary underline">compress a PDF to 100 KB</Link> and <Link to="/compress-pdf-to-200kb" className="text-primary underline">to 200 KB</Link>. 1 KB is 1024 bytes. Lossless is tried first. If the file still does not fit, the pages become pictures and the text is no longer selectable.
-          </p>
-          <p>
-            OCR, editing text in place, redaction, and converting a PDF into an editable Word document are not here. Hosted suites still do those, and they upload the file to do it. The trade is written out on the{" "}
-            <Link to="/smallpdf-alternative" className="font-medium text-primary hover:underline">Smallpdf alternative</Link>
-            {" "}and{" "}
-            <Link to="/ilovepdf-alternative" className="font-medium text-primary hover:underline">iLovePDF alternative</Link>
-            {" "}pages. If the only job is combining documents without an upload, start at{" "}
-            <Link to="/merge-pdf-without-uploading" className="font-medium text-primary hover:underline">merge PDFs without uploading</Link>.
-          </p>
         </section>
 
         {/* PDF Tools Grid */}
@@ -106,40 +81,38 @@ const PdfToolsPage = () => {
           </div>
         </section>
 
-        {/* Features Section */}
-        <section className="py-12">
-          <div className="grid md:grid-cols-3 gap-8 text-center max-w-4xl mx-auto">
-            <div className="space-y-3">
-              <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10">
-                <Shield className="h-5 w-5 text-primary" />
-              </div>
-              <h3 className="font-semibold text-base">100% Secure</h3>
-              <p className="text-muted-foreground text-sm">
-                All processing happens in your browser. Your files are never uploaded to any server.
+        <div className="paper-acc">
+          <details>
+            <summary><h2>About these PDF tools</h2></summary>
+            <div className="acc-body">
+              <h3>What this collection is for</h3>
+              <p>
+                These pages are for the PDF jobs that do not need a server: joining a packet, pulling pages out, turning a scan around, stamping a watermark, or sending a smaller copy of a photograph-of-paper. The newer ones cover the next questions people ask after that. A form that is already an AcroForm can be filled and, if you want the answers locked in, flattened. A file can be given an open password. A file you can already open can have that password taken off again. The Info dictionary and the XMP packet can be read, edited, or stripped.
               </p>
-            </div>
-            <div className="space-y-3">
-              <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10">
-                <Zap className="h-5 w-5 text-primary" />
-              </div>
-              <h3 className="font-semibold text-base">Lightning Fast</h3>
-              <p className="text-muted-foreground text-sm">
-                No upload/download wait times. Process PDFs instantly with modern browser APIs.
+              <p>
+                The signature tool is the one to read carefully. It puts ink on a page, from a drawing, a typed name, or an image, and the page says it is not a certified or qualified electronic signature. If a process asks for a certificate, this hub will not produce one.
               </p>
-            </div>
-            <div className="space-y-3">
-              <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10">
-                <Gift className="h-5 w-5 text-primary" />
-              </div>
-              <h3 className="font-semibold text-base">Completely Free</h3>
-              <p className="text-muted-foreground text-sm">
-                No limits, no watermarks, no sign-up required. Use as much as you need.
+              <p>
+                Two ceilings are preselected: <Link to="/compress-pdf-to-100kb" className="text-primary underline">compress a PDF to 100 KB</Link> and <Link to="/compress-pdf-to-200kb" className="text-primary underline">to 200 KB</Link>. 1 KB is 1024 bytes. Lossless is tried first. If the file still does not fit, the pages become pictures and the text is no longer selectable.
               </p>
+              <p>
+                OCR, editing text in place, redaction, and converting a PDF into an editable Word document are not here. Hosted suites still do those, and they upload the file to do it. The trade is written out on the{" "}
+                <Link to="/smallpdf-alternative" className="font-medium text-primary hover:underline">Smallpdf alternative</Link>
+                {" "}and{" "}
+                <Link to="/ilovepdf-alternative" className="font-medium text-primary hover:underline">iLovePDF alternative</Link>
+                {" "}pages. If the only job is combining documents without an upload, start at{" "}
+                <Link to="/merge-pdf-without-uploading" className="font-medium text-primary hover:underline">merge PDFs without uploading</Link>.
+              </p>
+              <h3>100% Secure</h3>
+              <p>All processing happens in your browser. Your files are never uploaded to any server.</p>
+              <h3>Lightning Fast</h3>
+              <p>No upload/download wait times. Process PDFs instantly with modern browser APIs.</p>
+              <h3>Completely Free</h3>
+              <p>No limits, no watermarks, no sign-up required. Use as much as you need.</p>
             </div>
-          </div>
-        </section>
-
-        <ToolFaq
+          </details>
+        </div>
+        <NativeFaq
           faqs={PDF_HUB_FAQS}
           heading="Questions about the PDF tools"
           lede="What runs locally, what a signature is, and what this hub still does not do."

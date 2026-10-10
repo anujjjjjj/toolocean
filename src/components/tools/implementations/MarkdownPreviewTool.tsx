@@ -10,7 +10,7 @@ import DOMPurify from "dompurify";
 
 marked.setOptions({ gfm: true, breaks: true });
 
-const DEFAULT_MD = `# Hello, Markdown!
+const DEFAULT_MD = `## Hello, Markdown!
 
 Write **bold**, *italic*, or \`inline code\`.
 

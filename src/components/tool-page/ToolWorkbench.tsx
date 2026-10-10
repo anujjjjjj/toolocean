@@ -1,9 +1,11 @@
-import { Suspense, useEffect, useState, type ComponentType } from "react";
+import { Suspense, useEffect, useState, type ComponentType, type CSSProperties } from "react";
 import { FileDropzone } from "@/components/ui/file-dropzone";
+import { useStashedFileRoot } from "@/hooks/useStashedFileInput";
 import { useWorkbenchAnalytics } from "@/hooks/useWorkbenchAnalytics";
 import { prefetchPdfJs, prefetchPdfLib } from "@/lib/pdf/lazyPdf";
 import { prefetchTool } from "@/lib/prefetchTool";
 import { shellDropzoneCopy } from "@/lib/leanShell";
+import workbenchHeights from "@/data/workbenchHeights.json";
 import { WORKBENCH_ID, subscribeToToolActions } from "@/lib/toolActions";
 import { ToolErrorBoundary } from "./ToolErrorBoundary";
 import { cn } from "@/lib/utils";
@@ -79,6 +81,7 @@ export function ToolWorkbench({ component: Tool, label, lean = false, slug, butt
    * renders later without any of the 114 tools knowing analytics exists.
    */
   const analyticsRef = useWorkbenchAnalytics();
+  useStashedFileRoot(analyticsRef, Boolean(drop) && mounted);
 
   useEffect(() => setMounted(true), []);
 
@@ -131,6 +134,8 @@ export function ToolWorkbench({ component: Tool, label, lean = false, slug, butt
     });
   }, [mounted]);
 
+  const reserved = slug ? workbenchHeights.pages[slug as keyof typeof workbenchHeights.pages] : undefined;
+
   const shellDrop = drop ? (
     <FileDropzone
       accept={drop.accept}
@@ -150,6 +155,14 @@ export function ToolWorkbench({ component: Tool, label, lean = false, slug, butt
       // scroll-mt keeps the sticky header from covering the workbench when a
       // control jumps here. The lean shell has no tinted band; the dropzone is the tool.
       className={cn("scroll-mt-16", lean ? "py-0" : "border-b border-border bg-muted/30 py-8 sm:py-10")}
+      style={
+        reserved
+          ? ({
+              "--wb-min": `${reserved.sm}px`,
+              "--wb-min-lg": `${reserved.lg}px`,
+            } as CSSProperties)
+          : undefined
+      }
     >
       <div className={cn(lean ? "" : "container mx-auto max-w-6xl px-4")}>
         {shellDrop}
