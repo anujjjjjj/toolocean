@@ -21,7 +21,11 @@ import { Code, InfoPageLayout, P, Section, UL } from "@/components/layout/InfoPa
 const LAST_UPDATED = "18 August 2026";
 
 const PrivacyPage = () => {
-  useSEO({ ...INFO_PAGE_SEO["/privacy"], path: "/privacy" });
+  useSEO({
+    ...INFO_PAGE_SEO["/privacy"],
+    path: "/privacy",
+    jsonLd: [buildInfoPageGraph("/privacy")].filter(Boolean),
+  });
 
   return (
     <InfoPageLayout

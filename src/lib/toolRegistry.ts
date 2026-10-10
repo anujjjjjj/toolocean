@@ -105,16 +105,8 @@ export const toolRegistry: Record<string, { run: (input: string) => Promise<stri
   "csv-json-converter": {
     run: async (input: string) => {
       try {
-        const lines = input.trim().split('\n');
-        const headers = lines[0].split(',');
-        const result = lines.slice(1).map(line => {
-          const values = line.split(',');
-          return headers.reduce((obj, header, index) => {
-            obj[header.trim()] = values[index]?.trim() || '';
-            return obj;
-          }, {} as any);
-        });
-        return JSON.stringify(result, null, 2);
+        const { csvToRecords } = await import("@/lib/csv/parseCsv");
+        return JSON.stringify(csvToRecords(input, ",", true), null, 2);
       } catch {
         throw new Error("Invalid CSV format");
       }

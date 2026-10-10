@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Upload, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { readImageFiles } from "@/lib/image/readImageFiles";
 
 /** Formats a canvas can actually encode. Anything else is written as PNG. */
 const ENCODABLE = new Set(["image/png", "image/jpeg", "image/webp"]);
@@ -49,28 +50,29 @@ export function ImageResizerTool() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !file.type.startsWith("image/")) {
-      toast({ title: "Invalid file", description: "Please select an image file", variant: "destructive" });
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    if (!file) return;
+    const { accepted, errors } = await readImageFiles([file]);
+    if (!accepted.length) {
+      toast({ title: "Could not read that image", description: errors[0] ?? "Please select an image file", variant: "destructive" });
       return;
     }
-    const url = URL.createObjectURL(file);
+    const chosen = accepted[0];
+    const url = URL.createObjectURL(chosen);
     /*
      * Remember what the source was so the result can be written back in the
      * same format. Canvas can only encode PNG, JPEG and WebP, so anything else
      * (HEIC, GIF, BMP, SVG) becomes PNG, which is lossless and always readable.
      */
-    setSourceType(ENCODABLE.has(file.type) ? file.type : "image/png");
-    const img = new Image();
-    img.onload = () => {
-      setOriginalSize({ w: img.width, h: img.height });
-      setWidth(img.width);
-      setHeight(img.height);
-      setImageUrl(url);
-    };
-    img.src = url;
-    if (fileInputRef.current) fileInputRef.current.value = "";
+    setSourceType(ENCODABLE.has(chosen.type) ? chosen.type : "image/png");
+    const bitmap = await createImageBitmap(chosen);
+    setOriginalSize({ w: bitmap.width, h: bitmap.height });
+    setWidth(bitmap.width);
+    setHeight(bitmap.height);
+    bitmap.close();
+    setImageUrl(url);
   };
 
   const handleWidthChange = (w: number) => {
@@ -90,7 +92,12 @@ export function ImageResizerTool() {
   const resizeAndDownload = () => {
     if (!imageUrl || !canvasRef.current) return;
     const img = new Image();
-    img.onload = () => {
+    const done = new Promise<void>((resolve) => {
+      img.onload = () => resolve();
+      img.onerror = () => resolve();
+    });
+    img.src = imageUrl;
+    return done.then(async () => {
       const canvas = canvasRef.current!;
       canvas.width = width;
       canvas.height = height;
@@ -107,30 +114,26 @@ export function ImageResizerTool() {
        * to make them smaller, so handing back something larger was the opposite
        * of the job.
        */
-      canvas.toBlob(
-        async (blob) => {
-          if (!blob) return;
-          let body: Blob = blob;
-          if (sourceType === "image/jpeg") {
-            const { setJfifDensity } = await import("@/lib/targetSize/jpeg");
-            const marked = setJfifDensity(new Uint8Array(await blob.arrayBuffer()), dpi);
-            body = new Blob([marked], { type: "image/jpeg" });
-          }
-          const a = document.createElement("a");
-          a.href = URL.createObjectURL(body);
-          a.download = `resized-${width}x${height}.${EXTENSION[sourceType] ?? "png"}`;
-          a.click();
-          URL.revokeObjectURL(a.href);
-          toast({
-            title: "Downloaded",
-            description: `${width}x${height}, ${formatBytes(blob.size)}`,
-          });
-        },
-        sourceType,
-        sourceType === "image/png" ? undefined : 0.92,
-      );
-    };
-    img.src = imageUrl;
+      const blob = await new Promise<Blob | null>((resolve) => {
+        canvas.toBlob(resolve, sourceType, sourceType === "image/png" ? undefined : 0.92);
+      });
+      if (!blob) return;
+      let body: Blob = blob;
+      if (sourceType === "image/jpeg") {
+        const { setJfifDensity } = await import("@/lib/targetSize/jpeg");
+        const marked = setJfifDensity(new Uint8Array(await blob.arrayBuffer()), dpi);
+        body = new Blob([marked], { type: "image/jpeg" });
+      }
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(body);
+      a.download = `resized-${width}x${height}.${EXTENSION[sourceType] ?? "png"}`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast({
+        title: "Downloaded",
+        description: `${width}x${height}, ${formatBytes(blob.size)}`,
+      });
+    });
   };
 
   return (

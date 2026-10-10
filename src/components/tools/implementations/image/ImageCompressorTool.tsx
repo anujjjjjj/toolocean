@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { KILOBYTE, formatBytes, parseSize } from "@/lib/targetSize/parseSize";
 import { markToolSuccess } from "@/lib/toolResult";
 import type { TargetMime } from "@/lib/targetSize/types";
+import { readImageFiles } from "@/lib/image/readImageFiles";
 
 const TARGETS = [
   { label: "20 KB", bytes: 20 * KILOBYTE },
@@ -38,50 +39,48 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
     setTargetBytes(preset.targetBytes);
   }, [preset]);
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = [...(e.target.files ?? [])].filter((file) => file.type.startsWith("image/"));
-    if (!selected.length) {
-      toast({ title: "Invalid file", description: "Please select an image file", variant: "destructive" });
-      return;
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = [...(e.target.files ?? [])];
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    const { accepted, errors } = await readImageFiles(selected);
+    if (errors.length) {
+      toast({ title: "Could not read an image", description: errors.join(" "), variant: "destructive" });
     }
-    setFiles(selected);
+    if (!accepted.length) return;
+    setFiles(accepted);
     setPreviewUrl((current) => {
       if (current) URL.revokeObjectURL(current);
-      return URL.createObjectURL(selected[0]);
+      return URL.createObjectURL(accepted[0]);
     });
     setNote(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const compressQuality = () => {
+  const compressQuality = async () => {
     const file = files[0];
     if (!file || !canvasRef.current) return;
-    const img = new Image();
-    img.onload = () => {
-      const canvas = canvasRef.current!;
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext("2d")!;
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0);
-      canvas.toBlob(
-        (blob) => {
-          if (!blob) return;
-          const a = document.createElement("a");
-          a.href = URL.createObjectURL(blob);
-          a.download = `compressed-${Math.round(quality * 100)}.jpg`;
-          a.click();
-          URL.revokeObjectURL(a.href);
-          const pct = file.size > 0 ? Math.round((1 - blob.size / file.size) * 100) : 0;
-          toast({ title: "Downloaded", description: `Compressed (${pct}% smaller)` });
-          markToolSuccess();
-        },
-        "image/jpeg",
-        quality,
-      );
-    };
-    img.src = URL.createObjectURL(file);
+    const bitmap = await createImageBitmap(file);
+    const canvas = canvasRef.current;
+    canvas.width = bitmap.width;
+    canvas.height = bitmap.height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      bitmap.close();
+      return;
+    }
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(bitmap, 0, 0);
+    bitmap.close();
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
+    if (!blob) return;
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `compressed-${Math.round(quality * 100)}.jpg`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    const pct = file.size > 0 ? Math.round((1 - blob.size / file.size) * 100) : 0;
+    toast({ title: "Downloaded", description: `Compressed (${pct}% smaller)` });
+    markToolSuccess();
   };
 
   const compressExact = async () => {
@@ -99,8 +98,15 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
     const JSZip = (await import("jszip")).default;
     const zip = files.length > 1 ? new JSZip() : null;
     const notes: string[] = [];
+    const skipped: string[] = [];
     for (const file of files) {
-      const bitmap = await createImageBitmap(file);
+      let bitmap: ImageBitmap;
+      try {
+        bitmap = await createImageBitmap(file);
+      } catch {
+        skipped.push(`${file.name} was skipped because it could not be decoded.`);
+        continue;
+      }
       const result = await encodeImageToTarget(bitmap, { targetBytes, minBytes: minBytes ?? undefined, mime });
       bitmap.close();
       const ext = mime === "image/webp" ? "webp" : "jpg";
@@ -118,6 +124,10 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
       const fit = result.withinTarget ? "within the target" : "still over the target";
       notes.push(`${name}: ${formatBytes(result.bytes.byteLength)}, ${fit}.${pad}`);
     }
+    if (skipped.length) {
+      toast({ title: "Skipped a file", description: skipped.join(" "), variant: "destructive" });
+    }
+    if (!notes.length) return;
     if (zip) {
       const blob = await zip.generateAsync({ type: "blob" });
       const a = document.createElement("a");

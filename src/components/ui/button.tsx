@@ -2,6 +2,7 @@ import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 
+import { createClickGate, isPromiseLike } from "@/lib/singleFlight"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
@@ -40,12 +41,43 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, onClick, disabled, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
+    const gate = React.useRef(createClickGate())
+    const [busy, setBusy] = React.useState(false)
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (disabled || !onClick) return
+      if (!gate.current.enter()) {
+        event.preventDefault()
+        event.stopPropagation()
+        return
+      }
+      let result: unknown
+      try {
+        result = onClick(event)
+      } catch (error) {
+        gate.current.leave()
+        throw error
+      }
+      if (isPromiseLike(result)) {
+        setBusy(true)
+        result.finally(() => {
+          gate.current.leave()
+          setBusy(false)
+        })
+        return
+      }
+      gate.current.leave()
+    }
+
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
+        disabled={disabled || busy}
+        aria-busy={busy || undefined}
+        onClick={handleClick}
         {...props}
       />
     )

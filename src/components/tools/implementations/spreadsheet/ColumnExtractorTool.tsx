@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Upload, Download, TableProperties } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import * as XLSX from "xlsx";
+import { parseCsv } from "@/lib/csv/parseCsv";
 
 interface ParsedData {
   columns: string[];
@@ -32,8 +33,16 @@ export function ColumnExtractorTool() {
     const reader = new FileReader();
     reader.onload = (ev) => {
       try {
-        const buf = ev.target?.result;
-        const wb = XLSX.read(buf, { type: "array" });
+        const buf = ev.target?.result as ArrayBuffer;
+        const textName = file.name.toLowerCase();
+        const wb = textName.endsWith(".csv") || textName.endsWith(".tsv")
+          ? (() => {
+              const book = XLSX.utils.book_new();
+              const rows = parseCsv(new TextDecoder().decode(buf), textName.endsWith(".tsv") ? "\t" : ",");
+              XLSX.utils.book_append_sheet(book, XLSX.utils.aoa_to_sheet(rows), "Sheet1");
+              return book;
+            })()
+          : XLSX.read(buf, { type: "array" });
         const ws = wb.Sheets[wb.SheetNames[0]];
         const jsonData = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws, { defval: "" });
 

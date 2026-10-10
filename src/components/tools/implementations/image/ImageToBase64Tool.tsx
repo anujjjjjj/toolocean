@@ -4,6 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Upload, Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { readImageFiles } from "@/lib/image/readImageFiles";
 
 export function ImageToBase64Tool() {
   const [base64, setBase64] = useState("");
@@ -12,12 +13,16 @@ export function ImageToBase64Tool() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !file.type.startsWith("image/")) {
-      toast({ title: "Invalid file", description: "Please select an image file", variant: "destructive" });
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    if (!file) return;
+    const { accepted, errors } = await readImageFiles([file]);
+    if (!accepted[0]) {
+      toast({ title: "Could not read that image", description: errors[0] ?? "Please select an image file", variant: "destructive" });
       return;
     }
+    const chosen = accepted[0];
     const reader = new FileReader();
     reader.onload = () => {
       const result = reader.result as string;
@@ -29,8 +34,7 @@ export function ImageToBase64Tool() {
         setBase64(result);
       }
     };
-    reader.readAsDataURL(file);
-    if (fileInputRef.current) fileInputRef.current.value = "";
+    reader.readAsDataURL(chosen);
   };
 
   const handleCopy = () => {

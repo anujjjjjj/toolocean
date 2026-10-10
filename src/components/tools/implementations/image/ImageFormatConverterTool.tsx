@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Upload, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { readImageFiles } from "@/lib/image/readImageFiles";
 
 const FORMATS = [
   { value: "image/png", label: "PNG" },
@@ -18,14 +19,16 @@ export function ImageFormatConverterTool() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !file.type.startsWith("image/")) {
-      toast({ title: "Invalid file", description: "Please select an image file", variant: "destructive" });
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    if (!file) return;
+    const { accepted, errors } = await readImageFiles([file]);
+    if (!accepted[0]) {
+      toast({ title: "Could not read that image", description: errors[0] ?? "Please select an image file", variant: "destructive" });
       return;
     }
-    setImageUrl(URL.createObjectURL(file));
-    if (fileInputRef.current) fileInputRef.current.value = "";
+    setImageUrl(URL.createObjectURL(accepted[0]));
   };
 
   const convertAndDownload = () => {

@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Upload, Download, RotateCcw, RotateCw, FlipHorizontal, FlipVertical } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { readImageFiles } from "@/lib/image/readImageFiles";
 
 export function ImageRotateFlipTool() {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -13,14 +14,19 @@ export function ImageRotateFlipTool() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = "";
     if (!file) return;
-    const url = URL.createObjectURL(file);
+    const { accepted, errors } = await readImageFiles([file]);
+    if (!accepted[0]) {
+      toast({ title: "Could not read that image", description: errors[0] ?? "Please select an image file", variant: "destructive" });
+      return;
+    }
+    const url = URL.createObjectURL(accepted[0]);
     const img = new Image();
     img.onload = () => { imgRef.current = img; setImageSrc(url); };
     img.src = url;
-    e.target.value = "";
   };
 
   const renderToCanvas = (): HTMLCanvasElement => {

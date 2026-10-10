@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Copy, Download, Upload, X, GripVertical } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { parseCsv, resolveDelimiter, serializeCsv } from "@/lib/csv/parseCsv";
 
 interface CsvFile {
   id: string;
@@ -86,9 +87,8 @@ export function CsvMergeTool() {
       return;
     }
 
-    const actualDelimiter = delimiter === "custom" ? customDelimiter : delimiter;
-
     try {
+      const actualDelimiter = resolveDelimiter(delimiter, customDelimiter);
       const validFiles = files.filter((f) => f.content.trim());
       if (validFiles.length === 0) {
         toast({ title: "No content", description: "All files are empty", variant: "destructive" });
@@ -99,26 +99,21 @@ export function CsvMergeTool() {
       const rows: string[][] = [];
 
       for (const file of validFiles) {
-        const lines = file.content.trim().split("\n").filter((l) => l.trim());
-        if (lines.length === 0) continue;
+        const parsed = parseCsv(file.content, actualDelimiter).filter((row) => row.some((cell) => cell.trim() !== ""));
+        if (parsed.length === 0) continue;
 
-        const firstLineCols = lines[0].split(actualDelimiter);
         if (mergeStrategy === "first-header") {
           if (header === null) {
-            header = firstLineCols.map((h) => h.trim().replace(/"/g, ""));
+            header = parsed[0].map((cell) => cell.trim());
             rows.push(header);
-            rows.push(...lines.slice(1).map((line) => line.split(actualDelimiter).map((v) => v.trim().replace(/"/g, ""))));
-          } else {
-            rows.push(...lines.slice(1).map((line) => line.split(actualDelimiter).map((v) => v.trim().replace(/"/g, ""))));
           }
+          rows.push(...parsed.slice(1).map((row) => row.map((cell) => cell.trim())));
         } else {
-          rows.push(...lines.map((line) => line.split(actualDelimiter).map((v) => v.trim().replace(/"/g, ""))));
+          rows.push(...parsed.map((row) => row.map((cell) => cell.trim())));
         }
       }
 
-      const escapeValue = (v: string) => (v.includes(actualDelimiter) ? `"${v}"` : v);
-      const csv = rows.map((row) => row.map(escapeValue).join(actualDelimiter)).join("\n");
-      setOutput(csv);
+      setOutput(serializeCsv(rows, actualDelimiter));
       toast({ title: "Merge complete", description: `Merged ${validFiles.length} file(s)` });
     } catch (error) {
       toast({
