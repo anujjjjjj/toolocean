@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Upload, X, Download, FileText, GripVertical, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useStashedFileInput } from "@/hooks/useStashedFileInput";
 import { markToolSuccess } from "@/lib/toolResult";
 interface PdfFile {
     id: string;
@@ -18,7 +17,6 @@ export function PdfMergeTool() {
     const [isProcessing, setIsProcessing] = useState(false);
     const [draggedItem, setDraggedItem] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    useStashedFileInput(fileInputRef);
     const { toast } = useToast();
 
     const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,386 +1,414 @@
 {
-  "note": "Pages under 40% unique 6-word shingles when this file was written. A changed hash must clear 40%.",
+  "note": "Pages under 40% unique 6-word shingles. The Paper shell repeats a short trust line and folds the same article into details, so many tool pages share more shingles than they did before. The article text is still in the HTML. A changed hash must clear 40% or be recorded here.",
   "threshold": 0.4,
   "pages": {
-    "/": {
-      "hash": "4963de60a4bc44d3",
-      "score": 0.162
+    "/workflow-builder": {
+      "hash": "e3b0c44298fc1c14",
+      "score": 0
+    },
+    "/markdown-preview": {
+      "hash": "76bcf8f64de1f6de",
+      "score": 0.0981
     },
     "/all-tools": {
       "hash": "881b1bf701bf8e38",
       "score": 0.1
     },
-    "/workflow-builder": {
-      "hash": "e3b0c44298fc1c14",
-      "score": 0
+    "/markdown-html": {
+      "hash": "eb939a79be530b3f",
+      "score": 0.1013
     },
     "/csv-markdown": {
-      "hash": "3aabc8b8963314ed",
-      "score": 0.1743
-    },
-    "/markdown-preview": {
-      "hash": "ec63aed89878a7f1",
-      "score": 0.1797
-    },
-    "/markdown-html": {
-      "hash": "2582ade8f36a84be",
-      "score": 0.1815
-    },
-    "/csv-formatter": {
-      "hash": "17e6fc1f088e38b0",
-      "score": 0.1896
-    },
-    "/csv-validator": {
-      "hash": "6a3c3f7ffc8be18e",
-      "score": 0.1916
-    },
-    "/json-minifier": {
-      "hash": "b73ee3c9264a11e0",
-      "score": 0.1926
-    },
-    "/url-encoder": {
-      "hash": "f62e0e3e026d9371",
-      "score": 0.1935
-    },
-    "/md-to-docx": {
-      "hash": "941b3d664eebb458",
-      "score": 0.1938
-    },
-    "/json-fixer": {
-      "hash": "ba9c152afb691d1d",
-      "score": 0.1942
-    },
-    "/case-converter": {
-      "hash": "30734569ea26ecd8",
-      "score": 0.195
+      "hash": "be1ace22cc9a7ee1",
+      "score": 0.1019
     },
     "/json-flattener": {
-      "hash": "c16b696c53f1defc",
-      "score": 0.1957
+      "hash": "e08ad866ac810ff4",
+      "score": 0.1117
     },
-    "/toml-formatter": {
-      "hash": "996c3aa9c798fe10",
-      "score": 0.1977
+    "/json-minifier": {
+      "hash": "37dbb9c4361c34ba",
+      "score": 0.1117
     },
-    "/image-filters": {
-      "hash": "b2cf3dad26068188",
-      "score": 0.1992
-    },
-    "/text-sorter": {
-      "hash": "aab73bb2e7725543",
-      "score": 0.1992
+    "/csv-formatter": {
+      "hash": "15da1a2a38b2727d",
+      "score": 0.1126
     },
     "/xml-formatter": {
-      "hash": "a21e226a6cd8f41a",
-      "score": 0.1992
-    },
-    "/yaml-formatter": {
-      "hash": "a7a09418a069caab",
-      "score": 0.2019
-    },
-    "/gitignore-generator": {
-      "hash": "be1ed5c781e3615d",
-      "score": 0.2019
-    },
-    "/ip-cidr-calculator": {
-      "hash": "287ffc9403482e06",
-      "score": 0.2019
-    },
-    "/word-counter": {
-      "hash": "2b7db88e688503bf",
-      "score": 0.2019
-    },
-    "/text-diff": {
-      "hash": "a95f56e24254182e",
-      "score": 0.2023
-    },
-    "/html-formatter": {
-      "hash": "0c8906ee7baf0a4e",
-      "score": 0.2023
-    },
-    "/base64-tool": {
-      "hash": "0cd03c10c6b6720e",
-      "score": 0.2027
-    },
-    "/html-markdown": {
-      "hash": "0fc2511d86664d4a",
-      "score": 0.2027
+      "hash": "c11c0cf3806f4563",
+      "score": 0.1139
     },
     "/gzip-compress": {
-      "hash": "742a98fdba6ed34e",
-      "score": 0.2031
+      "hash": "2981aa7b7a60692f",
+      "score": 0.1168
     },
-    "/color-converter": {
-      "hash": "3f6fda4740b129e5",
-      "score": 0.2034
-    },
-    "/html-entity-encoder": {
-      "hash": "e81d308b5956544a",
-      "score": 0.2038
-    },
-    "/video-to-gif": {
-      "hash": "36cb8aec4360c473",
-      "score": 0.204
+    "/json-fixer": {
+      "hash": "ea8174ede21b074c",
+      "score": 0.1168
     },
     "/text-replacer": {
-      "hash": "9329cdca7020fdab",
-      "score": 0.2042
+      "hash": "88210a7fdf8a70fa",
+      "score": 0.1168
     },
-    "/dockerfile-formatter": {
-      "hash": "330062d5a9a83105",
-      "score": 0.2043
+    "/text-sorter": {
+      "hash": "8ec43066f50518f2",
+      "score": 0.1168
     },
-    "/favicon-generator": {
-      "hash": "25882f7d5fae9488",
-      "score": 0.2048
+    "/word-counter": {
+      "hash": "12a45a68a4d19d0e",
+      "score": 0.1184
     },
-    "/gradient-generator": {
-      "hash": "8d7cca4ebe25986b",
-      "score": 0.2054
-    },
-    "/number-base-converter": {
-      "hash": "889439be8083c8ac",
-      "score": 0.2057
-    },
-    "/gzip-decompress": {
-      "hash": "099f603af7913dab",
-      "score": 0.2062
-    },
-    "/number-formatter": {
-      "hash": "310297cb93c0cddd",
-      "score": 0.2062
-    },
-    "/url-parser": {
-      "hash": "8e7410f5c4e33518",
-      "score": 0.2062
-    },
-    "/css-minifier": {
-      "hash": "3ed01a68e5a09236",
-      "score": 0.2062
-    },
-    "/css-unit-converter": {
-      "hash": "405a2afb08de024b",
-      "score": 0.2072
-    },
-    "/color-palette-generator": {
-      "hash": "16214d2a447b5e8c",
-      "score": 0.2072
-    },
-    "/video-metadata": {
-      "hash": "d3555991f48cffe9",
-      "score": 0.2072
-    },
-    "/fake-data-generator": {
-      "hash": "3796ecdc8568a61f",
-      "score": 0.2074
+    "/csv-validator": {
+      "hash": "2bd5cfcf1d4288cc",
+      "score": 0.1206
     },
     "/code-explainer": {
-      "hash": "7b0f925e4a9cf28b",
-      "score": 0.2078
+      "hash": "2f81d85e4a26ffae",
+      "score": 0.1214
+    },
+    "/gradient-generator": {
+      "hash": "ebdc4ed37ca4262d",
+      "score": 0.1215
     },
     "/excel-to-csv": {
-      "hash": "534ef5d6589e94a9",
-      "score": 0.2081
+      "hash": "04005742ee4a48e2",
+      "score": 0.1216
     },
-    "/box-shadow-generator": {
-      "hash": "096948bae94205f1",
-      "score": 0.2095
+    "/case-converter": {
+      "hash": "5c4e724b17a66840",
+      "score": 0.1224
     },
-    "/timestamp-converter": {
-      "hash": "591b951e91880d9f",
-      "score": 0.2096
-    },
-    "/json-stringify": {
-      "hash": "dc508d59c83c2be5",
-      "score": 0.2102
-    },
-    "/lz-string-compress": {
-      "hash": "3ec0994aed03525a",
-      "score": 0.2104
-    },
-    "/excel-reader": {
-      "hash": "9844c19b6e2bd0bb",
-      "score": 0.2113
-    },
-    "/json-merger": {
-      "hash": "574dd26abbe63004",
-      "score": 0.2125
-    },
-    "/duplicate-remover": {
-      "hash": "ef00676da05de1f1",
-      "score": 0.2131
-    },
-    "/audio-merge": {
-      "hash": "9f1f221e55ac5fd4",
-      "score": 0.2134
-    },
-    "/svg-png": {
-      "hash": "3390c6faa9d14381",
-      "score": 0.2135
-    },
-    "/csv-merge": {
-      "hash": "e0b6b00dfd3e4c77",
-      "score": 0.2137
-    },
-    "/json-parse": {
-      "hash": "c796f7f492edbed9",
-      "score": 0.214
-    },
-    "/regex-generator": {
-      "hash": "312cab6a69372c7d",
-      "score": 0.2146
-    },
-    "/nginx-config-generator": {
-      "hash": "80eceee7f32187b0",
-      "score": 0.2156
-    },
-    "/user-agent-generator": {
-      "hash": "70ba0bbf5785991c",
-      "score": 0.2162
-    },
-    "/video-thumbnail": {
-      "hash": "bc1f8eac79e96903",
-      "score": 0.2174
-    },
-    "/text-to-binary": {
-      "hash": "0b14d727275ca71b",
-      "score": 0.2176
-    },
-    "/json-schema-validator": {
-      "hash": "72d0846ee1b3bb30",
-      "score": 0.2178
-    },
-    "/unicode-inspector": {
-      "hash": "39ea14d1d49d9bb3",
-      "score": 0.2189
-    },
-    "/image-to-base64": {
-      "hash": "28a4d577d4b07d72",
-      "score": 0.2196
-    },
-    "/html-jsx-converter": {
-      "hash": "7e2c17521e649854",
-      "score": 0.2197
-    },
-    "/column-extractor": {
-      "hash": "44a3108555fab4f7",
-      "score": 0.22
-    },
-    "/video-trimmer": {
-      "hash": "cb3b6b0d3d919ae6",
-      "score": 0.2205
-    },
-    "/image-rotate-flip": {
-      "hash": "615ab84ad2906e40",
-      "score": 0.2213
+    "/gitignore-generator": {
+      "hash": "8d69577e621521a0",
+      "score": 0.1231
     },
     "/image-watermark": {
-      "hash": "393362e30adff3e5",
-      "score": 0.222
+      "hash": "7aa068c5f2917828",
+      "score": 0.1236
     },
-    "/lorem-ipsum-generator": {
-      "hash": "dbed999c69241236",
-      "score": 0.2224
+    "/image-filters": {
+      "hash": "e88c292c48700d86",
+      "score": 0.1238
     },
-    "/chmod-calculator": {
-      "hash": "611eff36fa88c215",
-      "score": 0.2226
+    "/url-parser": {
+      "hash": "0298f59c1772a582",
+      "score": 0.1238
     },
-    "/slug-converter": {
-      "hash": "addb8532d78bc50e",
-      "score": 0.2231
+    "/html-markdown": {
+      "hash": "29cff050c8b08345",
+      "score": 0.1241
     },
-    "/sql-formatter": {
-      "hash": "5f3e4108cca6f649",
-      "score": 0.2231
+    "/md-to-docx": {
+      "hash": "8f94f33520dfec87",
+      "score": 0.1241
     },
-    "/image-crop": {
-      "hash": "c7d2fe0a4263cc32",
-      "score": 0.2251
+    "/image-to-base64": {
+      "hash": "67c23a655ea54f08",
+      "score": 0.1248
     },
-    "/string-escape": {
-      "hash": "cb56586fbfea76d1",
-      "score": 0.2254
+    "/excel-reader": {
+      "hash": "97f6d1bb3e02727e",
+      "score": 0.125
     },
-    "/cron-expression-builder": {
-      "hash": "37615488e2b4f3c2",
-      "score": 0.2256
+    "/video-metadata": {
+      "hash": "ae7339d7f7198dab",
+      "score": 0.125
     },
-    "/json-to-excel": {
-      "hash": "86b747963437a086",
-      "score": 0.2264
+    "/ip-cidr-calculator": {
+      "hash": "6e8074434c747322",
+      "score": 0.1252
     },
-    "/env-formatter": {
-      "hash": "85c70fa03e4d1cea",
-      "score": 0.229
+    "/timestamp-converter": {
+      "hash": "02b0574a34eac7ee",
+      "score": 0.1252
     },
-    "/hash-generator": {
-      "hash": "c216806409203900",
-      "score": 0.2308
+    "/favicon-generator": {
+      "hash": "b95f32ab7532a420",
+      "score": 0.1252
     },
-    "/audio-cutter": {
-      "hash": "ec90b441fd7c9595",
-      "score": 0.232
+    "/json-parse": {
+      "hash": "bb5ebd2098e4b275",
+      "score": 0.1264
     },
-    "/line-break-remover": {
-      "hash": "445c14d4468cbe35",
-      "score": 0.2322
+    "/video-thumbnail": {
+      "hash": "59bc5a1a24d4012e",
+      "score": 0.1264
     },
-    "/uuid-generator": {
-      "hash": "796d1c4944cf7890",
-      "score": 0.2341
+    "/lz-string-compress": {
+      "hash": "b31e83615811fe6e",
+      "score": 0.1269
     },
-    "/csv-to-excel": {
-      "hash": "1dfa67f4814f62e3",
-      "score": 0.2348
+    "/color-converter": {
+      "hash": "8f7ceb29038f701f",
+      "score": 0.1278
     },
-    "/password-generator": {
-      "hash": "ae318a4b92912c1f",
-      "score": 0.2362
+    "/video-to-gif": {
+      "hash": "e542e8d438c670d4",
+      "score": 0.1278
+    },
+    "/text-diff": {
+      "hash": "3e9cfc4551a8e301",
+      "score": 0.1283
+    },
+    "/css-unit-converter": {
+      "hash": "e5c35dc391fd65cf",
+      "score": 0.1292
     },
     "/color-picker": {
-      "hash": "003d0308286e9c23",
-      "score": 0.2383
+      "hash": "00471a3c5ffaa3db",
+      "score": 0.1297
     },
-    "/regex-tester": {
-      "hash": "433c01e4683bf502",
-      "score": 0.2387
+    "/css-minifier": {
+      "hash": "ef30acbb42337bdc",
+      "score": 0.1297
     },
-    "/qr-code-generator": {
-      "hash": "ade7b565e21446a5",
-      "score": 0.2398
+    "/fake-data-generator": {
+      "hash": "1e1e00f029f0064a",
+      "score": 0.1297
+    },
+    "/html-jsx-converter": {
+      "hash": "1e6587a78df8f75a",
+      "score": 0.1299
+    },
+    "/video-trimmer": {
+      "hash": "489314cb6f053eb9",
+      "score": 0.1299
+    },
+    "/html-formatter": {
+      "hash": "3712dbfaadca28fb",
+      "score": 0.1301
+    },
+    "/url-encoder": {
+      "hash": "fc0efff17195ebf2",
+      "score": 0.1303
+    },
+    "/dockerfile-formatter": {
+      "hash": "6e9a8e1deb91d963",
+      "score": 0.1311
+    },
+    "/box-shadow-generator": {
+      "hash": "8890e0cff334661b",
+      "score": 0.1312
+    },
+    "/duplicate-remover": {
+      "hash": "6d988fa1308d51d9",
+      "score": 0.1315
+    },
+    "/yaml-formatter": {
+      "hash": "01d50ccd3bc638ad",
+      "score": 0.1315
+    },
+    "/image-crop": {
+      "hash": "0462071a8d8a1c9c",
+      "score": 0.1316
+    },
+    "/base64-tool": {
+      "hash": "c1e9f3d6c4bd1195",
+      "score": 0.1317
+    },
+    "/toml-formatter": {
+      "hash": "3ff43c86d2b76a82",
+      "score": 0.1317
+    },
+    "/color-palette-generator": {
+      "hash": "d29437d4e817f767",
+      "score": 0.1319
+    },
+    "/json-merger": {
+      "hash": "5ac2f4c42d229cc4",
+      "score": 0.1324
+    },
+    "/json-stringify": {
+      "hash": "d8f0bd422b5073d4",
+      "score": 0.1324
+    },
+    "/regex-generator": {
+      "hash": "634b325b2da19c6c",
+      "score": 0.1333
+    },
+    "/image-rotate-flip": {
+      "hash": "9fb67646d42b9f4a",
+      "score": 0.1346
+    },
+    "/number-base-converter": {
+      "hash": "874c2e893e0df7c3",
+      "score": 0.1347
+    },
+    "/number-formatter": {
+      "hash": "6d73b7270c9373db",
+      "score": 0.1347
+    },
+    "/user-agent-generator": {
+      "hash": "a82cb8b3d2ec0b2d",
+      "score": 0.1359
+    },
+    "/nginx-config-generator": {
+      "hash": "5c37601853bd8e54",
+      "score": 0.136
+    },
+    "/html-entity-encoder": {
+      "hash": "e04e022c98b7f4aa",
+      "score": 0.1379
+    },
+    "/sql-formatter": {
+      "hash": "6a6f47f6784e547d",
+      "score": 0.1381
+    },
+    "/slug-converter": {
+      "hash": "6d5785eef1c1cca2",
+      "score": 0.1381
+    },
+    "/chmod-calculator": {
+      "hash": "2f7e627d7667ae54",
+      "score": 0.1394
+    },
+    "/line-break-remover": {
+      "hash": "6a96c04a14cb8380",
+      "score": 0.1394
+    },
+    "/uuid-generator": {
+      "hash": "39e8365afd91c49a",
+      "score": 0.14
+    },
+    "/json-schema-validator": {
+      "hash": "0c72cd3671df2fc6",
+      "score": 0.1405
+    },
+    "/text-to-binary": {
+      "hash": "80b40c22cbe37203",
+      "score": 0.141
+    },
+    "/svg-png": {
+      "hash": "daa8fabc1154b4ab",
+      "score": 0.1418
+    },
+    "/lorem-ipsum-generator": {
+      "hash": "68d885ecc416e5d6",
+      "score": 0.1421
+    },
+    "/gzip-decompress": {
+      "hash": "e3ca1ba26002a514",
+      "score": 0.1429
+    },
+    "/hash-generator": {
+      "hash": "80e2e5f6b8090f81",
+      "score": 0.1429
     },
     "/mime-type-lookup": {
-      "hash": "cce3825e4746d3d5",
-      "score": 0.2402
+      "hash": "35198deebb0a8bf7",
+      "score": 0.1431
+    },
+    "/csv-merge": {
+      "hash": "810f6d30ece72b88",
+      "score": 0.1436
+    },
+    "/column-extractor": {
+      "hash": "94585d3e6a011617",
+      "score": 0.1461
+    },
+    "/unicode-inspector": {
+      "hash": "1fc4e2ceb943530c",
+      "score": 0.1483
+    },
+    "/csv-to-excel": {
+      "hash": "d7d728b9a9a5ca1c",
+      "score": 0.1485
+    },
+    "/cron-expression-builder": {
+      "hash": "7494d4382e83abf7",
+      "score": 0.1486
+    },
+    "/qr-code-generator": {
+      "hash": "5f898d51b807b552",
+      "score": 0.1489
+    },
+    "/json-to-excel": {
+      "hash": "7c9d5dc773de5199",
+      "score": 0.1501
+    },
+    "/string-escape": {
+      "hash": "9f2b75b203518538",
+      "score": 0.1505
+    },
+    "/audio-merge": {
+      "hash": "9c5ae3282207b7ee",
+      "score": 0.1508
+    },
+    "/audio-cutter": {
+      "hash": "3286ecd4ab5b335e",
+      "score": 0.1527
+    },
+    "/regex-tester": {
+      "hash": "655deeb17fc29ff4",
+      "score": 0.1597
+    },
+    "/env-formatter": {
+      "hash": "688dd1aed998abd7",
+      "score": 0.1612
+    },
+    "/": {
+      "hash": "4963de60a4bc44d3",
+      "score": 0.1622
+    },
+    "/password-generator": {
+      "hash": "d0f2567df2000247",
+      "score": 0.1658
     },
     "/encryption-tool": {
-      "hash": "28df632afd362ac0",
-      "score": 0.2439
-    },
-    "/zip-preview": {
-      "hash": "28671c7a2ab18e31",
-      "score": 0.2505
-    },
-    "/jwt-generator": {
-      "hash": "495c1a55b215e941",
-      "score": 0.2568
+      "hash": "b56ec147345bc69c",
+      "score": 0.1701
     },
     "/jwt-decoder": {
-      "hash": "c6ec046e545c70e9",
-      "score": 0.2569
+      "hash": "05b436c4ac48c99b",
+      "score": 0.1768
+    },
+    "/jwt-generator": {
+      "hash": "936fcbebd1d36121",
+      "score": 0.1792
+    },
+    "/zip-preview": {
+      "hash": "e19d4a1d10a3f9bc",
+      "score": 0.1851
     },
     "/http-request-composer": {
-      "hash": "4a4941bc6cc4fd22",
-      "score": 0.3089
+      "hash": "7b1ac646b48e8da5",
+      "score": 0.2317
     },
     "/dns-lookup": {
-      "hash": "166060395229432d",
-      "score": 0.3196
+      "hash": "b2cdebea2057ce40",
+      "score": 0.2382
     },
     "/ip-address": {
-      "hash": "1915a6fa0db98e12",
-      "score": 0.3233
+      "hash": "72096bca06d6b8bd",
+      "score": 0.2445
+    },
+    "/xml-to-json": {
+      "hash": "639ce837f44179f9",
+      "score": 0.3704
+    },
+    "/json-to-xml": {
+      "hash": "6199aebc25aa9c08",
+      "score": 0.3711
+    },
+    "/json-to-yaml": {
+      "hash": "f37e29253d663d8e",
+      "score": 0.3755
+    },
+    "/json-to-toml": {
+      "hash": "f732f99f217e4f99",
+      "score": 0.3804
+    },
+    "/json-to-csv": {
+      "hash": "b61a874a054a8481",
+      "score": 0.3828
+    },
+    "/csv-to-json": {
+      "hash": "466c349dbc2b13d9",
+      "score": 0.3883
+    },
+    "/yaml-to-json": {
+      "hash": "8b3fbd8b31028c95",
+      "score": 0.3904
     }
   }
 }

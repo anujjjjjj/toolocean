@@ -403,8 +403,27 @@
   }
 
   /* Image compressor's outline button repeats the shell picker. */
-  main[data-lean-shell="image-compressor"] #tool-workbench button[data-analytics-label="image-select"] {
+  main[data-lean-shell="image-compressor"] #tool-workbench button[data-analytics-label="image-select"],
+  [data-lean-embed="image-compressor"] button[data-analytics-label="image-select"] {
     display: none;
+  }
+
+  [data-lean-embed] .border-dashed {
+    display: none;
+  }
+
+  /*
+   * Tool UI arrives with the route chunk. --wb-min reserves the settled height
+   * (see workbenchHeights.json) so the steps do not move. Proof slugs below
+   * override this with a measured value.
+   */
+  main[data-lean-shell] #tool-workbench {
+    min-height: var(--wb-min, auto);
+  }
+  @media (min-width: 1024px) {
+    main[data-lean-shell] #tool-workbench {
+      min-height: var(--wb-min-lg, var(--wb-min, auto));
+    }
   }
 
   /*

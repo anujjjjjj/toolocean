@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Copy, Download, ArrowUpDown, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useStashedFileInput } from "@/hooks/useStashedFileInput";
 import { markToolSuccess } from "@/lib/toolResult";
 
 export function CsvJsonConverterTool() {
@@ -26,8 +25,6 @@ export function CsvJsonConverterTool() {
   const [hasHeader, setHasHeader] = useState(true);
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  useStashedFileInput(fileInputRef);
-
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;

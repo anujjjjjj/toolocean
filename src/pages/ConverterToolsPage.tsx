@@ -46,10 +46,6 @@ const ConverterToolsPage = () => {
         <Breadcrumbs items={BREADCRUMB_ITEMS} />
 
         <section className="relative overflow-hidden text-center py-8">
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(55%_60%_at_50%_0%,hsl(var(--primary)/0.08),transparent_70%)]"
-          />
           <div className="relative max-w-4xl mx-auto">
             <div className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-lg bg-primary/10">
               <ArrowUpDown className="h-8 w-8 text-primary" />
@@ -58,7 +54,7 @@ const ConverterToolsPage = () => {
               <Shield className="h-3.5 w-3.5" />
               No uploads. Runs entirely in your browser.
             </span>
-            <h1 className="text-5xl font-heading font-bold mb-6 text-foreground">
+            <h1 className="mb-6 text-[28px] font-semibold leading-[1.15] tracking-[-0.02em] text-foreground md:text-[34px]">
               Converter Tools
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">

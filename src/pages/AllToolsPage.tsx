@@ -62,7 +62,7 @@ const AllToolsPage = () => {
         </div>
 
         <div className="container mx-auto max-w-5xl px-4 py-10">
-          <h1 className="font-heading text-4xl font-bold tracking-tight">
+          <h1 className="text-[28px] font-semibold leading-[1.15] tracking-[-0.02em] md:text-[34px]">
             All {TOOL_CATALOG.length} ToolOcean tools
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
