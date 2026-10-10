@@ -78,7 +78,7 @@ export function CsvFormatterTool() {
               <input ref={fileInputRef} type="file" accept=".csv,.tsv,.txt" className="hidden" onChange={handleFileUpload} />
               <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
                 <Upload className="h-4 w-4 mr-2" />
-                Upload .csv
+                Choose a .csv
               </Button>
               <span className="text-xs text-muted-foreground">or paste below</span>
             </div>

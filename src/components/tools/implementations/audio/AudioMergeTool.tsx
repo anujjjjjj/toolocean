@@ -143,7 +143,7 @@ export function AudioMergeTool() {
               />
               <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} disabled={isProcessing}>
                 <Upload className="h-4 w-4 mr-2" />
-                Upload
+                Choose files
               </Button>
               <Button onClick={merge} disabled={files.length < 2 || isProcessing}>
                 {isProcessing ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
@@ -159,7 +159,7 @@ export function AudioMergeTool() {
               className="border-2 border-dashed rounded-lg p-8 text-center text-muted-foreground cursor-pointer hover:border-primary/50"
               onClick={() => fileInputRef.current?.click()}
             >
-              Click to upload audio files to merge
+              Click to choose audio files to merge
             </div>
           ) : (
             <div className="space-y-2 max-h-[300px] overflow-y-auto">

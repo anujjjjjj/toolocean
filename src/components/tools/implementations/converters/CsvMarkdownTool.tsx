@@ -89,7 +89,7 @@ export function CsvMarkdownTool() {
             <div className="flex items-center gap-2 mb-2">
               <input ref={fileInputRef} type="file" accept=".csv,.tsv,.txt" className="hidden" onChange={handleFileUpload} />
               <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
-                <Upload className="h-4 w-4 mr-2" />Upload .csv
+                <Upload className="h-4 w-4 mr-2" />Choose a .csv
               </Button>
               <span className="text-xs text-muted-foreground">or paste below</span>
             </div>

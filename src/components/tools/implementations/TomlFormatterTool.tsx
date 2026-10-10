@@ -60,7 +60,7 @@ export function TomlFormatterTool() {
               <input ref={fileInputRef} type="file" accept=".toml" className="hidden" onChange={handleFileUpload} />
               <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
                 <Upload className="h-4 w-4 mr-2" />
-                Upload .toml
+                Choose a .toml
               </Button>
               <span className="text-xs text-muted-foreground">or paste below</span>
             </div>

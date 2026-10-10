@@ -152,7 +152,7 @@ export function AudioCutterTool() {
             ) : (
               <div>
                 <Upload className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
-                <p>Click or drag to upload audio</p>
+                <p>Click or drag to choose an audio file</p>
                 <p className="text-sm text-muted-foreground">MP3, WAV, OGG, M4A supported</p>
               </div>
             )}

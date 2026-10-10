@@ -222,7 +222,7 @@ export function ImagesToPdfTool() {
                         <div className="w-16 h-16 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center mb-4">
                             <Upload className="h-8 w-8 text-purple-500" />
                         </div>
-                        <h3 className="font-semibold text-lg mb-2">Upload Images</h3>
+                        <h3 className="font-semibold text-lg mb-2">Choose images</h3>
                         <p className="text-muted-foreground text-sm text-center">
                             Click to select or drag and drop images (JPG, PNG) to combine into a PDF
                         </p>
@@ -330,7 +330,7 @@ export function ImagesToPdfTool() {
 
             {images.length === 0 && (
                 <div className="text-center text-muted-foreground text-sm">
-                    <p>Drag and drop images onto the upload area, or drag images to reorder after uploading</p>
+                    <p>Drag files onto the area, or drag images to reorder after you add them</p>
                 </div>
             )}
         </div>

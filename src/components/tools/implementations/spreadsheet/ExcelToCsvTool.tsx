@@ -73,7 +73,7 @@ export function ExcelToCsvTool() {
           <div className="flex items-center gap-2">
             <input ref={fileInputRef} type="file" accept=".xlsx,.xls,.ods" className="hidden" onChange={handleFileUpload} />
             <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
-              <Upload className="h-4 w-4 mr-2" />Upload Excel file
+              <Upload className="h-4 w-4 mr-2" />Choose an Excel file
             </Button>
           </div>
 

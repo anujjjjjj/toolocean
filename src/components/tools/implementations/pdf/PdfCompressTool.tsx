@@ -263,7 +263,7 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
                             <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/20 flex items-center justify-center mb-4">
                                 <Upload className="h-8 w-8 text-green-500" />
                             </div>
-                            <h3 className="font-semibold text-lg mb-2">Upload PDF File</h3>
+                            <h3 className="font-semibold text-lg mb-2">Choose a PDF</h3>
                             <p className="text-muted-foreground text-sm text-center">
                                 Click to select a PDF to compress
                             </p>

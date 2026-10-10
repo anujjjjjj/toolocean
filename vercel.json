@@ -5,45 +5,783 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/csv-converter",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/csv-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/csv-json-converter",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/csv-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/tools/csv-json-converter",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/csv-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/csv-tools/csv-converter",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/csv-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/tools/csv-converter",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/csv-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/json-csv",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/json-to-csv",
+      "permanent": true
+    },
+    {
+      "source": "/converter-tools/json-csv",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/json-to-csv",
+      "permanent": true
+    },
+    {
+      "source": "/yaml-json-converter",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/yaml-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/tools/yaml-json-converter",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/yaml-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/json-yaml",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/json-to-yaml",
+      "permanent": true
+    },
+    {
+      "source": "/converter-tools/json-yaml",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/json-to-yaml",
+      "permanent": true
+    },
+    {
+      "source": "/xml-json-converter",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/xml-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/tools/xml-json-converter",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/xml-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/json-xml",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/json-to-xml",
+      "permanent": true
+    },
+    {
+      "source": "/converter-tools/json-xml",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/json-to-xml",
+      "permanent": true
+    },
+    {
+      "source": "/json-toml",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/json-to-toml",
+      "permanent": true
+    },
+    {
+      "source": "/converter-tools/json-toml",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/json-to-toml",
+      "permanent": true
+    },
+    {
+      "source": "/tools/json-toml",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/json-to-toml",
+      "permanent": true
+    },
+    {
+      "source": "/tools/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/pdf-tools/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/csv-tools/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/audio-tools/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/image-tools/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/video-tools/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/spreadsheet-tools/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/compression-tools/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/archive-tools/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/converter-tools/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
+      "destination": "https://toolocean.co/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/csv-converter",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/csv-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/csv-json-converter",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/csv-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/tools/csv-json-converter",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/csv-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/csv-tools/csv-converter",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/csv-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/tools/csv-converter",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/csv-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/json-csv",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/json-to-csv",
+      "permanent": true
+    },
+    {
+      "source": "/converter-tools/json-csv",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/json-to-csv",
+      "permanent": true
+    },
+    {
+      "source": "/yaml-json-converter",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/yaml-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/tools/yaml-json-converter",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/yaml-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/json-yaml",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/json-to-yaml",
+      "permanent": true
+    },
+    {
+      "source": "/converter-tools/json-yaml",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/json-to-yaml",
+      "permanent": true
+    },
+    {
+      "source": "/xml-json-converter",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/xml-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/tools/xml-json-converter",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/xml-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/json-xml",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/json-to-xml",
+      "permanent": true
+    },
+    {
+      "source": "/converter-tools/json-xml",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/json-to-xml",
+      "permanent": true
+    },
+    {
+      "source": "/json-toml",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/json-to-toml",
+      "permanent": true
+    },
+    {
+      "source": "/converter-tools/json-toml",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/json-to-toml",
+      "permanent": true
+    },
+    {
+      "source": "/tools/json-toml",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/json-to-toml",
+      "permanent": true
+    },
+    {
+      "source": "/tools/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/pdf-tools/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/csv-tools/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/audio-tools/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/image-tools/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/video-tools/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/spreadsheet-tools/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/compression-tools/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/archive-tools/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/converter-tools/:slug",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
+      "destination": "https://toolocean.co/:slug",
+      "permanent": true
+    },
+    {
       "source": "/(.*)",
-      "has": [{ "type": "host", "value": "www.toolocean.co" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.toolocean.co"
+        }
+      ],
       "destination": "https://toolocean.co/$1",
       "permanent": true
     },
     {
       "source": "/(.*)",
-      "has": [{ "type": "host", "value": "toolocean.vercel.app" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "toolocean.vercel.app"
+        }
+      ],
       "destination": "https://toolocean.co/$1",
       "permanent": true
     },
-    { "source": "/csv-converter", "destination": "/csv-to-json", "permanent": true },
-    { "source": "/csv-json-converter", "destination": "/csv-to-json", "permanent": true },
-    { "source": "/tools/csv-json-converter", "destination": "/csv-to-json", "permanent": true },
-    { "source": "/csv-tools/csv-converter", "destination": "/csv-to-json", "permanent": true },
-    { "source": "/tools/csv-converter", "destination": "/csv-to-json", "permanent": true },
-    { "source": "/json-csv", "destination": "/json-to-csv", "permanent": true },
-    { "source": "/converter-tools/json-csv", "destination": "/json-to-csv", "permanent": true },
-    { "source": "/yaml-json-converter", "destination": "/yaml-to-json", "permanent": true },
-    { "source": "/tools/yaml-json-converter", "destination": "/yaml-to-json", "permanent": true },
-    { "source": "/json-yaml", "destination": "/json-to-yaml", "permanent": true },
-    { "source": "/converter-tools/json-yaml", "destination": "/json-to-yaml", "permanent": true },
-    { "source": "/xml-json-converter", "destination": "/xml-to-json", "permanent": true },
-    { "source": "/tools/xml-json-converter", "destination": "/xml-to-json", "permanent": true },
-    { "source": "/json-xml", "destination": "/json-to-xml", "permanent": true },
-    { "source": "/converter-tools/json-xml", "destination": "/json-to-xml", "permanent": true },
-    { "source": "/json-toml", "destination": "/json-to-toml", "permanent": true },
-    { "source": "/converter-tools/json-toml", "destination": "/json-to-toml", "permanent": true },
-    { "source": "/tools/json-toml", "destination": "/json-to-toml", "permanent": true },
-    { "source": "/tools/:slug", "destination": "/:slug", "permanent": true },
-    { "source": "/pdf-tools/:slug", "destination": "/:slug", "permanent": true },
-    { "source": "/csv-tools/:slug", "destination": "/:slug", "permanent": true },
-    { "source": "/audio-tools/:slug", "destination": "/:slug", "permanent": true },
-    { "source": "/image-tools/:slug", "destination": "/:slug", "permanent": true },
-    { "source": "/video-tools/:slug", "destination": "/:slug", "permanent": true },
-    { "source": "/spreadsheet-tools/:slug", "destination": "/:slug", "permanent": true },
-    { "source": "/compression-tools/:slug", "destination": "/:slug", "permanent": true },
-    { "source": "/archive-tools/:slug", "destination": "/:slug", "permanent": true },
-    { "source": "/converter-tools/:slug", "destination": "/:slug", "permanent": true }
+    {
+      "source": "/csv-converter",
+      "destination": "/csv-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/csv-json-converter",
+      "destination": "/csv-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/tools/csv-json-converter",
+      "destination": "/csv-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/csv-tools/csv-converter",
+      "destination": "/csv-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/tools/csv-converter",
+      "destination": "/csv-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/json-csv",
+      "destination": "/json-to-csv",
+      "permanent": true
+    },
+    {
+      "source": "/converter-tools/json-csv",
+      "destination": "/json-to-csv",
+      "permanent": true
+    },
+    {
+      "source": "/yaml-json-converter",
+      "destination": "/yaml-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/tools/yaml-json-converter",
+      "destination": "/yaml-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/json-yaml",
+      "destination": "/json-to-yaml",
+      "permanent": true
+    },
+    {
+      "source": "/converter-tools/json-yaml",
+      "destination": "/json-to-yaml",
+      "permanent": true
+    },
+    {
+      "source": "/xml-json-converter",
+      "destination": "/xml-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/tools/xml-json-converter",
+      "destination": "/xml-to-json",
+      "permanent": true
+    },
+    {
+      "source": "/json-xml",
+      "destination": "/json-to-xml",
+      "permanent": true
+    },
+    {
+      "source": "/converter-tools/json-xml",
+      "destination": "/json-to-xml",
+      "permanent": true
+    },
+    {
+      "source": "/json-toml",
+      "destination": "/json-to-toml",
+      "permanent": true
+    },
+    {
+      "source": "/converter-tools/json-toml",
+      "destination": "/json-to-toml",
+      "permanent": true
+    },
+    {
+      "source": "/tools/json-toml",
+      "destination": "/json-to-toml",
+      "permanent": true
+    },
+    {
+      "source": "/tools/:slug",
+      "destination": "/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/pdf-tools/:slug",
+      "destination": "/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/csv-tools/:slug",
+      "destination": "/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/audio-tools/:slug",
+      "destination": "/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/image-tools/:slug",
+      "destination": "/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/video-tools/:slug",
+      "destination": "/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/spreadsheet-tools/:slug",
+      "destination": "/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/compression-tools/:slug",
+      "destination": "/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/archive-tools/:slug",
+      "destination": "/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/converter-tools/:slug",
+      "destination": "/:slug",
+      "permanent": true
+    }
   ],
   "headers": [
     {
@@ -58,8 +796,14 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
       ]
     }
   ]

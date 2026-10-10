@@ -93,7 +93,7 @@ export const CodeEditor = forwardRef<HTMLTextAreaElement, CodeEditorProps>(funct
       <div
         ref={gutterRef}
         aria-hidden="true"
-        className="relative w-12 shrink-0 select-none overflow-hidden border-r border-border/60 bg-muted/40 py-3 text-right font-mono text-muted-foreground/60"
+        className="relative w-12 shrink-0 select-none overflow-hidden border-r border-border/60 bg-muted/40 py-3 text-right font-mono text-muted-foreground"
         style={{ fontSize: FONT_SIZE_PX, lineHeight: `${LINE_HEIGHT_PX}px` }}
       >
         {errorLine != null && errorLine >= 1 && errorLine <= lineCount && (
@@ -123,7 +123,7 @@ export const CodeEditor = forwardRef<HTMLTextAreaElement, CodeEditorProps>(funct
         // wrap="off" gives a horizontal scrollbar instead of soft-wrapping, which
         // is what keeps the gutter numbers pointing at the right physical rows.
         wrap="off"
-        className="flex-1 resize-none bg-transparent px-3 py-3 font-mono text-foreground outline-none placeholder:text-muted-foreground/50"
+        className="flex-1 resize-none bg-transparent px-3 py-3 font-mono text-foreground outline-none placeholder:text-muted-foreground"
         style={{ fontSize: FONT_SIZE_PX, lineHeight: `${LINE_HEIGHT_PX}px` }}
       />
     </div>

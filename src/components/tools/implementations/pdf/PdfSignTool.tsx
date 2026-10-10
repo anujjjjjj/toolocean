@@ -302,7 +302,7 @@ export function PdfSignTool() {
                                 <TabsList>
                                     <TabsTrigger value="draw">Draw</TabsTrigger>
                                     <TabsTrigger value="type">Type</TabsTrigger>
-                                    <TabsTrigger value="image">Upload image</TabsTrigger>
+                                    <TabsTrigger value="image">Add image</TabsTrigger>
                                 </TabsList>
                                 <TabsContent value="draw" className="space-y-3">
                                     <canvas

@@ -26,7 +26,7 @@ export function ColumnExtractorTool() {
 
     const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
     if (!["csv", "xlsx", "xls"].includes(ext)) {
-      toast({ title: "Unsupported file", description: "Please upload a CSV, XLSX, or XLS file", variant: "destructive" });
+      toast({ title: "Unsupported file", description: "Please choose a CSV, XLSX, or XLS file", variant: "destructive" });
       return;
     }
 
@@ -120,7 +120,7 @@ export function ColumnExtractorTool() {
           onClick={() => fileInputRef.current?.click()}
         >
           <TableProperties className="h-10 w-10 mx-auto mb-3 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">Click to upload a CSV or Excel file</p>
+          <p className="text-sm text-muted-foreground">Click to choose a CSV or Excel file</p>
         </div>
       ) : (
         <div className="space-y-5">

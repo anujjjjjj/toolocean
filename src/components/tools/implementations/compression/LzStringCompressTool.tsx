@@ -97,7 +97,7 @@ export function LzStringCompressTool() {
             <div className="flex items-center gap-2 mb-2">
               <input ref={fileInputRef} type="file" accept=".txt,.json,.md" className="hidden" onChange={handleFileUpload} />
               <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
-                <Upload className="h-4 w-4 mr-2" />Upload file
+                <Upload className="h-4 w-4 mr-2" />Choose file
               </Button>
               <span className="text-xs text-muted-foreground">or paste below</span>
             </div>

@@ -194,7 +194,7 @@ export function XmlJsonConverterTool() {
               <input ref={fileInputRef} type="file" accept=".xml,.json" className="hidden" onChange={handleFileUpload} />
               <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
                 <Upload className="h-4 w-4 mr-2" />
-                Upload file
+                Choose file
               </Button>
               <span className="text-xs text-muted-foreground">or paste below</span>
             </div>

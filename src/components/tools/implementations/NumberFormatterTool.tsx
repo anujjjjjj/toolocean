@@ -168,7 +168,7 @@ export function NumberFormatterTool() {
               <input ref={fileInputRef} type="file" accept=".txt,.csv" className="hidden" onChange={handleFileUpload} />
               <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
                 <Upload className="h-4 w-4 mr-2" />
-                Upload file
+                Choose file
               </Button>
             </div>
             <Textarea

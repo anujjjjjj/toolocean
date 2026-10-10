@@ -17,20 +17,20 @@ export function getAllToolsForPalette(): { category: string; tools: PaletteTool[
     name: tool.name,
     description: tool.description,
     keywords: tool.keywords || [],
-    path: `/tools/${tool.id}`,
+    path: `/${tool.id}`,
     icon: tool.icon,
     category: (toolsData as { categories: { id: string; name: string }[] }).categories.find((c) => c.id === tool.category)?.name ?? "Developer Tools",
   }));
 
   const pdfTools: PaletteTool[] = [
-    { id: "pdf-merge", name: "PDF Merge", description: "Combine multiple PDF files", keywords: ["pdf", "merge", "combine"], path: "/pdf-tools/pdf-merge", icon: "Merge", category: "PDF Tools" },
-    { id: "pdf-split", name: "PDF Split", description: "Extract specific pages", keywords: ["pdf", "split", "extract"], path: "/pdf-tools/pdf-split", icon: "Split", category: "PDF Tools" },
-    { id: "pdf-compress", name: "PDF Compress", description: "Reduce PDF file size", keywords: ["pdf", "compress", "shrink"], path: "/pdf-tools/pdf-compress", icon: "Shrink", category: "PDF Tools" },
-    { id: "pdf-to-images", name: "PDF to Images", description: "Convert PDF to PNG/JPG", keywords: ["pdf", "image", "convert"], path: "/pdf-tools/pdf-to-images", icon: "Image", category: "PDF Tools" },
-    { id: "images-to-pdf", name: "Images to PDF", description: "Combine images into PDF", keywords: ["images", "pdf", "combine"], path: "/pdf-tools/images-to-pdf", icon: "FileText", category: "PDF Tools" },
-    { id: "pdf-rotate", name: "PDF Rotate", description: "Rotate PDF pages", keywords: ["pdf", "rotate"], path: "/pdf-tools/pdf-rotate", icon: "RotateCw", category: "PDF Tools" },
-    { id: "pdf-watermark", name: "PDF Watermark", description: "Add watermark to PDF", keywords: ["pdf", "watermark"], path: "/pdf-tools/pdf-watermark", icon: "Droplets", category: "PDF Tools" },
-    { id: "pdf-reorder", name: "PDF Page Reorder", description: "Rearrange PDF pages", keywords: ["pdf", "reorder", "pages"], path: "/pdf-tools/pdf-reorder", icon: "ArrowUpDown", category: "PDF Tools" },
+    { id: "pdf-merge", name: "PDF Merge", description: "Combine multiple PDF files", keywords: ["pdf", "merge", "combine"], path: "/pdf-merge", icon: "Merge", category: "PDF Tools" },
+    { id: "pdf-split", name: "PDF Split", description: "Extract specific pages", keywords: ["pdf", "split", "extract"], path: "/pdf-split", icon: "Split", category: "PDF Tools" },
+    { id: "pdf-compress", name: "PDF Compress", description: "Reduce PDF file size", keywords: ["pdf", "compress", "shrink"], path: "/pdf-compress", icon: "Shrink", category: "PDF Tools" },
+    { id: "pdf-to-images", name: "PDF to Images", description: "Convert PDF to PNG/JPG", keywords: ["pdf", "image", "convert"], path: "/pdf-to-images", icon: "Image", category: "PDF Tools" },
+    { id: "images-to-pdf", name: "Images to PDF", description: "Combine images into PDF", keywords: ["images", "pdf", "combine"], path: "/images-to-pdf", icon: "FileText", category: "PDF Tools" },
+    { id: "pdf-rotate", name: "PDF Rotate", description: "Rotate PDF pages", keywords: ["pdf", "rotate"], path: "/pdf-rotate", icon: "RotateCw", category: "PDF Tools" },
+    { id: "pdf-watermark", name: "PDF Watermark", description: "Add watermark to PDF", keywords: ["pdf", "watermark"], path: "/pdf-watermark", icon: "Droplets", category: "PDF Tools" },
+    { id: "pdf-reorder", name: "PDF Page Reorder", description: "Rearrange PDF pages", keywords: ["pdf", "reorder", "pages"], path: "/pdf-reorder", icon: "ArrowUpDown", category: "PDF Tools" },
     { id: "pdf-sign", name: "Sign PDF", description: "Place a visual signature on a page", keywords: ["pdf", "sign", "signature"], path: "/pdf-sign", icon: "PenLine", category: "PDF Tools" },
     { id: "pdf-encrypt", name: "Encrypt PDF", description: "Password-protect a PDF", keywords: ["pdf", "encrypt", "password"], path: "/pdf-encrypt", icon: "Lock", category: "PDF Tools" },
     { id: "pdf-unlock", name: "Unlock PDF", description: "Remove a known password or owner restrictions", keywords: ["pdf", "unlock", "password"], path: "/pdf-unlock", icon: "LockOpen", category: "PDF Tools" },
@@ -41,52 +41,52 @@ export function getAllToolsForPalette(): { category: string; tools: PaletteTool[
   const csvTools: PaletteTool[] = [
     { id: "csv-to-json", name: "CSV to JSON", description: "Convert CSV to a JSON array", keywords: ["csv", "json", "convert"], path: "/csv-to-json", icon: "ArrowUpDown", category: "CSV Tools" },
     { id: "json-to-csv", name: "JSON to CSV", description: "Convert a JSON array to CSV", keywords: ["json", "csv", "convert"], path: "/json-to-csv", icon: "ArrowUpDown", category: "CSV Tools" },
-    { id: "csv-validator", name: "CSV Validator", description: "Validate CSV format and consistency", keywords: ["csv", "validate"], path: "/csv-tools/csv-validator", icon: "CheckCircle", category: "CSV Tools" },
-    { id: "csv-merge", name: "CSV Merge", description: "Combine multiple CSV files", keywords: ["csv", "merge", "combine"], path: "/csv-tools/csv-merge", icon: "Merge", category: "CSV Tools" },
+    { id: "csv-validator", name: "CSV Validator", description: "Validate CSV format and consistency", keywords: ["csv", "validate"], path: "/csv-validator", icon: "CheckCircle", category: "CSV Tools" },
+    { id: "csv-merge", name: "CSV Merge", description: "Combine multiple CSV files", keywords: ["csv", "merge", "combine"], path: "/csv-merge", icon: "Merge", category: "CSV Tools" },
   ];
 
   const audioTools: PaletteTool[] = [
-    { id: "audio-cutter", name: "Audio Cutter", description: "Trim audio by start and end time", keywords: ["audio", "cut", "trim"], path: "/audio-tools/audio-cutter", icon: "Scissors", category: "Audio Tools" },
-    { id: "audio-merge", name: "Audio Merger", description: "Combine multiple audio files", keywords: ["audio", "merge", "combine"], path: "/audio-tools/audio-merge", icon: "Merge", category: "Audio Tools" },
+    { id: "audio-cutter", name: "Audio Cutter", description: "Trim audio by start and end time", keywords: ["audio", "cut", "trim"], path: "/audio-cutter", icon: "Scissors", category: "Audio Tools" },
+    { id: "audio-merge", name: "Audio Merger", description: "Combine multiple audio files", keywords: ["audio", "merge", "combine"], path: "/audio-merge", icon: "Merge", category: "Audio Tools" },
   ];
 
   const imageTools: PaletteTool[] = [
-    { id: "image-resizer", name: "Image Resizer", description: "Resize images with dimensions", keywords: ["image", "resize", "dimensions"], path: "/image-tools/image-resizer", icon: "Maximize2", category: "Image Tools" },
-    { id: "image-compressor", name: "Image Compressor", description: "Reduce file size with quality", keywords: ["image", "compress", "quality"], path: "/image-tools/image-compressor", icon: "Shrink", category: "Image Tools" },
-    { id: "image-format-converter", name: "Format Converter", description: "PNG, JPEG, WebP", keywords: ["image", "format", "convert"], path: "/image-tools/image-format-converter", icon: "Repeat", category: "Image Tools" },
-    { id: "image-to-base64", name: "Image to Base64", description: "Convert to data URL", keywords: ["image", "base64", "data url"], path: "/image-tools/image-to-base64", icon: "FileImage", category: "Image Tools" },
-    { id: "image-crop", name: "Image Crop", description: "Crop and export a selected region", keywords: ["image", "crop", "trim", "cut"], path: "/image-tools/image-crop", icon: "Crop", category: "Image Tools" },
-    { id: "color-picker", name: "Color Picker from Image", description: "Click an image to get the pixel color", keywords: ["color", "picker", "eyedropper", "pixel", "hex"], path: "/image-tools/color-picker", icon: "Pipette", category: "Image Tools" },
-    { id: "favicon-generator", name: "Favicon Generator", description: "Generate favicon sizes from an image", keywords: ["favicon", "icon", "generate", "ico"], path: "/image-tools/favicon-generator", icon: "Star", category: "Image Tools" },
-    { id: "image-rotate-flip", name: "Rotate & Flip Image", description: "Rotate 90/180/270° or flip an image", keywords: ["image", "rotate", "flip", "mirror"], path: "/image-tools/image-rotate-flip", icon: "RotateCw", category: "Image Tools" },
-    { id: "image-watermark", name: "Image Watermark", description: "Add a text watermark to an image", keywords: ["image", "watermark", "text", "overlay"], path: "/image-tools/image-watermark", icon: "Droplets", category: "Image Tools" },
-    { id: "image-filters", name: "Image Filters", description: "Brightness, contrast, saturation, blur", keywords: ["image", "filter", "brightness", "contrast", "blur"], path: "/image-tools/image-filters", icon: "SlidersHorizontal", category: "Image Tools" },
+    { id: "image-resizer", name: "Image Resizer", description: "Resize images with dimensions", keywords: ["image", "resize", "dimensions"], path: "/image-resizer", icon: "Maximize2", category: "Image Tools" },
+    { id: "image-compressor", name: "Image Compressor", description: "Reduce file size with quality", keywords: ["image", "compress", "quality"], path: "/image-compressor", icon: "Shrink", category: "Image Tools" },
+    { id: "image-format-converter", name: "Format Converter", description: "PNG, JPEG, WebP", keywords: ["image", "format", "convert"], path: "/image-format-converter", icon: "Repeat", category: "Image Tools" },
+    { id: "image-to-base64", name: "Image to Base64", description: "Convert to data URL", keywords: ["image", "base64", "data url"], path: "/image-to-base64", icon: "FileImage", category: "Image Tools" },
+    { id: "image-crop", name: "Image Crop", description: "Crop and export a selected region", keywords: ["image", "crop", "trim", "cut"], path: "/image-crop", icon: "Crop", category: "Image Tools" },
+    { id: "color-picker", name: "Color Picker from Image", description: "Click an image to get the pixel color", keywords: ["color", "picker", "eyedropper", "pixel", "hex"], path: "/color-picker", icon: "Pipette", category: "Image Tools" },
+    { id: "favicon-generator", name: "Favicon Generator", description: "Generate favicon sizes from an image", keywords: ["favicon", "icon", "generate", "ico"], path: "/favicon-generator", icon: "Star", category: "Image Tools" },
+    { id: "image-rotate-flip", name: "Rotate & Flip Image", description: "Rotate 90/180/270° or flip an image", keywords: ["image", "rotate", "flip", "mirror"], path: "/image-rotate-flip", icon: "RotateCw", category: "Image Tools" },
+    { id: "image-watermark", name: "Image Watermark", description: "Add a text watermark to an image", keywords: ["image", "watermark", "text", "overlay"], path: "/image-watermark", icon: "Droplets", category: "Image Tools" },
+    { id: "image-filters", name: "Image Filters", description: "Brightness, contrast, saturation, blur", keywords: ["image", "filter", "brightness", "contrast", "blur"], path: "/image-filters", icon: "SlidersHorizontal", category: "Image Tools" },
   ];
 
   const videoTools: PaletteTool[] = [
-    { id: "video-thumbnail", name: "Video Thumbnail", description: "Extract frame as image", keywords: ["video", "thumbnail", "frame"], path: "/video-tools/video-thumbnail", icon: "Film", category: "Video Tools" },
-    { id: "video-trimmer", name: "Video Trimmer", description: "Trim video by time range", keywords: ["video", "trim", "cut"], path: "/video-tools/video-trimmer", icon: "Scissors", category: "Video Tools" },
-    { id: "video-to-gif", name: "Video to GIF", description: "Convert to animated GIF", keywords: ["video", "gif", "animated"], path: "/video-tools/video-to-gif", icon: "Image", category: "Video Tools" },
-    { id: "video-metadata", name: "Video Metadata Viewer", description: "Duration, dimensions, codec info", keywords: ["video", "metadata", "duration", "codec", "resolution"], path: "/video-tools/video-metadata", icon: "Info", category: "Video Tools" },
+    { id: "video-thumbnail", name: "Video Thumbnail", description: "Extract frame as image", keywords: ["video", "thumbnail", "frame"], path: "/video-thumbnail", icon: "Film", category: "Video Tools" },
+    { id: "video-trimmer", name: "Video Trimmer", description: "Trim video by time range", keywords: ["video", "trim", "cut"], path: "/video-trimmer", icon: "Scissors", category: "Video Tools" },
+    { id: "video-to-gif", name: "Video to GIF", description: "Convert to animated GIF", keywords: ["video", "gif", "animated"], path: "/video-to-gif", icon: "Image", category: "Video Tools" },
+    { id: "video-metadata", name: "Video Metadata Viewer", description: "Duration, dimensions, codec info", keywords: ["video", "metadata", "duration", "codec", "resolution"], path: "/video-metadata", icon: "Info", category: "Video Tools" },
   ];
 
   const spreadsheetTools: PaletteTool[] = [
-    { id: "excel-reader", name: "Excel Reader", description: "View Excel as table", keywords: ["excel", "xlsx", "read"], path: "/spreadsheet-tools/excel-reader", icon: "FileSpreadsheet", category: "Spreadsheet Tools" },
-    { id: "csv-to-excel", name: "CSV to Excel", description: "Convert CSV to .xlsx", keywords: ["csv", "excel", "convert"], path: "/spreadsheet-tools/csv-to-excel", icon: "FileUp", category: "Spreadsheet Tools" },
-    { id: "excel-to-csv", name: "Excel to CSV", description: "Export to CSV", keywords: ["excel", "csv", "export"], path: "/spreadsheet-tools/excel-to-csv", icon: "FileDown", category: "Spreadsheet Tools" },
-    { id: "column-extractor", name: "Column Extractor", description: "Select and export specific columns", keywords: ["column", "extract", "select", "spreadsheet"], path: "/spreadsheet-tools/column-extractor", icon: "Columns", category: "Spreadsheet Tools" },
-    { id: "json-to-excel", name: "JSON to Excel", description: "Convert a JSON array to .xlsx", keywords: ["json", "excel", "xlsx", "convert"], path: "/spreadsheet-tools/json-to-excel", icon: "Braces", category: "Spreadsheet Tools" },
+    { id: "excel-reader", name: "Excel Reader", description: "View Excel as table", keywords: ["excel", "xlsx", "read"], path: "/excel-reader", icon: "FileSpreadsheet", category: "Spreadsheet Tools" },
+    { id: "csv-to-excel", name: "CSV to Excel", description: "Convert CSV to .xlsx", keywords: ["csv", "excel", "convert"], path: "/csv-to-excel", icon: "FileUp", category: "Spreadsheet Tools" },
+    { id: "excel-to-csv", name: "Excel to CSV", description: "Export to CSV", keywords: ["excel", "csv", "export"], path: "/excel-to-csv", icon: "FileDown", category: "Spreadsheet Tools" },
+    { id: "column-extractor", name: "Column Extractor", description: "Select and export specific columns", keywords: ["column", "extract", "select", "spreadsheet"], path: "/column-extractor", icon: "Columns", category: "Spreadsheet Tools" },
+    { id: "json-to-excel", name: "JSON to Excel", description: "Convert a JSON array to .xlsx", keywords: ["json", "excel", "xlsx", "convert"], path: "/json-to-excel", icon: "Braces", category: "Spreadsheet Tools" },
   ];
 
   const compressionTools: PaletteTool[] = [
-    { id: "gzip-compress", name: "Gzip Compress", description: "Compress text with gzip", keywords: ["gzip", "compress"], path: "/compression-tools/gzip-compress", icon: "FileDown", category: "Compression Tools" },
-    { id: "gzip-decompress", name: "Gzip Decompress", description: "Decompress gzip data", keywords: ["gzip", "decompress"], path: "/compression-tools/gzip-decompress", icon: "FileUp", category: "Compression Tools" },
-    { id: "lz-string-compress", name: "LZ-String Compress", description: "Compress for URLs and localStorage", keywords: ["lz-string", "compress", "url", "localstorage"], path: "/compression-tools/lz-string-compress", icon: "Zap", category: "Compression Tools" },
+    { id: "gzip-compress", name: "Gzip Compress", description: "Compress text with gzip", keywords: ["gzip", "compress"], path: "/gzip-compress", icon: "FileDown", category: "Compression Tools" },
+    { id: "gzip-decompress", name: "Gzip Decompress", description: "Decompress gzip data", keywords: ["gzip", "decompress"], path: "/gzip-decompress", icon: "FileUp", category: "Compression Tools" },
+    { id: "lz-string-compress", name: "LZ-String Compress", description: "Compress for URLs and localStorage", keywords: ["lz-string", "compress", "url", "localstorage"], path: "/lz-string-compress", icon: "Zap", category: "Compression Tools" },
   ];
 
   const converterTools: PaletteTool[] = [
-    { id: "md-to-docx", name: "Markdown to DOCX", description: "Convert Markdown to Word DOCX", keywords: ["markdown", "docx", "word", "convert"], path: "/converter-tools/md-to-docx", icon: "FileText", category: "Converter Tools" },
-    { id: "markdown-html", name: "Markdown ↔ HTML", description: "Convert between Markdown and HTML", keywords: ["markdown", "html", "convert"], path: "/converter-tools/markdown-html", icon: "ArrowUpDown", category: "Converter Tools" },
+    { id: "md-to-docx", name: "Markdown to DOCX", description: "Convert Markdown to Word DOCX", keywords: ["markdown", "docx", "word", "convert"], path: "/md-to-docx", icon: "FileText", category: "Converter Tools" },
+    { id: "markdown-html", name: "Markdown ↔ HTML", description: "Convert between Markdown and HTML", keywords: ["markdown", "html", "convert"], path: "/markdown-html", icon: "ArrowUpDown", category: "Converter Tools" },
     { id: "csv-to-json", name: "CSV to JSON", description: "Convert CSV to a JSON array", keywords: ["csv", "json", "convert"], path: "/csv-to-json", icon: "ArrowUpDown", category: "Converter Tools" },
     { id: "json-to-csv", name: "JSON to CSV", description: "Convert a JSON array to CSV", keywords: ["json", "csv", "convert"], path: "/json-to-csv", icon: "ArrowUpDown", category: "Converter Tools" },
     { id: "yaml-to-json", name: "YAML to JSON", description: "Convert YAML to JSON", keywords: ["yaml", "json", "convert"], path: "/yaml-to-json", icon: "Code", category: "Converter Tools" },
@@ -94,18 +94,18 @@ export function getAllToolsForPalette(): { category: string; tools: PaletteTool[
     { id: "xml-to-json", name: "XML to JSON", description: "Convert XML to JSON", keywords: ["xml", "json", "convert"], path: "/xml-to-json", icon: "Code", category: "Converter Tools" },
     { id: "json-to-xml", name: "JSON to XML", description: "Convert JSON to XML", keywords: ["json", "xml", "convert"], path: "/json-to-xml", icon: "Code", category: "Converter Tools" },
     { id: "json-to-toml", name: "JSON to TOML", description: "Convert JSON to TOML and swap back", keywords: ["json", "toml", "convert", "config"], path: "/json-to-toml", icon: "Code", category: "Converter Tools" },
-    { id: "color-converter", name: "Color Format Converter", description: "HEX, RGB, HSL, and CMYK", keywords: ["color", "hex", "rgb", "hsl", "cmyk", "convert"], path: "/converter-tools/color-converter", icon: "Palette", category: "Converter Tools" },
-    { id: "timestamp-converter", name: "Timestamp Converter", description: "Unix, ISO, and locale dates", keywords: ["timestamp", "unix", "epoch", "iso", "date"], path: "/converter-tools/timestamp-converter", icon: "Clock", category: "Converter Tools" },
-    { id: "html-markdown", name: "HTML to Markdown", description: "Convert HTML into clean Markdown", keywords: ["html", "markdown", "convert"], path: "/converter-tools/html-markdown", icon: "ArrowUpDown", category: "Converter Tools" },
-    { id: "csv-markdown", name: "CSV to Markdown Table", description: "Turn CSV into a Markdown table", keywords: ["csv", "markdown", "table", "convert"], path: "/converter-tools/csv-markdown", icon: "ArrowUpDown", category: "Converter Tools" },
-    { id: "svg-png", name: "SVG to PNG", description: "Render SVG to a PNG image", keywords: ["svg", "png", "render", "convert", "image"], path: "/converter-tools/svg-png", icon: "Image", category: "Converter Tools" },
-    { id: "url-parser", name: "URL Parser / Builder", description: "Parse and build URLs with params", keywords: ["url", "parse", "query", "params", "builder"], path: "/converter-tools/url-parser", icon: "Link", category: "Converter Tools" },
+    { id: "color-converter", name: "Color Format Converter", description: "HEX, RGB, HSL, and CMYK", keywords: ["color", "hex", "rgb", "hsl", "cmyk", "convert"], path: "/color-converter", icon: "Palette", category: "Converter Tools" },
+    { id: "timestamp-converter", name: "Timestamp Converter", description: "Unix, ISO, and locale dates", keywords: ["timestamp", "unix", "epoch", "iso", "date"], path: "/timestamp-converter", icon: "Clock", category: "Converter Tools" },
+    { id: "html-markdown", name: "HTML to Markdown", description: "Convert HTML into clean Markdown", keywords: ["html", "markdown", "convert"], path: "/html-markdown", icon: "ArrowUpDown", category: "Converter Tools" },
+    { id: "csv-markdown", name: "CSV to Markdown Table", description: "Turn CSV into a Markdown table", keywords: ["csv", "markdown", "table", "convert"], path: "/csv-markdown", icon: "ArrowUpDown", category: "Converter Tools" },
+    { id: "svg-png", name: "SVG to PNG", description: "Render SVG to a PNG image", keywords: ["svg", "png", "render", "convert", "image"], path: "/svg-png", icon: "Image", category: "Converter Tools" },
+    { id: "url-parser", name: "URL Parser / Builder", description: "Parse and build URLs with params", keywords: ["url", "parse", "query", "params", "builder"], path: "/url-parser", icon: "Link", category: "Converter Tools" },
   ];
 
   const archiveTools: PaletteTool[] = [
-    { id: "zip-extractor", name: "ZIP Extractor", description: "Extract files from ZIP", keywords: ["zip", "extract"], path: "/archive-tools/zip-extractor", icon: "FolderOpen", category: "Archive Tools" },
-    { id: "zip-creator", name: "ZIP Creator", description: "Create ZIP from files", keywords: ["zip", "create", "archive"], path: "/archive-tools/zip-creator", icon: "FolderPlus", category: "Archive Tools" },
-    { id: "zip-preview", name: "ZIP Preview", description: "List ZIP contents", keywords: ["zip", "preview", "list"], path: "/archive-tools/zip-preview", icon: "List", category: "Archive Tools" },
+    { id: "zip-extractor", name: "ZIP Extractor", description: "Extract files from ZIP", keywords: ["zip", "extract"], path: "/zip-extractor", icon: "FolderOpen", category: "Archive Tools" },
+    { id: "zip-creator", name: "ZIP Creator", description: "Create ZIP from files", keywords: ["zip", "create", "archive"], path: "/zip-creator", icon: "FolderPlus", category: "Archive Tools" },
+    { id: "zip-preview", name: "ZIP Preview", description: "List ZIP contents", keywords: ["zip", "preview", "list"], path: "/zip-preview", icon: "List", category: "Archive Tools" },
   ];
 
   const categoryOrder = [

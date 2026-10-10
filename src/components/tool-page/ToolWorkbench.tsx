@@ -2,7 +2,7 @@ import { Suspense, useEffect, useState, type ComponentType, type CSSProperties }
 import { FileDropzone } from "@/components/ui/file-dropzone";
 import { useStashedFileRoot } from "@/hooks/useStashedFileInput";
 import { useWorkbenchAnalytics } from "@/hooks/useWorkbenchAnalytics";
-import { prefetchPdfJs, prefetchPdfLib } from "@/lib/pdf/lazyPdf";
+import { prefetchPdfJs, prefetchPdfLib, schedulePdfEnginePrefetch } from "@/lib/pdf/lazyPdf";
 import { prefetchTool } from "@/lib/prefetchTool";
 import { shellDropzoneCopy } from "@/lib/leanShell";
 import workbenchHeights from "@/data/workbenchHeights.json";
@@ -87,6 +87,7 @@ export function ToolWorkbench({ component: Tool, label, lean = false, slug, butt
 
   useEffect(() => {
     if (slug) prefetchTool(slug, "hover");
+    return schedulePdfEnginePrefetch(slug);
   }, [slug]);
 
   /*

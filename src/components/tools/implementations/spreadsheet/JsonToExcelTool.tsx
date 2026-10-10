@@ -80,7 +80,7 @@ export function JsonToExcelTool() {
             <div className="flex items-center gap-2 mb-2">
               <input ref={fileInputRef} type="file" accept=".json" className="hidden" onChange={handleFileUpload} />
               <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
-                <Upload className="h-4 w-4 mr-2" />Upload .json
+                <Upload className="h-4 w-4 mr-2" />Choose a .json
               </Button>
               <span className="text-xs text-muted-foreground">or paste JSON array below</span>
             </div>
