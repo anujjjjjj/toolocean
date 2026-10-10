@@ -20,6 +20,8 @@ import { ToolMeasurements } from "./ToolMeasurements";
 import { ToolLimitations } from "./ToolLimitations";
 import { ToolComparison } from "./ToolComparison";
 import { ToolScenarios } from "./ToolScenarios";
+import { LeanToolPage } from "./LeanToolPage";
+import { usesLeanShell } from "@/lib/leanShell";
 
 interface ToolPageLayoutProps {
   content: ToolPageContent;
@@ -86,6 +88,10 @@ export function ToolPageLayout({ content, tool, servedFrom }: ToolPageLayoutProp
     image: content.seo.ogImage,
     jsonLd: [buildToolPageGraph(content)],
   });
+
+  if (usesLeanShell(content.slug)) {
+    return <LeanToolPage content={content} tool={tool} servedFrom={servedFrom} />;
+  }
 
   const breadcrumbItems = [
     { name: "Home", path: "/" },

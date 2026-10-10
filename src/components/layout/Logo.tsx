@@ -3,22 +3,27 @@ interface LogoProps {
 }
 
 /**
- * The anchor mark used as the site favicon (public/favicon.svg), reused here so
- * the header, footer, and homepage show that mark instead of a generic Lucide
- * icon standing in for a logo.
- *
- * Filled from --primary so the whole site reads as one accent color.
+ * Ink square and two waves. The lower stroke is the ochre mark from the lock;
+ * it is a graphic, not text.
  */
 export function Logo({ className }: LogoProps) {
   return (
-    <svg viewBox="0 0 32 32" className={className} aria-hidden="true">
-      <rect width="32" height="32" rx="8" fill="hsl(var(--primary))" />
-      <g stroke="white" strokeWidth="2.1" fill="none" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="16" cy="10" r="2.4" fill="white" stroke="none" />
-        <path d="M16 13v13" />
-        <path d="M11 16h10" />
-        <path d="M9 20c0 4 3 6 7 6s7-2 7-6" />
-      </g>
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <rect width="24" height="24" rx="7" fill="var(--ink)" />
+      <path
+        d="M4.5 14.5c2.5-3 4.5-3 7.5 0s5 3 7.5 0"
+        fill="none"
+        stroke="var(--bg)"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M4.5 10c2.5-3 4.5-3 7.5 0s5 3 7.5 0"
+        fill="none"
+        stroke="#C99A4B"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }

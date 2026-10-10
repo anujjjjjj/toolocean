@@ -1,5 +1,9 @@
 import { Suspense, useEffect, useState, type ComponentType } from "react";
+import { FileDropzone } from "@/components/ui/file-dropzone";
 import { useWorkbenchAnalytics } from "@/hooks/useWorkbenchAnalytics";
+import { prefetchPdfJs, prefetchPdfLib } from "@/lib/pdf/lazyPdf";
+import { prefetchTool } from "@/lib/prefetchTool";
+import { shellDropzoneCopy } from "@/lib/leanShell";
 import { WORKBENCH_ID, subscribeToToolActions } from "@/lib/toolActions";
 import { ToolErrorBoundary } from "./ToolErrorBoundary";
 import { cn } from "@/lib/utils";
@@ -42,6 +46,10 @@ interface ToolWorkbenchProps {
   component: ComponentType;
   /** Accessible name for the region, e.g. "JSON formatter". */
   label: string;
+  /** Paper shell: a real file input is in the prerender, and the chunk loads into it. */
+  lean?: boolean;
+  slug?: string;
+  buttonLabel?: string;
 }
 
 /**
@@ -53,8 +61,18 @@ interface ToolWorkbenchProps {
  *   - the 4 MB of tool code stays off the critical path for a search visitor who
  *     is still reading the hero
  */
-export function ToolWorkbench({ component: Tool, label }: ToolWorkbenchProps) {
+export function ToolWorkbench({ component: Tool, label, lean = false, slug, buttonLabel = "Choose a file" }: ToolWorkbenchProps) {
   const [mounted, setMounted] = useState(false);
+  const drop = lean && slug ? shellDropzoneCopy(slug) : null;
+
+  const warmHeavy = () => {
+    if (!slug) return;
+    prefetchTool(slug, "hover");
+    if (slug.startsWith("pdf-")) {
+      prefetchPdfLib();
+      prefetchPdfJs();
+    }
+  };
 
   /*
    * Delegated from this section, so it covers the controls the mounted tool
@@ -63,6 +81,10 @@ export function ToolWorkbench({ component: Tool, label }: ToolWorkbenchProps) {
   const analyticsRef = useWorkbenchAnalytics();
 
   useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    if (slug) prefetchTool(slug, "hover");
+  }, [slug]);
 
   /*
    * Generic handling for the hero CTAs.
@@ -109,24 +131,36 @@ export function ToolWorkbench({ component: Tool, label }: ToolWorkbenchProps) {
     });
   }, [mounted]);
 
+  const shellDrop = drop ? (
+    <FileDropzone
+      accept={drop.accept}
+      multiple={drop.multiple}
+      title={drop.title}
+      hint={drop.hint}
+      buttonLabel={buttonLabel}
+      onIntent={warmHeavy}
+    />
+  ) : null;
+
   return (
     <section
       ref={analyticsRef}
       id={WORKBENCH_ID}
       aria-label={label}
-      // scroll-mt keeps the sticky header from covering the workbench when the
-      // hero CTA jumps here.
-      className="scroll-mt-20 border-b border-border/60 bg-muted/20 py-8 sm:py-10"
+      // scroll-mt keeps the sticky header from covering the workbench when a
+      // control jumps here. The lean shell has no tinted band; the dropzone is the tool.
+      className={cn("scroll-mt-16", lean ? "py-0" : "border-b border-border bg-muted/30 py-8 sm:py-10")}
     >
-      <div className="container mx-auto max-w-6xl px-4">
+      <div className={cn(lean ? "" : "container mx-auto max-w-6xl px-4")}>
+        {shellDrop}
         {mounted ? (
           <ToolErrorBoundary label={label}>
-            <Suspense fallback={<WorkbenchSkeleton label={`Loading ${label}…`} />}>
+            <Suspense fallback={lean ? null : <WorkbenchSkeleton label={`Loading ${label}…`} />}>
               <Tool />
             </Suspense>
           </ToolErrorBoundary>
         ) : (
-          <WorkbenchSkeleton label={`Loading ${label}…`} />
+          lean ? null : <WorkbenchSkeleton label={`Loading ${label}…`} />
         )}
       </div>
     </section>

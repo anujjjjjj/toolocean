@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Upload, X, Download, FileText, GripVertical, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useStashedFileInput } from "@/hooks/useStashedFileInput";
+import { markToolSuccess } from "@/lib/toolResult";
 interface PdfFile {
     id: string;
     file: File;
@@ -16,6 +18,7 @@ export function PdfMergeTool() {
     const [isProcessing, setIsProcessing] = useState(false);
     const [draggedItem, setDraggedItem] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    useStashedFileInput(fileInputRef);
     const { toast } = useToast();
 
     const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -126,6 +129,7 @@ export function PdfMergeTool() {
                 title: "PDFs merged successfully",
                 description: `Combined ${pdfFiles.length} PDFs into one document`,
             });
+            markToolSuccess();
         } catch (error) {
             toast({
                 title: "Merge failed",
@@ -148,8 +152,8 @@ export function PdfMergeTool() {
                         className="flex flex-col items-center justify-center py-10 cursor-pointer"
                         onClick={() => fileInputRef.current?.click()}
                     >
-                        <div className="w-16 h-16 rounded-full bg-rose-100 dark:bg-rose-900/20 flex items-center justify-center mb-4">
-                            <Upload className="h-8 w-8 text-rose-500" />
+                        <div className="w-16 h-16 rounded-full bg-[var(--ico-bg)] flex items-center justify-center mb-4">
+                            <Upload className="h-8 w-8 text-[var(--ico-ink)]" />
                         </div>
                         <h3 className="font-semibold text-lg mb-2">Upload PDF Files</h3>
                         <p className="text-muted-foreground text-sm text-center">
@@ -192,8 +196,8 @@ export function PdfMergeTool() {
                                         }`}
                                 >
                                     <GripVertical className="h-5 w-5 text-muted-foreground cursor-grab" />
-                                    <div className="w-8 h-8 rounded bg-rose-100 dark:bg-rose-900/20 flex items-center justify-center">
-                                        <FileText className="h-4 w-4 text-rose-500" />
+                                    <div className="w-8 h-8 rounded bg-[var(--ico-bg)] flex items-center justify-center">
+                                        <FileText className="h-4 w-4 text-[var(--ico-ink)]" />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="font-medium truncate">{pdfFile.name}</p>

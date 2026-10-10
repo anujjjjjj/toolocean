@@ -19,18 +19,31 @@
     <meta name="twitter:image" content="/favicon.svg" />
 
     <!--
-      Typography: Urbanist for everything, headings and body alike, self-hosted
-      from /fonts so there is no third-party origin on the critical path. No
-      extra DNS lookup, no second TLS handshake, and no render-blocking
-      stylesheet that has to parse before the font file is even discovered.
-
-      Only the latin subset is preloaded. latin-ext is declared in the CSS with
-      its own unicode-range and is fetched only by a reader who actually needs
-      one of those characters.
-
-      The @font-face rule lives in src/index.css.
+      Theme before first paint. Follows the system unless a previous toggle
+      stored `theme` (or the legacy `darkMode` key). Prerender stays light.
     -->
-    <link rel="preload" as="font" type="font/woff2" href="/fonts/urbanist-latin.woff2" crossorigin />
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem("theme");
+          if (saved !== "light" && saved !== "dark") {
+            var legacy = localStorage.getItem("darkMode");
+            if (legacy === "true") saved = "dark";
+            else if (legacy === "false") saved = "light";
+          }
+          var dark = saved === "dark" || (saved !== "light" && matchMedia("(prefers-color-scheme: dark)").matches);
+          var root = document.documentElement;
+          if (dark) root.classList.add("dark");
+          root.style.colorScheme = dark ? "dark" : "light";
+        } catch (e) {}
+      })();
+    </script>
+    <style>
+      html { background: #f7f5f0; color: #1c1915; }
+      html.dark { background: #171512; color: #f1ede4; }
+      body { margin: 0; font-family: "Instrument Sans", "Instrument Sans Fallback", ui-sans-serif, system-ui, sans-serif; }
+    </style>
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/instrument-sans-latin-wght-normal.woff2" crossorigin />
   </head>
 
   <body>

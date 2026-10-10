@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { loadPdfJs, prefetchPdfJs, prefetchPdfLib } from "@/lib/pdf/lazyPdf";
+import { useStashedFileInput } from "@/hooks/useStashedFileInput";
+import { markToolSuccess } from "@/lib/toolResult";
 import { KILOBYTE, parseSize } from "@/lib/targetSize/parseSize";
 
 type CompressionMode = "lossless" | "raster" | "exact";
@@ -32,6 +34,7 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
     const [result, setResult] = useState<{ before: number; after: number } | null>(null);
     const [progress, setProgress] = useState<{ page: number; total: number } | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    useStashedFileInput(fileInputRef);
     const { toast } = useToast();
 
     useEffect(() => {
@@ -208,6 +211,7 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
              */
             const delta = originalSize - newSize;
             const pct = originalSize > 0 ? (delta / originalSize) * 100 : 0;
+            markToolSuccess();
             toast(
                 delta > 0
                     ? {

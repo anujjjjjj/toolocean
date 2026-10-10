@@ -9,7 +9,7 @@ import type { ToolBadgeKey, ToolCta, ToolHeroContent } from "@/types/toolContent
  * is worded identically on all 100+ pages. Inconsistent trust claims read as
  * boilerplate to users and as thin duplication to search engines.
  */
-const BADGES: Record<ToolBadgeKey, { icon: LucideIcon; label: string; title: string }> = {
+export const BADGES: Record<ToolBadgeKey, { icon: LucideIcon; label: string; title: string }> = {
   "browser-first": {
     icon: MonitorSmartphone,
     label: "Runs in your browser",
@@ -60,14 +60,8 @@ function CtaButton({ cta, variant }: { cta: ToolCta; variant: "default" | "outli
 
 export function ToolHero({ hero }: { hero: ToolHeroContent }) {
   return (
-    <section className="relative overflow-hidden border-b border-border/60">
-      {/* Decorative only, kept out of the a11y tree and cheap enough not to affect LCP. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_60%_at_50%_0%,hsl(var(--primary)/0.10),transparent_70%)]"
-      />
-
-      <div className="container relative mx-auto max-w-3xl px-4 py-14 text-center sm:py-20">
+    <section className="border-b border-border">
+      <div className="container relative mx-auto max-w-3xl px-4 py-14 text-center sm:py-16">
         <h1 className="font-heading text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
           {hero.h1}
         </h1>

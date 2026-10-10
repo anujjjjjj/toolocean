@@ -2,6 +2,14 @@
   "note": "Pages under 40% unique 6-word shingles when this file was written. A changed hash must clear 40%.",
   "threshold": 0.4,
   "pages": {
+    "/": {
+      "hash": "4963de60a4bc44d3",
+      "score": 0.162
+    },
+    "/all-tools": {
+      "hash": "881b1bf701bf8e38",
+      "score": 0.1
+    },
     "/workflow-builder": {
       "hash": "e3b0c44298fc1c14",
       "score": 0

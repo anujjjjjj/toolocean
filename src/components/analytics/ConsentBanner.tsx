@@ -44,16 +44,12 @@ export function ConsentBanner() {
     <div
       role="region"
       aria-label="Analytics cookie notice"
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80"
+      className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card"
     >
-      <div className="container mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm text-muted-foreground">
-          We use a single analytics cookie to count visits and see which tools get used.{" "}
-          <span className="text-foreground">
-            Your files and text never leave your device either way.
-          </span>
+      <div className="mx-auto flex h-11 max-w-[1120px] items-center gap-3 px-4">
+        <p className="min-w-0 flex-1 truncate text-[13px] text-muted-foreground">
+          One analytics cookie counts visits. Files never leave this device.
         </p>
-
         <div className="flex shrink-0 gap-2">
           <Button variant="outline" size="sm" onClick={() => choose("denied")}>
             Decline

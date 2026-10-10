@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { getToolIcon } from "@/lib/toolIcons";
 import { Link } from "react-router-dom";
 import { ShieldCheck } from "lucide-react";
-import { CATEGORY_BADGE_COLOR } from "@/lib/categoryBadgeColor";
+import { prefetchTool } from "@/lib/prefetchTool";
 
 interface Tool {
   id: string;
@@ -32,12 +32,12 @@ export function ToolCard({ tool, onAddToWorkflow, showWorkflowButton = false }: 
   const href = `/${tool.id}`;
 
   return (
-    <div className="group relative rounded-2xl border border-border/60 bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-foreground/15 hover:shadow-elegant">
-      <div className="mb-3.5 flex h-9 w-9 items-center justify-center rounded-lg" style={{ background: CATEGORY_BADGE_COLOR.dev }}>
-        <Icon className="h-[18px] w-[18px] text-white" />
-      </div>
+    <div className="paper-tool relative">
+      <span className="paper-ico">
+        <Icon className="h-[18px] w-[18px]" />
+      </span>
       <h3 className="text-[15px] font-bold leading-tight">
-        <Link to={href} className="after:absolute after:inset-0 after:content-['']">
+        <Link to={href} className="after:absolute after:inset-0 after:content-['']" onMouseEnter={() => prefetchTool(tool.id, "hover")} onFocus={() => prefetchTool(tool.id, "hover")}>
           {tool.name}
         </Link>
       </h3>
