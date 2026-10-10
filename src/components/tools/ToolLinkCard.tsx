@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ShieldCheck } from "lucide-react";
 import { getToolIcon } from "@/lib/toolIcons";
 import { toolPath, type CatalogTool } from "@/data/toolCatalog";
-import { CATEGORY_BADGE_COLOR } from "@/lib/categoryBadgeColor";
+import { prefetchTool, usePrefetchOnView } from "@/lib/prefetchTool";
 
 /**
  * A tool as a real anchor.
@@ -25,22 +25,23 @@ import { CATEGORY_BADGE_COLOR } from "@/lib/categoryBadgeColor";
  */
 export function ToolLinkCard({ tool }: { tool: CatalogTool }) {
   const Icon = getToolIcon(tool.icon);
-  const badgeColor = CATEGORY_BADGE_COLOR[tool.category];
+  const ref = usePrefetchOnView<HTMLAnchorElement>(tool.id);
 
   return (
     <Link
+      ref={ref}
       to={toolPath(tool)}
-      className="group block rounded-2xl border border-border/60 bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-foreground/15 hover:shadow-elegant focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      onMouseEnter={() => prefetchTool(tool.id, "hover")}
+      onFocus={() => prefetchTool(tool.id, "hover")}
+      className="paper-tool"
     >
-      <div className="mb-3.5 flex h-9 w-9 items-center justify-center rounded-lg" style={{ background: badgeColor }}>
-        <Icon className="h-[18px] w-[18px] text-white" />
-      </div>
-      <h3 className="text-[15px] font-bold leading-tight">{tool.name}</h3>
-      <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted-foreground line-clamp-2">
-        {tool.description}
-      </p>
-      <span className="mt-3 inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-[10.5px] font-bold text-primary">
-        <ShieldCheck className="h-2.5 w-2.5" />
+      <span className="paper-ico">
+        <Icon className="h-[18px] w-[18px]" />
+      </span>
+      <h3 className="text-[15px] font-medium leading-tight">{tool.name}</h3>
+      <p className="text-[13px] leading-relaxed text-muted-foreground line-clamp-2">{tool.description}</p>
+      <span className="inline-flex items-center gap-1 text-[12px] text-muted-foreground">
+        <ShieldCheck className="h-3 w-3" />
         In browser
       </span>
     </Link>

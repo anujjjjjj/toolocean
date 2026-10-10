@@ -11,6 +11,11 @@ interface ImportMetaEnv {
    * report to different properties.
    */
   readonly VITE_GA_MEASUREMENT_ID?: string;
+  /**
+   * Optional tip-jar link. Empty or unset renders nothing. The control only
+   * appears after a tool reports a successful result.
+   */
+  readonly VITE_TIP_URL?: string;
 }
 
 interface ImportMeta {

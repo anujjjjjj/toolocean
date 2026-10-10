@@ -9,6 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Download, FileText, Loader2, PenLine, Trash2, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { downloadPdf, pdfDownloadName } from "@/lib/pdf/downloadPdf";
+import { useStashedFileInput } from "@/hooks/useStashedFileInput";
+import { markToolSuccess } from "@/lib/toolResult";
 
 /**
  * Visual signature only. The mark is a PNG drawn onto the page. Nothing about
@@ -18,6 +20,7 @@ import { downloadPdf, pdfDownloadName } from "@/lib/pdf/downloadPdf";
 export function PdfSignTool() {
     const { toast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
+    useStashedFileInput(fileInputRef);
     const imageInputRef = useRef<HTMLInputElement>(null);
     const drawRef = useRef<HTMLCanvasElement>(null);
     const previewRef = useRef<HTMLCanvasElement>(null);
@@ -229,6 +232,7 @@ export function PdfSignTool() {
                 widthRatio,
             });
             downloadPdf(bytes, pdfDownloadName(file.name, "signed"));
+            markToolSuccess();
             toast({
                 title: "Signature placed",
                 description: "Downloaded a copy with the mark drawn on the page. This is not a certified signature.",

@@ -1,0 +1,9 @@
+{
+  "note": "Lean tool pages allowed over 180 visible words. The three-step instructions are kept in full; trimming them would hide the procedure.",
+  "budget": 180,
+  "pages": {
+    "/pdf-merge": { "words": 204 },
+    "/pdf-sign": { "words": 198 },
+    "/image-compressor": { "words": 186 }
+  }
+}

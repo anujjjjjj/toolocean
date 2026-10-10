@@ -6,6 +6,8 @@ import { Slider } from "@/components/ui/slider";
 import { Upload, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { KILOBYTE, formatBytes, parseSize } from "@/lib/targetSize/parseSize";
+import { useStashedFileInput } from "@/hooks/useStashedFileInput";
+import { markToolSuccess } from "@/lib/toolResult";
 import type { TargetMime } from "@/lib/targetSize/types";
 
 const TARGETS = [
@@ -29,6 +31,7 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
   const [note, setNote] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  useStashedFileInput(fileInputRef);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -74,6 +77,7 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
           URL.revokeObjectURL(a.href);
           const pct = file.size > 0 ? Math.round((1 - blob.size / file.size) * 100) : 0;
           toast({ title: "Downloaded", description: `Compressed (${pct}% smaller)` });
+          markToolSuccess();
         },
         "image/jpeg",
         quality,
@@ -125,6 +129,7 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
       URL.revokeObjectURL(a.href);
     }
     setNote(notes.join(" "));
+    markToolSuccess();
     toast({ title: files.length > 1 ? "ZIP downloaded" : "Downloaded", description: notes[0] });
   };
 
