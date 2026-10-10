@@ -14,9 +14,9 @@ export interface BreadcrumbEntry {
 }
 
 /** Visible breadcrumb trail. Pair with buildBreadcrumbJsonLd(items) for the matching schema. */
-export function Breadcrumbs({ items }: { items: BreadcrumbEntry[] }) {
+export function Breadcrumbs({ items, className }: { items: BreadcrumbEntry[]; className?: string }) {
   return (
-    <Breadcrumb className="mb-6">
+    <Breadcrumb className={className ?? "mb-6"}>
       <BreadcrumbList>
         {items.map((item, index) => {
           const isLast = index === items.length - 1;

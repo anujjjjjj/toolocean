@@ -1,9 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="7" fill="#E5322D"/>
-  <g stroke="white" stroke-width="2.1" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="16" cy="10" r="2.4" fill="white" stroke="none"/>
-    <path d="M16 13v13"/>
-    <path d="M11 16h10"/>
-    <path d="M9 20c0 4 3 6 7 6s7-2 7-6"/>
+  <style>
+    .tile { fill: #16130F; }
+    .wave { stroke: #F6F1E7; }
+    @media (prefers-color-scheme: dark) {
+      .tile { fill: #F6F1E7; }
+      .wave { stroke: #16130F; }
+    }
+  </style>
+  <rect width="32" height="32" rx="7" class="tile"/>
+  <path fill="#F2B705" d="M10.5 15.6a5.5 5.5 0 0 1 11 0z"/>
+  <g fill="none" class="wave" stroke-width="1.8" stroke-linecap="round">
+    <path d="M5.2 20.2c1.9-1.9 3.3-1.9 5.2 0s3.3 1.9 5.2 0 3.3-1.9 5.2 0 3.3 1.9 5.2 0"/>
+    <path d="M5.2 24.8c1.9-1.9 3.3-1.9 5.2 0s3.3 1.9 5.2 0 3.3-1.9 5.2 0 3.3 1.9 5.2 0"/>
   </g>
 </svg>
