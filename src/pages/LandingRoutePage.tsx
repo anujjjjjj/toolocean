@@ -12,7 +12,8 @@ import { findLandingPage, type LandingPage } from "@/data/landingPages";
 import { findToolBySlug } from "@/data/toolCatalog";
 import { buildLandingPageGraph } from "@/lib/landingPageSchema";
 import { shellDropzoneCopy } from "@/lib/leanShell";
-import { prefetchPdfJs, prefetchPdfLib, schedulePdfEnginePrefetch } from "@/lib/pdf/lazyPdf";
+import { scheduleOfflinePrefetch } from "@/lib/offlinePrefetch";
+import { prefetchPdfJs, prefetchPdfLib } from "@/lib/pdf/lazyPdf";
 import { prefetchTool } from "@/lib/prefetchTool";
 import measurements from "@/data/targetSizeMeasurements.json";
 import { formatBytes } from "@/lib/targetSize/parseSize";
@@ -85,7 +86,7 @@ function ComparisonTable({ comparison }: { comparison: NonNullable<LandingPage["
 function EmbeddedTool({ tool, targetBytes }: { tool: "image-compressor" | "pdf-compress"; targetBytes: number }) {
   const ref = useRef<HTMLDivElement>(null);
   useStashedFileRoot(ref, true);
-  useEffect(() => schedulePdfEnginePrefetch(tool), [tool]);
+  useEffect(() => scheduleOfflinePrefetch(tool), [tool]);
   const drop = shellDropzoneCopy(tool);
   const warm = () => {
     prefetchTool(tool, "hover");

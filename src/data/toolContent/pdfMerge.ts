@@ -69,7 +69,7 @@ export const pdfMergeContent: Partial<ToolPageContent> = {
   howItWorks: [
     {
       title: "Add your PDFs",
-      body: "Click the upload panel and select several files at once, or add them in batches. Each one appears in a list with its name and page count so you can confirm you picked the right documents.",
+      body: "Open the file panel and choose several files at once, or add them in batches. Each one appears in a list with its name and page count so you can confirm you picked the right documents.",
     },
     {
       title: "Drag them into the order you want",

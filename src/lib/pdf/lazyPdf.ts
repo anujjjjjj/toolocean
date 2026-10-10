@@ -17,8 +17,21 @@ export function prefetchPdfLib(): void {
   void import("pdf-lib");
 }
 
-export function prefetchPdfJs(): void {
-  void import("pdfjs-dist");
+/** Same URL loadPdfJs assigns to GlobalWorkerOptions. Fetching it stores the file. */
+export function pdfJsWorkerUrl(): string {
+  return new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).href;
+}
+
+export function prefetchPdfJs(): Promise<unknown> {
+  const worker = pdfJsWorkerUrl();
+  return import("pdfjs-dist").then((pdfjs) => {
+    pdfjs.GlobalWorkerOptions.workerSrc = worker;
+  });
+}
+
+/** The worker is not part of the pdfjs module graph. Fetch it so it can be cached. */
+export function prefetchPdfJsWorker(): Promise<Response | void> {
+  return fetch(pdfJsWorkerUrl()).catch(() => undefined);
 }
 
 export async function loadPdfLib() {
@@ -30,69 +43,10 @@ let pdfjsPromise: Promise<typeof import("pdfjs-dist")> | null = null;
 export function loadPdfJs() {
   if (!pdfjsPromise) {
     pdfjsPromise = import("pdfjs-dist").then((pdfjs) => {
-      pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-        "pdfjs-dist/build/pdf.worker.min.mjs",
-        import.meta.url,
-      ).toString();
+      pdfjs.GlobalWorkerOptions.workerSrc = pdfJsWorkerUrl();
       return pdfjs;
     });
   }
   return pdfjsPromise;
 }
 
-const PDF_LIB_SLUGS = new Set([
-  "pdf-merge",
-  "pdf-split",
-  "pdf-compress",
-  "pdf-rotate",
-  "pdf-watermark",
-  "pdf-reorder",
-  "pdf-encrypt",
-  "pdf-unlock",
-  "pdf-sign",
-  "pdf-metadata",
-  "pdf-form-fill",
-  "images-to-pdf",
-]);
-
-const PDF_JS_SLUGS = new Set(["pdf-compress", "pdf-to-images"]);
-
-/**
- * Warm the PDF engine after this document has loaded, without competing with
- * first paint. Returns a cancel function for the effect that scheduled it.
- */
-export function schedulePdfEnginePrefetch(slug: string | undefined): () => void {
-  const lib = slug ? PDF_LIB_SLUGS.has(slug) : false;
-  const js = slug ? PDF_JS_SLUGS.has(slug) : false;
-  if (!lib && !js) return () => {};
-
-  let cancelled = false;
-  let idleId = 0;
-  let timerId = 0;
-
-  const run = () => {
-    if (cancelled) return;
-    if (lib) prefetchPdfLib();
-    if (js) prefetchPdfJs();
-  };
-
-  const arm = () => {
-    if (cancelled) return;
-    const ric = window.requestIdleCallback;
-    if (typeof ric === "function") {
-      idleId = ric(run, { timeout: 2500 });
-    } else {
-      timerId = window.setTimeout(run, 1200);
-    }
-  };
-
-  if (document.readyState === "complete") arm();
-  else window.addEventListener("load", arm, { once: true });
-
-  return () => {
-    cancelled = true;
-    window.removeEventListener("load", arm);
-    if (idleId && typeof window.cancelIdleCallback === "function") window.cancelIdleCallback(idleId);
-    if (timerId) window.clearTimeout(timerId);
-  };
-}

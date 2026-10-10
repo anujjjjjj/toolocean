@@ -1809,7 +1809,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   "color-picker": {
     title: "Color Picker from Image: Get HEX Codes from a Photo",
     description:
-      "Upload an image and click anywhere to read the exact pixel colour as HEX and RGB. A free eyedropper tool for pulling palettes out of screenshots and photos.",
+      "Choose an image and click anywhere to read the exact pixel colour as HEX and RGB. A free eyedropper tool for pulling palettes out of screenshots and photos.",
     keywords: ["color picker from image", "image eyedropper", "get hex from photo", "pixel color picker", "extract colors from image", "screenshot color picker"],
     faqs: [
       privacyFaq("image"),

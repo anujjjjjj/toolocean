@@ -191,11 +191,74 @@ describe("palette and offline shell", () => {
     assert.match(header, /pointer-events-auto/);
   });
 
-  it("caches hashed assets only", () => {
+  it("caches hashed assets and fonts, never HTML, and claims only after that store", () => {
     const worker = readFileSync(new URL("../public/sw.js", import.meta.url), "utf8");
+    assert.match(worker, /toolocean-assets-v2/);
     assert.match(worker, /pathname\.startsWith\("\/assets\/"\)/);
-    assert.match(worker, /toolocean-assets-v1/);
+    assert.match(worker, /pathname\.startsWith\("\/fonts\/"\)/);
+    assert.match(worker, /caches\.delete/);
+    assert.match(worker, /clients\.claim/);
     assert.equal(worker.includes("text/html"), false);
+    assert.equal(worker.includes(".html"), false);
+    const activate = worker.slice(worker.indexOf('addEventListener("activate"'), worker.indexOf('addEventListener("fetch"'));
+    assert.equal(activate.includes("clients.claim"), false);
+    const message = worker.slice(worker.indexOf('data.type !== "cache-urls"'));
+    assert.match(message, /clients\.claim/);
+  });
+
+  it("prefetches the lazy chunks each heavy tool imports on click", () => {
+    const source = readFileSync(new URL("../src/lib/offlinePrefetch.ts", import.meta.url), "utf8");
+    for (const needle of [
+      "compressPdfToTarget",
+      "prefetchPdfJs",
+      "prefetchPdfJsWorker",
+      "pdfJsWorkerUrl",
+      "imageEncodeWorkerUrl",
+      "serviceWorker.ready",
+      "@cantoo/pdf-lib",
+      "encodeImageToTarget",
+      "prefetchImageEncodeAssets",
+      "jszip",
+      "signPdf",
+      "fillPdfForm",
+      "pdfMetadata",
+      "unlockPdf",
+      '"pdf-compress"',
+      '"image-compressor"',
+      '"image-resizer"',
+      "toolocean-assets-v2",
+      'cache: "force-cache"',
+    ]) {
+      assert.equal(source.includes(needle), true, needle);
+    }
+    const pdf = readFileSync(new URL("../src/lib/pdf/lazyPdf.ts", import.meta.url), "utf8");
+    assert.match(pdf, /pdfjs-dist/);
+    assert.match(pdf, /pdf\.worker\.min\.mjs/);
+    const image = readFileSync(new URL("../src/lib/targetSize/encodeImageToTarget.ts", import.meta.url), "utf8");
+    assert.match(image, /imageEncode\.worker\.ts/);
+  });
+
+  it("does not tell a tool page to upload the reader's file", () => {
+    const hits = [];
+    const walk = (dir) => {
+      for (const entry of readdirSync(dir)) {
+        const full = `${dir}/${entry}`;
+        if (statSync(full).isDirectory()) walk(full);
+        else if (/\.(ts|tsx)$/.test(entry)) scan(full);
+      }
+    };
+    const scan = (full) => {
+      for (const line of readFileSync(full, "utf8").split("\n")) {
+        if (!/\bupload\b/i.test(line)) continue;
+        if (/no upload|without upload|never upload|not uploaded|nothing is uploaded|nothing uploads|is not an upload|rather not upload|would not upload|uploads\?|action: "upload"|action\.type/i.test(line)) continue;
+        if (/\bupload (an|a|the|your|panel)\b/i.test(line)) hits.push(`${full}: ${line.trim()}`);
+      }
+    };
+    scan(new URL("../src/data/toolSeo.ts", import.meta.url).pathname);
+    walk(new URL("../src/data/toolContent", import.meta.url).pathname);
+    assert.deepEqual(hits, []);
+    const mime = readFileSync(new URL("../src/data/toolSeo.ts", import.meta.url), "utf8");
+    assert.match(mime, /Content-Type headers and uploads/);
   });
 
   it("keeps the cookie notice in the document flow", () => {
