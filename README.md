@@ -82,6 +82,23 @@ npm run lint
 npx tsc --noEmit -p tsconfig.app.json   # typecheck (not part of build)
 ```
 
+## Analytics
+
+Two optional build-time variables for [Umami Cloud](https://cloud.umami.is). Leave
+both unset in local development: the site then loads no Umami script and shows no
+visitor count. Neither value is a secret. Both are inlined into the client bundle.
+
+| Variable | Effect |
+|---|---|
+| `VITE_UMAMI_WEBSITE_ID` | Umami website id. When set, `https://cloud.umami.is/script.js` is added after the page is idle, with `async`, `defer`, `data-website-id`, and `data-do-not-track="true"`. No cookie is set. Page views only. |
+| `VITE_UMAMI_SHARE_URL` | Public share URL, such as `https://cloud.umami.is/share/<token>/toolocean`. The home page, and only the home page, reads that token's stats API after idle and shows a visitor count when the number is at least 100. A failed request or a smaller number shows nothing. |
+
+```bash
+VITE_UMAMI_WEBSITE_ID=your-website-id \
+VITE_UMAMI_SHARE_URL=https://cloud.umami.is/share/your-token/toolocean \
+npm run build
+```
+
 ## Adding a tool
 
 1. Create the component in `src/components/tools/implementations/{category}/`

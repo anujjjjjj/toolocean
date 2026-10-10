@@ -18,7 +18,7 @@ import { Code, InfoPageLayout, P, Section, UL } from "@/components/layout/InfoPa
  *
  * If a tool is added that transmits anything, this page has to change with it.
  */
-const LAST_UPDATED = "18 August 2026";
+const LAST_UPDATED = "10 October 2026";
 
 const PrivacyPage = () => {
   useSEO({
@@ -40,9 +40,10 @@ const PrivacyPage = () => {
             browser. They are never uploaded, because there is no server that could receive them.
           </li>
           <li>Three tools do make network requests. They are named below.</li>
-          <li>No account, no sign-up, and no advertising or tracking cookies.</li>
+          <li>No account, no sign-up, and no advertising or analytics cookies.</li>
           <li>
-            Anonymous usage analytics run only if you accept them. Declining costs you nothing.
+            Page-view analytics, when enabled, are cookieless and count page views only. Your
+            files never leave the browser.
           </li>
         </UL>
       </Section>
@@ -109,32 +110,28 @@ const PrivacyPage = () => {
 
       <Section id="analytics" heading="Analytics">
         <P>
-          ToolOcean uses Google Analytics 4 to count visits and see which tools get used. It is
-          configured conservatively:
+          When a build is given an Umami website id, ToolOcean loads a cookieless analytics script
+          from Umami Cloud at <Code>cloud.umami.is</Code> after the page is already interactive. It
+          counts page views only: the path and the title of the page. It sets no cookie. The script
+          is loaded with Do Not Track enabled, so a browser that sends that signal is not counted.
+          If the website id is not set, the script is not loaded at all.
         </P>
-        <UL>
-          <li>
-            Storage consent defaults to <em>denied</em>. Until you press Accept, no analytics
-            cookie or identifier is stored on your device.
-          </li>
-          <li>
-            Advertising signals are denied permanently, including after you accept. There are no
-            ads and no remarketing on this site, so that permission is never requested.
-          </li>
-          <li>
-            What is recorded: the page visited, its title, and two interaction events, that a tool
-            was used, and which control was pressed. That means a tool's name, such as{" "}
-            <Code>json-formatter</Code>, and a button label, such as <Code>Beautify</Code>.
-          </li>
-          <li>
-            What is never recorded: anything you type, paste or open. The content of your work is
-            not part of any event, by design.
-          </li>
-        </UL>
         <P>
-          Google acts as the data processor for this analytics data and receives your IP address as
-          part of any request to it. You can decline on the banner, or use any tracker blocker,
-          the tools all work identically either way.
+          The home page can also show a public visitor total. That number is read, after the page
+          is idle, from Umami's public share statistics. It is an aggregate count, not a record of
+          you. If the request fails, or the total is under 100, the line is not shown. It does not
+          appear on any other page.
+        </P>
+        <P>
+          Nothing you type, paste, or open is part of either request. Your files never leave the
+          browser. The tools work the same if you block the script.
+        </P>
+        <P>
+          A build can still include Google Analytics 4 when a measurement id is configured. That
+          tag is separate, loads only after the page is interactive, and stores no analytics cookie
+          until you accept the banner. Advertising signals stay denied. It receives the page path
+          and title, plus a tool name and a button label when you use a control. It does not receive
+          file contents. Declining the banner, or leaving it alone, stores nothing for that tag.
         </P>
       </Section>
 

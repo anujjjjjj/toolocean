@@ -23,7 +23,7 @@
     "indexnow": "node scripts/indexnow.mjs",
     "serve:dist": "node scripts/serve-dist.mjs",
     "check:hydration": "node --experimental-websocket scripts/check-hydration.mjs",
-    "test": "node --experimental-strip-types --test scripts/qa-regressions.test.mjs"
+    "test": "node --experimental-strip-types --test scripts/qa-regressions.test.mjs scripts/umami.test.mjs"
   },
   "dependencies": {
     "@cantoo/pdf-lib": "^2.11.1",
