@@ -90,7 +90,7 @@ export function MimeTypeLookupTool() {
         <CardHeader><CardTitle>MIME Type Lookup</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Enter a file extension (e.g. <code>png</code>, <code>.mp4</code>) or a MIME type (e.g. <code>image/jpeg</code>), or upload a file to auto-detect.
+            Enter a file extension (e.g. <code>png</code>, <code>.mp4</code>) or a MIME type (e.g. <code>image/jpeg</code>), or choose a file to auto-detect.
           </p>
 
           <div className="flex items-center gap-2">

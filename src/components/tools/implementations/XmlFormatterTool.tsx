@@ -101,7 +101,7 @@ export function XmlFormatterTool() {
               <input ref={fileInputRef} type="file" accept=".xml,.svg,.xhtml" className="hidden" onChange={handleFileUpload} />
               <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
                 <Upload className="h-4 w-4 mr-2" />
-                Upload .xml
+                Choose a .xml
               </Button>
               <span className="text-xs text-muted-foreground">or paste below</span>
             </div>

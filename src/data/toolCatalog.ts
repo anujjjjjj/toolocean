@@ -138,7 +138,7 @@ const CATEGORY_TOOLS: CatalogTool[] = [
   { id: "csv-merge", category: "csv", name: "CSV Merge", description: "Combine multiple CSV files into one", icon: "Merge", keywords: ["csv","merge","combine"] },
 
   // ---- Spreadsheet ----
-  { id: "excel-reader", category: "spreadsheet", name: "Excel Reader", description: "Upload and view Excel files as table", icon: "FileSpreadsheet", keywords: ["excel","xlsx","read"] },
+  { id: "excel-reader", category: "spreadsheet", name: "Excel Reader", description: "Open and view Excel files as a table", icon: "FileSpreadsheet", keywords: ["excel","xlsx","read"] },
   { id: "csv-to-excel", category: "spreadsheet", name: "CSV to Excel", description: "Convert CSV to .xlsx and download", icon: "FileUp", keywords: ["csv","excel","convert"] },
   { id: "excel-to-csv", category: "spreadsheet", name: "Excel to CSV", description: "Export Excel sheets to CSV", icon: "FileDown", keywords: ["excel","csv","export"] },
   { id: "column-extractor", category: "spreadsheet", name: "Column Extractor", description: "Select and export specific columns", icon: "Columns", keywords: ["column","extract","select","spreadsheet"] },

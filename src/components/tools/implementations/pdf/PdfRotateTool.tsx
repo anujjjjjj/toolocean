@@ -115,7 +115,7 @@ export function PdfRotateTool() {
                             <div className="w-16 h-16 rounded-full bg-teal-100 dark:bg-teal-900/20 flex items-center justify-center mb-4">
                                 <Upload className="h-8 w-8 text-teal-500" />
                             </div>
-                            <h3 className="font-semibold text-lg mb-2">Upload PDF File</h3>
+                            <h3 className="font-semibold text-lg mb-2">Choose a PDF</h3>
                             <p className="text-muted-foreground text-sm text-center">
                                 Click to select a PDF to rotate pages
                             </p>

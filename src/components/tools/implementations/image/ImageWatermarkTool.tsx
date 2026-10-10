@@ -63,7 +63,7 @@ export function ImageWatermarkTool() {
   }, [imageSrc, text, fontSize, opacity, position, color]);
 
   const download = () => {
-    if (!canvasRef.current) { toast({ title: "Upload an image first", variant: "destructive" }); return; }
+    if (!canvasRef.current) { toast({ title: "Choose an image first", variant: "destructive" }); return; }
     const a = document.createElement("a");
     a.href = canvasRef.current.toDataURL("image/png");
     a.download = "watermarked.png";
@@ -78,7 +78,7 @@ export function ImageWatermarkTool() {
           <div className="flex items-center gap-2">
             <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileUpload} />
             <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
-              <Upload className="h-4 w-4 mr-2" />Upload Image
+              <Upload className="h-4 w-4 mr-2" />Choose image
             </Button>
             {imageSrc && <Button onClick={download}><Download className="h-4 w-4 mr-2" />Download</Button>}
           </div>

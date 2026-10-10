@@ -153,7 +153,7 @@ export function PdfMergeTool() {
                         <div className="w-16 h-16 rounded-full bg-[var(--ico-bg)] flex items-center justify-center mb-4">
                             <Upload className="h-8 w-8 text-[var(--ico-ink)]" />
                         </div>
-                        <h3 className="font-semibold text-lg mb-2">Upload PDF Files</h3>
+                        <h3 className="font-semibold text-lg mb-2">Choose PDFs</h3>
                         <p className="text-muted-foreground text-sm text-center">
                             Click to select PDFs or drag and drop them here
                         </p>
@@ -250,7 +250,7 @@ export function PdfMergeTool() {
             {/* Instructions */}
             {pdfFiles.length === 0 && (
                 <div className="text-center text-muted-foreground text-sm">
-                    <p>Drag and drop to reorder files after uploading</p>
+                    <p>Drag to reorder files after you add them</p>
                 </div>
             )}
         </div>

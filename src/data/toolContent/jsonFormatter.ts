@@ -93,7 +93,7 @@ export const jsonFormatterContent: Partial<ToolPageContent> = {
       "Paste messy or minified JSON and get it back properly indented and validated. Syntax errors are reported with the exact line and column, so you can fix them instead of hunting for them.",
     badges: ["browser-first", "no-uploads", "offline", "free"],
     primaryCta: { label: "Format JSON", action: "scroll" },
-    secondaryCta: { label: "Upload JSON File", action: "upload" },
+    secondaryCta: { label: "Choose a JSON file", action: "upload" },
   },
 
   intro: {

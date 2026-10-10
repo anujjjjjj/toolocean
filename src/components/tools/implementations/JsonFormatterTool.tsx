@@ -411,7 +411,7 @@ export function JsonFormatterTool() {
           </span>
         )}
 
-        <ul className="ml-auto hidden items-center gap-3 text-muted-foreground/70 xl:flex">
+        <ul className="ml-auto hidden items-center gap-3 text-muted-foreground xl:flex">
           {SHORTCUTS.map((shortcut) => (
             <li key={shortcut.label} className="flex items-center gap-1.5">
               <kbd className="rounded border border-border/70 bg-card px-1.5 py-0.5 font-mono text-[0.6875rem]">

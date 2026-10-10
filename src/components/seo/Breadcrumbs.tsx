@@ -1,3 +1,4 @@
+import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   Breadcrumb,
@@ -5,7 +6,6 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
 export interface BreadcrumbEntry {
@@ -21,18 +21,16 @@ export function Breadcrumbs({ items }: { items: BreadcrumbEntry[] }) {
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
           return (
-            <span key={item.path} className="contents">
-              <BreadcrumbItem>
-                {isLast ? (
-                  <BreadcrumbPage>{item.name}</BreadcrumbPage>
-                ) : (
-                  <BreadcrumbLink asChild>
-                    <Link to={item.path}>{item.name}</Link>
-                  </BreadcrumbLink>
-                )}
-              </BreadcrumbItem>
-              {!isLast && <BreadcrumbSeparator />}
-            </span>
+            <BreadcrumbItem key={`${item.path}-${index}`}>
+              {isLast ? (
+                <BreadcrumbPage>{item.name}</BreadcrumbPage>
+              ) : (
+                <BreadcrumbLink asChild>
+                  <Link to={item.path}>{item.name}</Link>
+                </BreadcrumbLink>
+              )}
+              {!isLast && <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />}
+            </BreadcrumbItem>
           );
         })}
       </BreadcrumbList>

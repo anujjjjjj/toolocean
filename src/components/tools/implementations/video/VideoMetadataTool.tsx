@@ -104,7 +104,7 @@ export function VideoMetadataTool() {
           onClick={() => fileInputRef.current?.click()}
         >
           <FileVideo className="h-10 w-10 mx-auto mb-3 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">Click to upload a video file</p>
+          <p className="text-sm text-muted-foreground">Click to choose a video file</p>
         </div>
       ) : (
         <div className="space-y-4">

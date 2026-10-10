@@ -129,7 +129,8 @@ export function AppRoutes() {
           and cannot cause a hydration mismatch. Page views are not tracked here,
           useSEO owns that; see the comment there for why.
         */}
-        <ConsentBanner />
+        <div className="contents" data-app-shell>
+          <div className="app-scroll">
         {/*
           fallback={null} is never shown on a prerendered page: the build resolves
           every boundary before serialising, and on the client React keeps the
@@ -184,6 +185,9 @@ export function AppRoutes() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
+          </div>
+          <ConsentBanner />
+        </div>
       </CommandPaletteProvider>
     </TooltipProvider>
   );

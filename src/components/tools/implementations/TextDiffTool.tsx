@@ -105,7 +105,7 @@ export function TextDiffTool() {
               <input ref={file1Ref} type="file" accept=".txt,.md,.json,.xml,.csv" className="hidden" onChange={makeUploadHandler(setText1, file1Ref)} />
               <Button variant="outline" size="sm" onClick={() => file1Ref.current?.click()}>
                 <Upload className="h-4 w-4 mr-2" />
-                Upload file
+                Choose file
               </Button>
             </div>
             <Textarea
@@ -126,7 +126,7 @@ export function TextDiffTool() {
               <input ref={file2Ref} type="file" accept=".txt,.md,.json,.xml,.csv" className="hidden" onChange={makeUploadHandler(setText2, file2Ref)} />
               <Button variant="outline" size="sm" onClick={() => file2Ref.current?.click()}>
                 <Upload className="h-4 w-4 mr-2" />
-                Upload file
+                Choose file
               </Button>
             </div>
             <Textarea

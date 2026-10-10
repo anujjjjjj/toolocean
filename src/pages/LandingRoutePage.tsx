@@ -1,4 +1,4 @@
-import { lazy, Suspense, useRef } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -12,7 +12,7 @@ import { findLandingPage, type LandingPage } from "@/data/landingPages";
 import { findToolBySlug } from "@/data/toolCatalog";
 import { buildLandingPageGraph } from "@/lib/landingPageSchema";
 import { shellDropzoneCopy } from "@/lib/leanShell";
-import { prefetchPdfJs, prefetchPdfLib } from "@/lib/pdf/lazyPdf";
+import { prefetchPdfJs, prefetchPdfLib, schedulePdfEnginePrefetch } from "@/lib/pdf/lazyPdf";
 import { prefetchTool } from "@/lib/prefetchTool";
 import measurements from "@/data/targetSizeMeasurements.json";
 import { formatBytes } from "@/lib/targetSize/parseSize";
@@ -85,6 +85,7 @@ function ComparisonTable({ comparison }: { comparison: NonNullable<LandingPage["
 function EmbeddedTool({ tool, targetBytes }: { tool: "image-compressor" | "pdf-compress"; targetBytes: number }) {
   const ref = useRef<HTMLDivElement>(null);
   useStashedFileRoot(ref, true);
+  useEffect(() => schedulePdfEnginePrefetch(tool), [tool]);
   const drop = shellDropzoneCopy(tool);
   const warm = () => {
     prefetchTool(tool, "hover");
@@ -140,27 +141,33 @@ const LandingRoutePage = () => {
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="mx-auto w-full max-w-[1120px] px-5 pb-16 md:px-8">
-        <Breadcrumbs items={[{ name: "Home", path: "/" }, { name: page.h1, path: `/${page.slug}` }]} />
-        <header className="pb-6 pt-2">
-          <h1 className="max-w-[28ch] text-[28px] font-semibold leading-[1.15] tracking-[-0.02em] text-foreground md:text-[34px]">
-            {page.h1}
-          </h1>
-          <p className="mt-2 max-w-[62ch] text-muted-foreground">{page.lede}</p>
-        </header>
+        <div className="flex flex-col md:contents">
+        <div className="max-md:hidden">
+          <Breadcrumbs items={[{ name: "Home", path: "/" }, { name: page.h1, path: `/${page.slug}` }]} />
+        </div>
+        <h1 className="order-1 max-w-[28ch] pt-2 text-[28px] font-semibold leading-[1.15] tracking-[-0.02em] text-foreground md:pt-0 md:text-[34px]">
+          {page.h1}
+        </h1>
+        <p className="order-3 mt-2 max-w-[62ch] text-muted-foreground md:order-none md:mb-6">{page.lede}</p>
 
-        <section id="tools" aria-labelledby="tools-heading" className="pb-10">
-          <h2 id="tools-heading" className="mb-2 text-xl font-semibold tracking-[-0.015em]">Start here</h2>
-          <p className="mb-4 text-sm text-muted-foreground">Every one of these runs entirely in your browser.</p>
+        <section id="tools" aria-labelledby="tools-heading" className="order-2 flex flex-col pb-10 md:order-none">
+          <div className="order-2 mt-8 md:order-none md:mt-0">
+            <h2 id="tools-heading" className="mb-2 text-xl font-semibold tracking-[-0.015em]">Start here</h2>
+            <p className="mb-4 text-sm text-muted-foreground">Every one of these runs entirely in your browser.</p>
+          </div>
           {page.embed && (
-            <>
+            <div className="order-1 md:order-none">
               <EmbeddedTool tool={page.embed.tool} targetBytes={page.embed.targetBytes} />
               {page.measurementKey && FIXTURES[page.measurementKey] && (
                 <FixtureNote row={FIXTURES[page.measurementKey]} />
               )}
-            </>
+            </div>
           )}
-          <ToolLinks page={page} />
+          <div className="order-3 md:order-none">
+            <ToolLinks page={page} />
+          </div>
         </section>
+        </div>
 
         {page.howTo && visibleSteps.length > 0 && (
           <section id="how-it-works" aria-labelledby="how-it-works-heading" className="pb-10">

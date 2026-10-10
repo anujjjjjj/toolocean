@@ -28,10 +28,17 @@ export function ConsentBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (!isAnalyticsConfigured()) return;
+    const forced = document.documentElement.dataset.forceConsent === "1";
+    if (!forced && !isAnalyticsConfigured()) return;
     if (getAnalyticsConsent() !== null) return;
     setVisible(true);
   }, []);
+
+  useEffect(() => {
+    if (!visible) return;
+    document.documentElement.setAttribute("data-consent-open", "");
+    return () => document.documentElement.removeAttribute("data-consent-open");
+  }, [visible]);
 
   if (!visible) return null;
 
@@ -44,7 +51,8 @@ export function ConsentBanner() {
     <div
       role="region"
       aria-label="Analytics cookie notice"
-      className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card"
+      data-consent-banner=""
+      className="shrink-0 border-t border-border bg-card"
     >
       <div className="mx-auto flex h-11 max-w-[1120px] items-center gap-3 px-4">
         <p className="min-w-0 flex-1 truncate text-[13px] text-muted-foreground">

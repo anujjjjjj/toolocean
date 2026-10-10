@@ -1,3 +1,4 @@
+import { Branch as DismissableLayerBranch } from "@radix-ui/react-dismissable-layer";
 import { Moon, Search, Sun } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
@@ -27,8 +28,8 @@ export function Header({ minimal = false }: HeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background">
-      <div className="mx-auto flex w-full max-w-[1120px] flex-wrap items-center gap-2.5 px-5 py-2.5 md:h-14 md:flex-nowrap md:gap-6 md:px-8 md:py-0">
+    <header className="pointer-events-auto sticky top-0 z-[60] border-b border-border bg-background">
+      <DismissableLayerBranch className="mx-auto flex w-full max-w-[1120px] flex-wrap items-center gap-2.5 px-5 py-2.5 md:h-14 md:flex-nowrap md:gap-6 md:px-8 md:py-0">
         <Link to="/" className="flex items-center gap-2.5 text-base font-semibold tracking-tight" aria-label="ToolOcean home">
           <Logo className="h-6 w-6" />
           <span>ToolOcean</span>
@@ -38,6 +39,7 @@ export function Header({ minimal = false }: HeaderProps) {
           <button
             type="button"
             onClick={openPalette}
+            data-palette-trigger=""
             className="order-3 flex h-9 w-full items-center gap-2 rounded-[10px] border border-border bg-secondary px-3 text-left text-sm text-muted-foreground md:order-none md:ml-4 md:max-w-[460px] md:flex-1"
             aria-label={`Search ${TOOL_CATALOG.length} tools`}
           >
@@ -68,7 +70,7 @@ export function Header({ minimal = false }: HeaderProps) {
             <span className="hidden dark:inline-flex"><Sun className="h-4 w-4" aria-hidden="true" /></span>
           </button>
         </nav>
-      </div>
+      </DismissableLayerBranch>
     </header>
   );
 }

@@ -9,7 +9,7 @@ function CodePane({ label, code, language }: { label: string; code: string; lang
     <figure className="min-w-0">
       <figcaption className="mb-2 flex items-center justify-between">
         <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</span>
-        <span className="font-mono text-[0.6875rem] text-muted-foreground/70">{language}</span>
+        <span className="font-mono text-[0.6875rem] text-muted-foreground">{language}</span>
       </figcaption>
       {/* overflow-x-auto on the pre itself keeps long lines from widening the page body. */}
       <pre className="overflow-x-auto rounded-lg border border-border/70 bg-muted/40 p-4 text-[0.8125rem] leading-relaxed">

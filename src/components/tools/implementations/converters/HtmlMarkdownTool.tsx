@@ -49,7 +49,7 @@ export function HtmlMarkdownTool() {
             <div className="flex items-center gap-2 mb-2">
               <input ref={fileInputRef} type="file" accept=".html,.htm" className="hidden" onChange={handleFileUpload} />
               <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
-                <Upload className="h-4 w-4 mr-2" />Upload .html
+                <Upload className="h-4 w-4 mr-2" />Choose a .html
               </Button>
               <span className="text-xs text-muted-foreground">or paste below</span>
             </div>

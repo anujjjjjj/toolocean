@@ -25,7 +25,7 @@ export function SvgPngTool() {
   };
 
   const convert = () => {
-    if (!svgSrc.trim()) { setError("Paste or upload SVG first"); return; }
+    if (!svgSrc.trim()) { setError("Paste or choose an SVG first"); return; }
     try {
       const s = parseFloat(scale) || 2;
       const blob = new Blob([svgSrc], { type: "image/svg+xml" });
@@ -75,7 +75,7 @@ export function SvgPngTool() {
             <div className="flex items-center gap-2 mb-2">
               <input ref={fileInputRef} type="file" accept=".svg" className="hidden" onChange={handleFileUpload} />
               <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
-                <Upload className="h-4 w-4 mr-2" />Upload .svg
+                <Upload className="h-4 w-4 mr-2" />Choose a .svg
               </Button>
               <span className="text-xs text-muted-foreground">or paste SVG below</span>
             </div>

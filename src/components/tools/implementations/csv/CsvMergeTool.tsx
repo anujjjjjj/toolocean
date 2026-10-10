@@ -207,7 +207,7 @@ export function CsvMergeTool() {
               <input ref={fileInputRef} type="file" accept=".csv,.txt,.tsv" multiple className="hidden" onChange={handleFileSelect} />
               <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
                 <Upload className="h-4 w-4 mr-2" />
-                Upload
+                Choose files
               </Button>
               <Button variant="outline" size="sm" onClick={addPasteArea}>
                 Add paste area
@@ -222,7 +222,7 @@ export function CsvMergeTool() {
               className="border-2 border-dashed rounded-lg p-8 text-center text-muted-foreground cursor-pointer hover:border-primary/50"
               onClick={() => fileInputRef.current?.click()}
             >
-              Click to upload CSV files or use &quot;Add paste area&quot; to paste content
+              Click to choose CSV files or use &quot;Add paste area&quot; to paste content
             </div>
           ) : (
             <div className="space-y-3 max-h-[400px] overflow-y-auto">

@@ -83,7 +83,7 @@ export function MarkdownPreviewTool() {
         <input ref={fileInputRef} type="file" accept=".md,.markdown,.txt" className="hidden" onChange={handleFileUpload} />
         <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
           <Upload className="h-4 w-4 mr-2" />
-          Upload .md file
+          Choose a .md file
         </Button>
         <Button variant="outline" size="sm" onClick={copy}>
           <Copy className="h-4 w-4 mr-2" />

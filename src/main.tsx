@@ -1,6 +1,7 @@
 import { createRoot, hydrateRoot } from "react-dom/client";
 import App from "./App.tsx";
 import { initAnalytics } from "./lib/analytics";
+import { registerAssetCache } from "./lib/registerAssetCache";
 import "./index.css";
 
 /*
@@ -10,6 +11,7 @@ import "./index.css";
  * request happens on the critical path.
  */
 initAnalytics();
+registerAssetCache();
 
 const container = document.getElementById("root")!;
 

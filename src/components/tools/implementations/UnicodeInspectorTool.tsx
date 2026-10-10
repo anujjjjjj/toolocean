@@ -81,7 +81,7 @@ export function UnicodeInspectorTool() {
               <input ref={fileInputRef} type="file" accept=".txt,.md,.json,.csv" className="hidden" onChange={handleFileUpload} />
               <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
                 <Upload className="h-4 w-4 mr-2" />
-                Upload file
+                Choose file
               </Button>
               <span className="text-xs text-muted-foreground">or type / paste below (max 500 chars shown)</span>
             </div>

@@ -101,7 +101,7 @@ export function FaviconGeneratorTool() {
           onClick={() => fileInputRef.current?.click()}
         >
           <ImageIcon className="h-10 w-10 mx-auto mb-3 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">Click to upload an image (PNG, JPEG, SVG, WebP)</p>
+          <p className="text-sm text-muted-foreground">Click to choose an image (PNG, JPEG, SVG, WebP)</p>
         </div>
       ) : (
         <div className="space-y-6">
