@@ -27,6 +27,7 @@ export type ToolFaq = ToolFaqEntry;
 
 
 export interface ToolSeoEntry {
+  h1?: string;
   title?: string;
   description?: string;
   keywords?: string[];
@@ -82,6 +83,20 @@ const privacyFaq = (subject: string): ToolFaq => ({
 export const SHARED_STRINGS: string[] = [PRIVACY_ANSWER];
 
 export const toolSeoData: Record<string, ToolSeoEntry> = {
+  "what-was-it-worth": {
+    h1: "Then vs Now Money Machine: Inflation Calculator",
+    title: "Then vs Now Money Machine – Inflation Calculator",
+    description: "See what past money is worth with CPI inflation data for INR and USD, from 1990–2025. Compare purchasing power, download a PNG, or share a result link.",
+    keywords: ["inflation calculator", "what was it worth", "INR inflation", "USD purchasing power"],
+    faqs: [
+      { question: "How is the inflation equivalent calculated?", answer: "The amount is multiplied by the latest CPI divided by the selected year's annual CPI. The multiplier compares general consumer price levels; it does not estimate the price of any individual product." },
+      { question: "Why is the USD result an estimate?", answer: "The supplied USD endpoint is the January–September 2026 CPI-U average from BLS. This is a 2026 YTD estimate, not final annual data. The result will differ from a calculation using a complete 2026 annual average." },
+      { question: "Why are rupee results expressed in 2025 rupees?", answer: "The bundled India series ends with official 2025 annual CPI from World Bank FP.CPI.TOTL. Results are in 2025 rupees, latest official; no 2026 Indian CPI is extrapolated." },
+      { question: "What does average annual inflation mean here?", answer: "It is the compound annual growth rate of CPI between the selected year and the dataset endpoint: (latest CPI / starting CPI) raised to 1 / elapsed years, minus one. For INR starting in 2025, no years have elapsed, so the annual rate is not applicable." },
+      { topic: "privacy", question: "What does a shared money result link contain?", answer: "Copy link puts the amount, currency code, and selected year in the URL so another browser can reproduce the calculation. Anyone with that link can read those values. Calculations and PNG creation run locally without an account or backend." },
+      { topic: "size", question: "Which starting years can I compare?", answer: "Choose any year from 1990 through 2025. Only the CPI indexes in the bundled dataset are used. Enter a finite, nonnegative amount; the currency toggle compares inflation within each currency rather than converting between currencies." },
+    ],
+  },
   // ---------------------------------------------------------------------------
   // Developer tools, Text Processing (/tools/)
   // ---------------------------------------------------------------------------

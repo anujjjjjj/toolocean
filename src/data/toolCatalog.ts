@@ -91,6 +91,7 @@ const DEV_TOOLS: CatalogTool[] = (
 }));
 
 const CATEGORY_TOOLS: CatalogTool[] = [
+  { id: "what-was-it-worth", category: "converter", name: "Then vs Now Money Machine", description: "Compare purchasing power in INR and USD with a CPI inflation calculator for 1990–2025", icon: "Calculator", keywords: ["inflation", "calculator", "money", "CPI", "INR", "USD", "purchasing power"] },
   // ---- PDF ----
   { id: "pdf-merge", category: "pdf", name: "PDF Merge", description: "Combine multiple PDF files into one document", icon: "Merge", keywords: ["pdf","merge","combine"] },
   { id: "pdf-split", category: "pdf", name: "PDF Split", description: "Extract specific pages from a PDF document", icon: "Split", keywords: ["pdf","split","extract"] },
