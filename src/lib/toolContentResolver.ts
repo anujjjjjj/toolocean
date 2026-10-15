@@ -206,7 +206,7 @@ export function resolveToolContent(slug: string): ToolPageContent | null {
   const title = override?.seo?.title ?? seo.title ?? `${tool.name}, Free Online Tool`;
   const description = override?.seo?.description ?? seo.description ?? tool.description;
   const keywords = override?.seo?.keywords ?? seo.keywords ?? tool.keywords;
-  const h1 = override?.hero?.h1 ?? deriveH1(title, tool.name);
+  const h1 = override?.hero?.h1 ?? seo.h1 ?? deriveH1(title, tool.name);
 
   // Tool-specific FAQs first. They are the ones a visitor came for. Category
   // FAQs backfill, deduplicated so an authored privacy answer wins over the

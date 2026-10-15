@@ -28,6 +28,7 @@ export function prefetchToolChunk(slug: string): Promise<unknown> | undefined {
 }
 
 export const lazyToolComponents: Record<string, LazyExoticComponent<ComponentType>> = {
+  "what-was-it-worth": lazyTool("what-was-it-worth", () => import("@/components/tools/implementations/converters/ThenVsNowMoneyTool").then((m) => ({ default: m.ThenVsNowMoneyTool }))),
   "audio-cutter": lazyTool("audio-cutter", () => import("@/components/tools/implementations/audio/AudioCutterTool").then((m) => ({ default: m.AudioCutterTool }))),
   "audio-merge": lazyTool("audio-merge", () => import("@/components/tools/implementations/audio/AudioMergeTool").then((m) => ({ default: m.AudioMergeTool }))),
   "base64-tool": lazyTool("base64-tool", () => import("@/components/tools/implementations/Base64Tool").then((m) => ({ default: m.Base64Tool }))),
