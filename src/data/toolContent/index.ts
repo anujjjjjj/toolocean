@@ -18,6 +18,7 @@ import { pdfEncryptContent } from "./pdfEncrypt";
 import { pdfUnlockContent } from "./pdfUnlock";
 import { pdfMetadataContent } from "./pdfMetadata";
 import { pdfFormFillContent } from "./pdfFormFill";
+import { whatWasItWorthContent } from "./whatWasItWorth";
 import {
   csvToJsonContent,
   jsonToCsvContent,
@@ -68,6 +69,7 @@ export const TOOL_CONTENT_OVERRIDES: Record<string, Partial<ToolPageContent>> = 
   "xml-to-json": xmlToJsonContent,
   "json-to-xml": jsonToXmlContent,
   "json-to-toml": jsonToTomlContent,
+  "what-was-it-worth": whatWasItWorthContent,
 };
 
 /**
