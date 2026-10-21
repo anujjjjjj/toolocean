@@ -11,12 +11,14 @@ import { test } from "node:test";
 import {
   UMAMI_DOMAINS,
   UMAMI_SCRIPT_SRC,
+  UMAMI_SHARE_API,
+  UMAMI_SHARE_URL,
   UMAMI_WEBSITE_ID,
   fetchVisitorLabel,
   isUmamiConfigured,
   trackUmamiPageview,
+  umamiShareSlug,
   umamiShareUrl,
-  umamiStatsUrl,
   umamiWebsiteId,
   visitorLabel,
 } from "../src/lib/umami.ts";
@@ -50,8 +52,10 @@ test("root document renders the deferred Umami script with the website id", () =
   assert.ok(moduleAt !== -1 && umamiAt > moduleAt, "Umami script must follow the app module");
 });
 
-test("visitor count stays off without a share URL", () => {
-  assert.equal(umamiShareUrl(), undefined);
+test("the committed share page is the home-page visitor source", () => {
+  assert.equal(UMAMI_SHARE_URL, "https://cloud.umami.is/share/zgbDWbwKtfAOBwIa");
+  assert.equal(umamiShareUrl(), UMAMI_SHARE_URL);
+  assert.equal(umamiShareSlug(UMAMI_SHARE_URL), "zgbDWbwKtfAOBwIa");
 });
 
 test("the landing view is left to the script and later routes are tracked", () => {
@@ -74,37 +78,55 @@ test("the landing view is left to the script and later routes are tracked", () =
   }
 });
 
-test("share page URL becomes that token's stats API", () => {
-  const url = new URL(umamiStatsUrl(SHARE, 1_700_000_000_000));
-  assert.equal(url.origin, "https://cloud.umami.is");
-  assert.equal(url.pathname, "/api/share/tok123/stats");
-  assert.equal(url.searchParams.get("startAt"), "0");
-  assert.equal(url.searchParams.get("endAt"), "1700000000000");
+test("a share page yields its slug, and a bare or insecure URL does not", () => {
+  assert.equal(umamiShareSlug(SHARE), "tok123");
+  assert.equal(umamiShareSlug("https://cloud.umami.is/share/abc/stats"), "abc");
+  assert.equal(umamiShareSlug("http://cloud.umami.is/share/tok123/toolocean"), null);
+  assert.equal(umamiShareSlug("https://cloud.umami.is/"), null);
+  assert.equal(umamiShareSlug("not a url"), null);
 });
 
-test("an existing stats URL still uses the share token", () => {
-  const url = umamiStatsUrl("https://cloud.umami.is/api/share/abc/stats");
-  assert.equal(new URL(url).pathname, "/api/share/abc/stats");
-});
-
-test("non-https and token-less URLs are ignored", () => {
-  assert.equal(umamiStatsUrl("http://cloud.umami.is/share/tok123/toolocean"), null);
-  assert.equal(umamiStatsUrl("https://cloud.umami.is/"), null);
-  assert.equal(umamiStatsUrl("not a url"), null);
-});
-
-test("mocked stats response formats the visitor line", async () => {
-  let requested = "";
-  const label = await fetchVisitorLabel(SHARE, async (url) => {
-    requested = String(url);
-    return new Response(JSON.stringify({ visitors: { value: 12408, prev: 100 } }), { status: 200 });
-  });
-  assert.match(requested, /\/api\/share\/tok123\/stats\?/);
+test("stats are read with the share token, not the tracker script", async () => {
+  const calls = [];
+  const label = await fetchVisitorLabel(
+    UMAMI_SHARE_URL,
+    async (url, init) => {
+      calls.push({ url: String(url), init });
+      if (String(url).endsWith("/share/zgbDWbwKtfAOBwIa")) {
+        return new Response(JSON.stringify({ token: "jwt", websiteId: UMAMI_WEBSITE_ID }), { status: 200 });
+      }
+      return new Response(JSON.stringify({ visitors: 12408, comparison: { visitors: 10 } }), { status: 200 });
+    },
+    1_700_000_000_000,
+  );
   assert.equal(label, "12,408 visitors");
+  assert.equal(calls.length, 2);
+  assert.equal(calls[0].url, `${UMAMI_SHARE_API}/share/zgbDWbwKtfAOBwIa`);
+  assert.equal(calls[0].init.credentials, "omit");
+  assert.equal(
+    calls[1].url,
+    `${UMAMI_SHARE_API}/websites/${UMAMI_WEBSITE_ID}/stats?startAt=0&endAt=1700000000000`,
+  );
+  assert.equal(calls[1].init.headers["x-umami-share-token"], "jwt");
+  assert.equal(calls[1].init.headers["x-umami-share-context"], "1");
+  assert.equal(calls[1].init.credentials, "omit");
+  assert.equal(calls.some((call) => call.url.includes("cloud.umami.is/script.js")), false);
 });
 
-test("a count under 100 renders nothing", () => {
-  assert.equal(visitorLabel({ visitors: { value: 99 } }), null);
+test("the older nested visitor payload still formats", async () => {
+  const label = await fetchVisitorLabel(SHARE, async (url) => {
+    if (String(url).includes("/share/")) {
+      return new Response(JSON.stringify({ token: "jwt", websiteId: "site" }), { status: 200 });
+    }
+    return new Response(JSON.stringify({ visitors: { value: 100, prev: 1 } }), { status: 200 });
+  });
+  assert.equal(label, "100 visitors");
+});
+
+test("zero and missing counts render nothing", () => {
+  assert.equal(visitorLabel({ visitors: 0 }), null);
+  assert.equal(visitorLabel({ visitors: 1 }), "1 visitor");
+  assert.equal(visitorLabel({ visitors: { value: 0 } }), null);
   assert.equal(visitorLabel({ visitors: { value: 100 } }), "100 visitors");
 });
 
@@ -121,7 +143,12 @@ test("a thrown request renders nothing", async () => {
 });
 
 test("a payload without a numeric visitor count renders nothing", () => {
-  assert.equal(visitorLabel({ pageviews: { value: 5000 } }), null);
-  assert.equal(visitorLabel({ visitors: { value: "12408" } }), null);
+  assert.equal(visitorLabel({ pageviews: 5000 }), null);
+  assert.equal(visitorLabel({ visitors: "12408" }), null);
   assert.equal(visitorLabel(null), null);
+});
+
+test("a share payload without a token renders nothing", async () => {
+  const label = await fetchVisitorLabel(SHARE, async () => new Response(JSON.stringify({ websiteId: "site" }), { status: 200 }));
+  assert.equal(label, null);
 });

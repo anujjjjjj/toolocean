@@ -117,8 +117,10 @@ const PrivacyPage = () => {
           loaded with Do Not Track enabled, so a browser that sends that signal is not counted.
         </P>
         <P>
-          The home page does not show a visitor total. That would be an aggregate read from Umami's
-          public share statistics, and no share link is configured.
+          The home page, after it is idle, can show a public visitor total. That number is read
+          from Umami's share statistics at <Code>gateway-us.umami.is</Code>. It is an aggregate
+          count, not a record of you, and the request sets no cookie. If the request fails, or the
+          total is zero, the line is not shown. It does not appear on any other page.
         </P>
         <P>
           Nothing you type, paste, or open is part of either request. Your files never leave the

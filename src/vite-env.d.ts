@@ -12,11 +12,9 @@ interface ImportMetaEnv {
    */
   readonly VITE_GA_MEASUREMENT_ID?: string;
   /**
-   * Public Umami share URL, for example
-   * https://cloud.umami.is/share/<token>/toolocean. The home page derives the
-   * share stats API from the token. Unset means no visitor line. The page-view
-   * script itself does not read this. Its website id is UMAMI_WEBSITE_ID in
-   * src/lib/umami.ts.
+   * Optional override for the public Umami share page. Unset uses
+   * UMAMI_SHARE_URL in src/lib/umami.ts. The page-view script does not read
+   * this. Its website id is UMAMI_WEBSITE_ID in that same file.
    */
   readonly VITE_UMAMI_SHARE_URL?: string;
   /**

@@ -6,9 +6,10 @@ import { fetchVisitorLabel, umamiShareUrl, umamiWebsiteId } from "@/lib/umami";
  * One quiet line of the public visitor count, home page only.
  *
  * The first render is always empty, on the server and on the client, so
- * hydration does not move the page. The request runs after idle. A failure or
- * a count under 100 leaves the line unmounted, so there is no reserved gap
- * and nothing above the fold shifts.
+ * hydration does not move the page. The request runs after idle, and only on
+ * this page, so it does not compete with a tool bundle. A failure or a total
+ * of zero leaves the line unmounted, so there is no reserved gap and nothing
+ * above the fold shifts.
  */
 export function VisitorCount() {
   const [label, setLabel] = useState<string | null>(null);

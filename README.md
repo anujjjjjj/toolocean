@@ -93,12 +93,17 @@ bundle runs first. Umami sends data only when the hostname is toolocean.co.
 Localhost and preview deploys do not appear in the report. The script sets no
 cookie.
 
-`VITE_UMAMI_SHARE_URL` is optional and unset. The home page does not request or
-show a visitor count until that public share URL exists.
+The home page, and only the home page, reads a public visitor total after idle.
+The share page is `UMAMI_SHARE_URL` in `src/lib/umami.ts`. `VITE_UMAMI_SHARE_URL`
+overrides it. The tracker script does not serve this number. The page makes two
+GETs to `https://gateway-us.umami.is/api`: `/share/<slug>` for a short-lived
+token, then `/websites/<websiteId>/stats?startAt=0&endAt=<now>` with
+`x-umami-share-token` and `x-umami-share-context: 1`. A failure or a total of
+zero renders nothing, so the line does not reserve space.
 
 | Variable | Effect |
 |---|---|
-| `VITE_UMAMI_SHARE_URL` | Public share URL, such as `https://cloud.umami.is/share/<token>/toolocean`. The home page, and only the home page, reads that token's stats API after idle and shows a visitor count when the number is at least 100. A failed request or a smaller number shows nothing. |
+| `VITE_UMAMI_SHARE_URL` | Optional public share page, such as `https://cloud.umami.is/share/<slug>`. Unset uses the committed share URL. |
 
 ## Adding a tool
 
