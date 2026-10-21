@@ -110,17 +110,15 @@ const PrivacyPage = () => {
 
       <Section id="analytics" heading="Analytics">
         <P>
-          When a build is given an Umami website id, ToolOcean loads a cookieless analytics script
-          from Umami Cloud at <Code>cloud.umami.is</Code> after the page is already interactive. It
-          counts page views only: the path and the title of the page. It sets no cookie. The script
-          is loaded with Do Not Track enabled, so a browser that sends that signal is not counted.
-          If the website id is not set, the script is not loaded at all.
+          ToolOcean loads a cookieless analytics script from Umami Cloud at{" "}
+          <Code>cloud.umami.is</Code>. The tag is deferred and runs after the tool code, so it does
+          not compete with the page. It counts page views only: the path and the title of the page.
+          It sets no cookie. Collection is limited to <Code>toolocean.co</Code>. The script is
+          loaded with Do Not Track enabled, so a browser that sends that signal is not counted.
         </P>
         <P>
-          The home page can also show a public visitor total. That number is read, after the page
-          is idle, from Umami's public share statistics. It is an aggregate count, not a record of
-          you. If the request fails, or the total is under 100, the line is not shown. It does not
-          appear on any other page.
+          The home page does not show a visitor total. That would be an aggregate read from Umami's
+          public share statistics, and no share link is configured.
         </P>
         <P>
           Nothing you type, paste, or open is part of either request. Your files never leave the

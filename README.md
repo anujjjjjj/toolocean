@@ -84,20 +84,21 @@ npx tsc --noEmit -p tsconfig.app.json   # typecheck (not part of build)
 
 ## Analytics
 
-Two optional build-time variables for [Umami Cloud](https://cloud.umami.is). Leave
-both unset in local development: the site then loads no Umami script and shows no
-visitor count. Neither value is a secret. Both are inlined into the client bundle.
+Cookieless page views use [Umami Cloud](https://cloud.umami.is). The website id
+is the `UMAMI_WEBSITE_ID` constant in `src/lib/umami.ts`. `index.html` (the shell
+for every prerendered page) includes `https://cloud.umami.is/script.js` with
+`defer`, `data-website-id`, `data-domains="toolocean.co"`, and
+`data-do-not-track="true"`. The tag sits after the app module, so the tool
+bundle runs first. Umami sends data only when the hostname is toolocean.co.
+Localhost and preview deploys do not appear in the report. The script sets no
+cookie.
+
+`VITE_UMAMI_SHARE_URL` is optional and unset. The home page does not request or
+show a visitor count until that public share URL exists.
 
 | Variable | Effect |
 |---|---|
-| `VITE_UMAMI_WEBSITE_ID` | Umami website id. When set, `https://cloud.umami.is/script.js` is added after the page is idle, with `async`, `defer`, `data-website-id`, and `data-do-not-track="true"`. No cookie is set. Page views only. |
 | `VITE_UMAMI_SHARE_URL` | Public share URL, such as `https://cloud.umami.is/share/<token>/toolocean`. The home page, and only the home page, reads that token's stats API after idle and shows a visitor count when the number is at least 100. A failed request or a smaller number shows nothing. |
-
-```bash
-VITE_UMAMI_WEBSITE_ID=your-website-id \
-VITE_UMAMI_SHARE_URL=https://cloud.umami.is/share/your-token/toolocean \
-npm run build
-```
 
 ## Adding a tool
 

@@ -1,31 +1,40 @@
 /**
  * Umami Cloud, cookieless page views only.
  *
- * The script is not in index.html. That file is the shell for every prerendered
- * page, and a third-party tag there would sit on the critical path. When
- * VITE_UMAMI_WEBSITE_ID is set, the tag is inserted after idle with async and
- * defer, data-website-id, and data-do-not-track="true". When the variable is
- * unset, nothing is inserted and the home-page count is not fetched.
+ * The tracker is a deferred script in index.html. That file is the shell for
+ * every prerendered page, so one tag covers the site. It is placed after the
+ * app module: deferred scripts run in document order, and the tool bundle is
+ * first, so a slow response from cloud.umami.is does not hold hydration.
+ * data-domains limits collection to toolocean.co. Localhost and preview hosts
+ * still download the script and send nothing.
  *
- * The count comes from the public share stats API derived from
- * VITE_UMAMI_SHARE_URL. It is an aggregate. It is not a tracking call, and it
- * does not send a cookie.
+ * The website id lives in UMAMI_WEBSITE_ID. index.html must use the same value.
+ * scripts/umami.test.mjs and scripts/check-umami.mjs fail if the tag drifts.
+ *
+ * The home-page count is separate. It comes from the public share stats API
+ * derived from VITE_UMAMI_SHARE_URL. That variable is unset, so the visitor
+ * line stays unmounted. The count is an aggregate. It is not a tracking call,
+ * and it does not send a cookie.
  */
 
-const SCRIPT_SRC = "https://cloud.umami.is/script.js";
+export const UMAMI_SCRIPT_SRC = "https://cloud.umami.is/script.js";
+
+/** Umami Cloud website id for toolocean.co. */
+export const UMAMI_WEBSITE_ID = "485af8d4-6328-4f5c-adb8-7c5eeabd81cb";
+
+/** Hostnames that send page views. Preview and localhost are excluded. */
+export const UMAMI_DOMAINS = "toolocean.co";
 
 /** Below this, the home page shows no visitor line. */
 export const VISITOR_THRESHOLD = 100;
 
-const IDLE_LOAD_TIMEOUT_MS = 4000;
-
-function readEnv(name: "VITE_UMAMI_WEBSITE_ID" | "VITE_UMAMI_SHARE_URL"): string | undefined {
+function readEnv(name: "VITE_UMAMI_SHARE_URL"): string | undefined {
   const value = import.meta.env?.[name];
   return typeof value === "string" && value.trim() !== "" ? value.trim() : undefined;
 }
 
-export function umamiWebsiteId(): string | undefined {
-  return readEnv("VITE_UMAMI_WEBSITE_ID");
+export function umamiWebsiteId(): string {
+  return UMAMI_WEBSITE_ID;
 }
 
 export function umamiShareUrl(): string | undefined {
@@ -95,54 +104,26 @@ function isBrowser(): boolean {
   return typeof window !== "undefined" && typeof document !== "undefined";
 }
 
-let scriptRequested = false;
-
-function whenIdle(run: () => void): void {
-  const requestIdle = (
-    window as Window & {
-      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
-    }
-  ).requestIdleCallback;
-  if (typeof requestIdle === "function") {
-    requestIdle(run, { timeout: IDLE_LOAD_TIMEOUT_MS });
-  } else {
-    window.setTimeout(run, 1500);
-  }
-}
-
-/**
- * Insert the Cloud script after idle. No-op without a website id, and no-op
- * during prerender.
- */
-export function initUmami(): void {
-  const websiteId = umamiWebsiteId();
-  if (!isBrowser() || !websiteId || scriptRequested) return;
-  scriptRequested = true;
-
-  whenIdle(() => {
-    if (document.querySelector(`script[src="${SCRIPT_SRC}"]`)) return;
-    const script = document.createElement("script");
-    script.async = true;
-    script.defer = true;
-    script.src = SCRIPT_SRC;
-    script.dataset.websiteId = websiteId;
-    script.dataset.doNotTrack = "true";
-    document.head.appendChild(script);
-  });
-}
-
 type UmamiTracker = {
   track: (update: (props: Record<string, string>) => Record<string, string>) => void;
 };
 
 /**
- * Record a later route as a page view. The Cloud script's own loader records
- * the first view when it arrives. This only runs once that script has defined
- * `umami`, so an early call from useSEO does not double-count the landing page.
- * The payload is the path and title. Tool input is never passed here.
+ * The deferred tag records the document that loaded it. useSEO also calls this
+ * for that same landing view. Skipping the first call keeps the script's own
+ * page view as the only one, including when the tag has already executed
+ * (it is the next deferred script after the app module). Later client-side
+ * routes are recorded here. The payload is the path and title. Tool input is
+ * never passed here. If the tag has not defined `umami` yet, the call is a no-op.
  */
+let landingViewLeftToScript = false;
+
 export function trackUmamiPageview(path: string, title: string): void {
-  if (!isBrowser() || !umamiWebsiteId()) return;
+  if (!isBrowser()) return;
+  if (!landingViewLeftToScript) {
+    landingViewLeftToScript = true;
+    return;
+  }
   const umami = (window as Window & { umami?: UmamiTracker }).umami;
   if (!umami) return;
   umami.track((props) => ({ ...props, url: path, title }));

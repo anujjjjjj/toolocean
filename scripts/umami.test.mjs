@@ -1,16 +1,77 @@
 /**
- * Visitor count from a mocked Umami share-stats response.
+ * Umami script tag in the document shell, and the visitor-count helper.
  *
  *   node --experimental-strip-types --test scripts/umami.test.mjs
  */
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { test } from "node:test";
-import { fetchVisitorLabel, isUmamiConfigured, umamiStatsUrl, visitorLabel } from "../src/lib/umami.ts";
+import {
+  UMAMI_DOMAINS,
+  UMAMI_SCRIPT_SRC,
+  UMAMI_WEBSITE_ID,
+  fetchVisitorLabel,
+  isUmamiConfigured,
+  trackUmamiPageview,
+  umamiShareUrl,
+  umamiStatsUrl,
+  umamiWebsiteId,
+  visitorLabel,
+} from "../src/lib/umami.ts";
 
 const SHARE = "https://cloud.umami.is/share/tok123/toolocean";
+const EXPECTED_ID = "485af8d4-6328-4f5c-adb8-7c5eeabd81cb";
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
-test("an unset website id does not enable the script or the bar", () => {
-  assert.equal(isUmamiConfigured(), false);
+function umamiTag(html) {
+  return html.match(/<script\b[^>]*\bsrc="https:\/\/cloud\.umami\.is\/script\.js"[^>]*>/i)?.[0] ?? null;
+}
+
+test("root document renders the deferred Umami script with the website id", () => {
+  assert.equal(UMAMI_WEBSITE_ID, EXPECTED_ID);
+  assert.equal(umamiWebsiteId(), EXPECTED_ID);
+  assert.equal(isUmamiConfigured(), true);
+  assert.equal(UMAMI_SCRIPT_SRC, "https://cloud.umami.is/script.js");
+  assert.equal(UMAMI_DOMAINS, "toolocean.co");
+
+  const html = readFileSync(join(ROOT, "index.html"), "utf8");
+  const tag = umamiTag(html);
+  assert.ok(tag, "index.html is missing the Umami script");
+  assert.match(tag, /\bdefer\b/);
+  assert.doesNotMatch(tag, /\basync\b/);
+  assert.match(tag, new RegExp(`data-website-id="${UMAMI_WEBSITE_ID}"`));
+  assert.match(tag, new RegExp(`data-domains="${UMAMI_DOMAINS}"`));
+  assert.match(tag, /data-do-not-track="true"/);
+
+  const moduleAt = html.indexOf('<script type="module"');
+  const umamiAt = html.indexOf(UMAMI_SCRIPT_SRC);
+  assert.ok(moduleAt !== -1 && umamiAt > moduleAt, "Umami script must follow the app module");
+});
+
+test("visitor count stays off without a share URL", () => {
+  assert.equal(umamiShareUrl(), undefined);
+});
+
+test("the landing view is left to the script and later routes are tracked", () => {
+  const calls = [];
+  globalThis.window = {
+    umami: {
+      track(update) {
+        calls.push(update({ url: "/previous", title: "Previous" }));
+      },
+    },
+  };
+  globalThis.document = {};
+  try {
+    trackUmamiPageview("/json-formatter", "JSON Formatter");
+    trackUmamiPageview("/pdf-merge", "PDF Merge");
+    assert.deepEqual(calls, [{ url: "/pdf-merge", title: "PDF Merge" }]);
+  } finally {
+    delete globalThis.window;
+    delete globalThis.document;
+  }
 });
 
 test("share page URL becomes that token's stats API", () => {

@@ -51,5 +51,18 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <!--
+      Cookieless Umami page views. Deferred and placed after the app module so
+      a slow third-party response does not delay the tool bundle. data-domains
+      limits collection to toolocean.co. The id is UMAMI_WEBSITE_ID in
+      src/lib/umami.ts.
+    -->
+    <script
+      defer
+      src="https://cloud.umami.is/script.js"
+      data-website-id="485af8d4-6328-4f5c-adb8-7c5eeabd81cb"
+      data-domains="toolocean.co"
+      data-do-not-track="true"
+    ></script>
   </body>
 </html>
