@@ -84,20 +84,26 @@ npx tsc --noEmit -p tsconfig.app.json   # typecheck (not part of build)
 
 ## Analytics
 
-Two optional build-time variables for [Umami Cloud](https://cloud.umami.is). Leave
-both unset in local development: the site then loads no Umami script and shows no
-visitor count. Neither value is a secret. Both are inlined into the client bundle.
+Cookieless page views use [Umami Cloud](https://cloud.umami.is). The website id
+is the `UMAMI_WEBSITE_ID` constant in `src/lib/umami.ts`. `index.html` (the shell
+for every prerendered page) includes `https://cloud.umami.is/script.js` with
+`defer`, `data-website-id`, `data-domains="toolocean.co"`, and
+`data-do-not-track="true"`. The tag sits after the app module, so the tool
+bundle runs first. Umami sends data only when the hostname is toolocean.co.
+Localhost and preview deploys do not appear in the report. The script sets no
+cookie.
+
+The home page, and only the home page, reads a public visitor total after idle.
+The share page is `UMAMI_SHARE_URL` in `src/lib/umami.ts`. `VITE_UMAMI_SHARE_URL`
+overrides it. The tracker script does not serve this number. The page makes two
+GETs to `https://gateway-us.umami.is/api`: `/share/<slug>` for a short-lived
+token, then `/websites/<websiteId>/stats?startAt=0&endAt=<now>` with
+`x-umami-share-token` and `x-umami-share-context: 1`. A failure or a total of
+zero renders nothing, so the line does not reserve space.
 
 | Variable | Effect |
 |---|---|
-| `VITE_UMAMI_WEBSITE_ID` | Umami website id. When set, `https://cloud.umami.is/script.js` is added after the page is idle, with `async`, `defer`, `data-website-id`, and `data-do-not-track="true"`. No cookie is set. Page views only. |
-| `VITE_UMAMI_SHARE_URL` | Public share URL, such as `https://cloud.umami.is/share/<token>/toolocean`. The home page, and only the home page, reads that token's stats API after idle and shows a visitor count when the number is at least 100. A failed request or a smaller number shows nothing. |
-
-```bash
-VITE_UMAMI_WEBSITE_ID=your-website-id \
-VITE_UMAMI_SHARE_URL=https://cloud.umami.is/share/your-token/toolocean \
-npm run build
-```
+| `VITE_UMAMI_SHARE_URL` | Optional public share page, such as `https://cloud.umami.is/share/<slug>`. Unset uses the committed share URL. |
 
 ## Adding a tool
 

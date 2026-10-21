@@ -12,14 +12,9 @@ interface ImportMetaEnv {
    */
   readonly VITE_GA_MEASUREMENT_ID?: string;
   /**
-   * Umami Cloud website id. When unset, no Umami script is injected and the
-   * home page does not request a visitor count. See src/lib/umami.ts.
-   */
-  readonly VITE_UMAMI_WEBSITE_ID?: string;
-  /**
-   * Public Umami share URL, for example
-   * https://cloud.umami.is/share/<token>/toolocean. The home page derives the
-   * share stats API from the token. Unset means no visitor line.
+   * Optional override for the public Umami share page. Unset uses
+   * UMAMI_SHARE_URL in src/lib/umami.ts. The page-view script does not read
+   * this. Its website id is UMAMI_WEBSITE_ID in that same file.
    */
   readonly VITE_UMAMI_SHARE_URL?: string;
   /**
