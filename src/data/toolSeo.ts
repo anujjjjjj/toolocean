@@ -1802,6 +1802,20 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       },
     ],
   },
+  "heic-to-jpg": {
+    title: "HEIC to JPG Converter: Free, Offline, No Upload",
+    description:
+      "Convert HEIC to JPG or PNG online free. iPhone photos are decoded on your device, kept upright, and saved one by one or as a ZIP. Nothing is uploaded.",
+    keywords: ["heic to jpg", "convert heic to jpg online free", "heic to png", "heic converter", "heif to jpg", "iphone photo to jpg"],
+    faqs: [
+      privacyFaq("photo"),
+      {
+        question: "Why can my PC not open a HEIC photo?",
+        answer:
+          "HEIC pictures are compressed with HEVC, and Windows only decodes that with an extra extension many machines do not have. Converting to JPG gives a file every viewer, browser and form accepts.",
+      },
+    ],
+  },
   "image-crop": {
     title: "Crop Image Online: Free Photo Cropper",
     description:

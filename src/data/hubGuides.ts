@@ -26,7 +26,7 @@ export const HUB_GUIDES: Record<string, HubGuideContent> = {
     heading: "Which image job belongs on which page",
     paragraphs: [
       "These pages edit a picture you already have. The browser decodes it, draws it to a canvas, and offers a download. That covers the ordinary jobs: a new pixel size, a tighter JPEG, a crop, a turn, a text stamp, or a switch between PNG, JPEG, and WebP. It does not cover the jobs that need a model or a format the canvas cannot read.",
-      "HEIC from an iPhone is not accepted. AVIF is not a target. Nothing here removes a background, rebuilds a face, or invents pixels to upscale. If a listing elsewhere promises those, it is a different product, and it usually uploads the photo to do it.",
+      "HEIC from an iPhone has its own page, the HEIC to JPG converter, which carries a decoder; the other image pages still cannot read it. AVIF is not a target. Nothing here removes a background, rebuilds a face, or invents pixels to upscale. If a listing elsewhere promises those, it is a different product, and it usually uploads the photo to do it.",
       "The compressor still has a JPEG quality slider. Exact size is a separate mode: it searches quality, then scales, and can pad a JPEG that undershoots a minimum you set. 1 KB is 1024 bytes. Re-encoding drops EXIF and GPS because the pixels are drawn again. That is not a metadata eraser, and it will not scrub a name painted into the picture.",
       "The resizer takes pixels, centimetres, millimetres, or inches, plus a DPI. The default for pixels is 96, with 200 and 300 as presets. A JPEG download stores that DPI in the JFIF header. A PNG download stays pixels only.",
     ],
@@ -48,7 +48,13 @@ export const HUB_GUIDES: Record<string, HubGuideContent> = {
         task: "PNG, JPEG, or WebP",
         tool: "Format converter",
         path: "/image-format-converter",
-        limit: "Those three formats. No HEIC and no AVIF.",
+        limit: "Those three formats. HEIC has its own converter. No AVIF.",
+      },
+      {
+        task: "Open an iPhone photo",
+        tool: "HEIC to JPG",
+        path: "/heic-to-jpg",
+        limit: "HEIC or HEIF in, JPG or PNG out, in batches. EXIF and Live Photo motion are not kept.",
       },
       {
         task: "Cut a rectangle",
@@ -113,7 +119,7 @@ export const HUB_GUIDES: Record<string, HubGuideContent> = {
       {
         question: "Why will a HEIC not open?",
         answer:
-          "The canvas decoder in this set of pages accepts PNG, JPEG, WebP, and the other types the browser already displays. HEIC is not one of them. Export a JPEG from the phone first, then resize or compress that.",
+          "Most of these pages use the browser's own decoder, which accepts PNG, JPEG, WebP, and the other types it already displays. Outside Safari, HEIC is not one of them. Run the photo through [HEIC to JPG](/heic-to-jpg) first, which brings its own decoder, then resize or compress the JPG.",
       },
       {
         question: "Can I resize for a 4 by 6 print?",

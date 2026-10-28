@@ -173,7 +173,7 @@ export const imageFormatConverterContent: Partial<ToolPageContent> = {
     {
       icon: "Smartphone",
       audience: "Making phone photographs usable elsewhere",
-      body: "Modern phones produce formats that older desktop software cannot open. Converting to JPEG or PNG makes an image portable without involving a service that would keep a copy.",
+      body: "Modern phones produce formats that older desktop software cannot open. Converting to JPEG or PNG makes an image portable without involving a service that would keep a copy. iPhone HEIC needs the HEIC to JPG page, which brings the decoder this one lacks.",
     },
     {
       icon: "Database",
@@ -303,6 +303,11 @@ export const imageFormatConverterContent: Partial<ToolPageContent> = {
       name: "Favicon Generator",
       path: "/favicon-generator",
       description: "Produce the PNG icon sizes a website needs.",
+    },
+    {
+      name: "HEIC to JPG",
+      path: "/heic-to-jpg",
+      description: "Decode iPhone HEIC photos, which this converter cannot read.",
     },
     {
       name: "SVG to PNG",
