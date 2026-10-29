@@ -100,6 +100,7 @@ const CATEGORY_TOOLS: CatalogTool[] = [
   { id: "images-to-pdf", category: "pdf", name: "Images to PDF", description: "Combine multiple images into a single PDF", icon: "FileText", keywords: ["images","pdf","combine"] },
   { id: "pdf-rotate", category: "pdf", name: "PDF Rotate", description: "Rotate PDF pages by 90°, 180°, or 270°", icon: "RotateCw", keywords: ["pdf","rotate"] },
   { id: "pdf-watermark", category: "pdf", name: "PDF Watermark", description: "Add text or image watermark to PDF pages", icon: "Droplets", keywords: ["pdf","watermark"] },
+  { id: "pdf-page-numbers", category: "pdf", name: "PDF Page Numbers", description: "Number PDF pages in any corner, skip the cover, choose 1 of N", icon: "ListOrdered", keywords: ["pdf","page numbers","numbering","pages"] },
   { id: "pdf-reorder", category: "pdf", name: "PDF Page Reorder", description: "Rearrange PDF pages with drag and drop", icon: "ArrowUpDown", keywords: ["pdf","reorder","pages"] },
   { id: "pdf-sign", category: "pdf", name: "Sign PDF", description: "Draw, type, or place an image of a signature on a PDF page", icon: "PenLine", keywords: ["pdf","sign","signature","visual"] },
   { id: "pdf-encrypt", category: "pdf", name: "Encrypt PDF", description: "Password-protect a PDF with AES-256 in the browser", icon: "Lock", keywords: ["pdf","encrypt","password","protect"] },

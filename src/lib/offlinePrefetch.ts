@@ -39,6 +39,7 @@ const BY_SLUG: Record<string, Loader[]> = {
   "pdf-rotate": [pdfLib],
   "pdf-reorder": [pdfLib],
   "pdf-watermark": [pdfLib],
+  "pdf-page-numbers": [pdfLib, pdfjs],
   "pdf-encrypt": [pdfLib, cantoo],
   "pdf-unlock": [unlock, cantoo, pdfjs],
   "pdf-metadata": [metadata],

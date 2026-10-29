@@ -1608,6 +1608,12 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       },
     ],
   },
+  "pdf-page-numbers": {
+    title: "Number PDF Pages Online Free",
+    description:
+      "Insert page numbers into a PDF in this tab: six positions, four formats, a start number and an optional blank cover. Rotated and cropped pages are handled.",
+    keywords: ["pdf page numbering", "number pdf pages online free", "add page numbers to pdf", "page x of y"],
+  },
   "pdf-sign": {
     title: "Sign PDF Online Free – Draw or Type, No Upload",
     description:
