@@ -249,6 +249,11 @@ export const pdfMergeContent: Partial<ToolPageContent> = {
 
   related: [
     {
+      name: "Add Page Numbers",
+      path: "/pdf-page-numbers",
+      description: "Number the combined document so every page can be cited.",
+    },
+    {
       name: "Split PDF",
       path: "/pdf-split",
       description: "Pull a page range back out of a document you have merged.",

@@ -72,6 +72,7 @@
   "images-to-pdf": 2048,
   "pdf-rotate": 1618,
   "pdf-watermark": 1684,
+  "pdf-page-numbers": 1764,
   "pdf-reorder": 1488,
   "pdf-sign": 1881,
   "pdf-encrypt": 2027,

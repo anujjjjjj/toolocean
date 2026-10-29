@@ -232,6 +232,11 @@ export const pdfRotateContent: Partial<ToolPageContent> = {
 
   related: [
     {
+      name: "Add Page Numbers",
+      path: "/pdf-page-numbers",
+      description: "Number pages once they face the right way.",
+    },
+    {
       name: "Reorder PDF Pages",
       path: "/pdf-reorder",
       description: "Change the sequence once the pages are the right way up.",

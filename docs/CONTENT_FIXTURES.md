@@ -26,6 +26,7 @@ page produces, and suppresses the download click so nothing is written to disk.
 | Session | Device | OS | Browser | Date |
 | --- | --- | --- | --- | --- |
 | S1 | Apple M4 Pro | macOS 15.5 | Chrome 152.0.7977.83 headless | 2026-09-17 |
+| S2 | 8-core Intel Xeon | Linux 6.12 | Chrome 156.0.8078.47 headless | 2026-10-29 |
 
 Timings are from a warm page on a fast machine with no network involved, so they
 are a floor rather than a typical result. A mid-range phone is several times
@@ -95,6 +96,13 @@ Session S1 throughout.
 | pdf-watermark | CONFIDENTIAL across 12 text pages | 50,563 | 53,480 | +5.8% | 25 ms |
 | pdf-watermark | CONFIDENTIAL across 40 text pages | 165,897 | 175,270 | +5.6% | 24 ms |
 | pdf-reorder | 12-page text PDF rebuilt, order unchanged | 50,563 | 50,562 | −1 byte | 25 ms |
+| pdf-page-numbers (S2) | 200 text pages numbered Page 1 of N, bottom right | 43,425 | 82,683 | +90% | 115 ms |
+| pdf-page-numbers (S2) | 6 mixed pages, four rotated, two cropped, numbered Page 1 of N | 1,982 | 3,392 | +71% | 17 ms |
+
+The two pdf-page-numbers rows (session S2) use synthetic text PDFs generated with
+pdf-lib: 200 one-line Letter pages, and six pages of mixed sizes with /Rotate 90,
+180, 270 and 90 plus two offset CropBoxes. Their percentage growth is large only
+because the inputs are a few hundred bytes a page.
 
 ### What these say
 
