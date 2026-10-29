@@ -253,8 +253,11 @@ export function resolveToolContent(slug: string): ToolPageContent | null {
           ? { label: `Choose ${indefiniteArticle(profile.subject)} ${profile.subject}`, action: "upload" }
           : { label: "Start with your own data", action: "scroll" }),
       secondaryCta:
-        override?.hero?.secondaryCta ??
-        (profile.ioMode === "file" ? undefined : { label: "Open a file", action: "upload" }),
+        // An override that names secondaryCta, even as undefined, opts out of
+        // the generic "Open a file" fallback.
+        (override?.hero && "secondaryCta" in override.hero
+          ? override.hero.secondaryCta
+          : profile.ioMode === "file" ? undefined : { label: "Open a file", action: "upload" }),
     },
     intro: override?.intro,
     /*
