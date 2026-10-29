@@ -299,6 +299,11 @@ export const imageCompressorContent: Partial<ToolPageContent> = {
       description: "Collect compressed photographs into a single document.",
     },
     {
+      name: "HEIC to JPG",
+      path: "/heic-to-jpg",
+      description: "Turn an iPhone HEIC into a JPG first, then compress that.",
+    },
+    {
       name: "Create ZIP",
       path: "/zip-creator",
       description: "Bundle the results, remembering that zipping images saves nothing.",

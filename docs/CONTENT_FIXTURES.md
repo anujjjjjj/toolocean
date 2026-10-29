@@ -26,6 +26,7 @@ page produces, and suppresses the download click so nothing is written to disk.
 | Session | Device | OS | Browser | Date |
 | --- | --- | --- | --- | --- |
 | S1 | Apple M4 Pro | macOS 15.5 | Chrome 152.0.7977.83 headless | 2026-09-17 |
+| S2 | 8-core Intel Xeon server | Linux 6.12 | Chrome 156.0.8078.47 headless | 2026-10-28 |
 
 Timings are from a warm page on a fast machine with no network involved, so they
 are a floor rather than a typical result. A mid-range phone is several times
@@ -53,6 +54,9 @@ nothing.
 | `text-0.txt` .. `text-2.txt` | 55,476 each | plain prose, highly compressible |
 | `secret.zip` | 18,740 | two text files, AES password protected with `zip -e` |
 | `one-photo.zip` | 2,055,994 | a single already-compressed JPEG |
+| `example.heic` | 718,114 | 1280x854 HEIC, brand `heic`, two top-level images, no `irot` |
+| `image1.heic` | 2,994,394 | 3992x2992 camera HEIC, tiled `grid` image, EXIF orientation 1 |
+| `example-rot90.heic` | 718,124 | `example.heic` with a 10-byte edit: an `irot` property (90° anticlockwise) added to the primary item, `iloc` offsets shifted to match |
 
 The fixture files are not committed. They are reproducible from the sources
 above, and several are large enough that committing them would be the wrong
@@ -95,6 +99,17 @@ Session S1 throughout.
 | pdf-watermark | CONFIDENTIAL across 12 text pages | 50,563 | 53,480 | +5.8% | 25 ms |
 | pdf-watermark | CONFIDENTIAL across 40 text pages | 165,897 | 175,270 | +5.6% | 24 ms |
 | pdf-reorder | 12-page text PDF rebuilt, order unchanged | 50,563 | 50,562 | −1 byte | 25 ms |
+
+Session S2. Each timing is the median of three runs from choosing the file to
+the row reporting done, with the decoder worker already warm.
+
+| Tool | Scenario | Input | Output | Change | Time |
+| --- | --- | --- | --- | --- | --- |
+| heic-to-jpg | 1280x854 HEIC to JPG at quality 92 | 718,114 | 465,789 | −35.1% | 141 ms |
+| heic-to-jpg | 1280x854 HEIC to PNG | 718,114 | 2,302,195 | +221% | 175 ms |
+| heic-to-jpg | 3992x2992 HEIC to JPG at quality 92 | 2,994,394 | 3,529,036 | +17.9% | 1,023 ms |
+| heic-to-jpg | 3992x2992 HEIC to JPG at quality 80 | 2,994,394 | 2,322,615 | −22.4% | not timed |
+| heic-to-jpg | 3992x2992 HEIC to PNG | 2,994,394 | 22,586,663 | +654% | 1,393 ms |
 
 ### What these say
 
@@ -181,6 +196,21 @@ the tools use.
 listing: the whole file fails to open. This matters because "how do I open a
 password protected ZIP" is one of the most common questions in this category, and
 the honest answer here is that this tool cannot, rather than a vague one.
+
+### What the HEIC numbers say
+
+- **JPG is not always smaller than the HEIC it came from.** HEVC compresses a
+  photograph far better than JPEG, so the 12 MP camera file grew 17.9% at
+  quality 92 and only dropped below the original at 80. The page states this
+  instead of promising a saving.
+- **Orientation is applied by the decoder.** `example-rot90.heic` decoded to
+  854x1280, and its JPG matched the landscape JPG turned 90° anticlockwise
+  (mean channel difference 1.6 out of 255, JPEG noise; 83.8 for the wrong
+  direction). The page draws the decoded pixels without rotating them again.
+- **Nothing leaves the page.** During conversion the only requests were the
+  worker script and `libheif-*.wasm` from `/assets/`, plus `blob:` thumbnails.
+  With the network switched off after the first load, a conversion still
+  finished.
 
 ### What the image numbers say
 

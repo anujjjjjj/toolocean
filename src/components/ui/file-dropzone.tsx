@@ -73,7 +73,11 @@ export function FileDropzone({
         accept={accept}
         multiple={multiple}
         aria-label={title}
-        onChange={(event) => remember(event.target.files)}
+        onChange={(event) => {
+          remember(event.target.files);
+          // Without this, picking the same file again (after a tool clears its list) fires no change event.
+          event.target.value = "";
+        }}
       />
     </label>
   );

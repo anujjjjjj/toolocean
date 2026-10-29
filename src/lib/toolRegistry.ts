@@ -463,6 +463,7 @@ export const toolRegistry: Record<string, { run: (input: string) => Promise<stri
   "image-resizer": { run: async () => { throw new Error("This tool requires file input. Use it from Image tools."); } },
   "image-compressor": { run: async () => { throw new Error("This tool requires file input. Use it from Image tools."); } },
   "image-format-converter": { run: async () => { throw new Error("This tool requires file input. Use it from Image tools."); } },
+  "heic-to-jpg": { run: async () => { throw new Error("This tool requires file input. Use it from Image tools."); } },
   "image-to-base64": { run: async () => { throw new Error("This tool requires file input. Use it from Image tools."); } },
   "video-thumbnail": { run: async () => { throw new Error("This tool requires file input. Use it from Video tools."); } },
   "video-trimmer": { run: async () => { throw new Error("This tool requires file input. Use it from Video tools."); } },

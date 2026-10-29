@@ -111,6 +111,7 @@ const CATEGORY_TOOLS: CatalogTool[] = [
   { id: "image-resizer", category: "image", name: "Image Resizer", description: "Resize images with width, height, or aspect ratio", icon: "Maximize2", keywords: ["image","resize","dimensions"] },
   { id: "image-compressor", category: "image", name: "Image Compressor", description: "Reduce file size with quality slider", icon: "Shrink", keywords: ["image","compress","quality"] },
   { id: "image-format-converter", category: "image", name: "Format Converter", description: "Convert between PNG, JPEG, and WebP", icon: "Repeat", keywords: ["image","format","convert"] },
+  { id: "heic-to-jpg", category: "image", name: "HEIC to JPG", description: "Convert iPhone HEIC photos to JPG or PNG", icon: "Smartphone", keywords: ["heic","heif","jpg","png","iphone","convert"] },
   { id: "image-to-base64", category: "image", name: "Image to Base64", description: "Convert image to data URL or raw Base64", icon: "FileImage", keywords: ["image","base64","data url"] },
   { id: "image-crop", category: "image", name: "Image Crop", description: "Crop and export a selected region", icon: "Crop", keywords: ["image","crop","trim","cut"] },
   { id: "color-picker", category: "image", name: "Color Picker from Image", description: "Click an image to get the pixel color", icon: "Pipette", keywords: ["color","picker","eyedropper","pixel","hex"] },

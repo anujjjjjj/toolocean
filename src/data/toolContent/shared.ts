@@ -20,4 +20,8 @@
 export const MEASURED_S1 =
   "Measured by driving this page in headless Chrome 152 on an Apple M4 Pro running macOS 15.5, on 2026-09-17. The fixture is handed to the page's own file input, the page's own button is pressed, and the figure recorded is the size of the file the page produces. Timings come from a warm page on a fast machine with no network involved, so treat them as a floor rather than a typical result.";
 
-export const SHARED_CONTENT_STRINGS: string[] = [MEASURED_S1];
+/** Session S2 in docs/CONTENT_FIXTURES.md. */
+export const MEASURED_S2 =
+  "Measured by driving this page in headless Chrome 156 on an 8-core Intel Xeon server running Linux, on 2026-10-28. The fixture is handed to the page's own file input, and the figure recorded is the size of the file the page downloads. Timings are the median of three runs on a warm page, from choosing the file to the row reporting done, with the decoder already loaded. A phone will be slower.";
+
+export const SHARED_CONTENT_STRINGS: string[] = [MEASURED_S1, MEASURED_S2];
