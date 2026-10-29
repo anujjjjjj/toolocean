@@ -27,6 +27,7 @@ const encodeImage: Loader = () =>
     return mod;
   });
 const jszip: Loader = () => import("jszip");
+const heic: Loader = () => import("@/lib/image/heicDecoder");
 const jpeg: Loader = () => import("@/lib/targetSize/jpeg");
 const signPdf: Loader = () => import("@/lib/pdf/signPdf");
 const fillForm: Loader = () => import("@/lib/pdf/fillPdfForm");
@@ -50,6 +51,7 @@ const BY_SLUG: Record<string, Loader[]> = {
   "images-to-pdf": [pdfLib, parseSize, encodeImage],
   "image-compressor": [encodeImage, jszip],
   "image-resizer": [jpeg],
+  "heic-to-jpg": [heic, jszip],
 };
 
 const FONT_PATHS = [
@@ -185,6 +187,12 @@ export function scheduleOfflinePrefetch(slug: string | undefined): () => void {
       if (loaders.includes(encodeImage)) {
         const { imageEncodeWorkerUrl } = await import("@/lib/targetSize/encodeImageToTarget");
         await expandScriptImports(imageEncodeWorkerUrl(), graph);
+      }
+      if (loaders.includes(heic)) {
+        // The worker never runs until a photo is chosen, so neither it nor the .wasm is in resource timing yet.
+        const { heicWorkerUrl, heicWasmUrl } = await import("@/lib/image/heicDecoder");
+        await expandScriptImports(heicWorkerUrl(), graph);
+        graph.add(heicWasmUrl());
       }
       if (cancelled) return;
       const urls = [...new Set([...seenAssetUrls(), ...graph])];

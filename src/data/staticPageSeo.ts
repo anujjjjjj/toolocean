@@ -50,7 +50,7 @@ export const CATEGORY_PAGE_SEO: Record<string, StaticPageSeo> = {
   "/image-tools": {
     title: "Image Tools – Resize, Compress, No Upload",
     description:
-      "Resize in pixels, compress a JPEG, crop, and convert PNG, JPEG, or WebP in the browser. No HEIC, no background removal, no exact-kilobyte mode.",
+      "Resize in pixels, compress a JPEG, crop, convert PNG, JPEG, or WebP, and turn iPhone HEIC into JPG, all in the browser. No background removal.",
   },
   "/video-tools": {
     title: "Video Tools – Trim, Thumbnail, GIF",

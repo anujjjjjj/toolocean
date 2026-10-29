@@ -7,6 +7,7 @@ import { zipCreatorContent } from "./zipCreator";
 import { imageCompressorContent } from "./imageCompressor";
 import { imageResizerContent } from "./imageResizer";
 import { imageFormatConverterContent } from "./imageFormatConverter";
+import { heicToJpgContent } from "./heicToJpg";
 import { pdfToImagesContent } from "./pdfToImages";
 import { imagesToPdfContent } from "./imagesToPdf";
 import { pdfRotateContent } from "./pdfRotate";
@@ -19,6 +20,7 @@ import { pdfEncryptContent } from "./pdfEncrypt";
 import { pdfUnlockContent } from "./pdfUnlock";
 import { pdfMetadataContent } from "./pdfMetadata";
 import { pdfFormFillContent } from "./pdfFormFill";
+import { whatWasItWorthContent } from "./whatWasItWorth";
 import {
   csvToJsonContent,
   jsonToCsvContent,
@@ -51,6 +53,7 @@ export const TOOL_CONTENT_OVERRIDES: Record<string, Partial<ToolPageContent>> = 
   "image-compressor": imageCompressorContent,
   "image-resizer": imageResizerContent,
   "image-format-converter": imageFormatConverterContent,
+  "heic-to-jpg": heicToJpgContent,
   "pdf-to-images": pdfToImagesContent,
   "images-to-pdf": imagesToPdfContent,
   "pdf-rotate": pdfRotateContent,
@@ -70,6 +73,7 @@ export const TOOL_CONTENT_OVERRIDES: Record<string, Partial<ToolPageContent>> = 
   "xml-to-json": xmlToJsonContent,
   "json-to-xml": jsonToXmlContent,
   "json-to-toml": jsonToTomlContent,
+  "what-was-it-worth": whatWasItWorthContent,
 };
 
 /**

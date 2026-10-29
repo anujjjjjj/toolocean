@@ -43,6 +43,12 @@ const COPY: Record<string, ShellDropzoneCopy> = {
     title: "Drop images here",
     hint: "or click to browse · JPG, PNG, WebP",
   },
+  "heic-to-jpg": {
+    accept: ".heic,.heif,image/heic,image/heif",
+    multiple: true,
+    title: "Drop HEIC photos here",
+    hint: "or click to browse · HEIC or HEIF · multiple files",
+  },
   "csv-to-json": {
     accept: ".csv,.json,.txt,text/csv,application/json",
     multiple: false,

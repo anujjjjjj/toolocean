@@ -241,7 +241,7 @@ export const imageResizerContent: Partial<ToolPageContent> = {
     {
       question: "Does it work with HEIC photographs from an iPhone?",
       answer:
-        "Only if your browser can decode HEIC, which Safari on Apple devices can and most others cannot. Where it does work the output is written as PNG, since canvas cannot encode HEIC. Converting to JPEG first is the more reliable route.",
+        "Only if your browser can decode HEIC, which Safari on Apple devices can and most others cannot. Where it does work the output is written as PNG, since canvas cannot encode HEIC. Converting on the HEIC to JPG page first is the more reliable route.",
     },
     {
       question: "Is there a limit on image size or dimensions?",

@@ -244,7 +244,7 @@ export const imagesToPdfContent: Partial<ToolPageContent> = {
     {
       question: "Can I use iPhone photos saved as HEIC?",
       answer:
-        "It depends on the browser rather than on this page. Apple's own has the decoder built in; Chrome and Firefox on most platforms do not, and the file simply will not open. Setting the camera to Most Compatible, which makes it write JPEG, avoids the question entirely and is worth doing before a batch of scanning.",
+        "It depends on the browser rather than on this page. Apple's own has the decoder built in; Chrome and Firefox on most platforms do not, and the file simply will not open. Converting the photos on the HEIC to JPG page first works in any browser, and setting the camera to Most Compatible, which makes it write JPEG, avoids the question for future scans.",
     },
     {
       question: "Can I add page numbers, margins or a header?",

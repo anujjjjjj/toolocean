@@ -23,7 +23,8 @@ working. Three tools are documented exceptions (see below).
   signature, AES-256 encrypt, unlock (password you already know), metadata,
   AcroForm fill and flatten
 - [Image tools](https://toolocean.co/image-tools): resize, compress, crop, convert
-  format, rotate, flip, watermark, filters, colour picker, favicon generator
+  format, HEIC to JPG/PNG, rotate, flip, watermark, filters, colour picker,
+  favicon generator
 - [CSV tools](https://toolocean.co/csv-tools): convert, validate, merge
 - [Spreadsheet tools](https://toolocean.co/spreadsheet-tools): Excel to CSV, CSV to
   Excel, JSON to Excel, read workbooks, extract columns
@@ -43,6 +44,9 @@ working. Three tools are documented exceptions (see below).
   objects, so text stays selectable and quality is unchanged.
 - [Image Compressor](https://toolocean.co/image-compressor): quality-controlled
   re-encoding through the canvas.
+- [HEIC to JPG](https://toolocean.co/heic-to-jpg): converts iPhone HEIC photos to
+  JPG or PNG with a WebAssembly build of libheif in a worker. Applies HEIF
+  rotation, batches to a ZIP, works offline after the first load.
 - [CSV to Excel](https://toolocean.co/csv-to-excel): writes a real xlsx with explicit
   cell types, which avoids Excel reformatting long numbers into scientific notation.
 - [Regex Tester](https://toolocean.co/regex-tester): live matching with capture

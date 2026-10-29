@@ -24,7 +24,7 @@
     "indexnow": "node scripts/indexnow.mjs",
     "serve:dist": "node scripts/serve-dist.mjs",
     "check:hydration": "node --experimental-websocket scripts/check-hydration.mjs",
-    "test": "node --experimental-strip-types --test scripts/qa-regressions.test.mjs scripts/umami.test.mjs scripts/pdf-page-numbers.test.mjs"
+    "test": "node --experimental-strip-types --test scripts/qa-regressions.test.mjs scripts/umami.test.mjs scripts/heic.test.mjs scripts/pdf-page-numbers.test.mjs"
   },
   "dependencies": {
     "@cantoo/pdf-lib": "^2.11.1",
@@ -69,6 +69,7 @@
     "input-otp": "^1.2.4",
     "js-yaml": "^4.1.0",
     "jszip": "^3.10.1",
+    "libheif-js": "^1.19.8",
     "lucide-react": "^0.462.0",
     "lz-string": "^1.5.0",
     "marked": "^17.0.4",

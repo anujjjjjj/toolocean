@@ -1,6 +1,6 @@
 import type { ToolPageContent } from "@/types/toolContent";
 
-const MEASURED_S2 =
+const MEASURED_S3 =
   "Measured by driving the built page in headless Chrome 156 on an 8-core Intel Xeon Linux machine, on 2026-10-29. The fixture is handed to the page's own file input, the page's own button is pressed, the time is the one the page reports for numbering and saving, and the size is the file the browser saved. Fixtures are synthetic text PDFs, so the byte overhead is large relative to the input; on a real document it is the same few hundred bytes per page against a much larger file.";
 
 /**
@@ -105,7 +105,7 @@ export const pdfPageNumbersContent: Partial<ToolPageContent> = {
   ],
 
   measurements: {
-    method: MEASURED_S2,
+    method: MEASURED_S3,
     rows: [
       {
         scenario: "200 text pages numbered Page 1 of N, bottom right",

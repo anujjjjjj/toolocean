@@ -568,7 +568,7 @@ export const LANDING_PAGES: LandingPage[] = [
     howTo: {
       name: "How to compress an image to 20 KB",
       steps: [
-        { title: "Select the picture", body: "PNG, JPEG, or WebP. HEIC is not decoded here." },
+        { title: "Select the picture", body: "PNG, JPEG, or WebP. Convert a HEIC with the HEIC to JPG page first." },
         { title: "Leave 20 KB selected", body: "The ceiling is 20480 bytes. Transparency is painted onto white before encoding." },
         { title: "Download and check the note", body: "The note reports the byte size, whether it landed under the ceiling, and any JPEG comment padding." },
       ],
@@ -578,7 +578,7 @@ export const LANDING_PAGES: LandingPage[] = [
         heading: "Scaling is part of hitting 20 KB",
         body: [
           "A detailed photograph often cannot reach 20480 bytes by lowering JPEG quality alone. This page's fixture is 1200 by 800 noise. The measured run scaled it. Your photo may stay full size if it is already simple, or shrink if it is not. The note names the outcome.",
-          "There is no HEIC decoder and no promise of a visually identical thumbnail. 20 KB is a small file for a camera photo.",
+          "This page has no HEIC decoder, so convert an iPhone photo on the HEIC to JPG page first. There is no promise of a visually identical thumbnail. 20 KB is a small file for a camera photo.",
         ],
       },
     ],

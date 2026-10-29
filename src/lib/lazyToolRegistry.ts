@@ -68,6 +68,7 @@ export const lazyToolComponents: Record<string, LazyExoticComponent<ComponentTyp
   "html-jsx-converter": lazyTool("html-jsx-converter", () => import("@/components/tools/implementations/HtmlJsxConverterTool").then((m) => ({ default: m.HtmlJsxConverterTool }))),
   "html-markdown": lazyTool("html-markdown", () => import("@/components/tools/implementations/converters/HtmlMarkdownTool").then((m) => ({ default: m.HtmlMarkdownTool }))),
   "http-request-composer": lazyTool("http-request-composer", () => import("@/components/tools/implementations/HttpRequestComposerTool")),
+  "heic-to-jpg": lazyTool("heic-to-jpg", () => import("@/components/tools/implementations/image/HeicToJpgTool").then((m) => ({ default: m.HeicToJpgTool }))),
   "image-compressor": lazyTool("image-compressor", () => import("@/components/tools/implementations/image/ImageCompressorTool").then((m) => ({ default: m.ImageCompressorTool }))),
   "image-crop": lazyTool("image-crop", () => import("@/components/tools/implementations/image/ImageCropTool").then((m) => ({ default: m.ImageCropTool }))),
   "image-filters": lazyTool("image-filters", () => import("@/components/tools/implementations/image/ImageFiltersTool").then((m) => ({ default: m.ImageFiltersTool }))),
