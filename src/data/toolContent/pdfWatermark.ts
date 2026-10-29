@@ -237,6 +237,11 @@ export const pdfWatermarkContent: Partial<ToolPageContent> = {
 
   related: [
     {
+      name: "Add Page Numbers",
+      path: "/pdf-page-numbers",
+      description: "Print 1 of N on each page alongside the stamp.",
+    },
+    {
       name: "Rotate PDF",
       path: "/pdf-rotate",
       description: "Straighten pages before stamping them.",

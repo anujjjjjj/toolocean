@@ -12,6 +12,7 @@ import { pdfToImagesContent } from "./pdfToImages";
 import { imagesToPdfContent } from "./imagesToPdf";
 import { pdfRotateContent } from "./pdfRotate";
 import { pdfWatermarkContent } from "./pdfWatermark";
+import { pdfPageNumbersContent } from "./pdfPageNumbers";
 import { pdfReorderContent } from "./pdfReorder";
 import { pdfCompressContent } from "./pdfCompress";
 import { pdfSignContent } from "./pdfSign";
@@ -57,6 +58,7 @@ export const TOOL_CONTENT_OVERRIDES: Record<string, Partial<ToolPageContent>> = 
   "images-to-pdf": imagesToPdfContent,
   "pdf-rotate": pdfRotateContent,
   "pdf-watermark": pdfWatermarkContent,
+  "pdf-page-numbers": pdfPageNumbersContent,
   "pdf-reorder": pdfReorderContent,
   "pdf-compress": pdfCompressContent,
   "pdf-sign": pdfSignContent,

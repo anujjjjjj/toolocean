@@ -210,6 +210,11 @@ export const pdfUnlockContent: Partial<ToolPageContent> = {
   ],
   related: [
     {
+      name: "Add Page Numbers",
+      path: "/pdf-page-numbers",
+      description: "Number the pages of the unlocked copy.",
+    },
+    {
       name: "Encrypt PDF",
       path: "/pdf-encrypt",
       description: "Put a password back on, with permission flags, after you have finished editing.",

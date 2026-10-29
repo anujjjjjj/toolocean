@@ -13,7 +13,7 @@ export const PDF_HUB_FAQS: ToolFaqEntry[] = [
   {
     question: "What can I do with a PDF here?",
     answer:
-      "Thirteen tools: merge, split, reorder, rotate, compress, watermark, PDF to images, images to PDF, a visual signature, AES-256 password protection, unlock when you already know the password, an Info and XMP report with a strip option, and AcroForm filling with an optional flatten.",
+      "Fourteen tools: merge, split, reorder, rotate, compress, watermark, page numbers, PDF to images, images to PDF, a visual signature, AES-256 password protection, unlock when you already know the password, an Info and XMP report with a strip option, and AcroForm filling with an optional flatten.",
   },
   {
     question: "Is the signature a certified electronic signature?",

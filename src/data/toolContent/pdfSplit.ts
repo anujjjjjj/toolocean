@@ -250,6 +250,11 @@ export const pdfSplitContent: Partial<ToolPageContent> = {
 
   related: [
     {
+      name: "Add Page Numbers",
+      path: "/pdf-page-numbers",
+      description: "Give an extracted section its own page numbers.",
+    },
+    {
       name: "Merge PDF",
       path: "/pdf-merge",
       description: "Put extracted sections back together into one document.",

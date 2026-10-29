@@ -118,6 +118,7 @@ export const lazyToolComponents: Record<string, LazyExoticComponent<ComponentTyp
   "pdf-to-images": lazyTool("pdf-to-images", () => import("@/components/tools/implementations/pdf/PdfToImagesTool").then((m) => ({ default: m.PdfToImagesTool }))),
   "pdf-unlock": lazyTool("pdf-unlock", () => import("@/components/tools/implementations/pdf/PdfUnlockTool").then((m) => ({ default: m.PdfUnlockTool }))),
   "pdf-watermark": lazyTool("pdf-watermark", () => import("@/components/tools/implementations/pdf/PdfWatermarkTool").then((m) => ({ default: m.PdfWatermarkTool }))),
+  "pdf-page-numbers": lazyTool("pdf-page-numbers", () => import("@/components/tools/implementations/pdf/PdfPageNumbersTool").then((m) => ({ default: m.PdfPageNumbersTool }))),
   "qr-code-generator": lazyTool("qr-code-generator", () => import("@/components/tools/implementations/QrCodeGeneratorTool").then((m) => ({ default: m.QrCodeGeneratorTool }))),
   "regex-generator": lazyTool("regex-generator", () => import("@/components/tools/implementations/RegexGeneratorTool").then((m) => ({ default: m.RegexGeneratorTool }))),
   "regex-tester": lazyTool("regex-tester", () => import("@/components/tools/implementations/RegexTesterTool").then((m) => ({ default: m.RegexTesterTool }))),

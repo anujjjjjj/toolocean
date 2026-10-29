@@ -30,6 +30,7 @@ export function getAllToolsForPalette(): { category: string; tools: PaletteTool[
     { id: "images-to-pdf", name: "Images to PDF", description: "Combine images into PDF", keywords: ["images", "pdf", "combine"], path: "/images-to-pdf", icon: "FileText", category: "PDF Tools" },
     { id: "pdf-rotate", name: "PDF Rotate", description: "Rotate PDF pages", keywords: ["pdf", "rotate"], path: "/pdf-rotate", icon: "RotateCw", category: "PDF Tools" },
     { id: "pdf-watermark", name: "PDF Watermark", description: "Add watermark to PDF", keywords: ["pdf", "watermark"], path: "/pdf-watermark", icon: "Droplets", category: "PDF Tools" },
+    { id: "pdf-page-numbers", name: "PDF Page Numbers", description: "Number PDF pages, skip the cover", keywords: ["pdf", "page numbers", "numbering", "number pages"], path: "/pdf-page-numbers", icon: "ListOrdered", category: "PDF Tools" },
     { id: "pdf-reorder", name: "PDF Page Reorder", description: "Rearrange PDF pages", keywords: ["pdf", "reorder", "pages"], path: "/pdf-reorder", icon: "ArrowUpDown", category: "PDF Tools" },
     { id: "pdf-sign", name: "Sign PDF", description: "Place a visual signature on a page", keywords: ["pdf", "sign", "signature"], path: "/pdf-sign", icon: "PenLine", category: "PDF Tools" },
     { id: "pdf-encrypt", name: "Encrypt PDF", description: "Password-protect a PDF", keywords: ["pdf", "encrypt", "password"], path: "/pdf-encrypt", icon: "Lock", category: "PDF Tools" },
