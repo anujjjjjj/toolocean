@@ -12,9 +12,9 @@ export const imagesToPdfContent: Partial<ToolPageContent> = {
   tier: "A",
 
   seo: {
-    title: "Images to PDF: Combine Photos Into One Document",
+    title: "JPG to PDF Converter – Combine Images, No Upload",
     description:
-      "Turn JPG and PNG images into a single PDF in your browser, in the order you choose. Photos are embedded without re-encoding, so quality is untouched. No uploads.",
+      "JPG to PDF in your browser: add JPG, PNG or WebP images, drag them into order and save one PDF. JPEGs are embedded without re-encoding. Nothing is uploaded.",
     keywords: [
       "images to pdf",
       "jpg to pdf",
@@ -27,7 +27,7 @@ export const imagesToPdfContent: Partial<ToolPageContent> = {
   },
 
   hero: {
-    h1: "Convert Images to a PDF",
+    h1: "JPG to PDF: Combine Images Into One PDF",
     subtitle:
       "Pick several photographs or scans and get one document back, with the pages in the order you arrange them. JPEGs are embedded exactly as they are, so nothing is recompressed on the way in.",
     badges: ["browser-first", "no-uploads", "offline", "free"],
