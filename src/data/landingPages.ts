@@ -769,6 +769,80 @@ export const LANDING_PAGES: LandingPage[] = [
       category: "Image Tools",
     },
   },
+  {
+    slug: "heic-to-png",
+    seo: {
+      title: "HEIC to PNG Converter – Lossless, No Upload",
+      description:
+        "Convert iPhone HEIC photos to PNG in your browser. The decoder runs on your device, photos stay upright, and a batch saves as one ZIP. Nothing is uploaded.",
+      keywords: ["heic to png", "convert heic to png", "iphone photo to png", "heif to png", "heic to png no upload"],
+    },
+    h1: "Convert HEIC to PNG",
+    footerLabel: "HEIC to PNG",
+    lede:
+      "PNG is the choice when an iPhone photo is going into an editor rather than an email. The converter below opens with PNG selected, decodes each HEIC with a WebAssembly build of libheif in this tab, and writes a lossless PNG of the result.",
+    tools: ["heic-to-jpg", "image-format-converter", "image-compressor", "images-to-pdf"],
+    embed: { tool: "heic-to-jpg", format: "png" },
+    howTo: {
+      name: "How to convert HEIC to PNG",
+      steps: [
+        { title: "Drop the HEIC photos", body: "One file or a batch. Each is checked by its first bytes, so a renamed JPEG is reported rather than converted." },
+        { title: "Leave PNG selected", body: "This page starts on PNG. The JPG button is there if a smaller file matters more than editing headroom." },
+        { title: "Save each PNG or a ZIP", body: "Every row has its own download. With two or more finished, one button stores them all in a ZIP." },
+      ],
+    },
+    sections: [
+      {
+        heading: "When PNG beats JPG for an iPhone photo",
+        body: [
+          "A HEIC is already lossy. Turning it into JPG adds a second, small round of loss, and every later save in an editor adds another. PNG adds none: the pixels the decoder produced are stored exactly, so retouching, cropping and saving repeatedly never degrades the picture further.",
+          "That makes PNG the right intermediate for design work, for compositing, and for software that predates HEIC. It is the wrong format for sharing or for an upload form, where JPG does the same job at a fraction of the size.",
+        ],
+      },
+      {
+        heading: "How large the PNG gets",
+        body: [
+          "Measured on the files used for the HEIC converter: a 1280 by 854 photo of 718,114 bytes became a PNG of 2,302,195 bytes, a little over three times the original. A full 3992 by 2992 camera photo of 2,994,394 bytes became 22,586,663 bytes, about seven and a half times larger. Plan for that before converting a whole camera roll.",
+          "Rotation is applied while decoding, so portrait shots come out portrait. Camera EXIF, including GPS position and capture time, is not copied into the PNG, and Live Photo motion stays behind in the original.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is HEIC to PNG lossless?",
+        answer:
+          "The PNG step is. It stores the decoded pixels exactly. The HEIC itself was compressed with loss when the camera saved it, and nothing can restore that, but converting to PNG adds no further loss.",
+      },
+      {
+        question: "Why is the PNG so much bigger than the HEIC?",
+        answer:
+          "HEVC compression in a HEIC is very efficient for photographs, while PNG is designed for exact reproduction. On a 12 megapixel test photo the PNG was about seven and a half times the size of the HEIC.",
+      },
+      {
+        question: "Are my photos uploaded?",
+        answer:
+          "No. The decoder is fetched from this site once, then runs in a worker inside your tab. With it cached, the conversion works in flight mode.",
+      },
+      {
+        question: "Can I switch some photos to JPG instead?",
+        answer:
+          "Yes. Press JPG and the list is redone with the quality slider setting. Press PNG again to go back. The setting applies to every row at once.",
+      },
+    ],
+    related: [
+      { path: "/heic-to-jpg", label: "HEIC to JPG", note: "The full converter page, with measurements for both outputs" },
+      { path: "/webp-to-jpg", label: "WebP to JPG", note: "For WebP images a form or program will not accept" },
+      { path: "/image-format-converter", label: "Image format converter", note: "Move the PNG on to WebP or JPG later" },
+      { path: "/image-tools", label: "All image tools", note: "Every image page on this site" },
+    ],
+    palette: {
+      name: "HEIC to PNG",
+      description: "iPhone HEIC photos to lossless PNG",
+      keywords: ["heic", "heif", "png", "iphone", "heic to png", "convert"],
+      icon: "Smartphone",
+      category: "Image Tools",
+    },
+  },
 ];
 
 export const LANDING_PAGE_PATHS = LANDING_PAGES.map((page) => `/${page.slug}`);
