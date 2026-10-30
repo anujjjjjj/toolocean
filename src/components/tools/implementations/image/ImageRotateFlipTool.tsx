@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Upload, Download, RotateCcw, RotateCw, FlipHorizontal, FlipVertical } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { markToolSuccess } from "@/lib/toolResult";
 import { readImageFiles } from "@/lib/image/readImageFiles";
 
 export function ImageRotateFlipTool() {
@@ -52,6 +53,7 @@ export function ImageRotateFlipTool() {
     a.href = renderToCanvas().toDataURL("image/png");
     a.download = "transformed.png";
     a.click();
+    markToolSuccess(a.href);
   };
 
   const previewStyle: React.CSSProperties = {

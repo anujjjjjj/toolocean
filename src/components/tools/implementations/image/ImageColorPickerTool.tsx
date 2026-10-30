@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Upload, Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { markToolSuccess } from "@/lib/toolResult";
 import { readImageFiles } from "@/lib/image/readImageFiles";
 
 interface PickedColor {
@@ -106,6 +107,7 @@ export function ImageColorPickerTool() {
       hsl: rgbToHsl(r, g, b),
     };
     setPicked(color);
+    markToolSuccess(bitmapRef.current);
     setHistory((h) => [color, ...h.slice(0, 19)]);
   };
 

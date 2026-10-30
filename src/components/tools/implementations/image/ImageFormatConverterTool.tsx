@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Upload, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { readImageFiles } from "@/lib/image/readImageFiles";
+import { markToolSuccess } from "@/lib/toolResult";
 
 const FORMATS = [
   { value: "image/png", label: "PNG" },
@@ -12,9 +13,17 @@ const FORMATS = [
   { value: "image/webp", label: "WebP" },
 ] as const;
 
-export function ImageFormatConverterTool() {
+type OutputFormat = (typeof FORMATS)[number]["value"];
+
+export interface ImageFormatConverterPreset {
+  /** Output format selected when the tool opens. Landing pages set this, e.g. WebP to JPG. */
+  output?: OutputFormat;
+}
+
+export function ImageFormatConverterTool({ preset }: { preset?: ImageFormatConverterPreset } = {}) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [format, setFormat] = useState<(typeof FORMATS)[number]["value"]>("image/png");
+  const [sourceName, setSourceName] = useState("converted");
+  const [format, setFormat] = useState<OutputFormat>(preset?.output ?? "image/jpeg");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -29,6 +38,7 @@ export function ImageFormatConverterTool() {
       return;
     }
     setImageUrl(URL.createObjectURL(accepted[0]));
+    setSourceName(accepted[0].name.replace(/\.[^.]+$/, "") || "converted");
   };
 
   const convertAndDownload = () => {
@@ -39,6 +49,12 @@ export function ImageFormatConverterTool() {
       canvas.width = img.width;
       canvas.height = img.height;
       const ctx = canvas.getContext("2d")!;
+      // JPEG has no alpha. Unpainted canvas pixels would encode as black, so a
+      // transparent PNG or WebP is laid on white first.
+      if (format === "image/jpeg") {
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
       ctx.drawImage(img, 0, 0);
       const ext = format === "image/png" ? "png" : format === "image/jpeg" ? "jpg" : "webp";
       const quality = format === "image/jpeg" || format === "image/webp" ? 0.92 : undefined;
@@ -47,9 +63,10 @@ export function ImageFormatConverterTool() {
           if (!blob) return;
           const a = document.createElement("a");
           a.href = URL.createObjectURL(blob);
-          a.download = `converted.${ext}`;
+          a.download = `${sourceName}.${ext}`;
           a.click();
           URL.revokeObjectURL(a.href);
+          markToolSuccess(blob);
           toast({ title: "Downloaded", description: `Converted to ${ext.toUpperCase()}` });
         },
         format,
@@ -62,7 +79,7 @@ export function ImageFormatConverterTool() {
   return (
     <div className="space-y-6">
       <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileSelect} />
-      <Button onClick={() => fileInputRef.current?.click()} variant="outline">
+      <Button onClick={() => fileInputRef.current?.click()} variant="outline" data-analytics-label="Select Image">
         <Upload className="h-4 w-4 mr-2" />
         Select Image
       </Button>

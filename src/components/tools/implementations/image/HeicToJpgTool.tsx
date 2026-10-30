@@ -57,9 +57,14 @@ function save(blob: Blob, name: string) {
   window.setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
-export function HeicToJpgTool() {
+export interface HeicPreset {
+  /** Output selected when the tool opens. /heic-to-png sets "png". */
+  format?: HeicOutputFormat;
+}
+
+export function HeicToJpgTool({ preset }: { preset?: HeicPreset } = {}) {
   const [items, setItems] = useState<Item[]>([]);
-  const [format, setFormat] = useState<HeicOutputFormat>("jpg");
+  const [format, setFormat] = useState<HeicOutputFormat>(preset?.format ?? "jpg");
   const [quality, setQuality] = useState(DEFAULT_JPG_QUALITY);
   /* The slider moves freely; conversion uses the value it was released at. */
   const [committedQuality, setCommittedQuality] = useState(DEFAULT_JPG_QUALITY);
@@ -92,6 +97,8 @@ export function HeicToJpgTool() {
   const pump = useCallback(async () => {
     if (running.current) return;
     running.current = true;
+    /* One success signal per pass, however many photos it converted. */
+    let converted = 0;
     try {
       for (;;) {
         if (!mounted.current) return;
@@ -121,7 +128,7 @@ export function HeicToJpgTool() {
             note: decoded.images > 1 ? `This file holds ${decoded.images} images. The main photo was converted.` : null,
           };
           patch(item.id, { status: key === keyRef.current ? "done" : "waiting", output, error: null });
-          markToolSuccess();
+          converted += 1;
         } catch (error) {
           const reason = (error as { reason?: string }).reason;
           const message =
@@ -140,6 +147,7 @@ export function HeicToJpgTool() {
     } finally {
       running.current = false;
     }
+    if (converted > 0 && mounted.current) markToolSuccess();
   }, [patch]);
 
   useEffect(() => {

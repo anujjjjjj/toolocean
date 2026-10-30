@@ -1,5 +1,5 @@
 /**
- * Umami Cloud, cookieless page views only.
+ * Umami Cloud: cookieless page views, plus one custom event, `tool-run`.
  *
  * The tracker is a deferred script in index.html. That file is the shell for
  * every prerendered page, so one tag covers the site. It is placed after the
@@ -163,8 +163,14 @@ function isBrowser(): boolean {
 }
 
 type UmamiTracker = {
-  track: (update: (props: Record<string, string>) => Record<string, string>) => void;
+  track(update: (props: Record<string, string>) => Record<string, string>): void;
+  track(event: string, data?: Record<string, string>): void;
 };
+
+function tracker(): UmamiTracker | undefined {
+  const umami = (window as Window & { umami?: UmamiTracker }).umami;
+  return umami && typeof umami.track === "function" ? umami : undefined;
+}
 
 /**
  * The deferred tag records the document that loaded it. useSEO also calls this
@@ -182,7 +188,31 @@ export function trackUmamiPageview(path: string, title: string): void {
     landingViewLeftToScript = true;
     return;
   }
-  const umami = (window as Window & { umami?: UmamiTracker }).umami;
+  const umami = tracker();
   if (!umami) return;
   umami.track((props) => ({ ...props, url: path, title }));
+}
+
+/**
+ * Fired when a tool finishes processing input, never on a page view. The data
+ * is the tool id and the route slug; they differ on a landing page that embeds
+ * a tool (tool "image-compressor", slug "compress-image-to-20kb").
+ * src/lib/toolRunEvent.ts decides when to send it.
+ */
+export const TOOL_RUN_EVENT = "tool-run";
+
+/**
+ * Custom event. Only static ids belong in `data`, never tool input or a file
+ * name. A no-op when the tag is blocked or has not loaded, and a tracker that
+ * throws is ignored so a tool's success path cannot fail on analytics.
+ */
+export function trackUmamiEvent(name: string, data: Record<string, string>): void {
+  if (!isBrowser()) return;
+  const umami = tracker();
+  if (!umami) return;
+  try {
+    umami.track(name, data);
+  } catch {
+    /* Analytics must not break the tool. */
+  }
 }

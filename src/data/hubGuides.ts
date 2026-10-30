@@ -51,6 +51,12 @@ export const HUB_GUIDES: Record<string, HubGuideContent> = {
         limit: "Those three formats. HEIC has its own converter. No AVIF.",
       },
       {
+        task: "WebP a form will not take",
+        tool: "WebP to JPG",
+        path: "/webp-to-jpg",
+        limit: "The format converter opened on JPG. Transparent areas become white.",
+      },
+      {
         task: "Open an iPhone photo",
         tool: "HEIC to JPG",
         path: "/heic-to-jpg",

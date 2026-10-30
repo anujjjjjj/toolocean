@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Upload, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { markToolSuccess } from "@/lib/toolResult";
 import { readImageFiles } from "@/lib/image/readImageFiles";
 
 /** Formats a canvas can actually encode. Anything else is written as PNG. */
@@ -129,6 +130,7 @@ export function ImageResizerTool() {
       a.download = `resized-${width}x${height}.${EXTENSION[sourceType] ?? "png"}`;
       a.click();
       URL.revokeObjectURL(a.href);
+      markToolSuccess(body);
       toast({
         title: "Downloaded",
         description: `${width}x${height}, ${formatBytes(blob.size)}`,

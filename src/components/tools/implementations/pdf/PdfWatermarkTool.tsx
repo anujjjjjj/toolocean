@@ -7,6 +7,7 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Upload, Download, FileText, Loader2, Droplets } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { markToolSuccess } from "@/lib/toolResult";
 export function PdfWatermarkTool() {
     const [pdfFile, setPdfFile] = useState<File | null>(null);
     const [pageCount, setPageCount] = useState(0);
@@ -132,6 +133,7 @@ export function PdfWatermarkTool() {
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+            markToolSuccess(blob);
 
             toast({
                 title: "Watermark applied successfully",

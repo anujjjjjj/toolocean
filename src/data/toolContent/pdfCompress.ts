@@ -10,9 +10,9 @@ import { MEASURED_S1 } from "./shared";
 export const pdfCompressContent: Partial<ToolPageContent> = {
   tier: "A",
   seo: {
-    title: "Compress a PDF Offline, With an Honest Result",
+    title: "Compress PDF Online Free, Without Uploading",
     description:
-      "Shrink a scanned PDF by re-encoding pages as JPEG, or strip metadata without touching the pages. The tool refuses a download that would be larger than the original.",
+      "Compress PDF online free, in your browser. Re-encode scanned pages as JPEG or strip metadata and keep the pages. A result larger than the original is refused.",
     keywords: [
       "compress pdf",
       "reduce pdf size",
@@ -22,10 +22,10 @@ export const pdfCompressContent: Partial<ToolPageContent> = {
       "make pdf smaller",
     ],
     datePublished: "2026-09-17",
-    dateModified: "2026-10-08",
+    dateModified: "2026-10-30",
   },
   hero: {
-    h1: "Compress a PDF",
+    h1: "Compress PDF Online Free",
     subtitle:
       "Two different operations live on this page. One strips document metadata and leaves the pages alone. The other redraws every page as a JPEG, which is what actually shrinks a scan, and what ruins a text document.",
     badges: ["browser-first", "no-uploads", "offline", "free"],

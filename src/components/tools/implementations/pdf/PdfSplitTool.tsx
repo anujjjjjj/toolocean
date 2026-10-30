@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Upload, Download, FileText, Loader2, Scissors } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { markToolSuccess } from "@/lib/toolResult";
 export function PdfSplitTool() {
     const [pdfFile, setPdfFile] = useState<File | null>(null);
     const [pageCount, setPageCount] = useState(0);
@@ -105,6 +106,7 @@ export function PdfSplitTool() {
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+            markToolSuccess(blob);
 
             toast({
                 title: "PDF split successfully",

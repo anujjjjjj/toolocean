@@ -7,6 +7,7 @@ import { Download, FileText, Loader2, LockOpen, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { downloadPdf, pdfDownloadName } from "@/lib/pdf/downloadPdf";
 import { isPdfPasswordRejected } from "@/lib/pdf/pdfErrors";
+import { markToolSuccess } from "@/lib/toolResult";
 import type { EncryptionInspection, PreservedPdfInfo } from "@/lib/pdf/unlockPdf";
 
 const COPY: Record<EncryptionInspection, { title: string; body: string }> = {
@@ -70,6 +71,7 @@ export function PdfUnlockTool() {
             const { unlockPdf } = await import("@/lib/pdf/unlockPdf");
             const unlocked = await unlockPdf(bytes, attempt, preserved);
             downloadPdf(unlocked, pdfDownloadName(file.name, "unlocked"));
+            markToolSuccess(unlocked);
             toast({
                 title: "Protection removed",
                 description: "The download opens without a password. Info fields that could be read were copied back onto it.",

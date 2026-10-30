@@ -12,13 +12,14 @@ export const imageFormatConverterContent: Partial<ToolPageContent> = {
   tier: "A",
 
   seo: {
-    title: "Convert Image Format: PNG, JPEG and WebP",
+    title: "PNG to JPG Converter (and WebP) – No Upload",
     description:
-      "Convert between PNG, JPEG and WebP in your browser. WebP came out 18 percent smaller than JPEG on the same photograph, measured. Nothing is uploaded.",
+      "PNG to JPG in your browser, plus WebP to JPG, JPG to PNG and WebP output. Transparent areas are filled with white in a JPG, never black. Nothing is uploaded.",
     keywords: [
       "convert image format",
       "png to webp",
       "png to jpg",
+      "webp to jpg",
       "jpg to png",
       "convert image without uploading",
       "webp converter online",
@@ -27,7 +28,7 @@ export const imageFormatConverterContent: Partial<ToolPageContent> = {
   },
 
   hero: {
-    h1: "Convert Between Image Formats",
+    h1: "PNG to JPG Converter, Plus JPG to PNG and WebP",
     subtitle:
       "Move an image between PNG, JPEG and WebP without uploading it. Each format is good at something different, and picking the wrong one can multiply your file size rather than reduce it.",
     badges: ["browser-first", "no-uploads", "offline", "free"],
@@ -197,7 +198,7 @@ export const imageFormatConverterContent: Partial<ToolPageContent> = {
       {
         title: "Transparency is lost when converting to JPEG",
         body:
-          "JPEG has no alpha channel, so transparent regions are flattened during conversion. A logo intended to sit on a coloured background will come back with a background of its own.",
+          "JPEG has no alpha channel, so transparent regions are flattened onto white during conversion. A logo intended to sit on a coloured background will come back on a white square of its own.",
       },
       {
         title: "Quality is fixed at 0.92 for lossy output",

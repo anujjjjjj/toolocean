@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Upload, FileText, Loader2, Image, Download, X, Package } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { markToolSuccess } from "@/lib/toolResult";
 import { Slider } from "@/components/ui/slider";
 import {
     Select,
@@ -180,6 +181,7 @@ export function PdfToImagesTool() {
             }
 
             setConvertedImages(converted);
+            markToolSuccess(converted);
 
             toast({
                 title: "Conversion successful",

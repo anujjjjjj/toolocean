@@ -34,6 +34,13 @@ export interface LandingComparisonRow {
   us: string;
 }
 
+/** A working tool rendered at the top of the page, opened on a preset. */
+export type LandingEmbed =
+  | { tool: "image-compressor" | "pdf-compress"; targetBytes: number }
+  | { tool: "image-format-converter"; output: "image/jpeg" | "image/png" | "image/webp" }
+  | { tool: "heic-to-jpg"; format: "jpg" | "png" }
+  | { tool: "pdf-unlock" };
+
 export interface LandingPage {
   /** Root-level path segment, e.g. "merge-pdf-without-uploading". */
   slug: string;
@@ -57,8 +64,15 @@ export interface LandingPage {
     rows: LandingComparisonRow[];
   };
   faqs: ToolFaqEntry[];
-  /** When set, the page renders that tool with the ceiling already chosen. */
-  embed?: { tool: "image-compressor" | "pdf-compress"; targetBytes: number };
+  /** When set, the page renders that tool with its preset already chosen. */
+  embed?: LandingEmbed;
+  /**
+   * Sibling pages and the hub, shown under the tool cards. `tools` only takes
+   * catalog slugs; this is for landing pages and category listings too.
+   */
+  related?: { path: string; label: string; note: string }[];
+  /** Command palette entry. Pages without one stay out of the palette. */
+  palette?: { name: string; description: string; keywords: string[]; icon: string; category: string };
   /** Key in targetSizeMeasurements.json. The visible byte counts are read from that file. */
   measurementKey?: string;
   howTo?: { name: string; steps: { title: string; body: string }[] };
@@ -554,14 +568,20 @@ export const LANDING_PAGES: LandingPage[] = [
   {
     slug: "compress-image-to-20kb",
     seo: {
-      title: "Compress Image to 20 KB – No Upload",
+      title: "Compress Image to 20 KB for Exam & Form Photos",
       description:
-        "Shrink a JPEG toward 20 KB in the browser. Quality is searched, then the picture is scaled if it still will not fit. 1 KB is 1024 bytes. Nothing is uploaded.",
-      keywords: ["compress image to 20kb", "reduce image to 20kb", "jpeg under 20 kb"],
+        "Compress a photo or signature to 20 KB for exam and government application forms. Runs in your browser, 1 KB is 1024 bytes, and nothing is uploaded.",
+      keywords: [
+        "compress image to 20kb",
+        "photo 20kb for exam form",
+        "signature 20kb",
+        "reduce photo size for application form",
+        "jpeg under 20 kb",
+      ],
     },
     h1: "Compress an image to 20 KB",
     footerLabel: "Image to 20 KB",
-    lede: "20 KB is 20,480 bytes. The compressor opens on that chip and writes JPEG unless you switch it to WebP. A noisy 1200 by 800 fixture had to be scaled down before it fit.",
+    lede: "Online exam and government application forms often want a photo or signature no larger than 20 KB. That is 20,480 bytes here. The compressor opens on that chip and writes JPEG unless you switch it to WebP. A noisy 1200 by 800 fixture had to be scaled down before it fit.",
     tools: ["image-compressor"],
     embed: { tool: "image-compressor", targetBytes: 20 * 1024 },
     measurementKey: "compress-image-to-20kb",
@@ -574,6 +594,14 @@ export const LANDING_PAGES: LandingPage[] = [
       ],
     },
     sections: [
+      {
+        heading: "Photo and signature limits on application forms",
+        body: [
+          "Many online application forms, for exams, recruitment, scholarships and government services, cap the photograph at somewhere between 20 KB and 50 KB and the scanned signature at 10 KB to 20 KB. Some also set a minimum, and many fix the pixel dimensions or ask for a plain light background. The numbers differ from form to form and change between years, so check the notice for the form you are filling in rather than trusting a figure from anywhere else, including this page.",
+          "For a size cap, keep the 20 KB chip or type the form's own figure into the custom box, for example 15 KB or 50 KB. For a minimum, put it in the minimum field: a JPEG that would land below it is padded with comment bytes so it clears the floor, and the note says by how much. If the form also fixes width and height, set those in the resizer first and compress the resized file, so the size search does not change the dimensions you just chose.",
+          "A signature scan is usually small already once it is cropped tightly. Crop away the empty paper around the ink before compressing; less blank area means more of the byte budget goes to the strokes themselves.",
+        ],
+      },
       {
         heading: "Scaling is part of hitting 20 KB",
         body: [
@@ -590,6 +618,18 @@ export const LANDING_PAGES: LandingPage[] = [
       {
         question: "What does the padding note mean?",
         answer: "Only if you set a minimum and the JPEG would have been smaller than that floor. Comment bytes are added and counted in the note. The 20 KB fixture did not use a minimum.",
+      },
+      {
+        question: "What size should my exam form photo and signature be?",
+        answer: "Use the figures in your form's own notice. As a general pattern, many online application forms cap photos at 20 KB to 50 KB and signatures at 10 KB to 20 KB, and some set a minimum too. Type the exact ceiling into the custom box if it is not 20 KB.",
+      },
+      {
+        question: "My file is 20 KB here but the form still rejects it. Why?",
+        answer: "This page counts 1 KB as 1024 bytes, so 20 KB is 20,480 bytes. A form that counts in thousands stops at 20,000. If you cannot tell which the form uses, type 19 KB into the custom box. That lands under both readings.",
+      },
+      {
+        question: "Does the form portal see my photo before I upload it there?",
+        answer: "No. This page compresses on your device and sends nothing. The only upload is the one you make yourself on the form's website, with the smaller file.",
       },
     ],
   },
@@ -674,6 +714,245 @@ export const LANDING_PAGES: LandingPage[] = [
         answer: "Yes. A JPEG under that floor is padded with comment bytes, and the padding is included in the reported size. It will not pad past the ceiling.",
       },
     ],
+  },
+  {
+    slug: "webp-to-jpg",
+    seo: {
+      title: "WebP to JPG Converter – Free, No Upload",
+      description:
+        "Convert WebP to JPG in your browser. The converter opens with JPG selected, fills transparent areas with white and keeps the pixel size. Nothing is uploaded.",
+      keywords: ["webp to jpg", "convert webp to jpg", "webp to jpeg", "webp converter no upload", "save webp as jpg"],
+    },
+    h1: "Convert WebP to JPG",
+    footerLabel: "WebP to JPG",
+    lede:
+      "Browsers and many websites now hand out pictures as .webp, and a lot of desktop software and upload forms still turn them away. The converter below already has JPG chosen as the output: pick the WebP and download a .jpg with the same width and height.",
+    tools: ["image-format-converter", "image-compressor", "image-resizer", "heic-to-jpg"],
+    embed: { tool: "image-format-converter", output: "image/jpeg" },
+    howTo: {
+      name: "How to convert WebP to JPG",
+      steps: [
+        { title: "Pick the .webp file", body: "Drop it on the box or browse to it. Your browser decodes it inside this tab." },
+        { title: "Keep JPEG as the output", body: "This page opens with JPEG selected. PNG and WebP are still in the menu if you change your mind." },
+        { title: "Download the JPG", body: "The file keeps its original name with a .jpg extension and is written at quality 0.92." },
+      ],
+    },
+    sections: [
+      {
+        heading: "Where the WebP files come from",
+        body: [
+          "Right-clicking an image and choosing Save often produces a .webp now, because sites serve WebP to any browser that asks for it. Phone screenshots shared through some chat apps arrive the same way. The file is fine; the problem is the next program in the chain. An older photo editor, a print kiosk, a job portal or a council form may only list JPG and PNG.",
+          "JPG is the safe interchange choice for a photograph. Every operating system previews it, every form that accepts pictures accepts it, and every printer driver understands it.",
+        ],
+      },
+      {
+        heading: "What changes inside the file",
+        body: [
+          "The WebP is drawn onto a canvas at its natural size and encoded again as JPEG at quality 0.92. JPEG cannot store transparency, so this converter paints a white background first. Without that step the transparent pixels would come out black, which is what a bare canvas export does.",
+          "Expect the JPG to be somewhat larger than the WebP. When one photograph was encoded both ways at 0.92 for the format converter's measurements, the JPEG came out about 22 percent heavier. If a form has a size cap as well as a format rule, run the JPG through the compressor afterwards.",
+          "Only pixels survive the trip. EXIF fields such as camera model and GPS position are not written into the JPG, and an animated WebP becomes a still of its first frame.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is the WebP uploaded to convert it?",
+        answer:
+          "No. Decoding and encoding both happen in your browser's canvas. You can load the page, switch off the network, and the conversion still completes, which a server-based converter could not do.",
+      },
+      {
+        question: "Why did my transparent WebP get a white background?",
+        answer:
+          "JPG has no alpha channel, so something has to fill the see-through areas. White is what most people expect on a document or form. If you need the transparency kept, switch the output to PNG instead.",
+      },
+      {
+        question: "Will the JPG lose quality compared with the WebP?",
+        answer:
+          "A little, in principle, because every lossy encode discards some detail. At quality 0.92 the difference is very hard to see on a photograph. Converting does not recover anything the WebP encoder already removed.",
+      },
+      {
+        question: "Can I convert a folder of WebP images at once?",
+        answer:
+          "Not on this page. The converter handles one picture per download, which suits the usual case of a single image a form refused. For many files, a desktop batch tool will be quicker.",
+      },
+      {
+        question: "Does an animated WebP stay animated?",
+        answer:
+          "No. The picture is drawn once, so only the first frame becomes the JPG. JPG has no animation support of its own.",
+      },
+    ],
+    related: [
+      { path: "/image-format-converter", label: "Image format converter", note: "The same tool with every direction between PNG, JPG and WebP" },
+      { path: "/heic-to-jpg", label: "HEIC to JPG", note: "For iPhone photos, which this converter cannot decode" },
+      { path: "/compress-image-to-20kb", label: "Compress an image to 20 KB", note: "When the form also caps the file size" },
+      { path: "/image-tools", label: "All image tools", note: "Resize, crop, compress and convert in the browser" },
+    ],
+    palette: {
+      name: "WebP to JPG",
+      description: "Convert a WebP image to JPG",
+      keywords: ["webp", "jpg", "jpeg", "convert", "webp to jpg"],
+      icon: "Repeat",
+      category: "Image Tools",
+    },
+  },
+  {
+    slug: "heic-to-png",
+    seo: {
+      title: "HEIC to PNG Converter – Lossless, No Upload",
+      description:
+        "Convert iPhone HEIC photos to PNG in your browser. The decoder runs on your device, photos stay upright, and a batch saves as one ZIP. Nothing is uploaded.",
+      keywords: ["heic to png", "convert heic to png", "iphone photo to png", "heif to png", "heic to png no upload"],
+    },
+    h1: "Convert HEIC to PNG",
+    footerLabel: "HEIC to PNG",
+    lede:
+      "PNG is the choice when an iPhone photo is going into an editor rather than an email. The converter below opens with PNG selected, decodes each HEIC with a WebAssembly build of libheif in this tab, and writes a lossless PNG of the result.",
+    tools: ["heic-to-jpg", "image-format-converter", "image-compressor", "images-to-pdf"],
+    embed: { tool: "heic-to-jpg", format: "png" },
+    howTo: {
+      name: "How to convert HEIC to PNG",
+      steps: [
+        { title: "Drop the HEIC photos", body: "One file or a batch. Each is checked by its first bytes, so a renamed JPEG is reported rather than converted." },
+        { title: "Leave PNG selected", body: "This page starts on PNG. The JPG button is there if a smaller file matters more than editing headroom." },
+        { title: "Save each PNG or a ZIP", body: "Every row has its own download. With two or more finished, one button stores them all in a ZIP." },
+      ],
+    },
+    sections: [
+      {
+        heading: "When PNG beats JPG for an iPhone photo",
+        body: [
+          "A HEIC is already lossy. Turning it into JPG adds a second, small round of loss, and every later save in an editor adds another. PNG adds none: the pixels the decoder produced are stored exactly, so retouching, cropping and saving repeatedly never degrades the picture further.",
+          "That makes PNG the right intermediate for design work, for compositing, and for software that predates HEIC. It is the wrong format for sharing or for an upload form, where JPG does the same job at a fraction of the size.",
+        ],
+      },
+      {
+        heading: "How large the PNG gets",
+        body: [
+          "Measured on the files used for the HEIC converter: a 1280 by 854 photo of 718,114 bytes became a PNG of 2,302,195 bytes, a little over three times the original. A full 3992 by 2992 camera photo of 2,994,394 bytes became 22,586,663 bytes, about seven and a half times larger. Plan for that before converting a whole camera roll.",
+          "Rotation is applied while decoding, so portrait shots come out portrait. Camera EXIF, including GPS position and capture time, is not copied into the PNG, and Live Photo motion stays behind in the original.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is HEIC to PNG lossless?",
+        answer:
+          "The PNG step is. It stores the decoded pixels exactly. The HEIC itself was compressed with loss when the camera saved it, and nothing can restore that, but converting to PNG adds no further loss.",
+      },
+      {
+        question: "Why is the PNG so much bigger than the HEIC?",
+        answer:
+          "HEVC compression in a HEIC is very efficient for photographs, while PNG is designed for exact reproduction. On a 12 megapixel test photo the PNG was about seven and a half times the size of the HEIC.",
+      },
+      {
+        question: "Are my photos uploaded?",
+        answer:
+          "No. The decoder is fetched from this site once, then runs in a worker inside your tab. With it cached, the conversion works in flight mode.",
+      },
+      {
+        question: "Can I switch some photos to JPG instead?",
+        answer:
+          "Yes. Press JPG and the list is redone with the quality slider setting. Press PNG again to go back. The setting applies to every row at once.",
+      },
+    ],
+    related: [
+      { path: "/heic-to-jpg", label: "HEIC to JPG", note: "The full converter page, with measurements for both outputs" },
+      { path: "/webp-to-jpg", label: "WebP to JPG", note: "For WebP images a form or program will not accept" },
+      { path: "/image-format-converter", label: "Image format converter", note: "Move the PNG on to WebP or JPG later" },
+      { path: "/image-tools", label: "All image tools", note: "Every image page on this site" },
+    ],
+    palette: {
+      name: "HEIC to PNG",
+      description: "iPhone HEIC photos to lossless PNG",
+      keywords: ["heic", "heif", "png", "iphone", "heic to png", "convert"],
+      icon: "Smartphone",
+      category: "Image Tools",
+    },
+  },
+  {
+    slug: "remove-password-from-bank-statement-pdf",
+    seo: {
+      title: "Remove Password from Bank Statement PDF, No Upload",
+      description:
+        "Unlock a bank or credit card statement PDF with the password you already have, inside your browser. Nothing is uploaded, and unknown passwords are not cracked.",
+      keywords: [
+        "remove password from bank statement pdf",
+        "unlock bank statement pdf",
+        "credit card statement pdf password remove",
+        "bank statement pdf password",
+        "unlock statement pdf no upload",
+      ],
+    },
+    h1: "Remove the password from a bank statement PDF",
+    footerLabel: "Unlock a bank statement PDF",
+    lede:
+      "Statements from banks and card issuers often arrive as password-protected PDFs. If you know the password, the tool below opens the file once and saves a copy that no longer asks for it. It runs in this tab, and it does not guess passwords you do not have.",
+    tools: ["pdf-unlock", "pdf-merge", "pdf-encrypt", "pdf-compress"],
+    embed: { tool: "pdf-unlock" },
+    howTo: {
+      name: "How to remove the password from a statement PDF",
+      steps: [
+        { title: "Choose the statement", body: "Pick the PDF your bank or card issuer sent. The page reports whether it needs a password to open." },
+        { title: "Type the password you were given", body: "Enter it exactly as the bank's email or website describes. One attempt is made per press." },
+        { title: "Download the unlocked copy", body: "A new file ending in -unlocked is saved. It opens in any viewer without a prompt." },
+      ],
+    },
+    sections: [
+      {
+        heading: "Where the statement password usually comes from",
+        body: [
+          "Banks set these passwords so a statement sent by email is not readable by whoever else sees the inbox. The password is often built from details the bank already holds about you: a date of birth written in a fixed pattern, the first letters of your name, or part of a customer ID, PAN or account number. Some combine two of those.",
+          "The exact rule varies by bank and sometimes by statement type, so read the instructions rather than guessing. They are normally in the email that carried the PDF, on the statement page of your online banking, or in the bank's help pages. Unlocking on your own device is useful when you need the file in a tool that cannot handle encryption: an accounting package, a loan or visa application portal, or a merge with other months.",
+        ],
+      },
+      {
+        heading: "What this page will not do",
+        body: [
+          "It will not find a password you do not know. There is no wordlist, no list of common bank formats, and no repeated guessing. A wrong entry fails once and nothing else is tried. If the format escapes you, your bank can tell you how its statement passwords are formed.",
+          "Once unlocked, the copy is an ordinary PDF that anyone can open. Store it where you keep other financial records, and if you need to send it on, consider protecting it again with a password of your own on the Encrypt PDF page.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "What is the password for my bank statement PDF?",
+        answer:
+          "Only your bank can say for certain, and this page has no way to look it up. It is often a combination such as your date of birth with part of your name, or a customer ID or PAN. The email or online banking page that delivered the statement normally explains the format.",
+      },
+      {
+        question: "Can this crack the password if I have forgotten it?",
+        answer:
+          "No. The tool makes exactly one attempt with the password you type. It cannot recover, search for, or bypass an unknown password. Ask the bank to explain the format, or download a fresh copy from online banking.",
+      },
+      {
+        question: "Is my statement or password sent anywhere?",
+        answer:
+          "No. The PDF and the password are used only by code running in this tab. The password is not stored or sent to analytics. Open your browser's network panel while unlocking and you will see no upload.",
+      },
+      {
+        question: "Can I combine a year of statements into one PDF?",
+        answer:
+          "Yes. Unlock each month here first, because the merge tool cannot read an encrypted file. Then put the unlocked copies through [PDF Merge](/pdf-merge) in date order.",
+      },
+      {
+        question: "Will the unlocked copy be accepted wherever the original was?",
+        answer:
+          "The pages and text are identical. If the statement carries a digital signature, though, rewriting the file means that signature will no longer validate. Keep the original locked PDF for anyone who needs to verify it.",
+      },
+    ],
+    related: [
+      { path: "/pdf-unlock", label: "Unlock PDF", note: "The general tool, including owner restrictions on files that already open" },
+      { path: "/merge-pdf-without-uploading", label: "Merge PDFs without uploading", note: "Join several unlocked statements" },
+      { path: "/compress-pdf-to-200kb", label: "Compress a PDF to 200 KB", note: "For portals that cap the upload size" },
+      { path: "/pdf-tools", label: "All PDF tools", note: "Every PDF page on this site" },
+    ],
+    palette: {
+      name: "Unlock bank statement PDF",
+      description: "Remove a statement password you already know",
+      keywords: ["bank", "statement", "credit card", "pdf", "password", "unlock", "remove"],
+      icon: "LockOpen",
+      category: "PDF Tools",
+    },
   },
 ];
 

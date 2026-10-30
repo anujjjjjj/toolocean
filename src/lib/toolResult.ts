@@ -1,13 +1,28 @@
 const EVENT = "toolocean-result";
 
-/** Tools call this after a successful result. The tip jar listens; nothing else does. */
-export function markToolSuccess() {
-  if (typeof window === "undefined") return;
-  window.dispatchEvent(new Event(EVENT));
+export interface ToolSuccessDetail {
+  /**
+   * Optional identity for the result. Two signals with the same key are one
+   * run: a convert followed by a download of that same output, say. It stays
+   * in the page and is never sent anywhere.
+   */
+  runKey?: unknown;
 }
 
-export function subscribeToolSuccess(listener: () => void) {
+/**
+ * Tools call this once a result exists: a file was written or output produced.
+ * Never call it from a failure path, on mount, or for a page view. The tip jar
+ * and the `tool-run` analytics event (src/lib/toolRunEvent.ts) listen.
+ */
+export function markToolSuccess(runKey?: unknown) {
+  if (typeof window === "undefined") return;
+  const detail: ToolSuccessDetail = { runKey };
+  window.dispatchEvent(new CustomEvent<ToolSuccessDetail>(EVENT, { detail }));
+}
+
+export function subscribeToolSuccess(listener: (runKey: unknown) => void) {
   if (typeof window === "undefined") return () => {};
-  window.addEventListener(EVENT, listener);
-  return () => window.removeEventListener(EVENT, listener);
+  const handler = (event: Event) => listener((event as CustomEvent<ToolSuccessDetail>).detail?.runKey);
+  window.addEventListener(EVENT, handler);
+  return () => window.removeEventListener(EVENT, handler);
 }

@@ -75,14 +75,11 @@ export function CsvJsonConverterTool() {
     }
 
     try {
-      if (mode === "csv-to-json") {
-        const result = csvToJson(input, delimiter, hasHeader);
-        setOutput(JSON.stringify(result, null, 2));
-      } else {
-        const result = jsonToCsv(input, delimiter);
-        setOutput(result);
-      }
-      markToolSuccess();
+      const next =
+        mode === "csv-to-json" ? JSON.stringify(csvToJson(input, delimiter, hasHeader), null, 2) : jsonToCsv(input, delimiter);
+      setOutput(next);
+      // Keyed by the output so downloading this same result is not a second run.
+      markToolSuccess(next);
     } catch (error) {
       toast({
         title: "Conversion Error",
@@ -124,7 +121,7 @@ export function CsvJsonConverterTool() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     
-    markToolSuccess();
+    markToolSuccess(output);
     toast({
       title: "File downloaded",
       description: `converted.${extension} has been downloaded`,

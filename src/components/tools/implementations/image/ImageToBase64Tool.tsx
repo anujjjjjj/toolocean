@@ -4,6 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Upload, Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { markToolSuccess } from "@/lib/toolResult";
 import { readImageFiles } from "@/lib/image/readImageFiles";
 
 export function ImageToBase64Tool() {
@@ -27,6 +28,7 @@ export function ImageToBase64Tool() {
     reader.onload = () => {
       const result = reader.result as string;
       setPreview(result);
+      markToolSuccess(result);
       if (format === "raw") {
         const base = result.split(",")[1] || "";
         setBase64(base);
