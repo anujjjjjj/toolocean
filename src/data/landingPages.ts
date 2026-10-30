@@ -843,6 +843,91 @@ export const LANDING_PAGES: LandingPage[] = [
       category: "Image Tools",
     },
   },
+  {
+    slug: "remove-password-from-bank-statement-pdf",
+    seo: {
+      title: "Remove Password from Bank Statement PDF, No Upload",
+      description:
+        "Unlock a bank or credit card statement PDF with the password you already have, inside your browser. Nothing is uploaded, and unknown passwords are not cracked.",
+      keywords: [
+        "remove password from bank statement pdf",
+        "unlock bank statement pdf",
+        "credit card statement pdf password remove",
+        "bank statement pdf password",
+        "unlock statement pdf no upload",
+      ],
+    },
+    h1: "Remove the password from a bank statement PDF",
+    footerLabel: "Unlock a bank statement PDF",
+    lede:
+      "Statements from banks and card issuers often arrive as password-protected PDFs. If you know the password, the tool below opens the file once and saves a copy that no longer asks for it. It runs in this tab, and it does not guess passwords you do not have.",
+    tools: ["pdf-unlock", "pdf-merge", "pdf-encrypt", "pdf-compress"],
+    embed: { tool: "pdf-unlock" },
+    howTo: {
+      name: "How to remove the password from a statement PDF",
+      steps: [
+        { title: "Choose the statement", body: "Pick the PDF your bank or card issuer sent. The page reports whether it needs a password to open." },
+        { title: "Type the password you were given", body: "Enter it exactly as the bank's email or website describes. One attempt is made per press." },
+        { title: "Download the unlocked copy", body: "A new file ending in -unlocked is saved. It opens in any viewer without a prompt." },
+      ],
+    },
+    sections: [
+      {
+        heading: "Where the statement password usually comes from",
+        body: [
+          "Banks set these passwords so a statement sent by email is not readable by whoever else sees the inbox. The password is often built from details the bank already holds about you: a date of birth written in a fixed pattern, the first letters of your name, or part of a customer ID, PAN or account number. Some combine two of those.",
+          "The exact rule varies by bank and sometimes by statement type, so read the instructions rather than guessing. They are normally in the email that carried the PDF, on the statement page of your online banking, or in the bank's help pages. Unlocking on your own device is useful when you need the file in a tool that cannot handle encryption: an accounting package, a loan or visa application portal, or a merge with other months.",
+        ],
+      },
+      {
+        heading: "What this page will not do",
+        body: [
+          "It will not find a password you do not know. There is no wordlist, no list of common bank formats, and no repeated guessing. A wrong entry fails once and nothing else is tried. If the format escapes you, your bank can tell you how its statement passwords are formed.",
+          "Once unlocked, the copy is an ordinary PDF that anyone can open. Store it where you keep other financial records, and if you need to send it on, consider protecting it again with a password of your own on the Encrypt PDF page.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "What is the password for my bank statement PDF?",
+        answer:
+          "Only your bank can say for certain, and this page has no way to look it up. It is often a combination such as your date of birth with part of your name, or a customer ID or PAN. The email or online banking page that delivered the statement normally explains the format.",
+      },
+      {
+        question: "Can this crack the password if I have forgotten it?",
+        answer:
+          "No. The tool makes exactly one attempt with the password you type. It cannot recover, search for, or bypass an unknown password. Ask the bank to explain the format, or download a fresh copy from online banking.",
+      },
+      {
+        question: "Is my statement or password sent anywhere?",
+        answer:
+          "No. The PDF and the password are used only by code running in this tab. The password is not stored or sent to analytics. Open your browser's network panel while unlocking and you will see no upload.",
+      },
+      {
+        question: "Can I combine a year of statements into one PDF?",
+        answer:
+          "Yes. Unlock each month here first, because the merge tool cannot read an encrypted file. Then put the unlocked copies through [PDF Merge](/pdf-merge) in date order.",
+      },
+      {
+        question: "Will the unlocked copy be accepted wherever the original was?",
+        answer:
+          "The pages and text are identical. If the statement carries a digital signature, though, rewriting the file means that signature will no longer validate. Keep the original locked PDF for anyone who needs to verify it.",
+      },
+    ],
+    related: [
+      { path: "/pdf-unlock", label: "Unlock PDF", note: "The general tool, including owner restrictions on files that already open" },
+      { path: "/merge-pdf-without-uploading", label: "Merge PDFs without uploading", note: "Join several unlocked statements" },
+      { path: "/compress-pdf-to-200kb", label: "Compress a PDF to 200 KB", note: "For portals that cap the upload size" },
+      { path: "/pdf-tools", label: "All PDF tools", note: "Every PDF page on this site" },
+    ],
+    palette: {
+      name: "Unlock bank statement PDF",
+      description: "Remove a statement password you already know",
+      keywords: ["bank", "statement", "credit card", "pdf", "password", "unlock", "remove"],
+      icon: "LockOpen",
+      category: "PDF Tools",
+    },
+  },
 ];
 
 export const LANDING_PAGE_PATHS = LANDING_PAGES.map((page) => `/${page.slug}`);

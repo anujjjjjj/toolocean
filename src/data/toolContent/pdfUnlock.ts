@@ -150,6 +150,11 @@ export const pdfUnlockContent: Partial<ToolPageContent> = {
         "An open password is required before any page is drawn. Owner restrictions assume the pages can be shown and then ask the viewer not to print, copy, or edit. The inspection line on this page names which of those it found. Owner-only files unlock with the button alone. Open-password files need the secret typed in.",
     },
     {
+      question: "My bank statement PDF asks for a password. Can I remove it here?",
+      answer:
+        "Yes, if you know it. Banks and card issuers often protect emailed statements with a password built from details they hold about you, and the delivering email usually explains the format. [Remove the password from a bank statement PDF](/remove-password-from-bank-statement-pdf) walks through that case with this same tool. Neither page can work out a password you were never told.",
+    },
+    {
       question: "Why is there only one chance to type the password?",
       answer:
         "Because a retry loop is how a guesser works, and this page is not a guesser. If you mistyped, reload the field and type the password you know. If you do not know it, another hundred tries on this site will not discover it, and they are not offered.",

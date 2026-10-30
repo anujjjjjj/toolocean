@@ -92,6 +92,11 @@ const PdfToolsPage = () => {
                 {" "}pages. If the only job is combining documents without an upload, start at{" "}
                 <Link to="/merge-pdf-without-uploading" className="font-medium text-primary hover:underline">merge PDFs without uploading</Link>.
               </p>
+              <p>
+                A statement from a bank or card issuer that opens only with a password you were given can be cleared on{" "}
+                <Link to="/remove-password-from-bank-statement-pdf" className="font-medium text-primary hover:underline">remove the password from a bank statement PDF</Link>
+                . It takes the password you already know and makes one attempt. It does not guess.
+              </p>
               <h3>100% Secure</h3>
               <p>All processing happens in your browser. Your files are never uploaded to any server.</p>
               <h3>Lightning Fast</h3>
