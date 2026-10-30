@@ -1,4 +1,5 @@
 import toolsData from "@/data/tools.json";
+import { LANDING_PAGES } from "@/data/landingPages";
 import { getToolIcon } from "@/lib/toolIcons";
 
 export interface PaletteTool {
@@ -11,7 +12,19 @@ export interface PaletteTool {
   category: string;
 }
 
-export function getAllToolsForPalette(): { category: string; tools: PaletteTool[] }[] {
+/**
+ * Landing pages that declare a `palette` entry, e.g. /webp-to-jpg. They are
+ * search shortcuts, not tools, so the workflow builder never asks for them.
+ */
+function landingPagesForPalette(): PaletteTool[] {
+  return LANDING_PAGES.filter((page) => page.palette).map((page) => ({
+    id: page.slug,
+    path: `/${page.slug}`,
+    ...page.palette!,
+  }));
+}
+
+export function getAllToolsForPalette({ includeLandingPages = false } = {}): { category: string; tools: PaletteTool[] }[] {
   const devTools: PaletteTool[] = toolsData.tools.map((tool) => ({
     id: tool.id,
     name: tool.name,
@@ -129,7 +142,19 @@ export function getAllToolsForPalette(): { category: string; tools: PaletteTool[
     return true;
   });
 
-  const allTools = [...devTools, ...pdfTools, ...csvTools, ...audioTools, ...imageTools, ...videoTools, ...spreadsheetTools, ...compressionTools, ...archiveTools, ...converterTools];
+  const allTools = [
+    ...devTools,
+    ...pdfTools,
+    ...csvTools,
+    ...audioTools,
+    ...imageTools,
+    ...videoTools,
+    ...spreadsheetTools,
+    ...compressionTools,
+    ...archiveTools,
+    ...converterTools,
+    ...(includeLandingPages ? landingPagesForPalette() : []),
+  ];
 
   return orderedCategories.map((category) => ({
     category,

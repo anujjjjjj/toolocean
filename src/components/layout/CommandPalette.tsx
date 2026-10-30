@@ -23,7 +23,7 @@ function flatten(groups: { category: string; tools: PaletteTool[] }[]): PaletteT
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
-  const toolsByCategory = getAllToolsForPalette();
+  const toolsByCategory = getAllToolsForPalette({ includeLandingPages: true });
   const catalog = useMemo(() => flatten(toolsByCategory), [toolsByCategory]);
   const query = search.trim();
   const results = useMemo(() => rankPaletteTools(catalog, query), [catalog, query]);

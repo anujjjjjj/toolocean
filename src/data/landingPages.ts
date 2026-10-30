@@ -34,6 +34,13 @@ export interface LandingComparisonRow {
   us: string;
 }
 
+/** A working tool rendered at the top of the page, opened on a preset. */
+export type LandingEmbed =
+  | { tool: "image-compressor" | "pdf-compress"; targetBytes: number }
+  | { tool: "image-format-converter"; output: "image/jpeg" | "image/png" | "image/webp" }
+  | { tool: "heic-to-jpg"; format: "jpg" | "png" }
+  | { tool: "pdf-unlock" };
+
 export interface LandingPage {
   /** Root-level path segment, e.g. "merge-pdf-without-uploading". */
   slug: string;
@@ -57,8 +64,15 @@ export interface LandingPage {
     rows: LandingComparisonRow[];
   };
   faqs: ToolFaqEntry[];
-  /** When set, the page renders that tool with the ceiling already chosen. */
-  embed?: { tool: "image-compressor" | "pdf-compress"; targetBytes: number };
+  /** When set, the page renders that tool with its preset already chosen. */
+  embed?: LandingEmbed;
+  /**
+   * Sibling pages and the hub, shown under the tool cards. `tools` only takes
+   * catalog slugs; this is for landing pages and category listings too.
+   */
+  related?: { path: string; label: string; note: string }[];
+  /** Command palette entry. Pages without one stay out of the palette. */
+  palette?: { name: string; description: string; keywords: string[]; icon: string; category: string };
   /** Key in targetSizeMeasurements.json. The visible byte counts are read from that file. */
   measurementKey?: string;
   howTo?: { name: string; steps: { title: string; body: string }[] };
@@ -674,6 +688,86 @@ export const LANDING_PAGES: LandingPage[] = [
         answer: "Yes. A JPEG under that floor is padded with comment bytes, and the padding is included in the reported size. It will not pad past the ceiling.",
       },
     ],
+  },
+  {
+    slug: "webp-to-jpg",
+    seo: {
+      title: "WebP to JPG Converter – Free, No Upload",
+      description:
+        "Convert WebP to JPG in your browser. The converter opens with JPG selected, fills transparent areas with white and keeps the pixel size. Nothing is uploaded.",
+      keywords: ["webp to jpg", "convert webp to jpg", "webp to jpeg", "webp converter no upload", "save webp as jpg"],
+    },
+    h1: "Convert WebP to JPG",
+    footerLabel: "WebP to JPG",
+    lede:
+      "Browsers and many websites now hand out pictures as .webp, and a lot of desktop software and upload forms still turn them away. The converter below already has JPG chosen as the output: pick the WebP and download a .jpg with the same width and height.",
+    tools: ["image-format-converter", "image-compressor", "image-resizer", "heic-to-jpg"],
+    embed: { tool: "image-format-converter", output: "image/jpeg" },
+    howTo: {
+      name: "How to convert WebP to JPG",
+      steps: [
+        { title: "Pick the .webp file", body: "Drop it on the box or browse to it. Your browser decodes it inside this tab." },
+        { title: "Keep JPEG as the output", body: "This page opens with JPEG selected. PNG and WebP are still in the menu if you change your mind." },
+        { title: "Download the JPG", body: "The file keeps its original name with a .jpg extension and is written at quality 0.92." },
+      ],
+    },
+    sections: [
+      {
+        heading: "Where the WebP files come from",
+        body: [
+          "Right-clicking an image and choosing Save often produces a .webp now, because sites serve WebP to any browser that asks for it. Phone screenshots shared through some chat apps arrive the same way. The file is fine; the problem is the next program in the chain. An older photo editor, a print kiosk, a job portal or a council form may only list JPG and PNG.",
+          "JPG is the safe interchange choice for a photograph. Every operating system previews it, every form that accepts pictures accepts it, and every printer driver understands it.",
+        ],
+      },
+      {
+        heading: "What changes inside the file",
+        body: [
+          "The WebP is drawn onto a canvas at its natural size and encoded again as JPEG at quality 0.92. JPEG cannot store transparency, so this converter paints a white background first. Without that step the transparent pixels would come out black, which is what a bare canvas export does.",
+          "Expect the JPG to be somewhat larger than the WebP. When one photograph was encoded both ways at 0.92 for the format converter's measurements, the JPEG came out about 22 percent heavier. If a form has a size cap as well as a format rule, run the JPG through the compressor afterwards.",
+          "Only pixels survive the trip. EXIF fields such as camera model and GPS position are not written into the JPG, and an animated WebP becomes a still of its first frame.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is the WebP uploaded to convert it?",
+        answer:
+          "No. Decoding and encoding both happen in your browser's canvas. You can load the page, switch off the network, and the conversion still completes, which a server-based converter could not do.",
+      },
+      {
+        question: "Why did my transparent WebP get a white background?",
+        answer:
+          "JPG has no alpha channel, so something has to fill the see-through areas. White is what most people expect on a document or form. If you need the transparency kept, switch the output to PNG instead.",
+      },
+      {
+        question: "Will the JPG lose quality compared with the WebP?",
+        answer:
+          "A little, in principle, because every lossy encode discards some detail. At quality 0.92 the difference is very hard to see on a photograph. Converting does not recover anything the WebP encoder already removed.",
+      },
+      {
+        question: "Can I convert a folder of WebP images at once?",
+        answer:
+          "Not on this page. The converter handles one picture per download, which suits the usual case of a single image a form refused. For many files, a desktop batch tool will be quicker.",
+      },
+      {
+        question: "Does an animated WebP stay animated?",
+        answer:
+          "No. The picture is drawn once, so only the first frame becomes the JPG. JPG has no animation support of its own.",
+      },
+    ],
+    related: [
+      { path: "/image-format-converter", label: "Image format converter", note: "The same tool with every direction between PNG, JPG and WebP" },
+      { path: "/heic-to-jpg", label: "HEIC to JPG", note: "For iPhone photos, which this converter cannot decode" },
+      { path: "/compress-image-to-20kb", label: "Compress an image to 20 KB", note: "When the form also caps the file size" },
+      { path: "/image-tools", label: "All image tools", note: "Resize, crop, compress and convert in the browser" },
+    ],
+    palette: {
+      name: "WebP to JPG",
+      description: "Convert a WebP image to JPG",
+      keywords: ["webp", "jpg", "jpeg", "convert", "webp to jpg"],
+      icon: "Repeat",
+      category: "Image Tools",
+    },
   },
 ];
 

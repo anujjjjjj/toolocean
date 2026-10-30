@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Breadcrumbs } from "@/components/seo/Breadcrumbs";
@@ -7,8 +7,9 @@ import { FileDropzone } from "@/components/ui/file-dropzone";
 import { NativeFaq } from "@/components/tool-page/NativeFaq";
 import { ToolLinkCard } from "@/components/tools/ToolLinkCard";
 import { useStashedFileRoot } from "@/hooks/useStashedFileInput";
+import { useToolRunEvent } from "@/hooks/useWorkbenchAnalytics";
 import { useSEO } from "@/hooks/useSEO";
-import { findLandingPage, type LandingPage } from "@/data/landingPages";
+import { findLandingPage, type LandingEmbed, type LandingPage } from "@/data/landingPages";
 import { findToolBySlug } from "@/data/toolCatalog";
 import { buildLandingPageGraph } from "@/lib/landingPageSchema";
 import { shellDropzoneCopy } from "@/lib/leanShell";
@@ -24,6 +25,17 @@ const ImageCompressorTool = lazy(() =>
 );
 const PdfCompressTool = lazy(() =>
   import("@/components/tools/implementations/pdf/PdfCompressTool").then((m) => ({ default: m.PdfCompressTool })),
+);
+const ImageFormatConverterTool = lazy(() =>
+  import("@/components/tools/implementations/image/ImageFormatConverterTool").then((m) => ({
+    default: m.ImageFormatConverterTool,
+  })),
+);
+const HeicToJpgTool = lazy(() =>
+  import("@/components/tools/implementations/image/HeicToJpgTool").then((m) => ({ default: m.HeicToJpgTool })),
+);
+const PdfUnlockTool = lazy(() =>
+  import("@/components/tools/implementations/pdf/PdfUnlockTool").then((m) => ({ default: m.PdfUnlockTool })),
 );
 
 type FixtureRow = {
@@ -83,14 +95,38 @@ function ComparisonTable({ comparison }: { comparison: NonNullable<LandingPage["
   );
 }
 
-function EmbeddedTool({ tool, targetBytes }: { tool: "image-compressor" | "pdf-compress"; targetBytes: number }) {
+function PresetTool({ embed }: { embed: LandingEmbed }) {
+  switch (embed.tool) {
+    case "image-compressor":
+      return <ImageCompressorTool preset={{ targetBytes: embed.targetBytes }} />;
+    case "pdf-compress":
+      return <PdfCompressTool preset={{ targetBytes: embed.targetBytes }} />;
+    case "image-format-converter":
+      return <ImageFormatConverterTool preset={{ output: embed.output }} />;
+    case "heic-to-jpg":
+      return <HeicToJpgTool preset={{ format: embed.format }} />;
+    case "pdf-unlock":
+      return <PdfUnlockTool />;
+  }
+}
+
+function pickerLabel(tool: LandingEmbed["tool"]) {
+  if (tool.startsWith("pdf-")) return "Choose a PDF";
+  if (tool === "heic-to-jpg") return "Choose HEIC photos";
+  return "Choose an image";
+}
+
+function EmbeddedTool({ embed, slug }: { embed: LandingEmbed; slug: string }) {
+  const { tool } = embed;
   const ref = useRef<HTMLDivElement>(null);
   useStashedFileRoot(ref, true);
+  // tool-run reports the embedded tool's id under this page's own slug.
+  useToolRunEvent(tool, slug);
   useEffect(() => scheduleOfflinePrefetch(tool), [tool]);
   const drop = shellDropzoneCopy(tool);
   const warm = () => {
     prefetchTool(tool, "hover");
-    if (tool === "pdf-compress") {
+    if (tool.startsWith("pdf-")) {
       prefetchPdfLib();
       prefetchPdfJs();
     }
@@ -103,18 +139,33 @@ function EmbeddedTool({ tool, targetBytes }: { tool: "image-compressor" | "pdf-c
           multiple={drop.multiple}
           title={drop.title}
           hint={drop.hint}
-          buttonLabel={tool === "pdf-compress" ? "Choose a PDF" : "Choose an image"}
+          buttonLabel={pickerLabel(tool)}
           onIntent={warm}
         />
       )}
       <Suspense fallback={null}>
-        {tool === "image-compressor" ? (
-          <ImageCompressorTool preset={{ targetBytes }} />
-        ) : (
-          <PdfCompressTool preset={{ targetBytes }} />
-        )}
+        <PresetTool embed={embed} />
       </Suspense>
     </div>
+  );
+}
+
+function RelatedPages({ links }: { links: NonNullable<LandingPage["related"]> }) {
+  return (
+    <nav aria-label="Related pages" className="mt-6">
+      <h3 className="mb-2 text-[15px] font-medium">Related pages</h3>
+      <ul className="space-y-1.5 text-sm text-muted-foreground">
+        {links.map((link) => (
+          <li key={link.path}>
+            <Link to={link.path} className="font-medium text-foreground underline decoration-border underline-offset-[3px] hover:decoration-foreground">
+              {link.label}
+            </Link>
+            {". "}
+            {link.note}
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 }
 
@@ -158,7 +209,7 @@ const LandingRoutePage = () => {
           </div>
           {page.embed && (
             <div className="order-1 md:order-none">
-              <EmbeddedTool tool={page.embed.tool} targetBytes={page.embed.targetBytes} />
+              <EmbeddedTool embed={page.embed} slug={page.slug} />
               {page.measurementKey && FIXTURES[page.measurementKey] && (
                 <FixtureNote row={FIXTURES[page.measurementKey]} />
               )}
@@ -166,6 +217,7 @@ const LandingRoutePage = () => {
           )}
           <div className="order-3 md:order-none">
             <ToolLinks page={page} />
+            {page.related && page.related.length > 0 && <RelatedPages links={page.related} />}
           </div>
         </section>
         </div>
