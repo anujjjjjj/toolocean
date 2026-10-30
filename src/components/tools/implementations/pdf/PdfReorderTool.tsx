@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Upload, Download, FileText, Loader2, GripVertical, ArrowUpDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { markToolSuccess } from "@/lib/toolResult";
 interface PageItem {
     index: number;
     originalIndex: number;
@@ -104,6 +105,7 @@ export function PdfReorderTool() {
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+            markToolSuccess(blob);
 
             toast({
                 title: "PDF reordered successfully",

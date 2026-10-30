@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { Download, FileText, ListChecks, Loader2, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { downloadPdf, pdfDownloadName } from "@/lib/pdf/downloadPdf";
+import { markToolSuccess } from "@/lib/toolResult";
 import type { FormFieldInfo, FormValues } from "@/lib/pdf/fillPdfForm";
 
 export function PdfFormFillTool() {
@@ -57,6 +58,7 @@ export function PdfFormFillTool() {
             const { fillPdfForm } = await import("@/lib/pdf/fillPdfForm");
             const filled = await fillPdfForm(bytes, values, flatten);
             downloadPdf(filled, pdfDownloadName(file.name, flatten ? "filled-flat" : "filled"));
+            markToolSuccess(filled);
             toast({
                 title: flatten ? "Form filled and flattened" : "Form filled",
                 description: flatten

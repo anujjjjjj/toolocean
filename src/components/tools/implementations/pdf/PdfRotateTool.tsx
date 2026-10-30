@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Upload, Download, FileText, Loader2, RotateCw, RotateCcw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { markToolSuccess } from "@/lib/toolResult";
 export function PdfRotateTool() {
     const [pdfFile, setPdfFile] = useState<File | null>(null);
     const [pageCount, setPageCount] = useState(0);
@@ -84,6 +85,7 @@ export function PdfRotateTool() {
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+            markToolSuccess(blob);
 
             toast({
                 title: "PDF rotated successfully",

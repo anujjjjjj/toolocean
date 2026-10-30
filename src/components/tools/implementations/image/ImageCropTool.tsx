@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Upload, Download, Crop } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { markToolSuccess } from "@/lib/toolResult";
 import { readImageFiles } from "@/lib/image/readImageFiles";
 
 export function ImageCropTool() {
@@ -101,6 +102,7 @@ export function ImageCropTool() {
     a.href = canvas.toDataURL("image/png");
     a.download = "cropped.png";
     a.click();
+    markToolSuccess(a.href);
   };
 
   return (

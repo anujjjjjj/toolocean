@@ -1,6 +1,9 @@
 import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { trackEvent } from "@/lib/analytics";
+import { subscribeToolSuccess } from "@/lib/toolResult";
+import { createToolRunReporter } from "@/lib/toolRunEvent";
+import { TOOL_RUN_EVENT, trackUmamiEvent } from "@/lib/umami";
 
 /**
  * Interaction tracking for the tool workbench.
@@ -21,6 +24,9 @@ import { trackEvent } from "@/lib/analytics";
  *                 to "do search visitors actually use the tool, or just bounce?"
  *   tool_action. A button or download link was activated, labelled with the
  *                 control's text so the report distinguishes Format from Clear.
+ *   tool-run      (Umami) the tool produced a result. Clicks cannot tell a
+ *                 success from a failed decode, so this one listens for
+ *                 markToolSuccess() instead. See useToolRunEvent below.
  *
  * Only the slug and a static control label are ever sent. Tool input is not
  * touched. That is the one promise this site makes.
@@ -49,6 +55,22 @@ function describeControl(control: Element): string | null {
 }
 
 /**
+ * Sends Umami `tool-run` { tool, slug } each time the mounted tool reports a
+ * successful result. `tool` is the tool id, `slug` the route it is served
+ * under; a landing page that embeds a tool passes its own slug. Subscribing
+ * sends nothing, so a page view alone never produces the event.
+ */
+export function useToolRunEvent(tool: string, slug: string) {
+  useEffect(
+    () =>
+      subscribeToolSuccess(
+        createToolRunReporter({ tool, slug, send: trackUmamiEvent, eventName: TOOL_RUN_EVENT }),
+      ),
+    [tool, slug],
+  );
+}
+
+/**
  * Returns a ref to attach to the workbench container. Listeners are delegated
  * from that node, so they cover controls the mounted tool renders later.
  */
@@ -58,6 +80,8 @@ export function useWorkbenchAnalytics() {
 
   // Flat slugs at the site root mean the path *is* the tool id.
   const tool = pathname.replace(/^\//, "") || "home";
+
+  useToolRunEvent(tool, tool);
 
   useEffect(() => {
     const container = containerRef.current;

@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronLeft, ChevronRight, Download, FileText, Loader2 } from "lucide-react";
 import { downloadPdf, pdfDownloadName } from "@/lib/pdf/downloadPdf";
+import { markToolSuccess } from "@/lib/toolResult";
 import { loadPdfJs, loadPdfLib } from "@/lib/pdf/lazyPdf";
 import {
     DEFAULT_OPTIONS,
@@ -207,6 +208,7 @@ export function PdfPageNumbersTool() {
             const out = await numberPdf(lib, bytes, options);
             const ms = Math.round(performance.now() - started);
             downloadPdf(out.bytes, pdfDownloadName(file.name, "numbered"));
+            markToolSuccess(out.bytes);
             setResult({ pages: out.plan.labels.length, ms, size: out.bytes.length });
         } catch (error) {
             setSaveError(error instanceof Error ? error.message : "The numbered copy could not be written.");

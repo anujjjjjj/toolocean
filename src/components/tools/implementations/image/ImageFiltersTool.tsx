@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Upload, Download, RotateCcw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { markToolSuccess } from "@/lib/toolResult";
 import { readImageFiles } from "@/lib/image/readImageFiles";
 
 interface Filters {
@@ -76,6 +77,7 @@ export function ImageFiltersTool() {
     a.href = canvasRef.current.toDataURL("image/png");
     a.download = "filtered.png";
     a.click();
+    markToolSuccess(a.href);
   };
 
   const CONTROLS: { key: keyof Filters; label: string; min: number; max: number; step?: number; unit: string }[] = [

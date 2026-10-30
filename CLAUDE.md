@@ -93,10 +93,11 @@ Dev tools metadata (name, description, keywords, category, icon) lives in `src/d
 
 ### Analytics
 
-Adding a tool requires **no** analytics work — both tracking points are central:
+Adding a tool requires **almost no** analytics work — the tracking points are central:
 
 - **Page views** are fired by `useSEO` (`src/hooks/useSEO.ts`), which every page calls. It owns this rather than a router listener because it is the only place that runs on every route *and* knows the resolved title; a listener fires before a lazy route has rendered and would report the previous page's title.
 - **Interactions** are delegated from the workbench `<section>` by `useWorkbenchAnalytics`, so one listener covers all 114 tools. Emits `tool_engage` (first real interaction, once per route) and `tool_action` (button/download label).
+- **Successful runs** go to Umami as `tool-run` `{ tool, slug }`. The signal is `markToolSuccess()` (`src/lib/toolResult.ts`): call it once a result exists (file written, output produced), never on mount or in a catch. `useToolRunEvent` in `useWorkbenchAnalytics` subscribes on tool pages; the landing-page embed subscribes with its own slug, so `/compress-image-to-20kb` reports `tool: image-compressor, slug: compress-image-to-20kb`. `src/lib/toolRunEvent.ts` dedupes (same `runKey`, or unkeyed repeats within 1 s); pass a `runKey` (the output blob/string) when one run can signal twice, e.g. convert then download. No-op without `window.umami`. This is the one per-tool step: a new tool needs a `markToolSuccess()` call on its success path.
 
 Never pass tool input to `trackEvent` — only slugs and static control labels. If a button's visible text is dynamic, give it `data-analytics-label` to pin a stable name.
 

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Upload, Download, X, FileImage, GripVertical, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { markToolSuccess } from "@/lib/toolResult";
 import { readImageFiles } from "@/lib/image/readImageFiles";
 interface ImageFile {
     id: string;
@@ -188,6 +189,7 @@ export function ImagesToPdfTool() {
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+            markToolSuccess(blob);
 
             if (!limitBytes || pdfBytes.byteLength <= limitBytes) {
                 toast({

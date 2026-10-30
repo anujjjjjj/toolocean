@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Upload, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { markToolSuccess } from "@/lib/toolResult";
 import { readImageFiles } from "@/lib/image/readImageFiles";
 
 const POSITIONS = ["top-left", "top-center", "top-right", "center", "bottom-left", "bottom-center", "bottom-right"] as const;
@@ -74,6 +75,7 @@ export function ImageWatermarkTool() {
     a.href = canvasRef.current.toDataURL("image/png");
     a.download = "watermarked.png";
     a.click();
+    markToolSuccess(a.href);
   };
 
   return (

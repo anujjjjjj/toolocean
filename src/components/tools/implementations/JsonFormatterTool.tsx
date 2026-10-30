@@ -19,6 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Toggle } from "@/components/ui/toggle";
 import { useToast } from "@/hooks/use-toast";
+import { markToolSuccess } from "@/lib/toolResult";
 import { subscribeToToolActions } from "@/lib/toolActions";
 import {
   computeStats,
@@ -142,6 +143,7 @@ export function JsonFormatterTool() {
     if (!output) return;
     try {
       await navigator.clipboard.writeText(output);
+      markToolSuccess(output);
       setJustCopied(true);
       window.setTimeout(() => setJustCopied(false), 1800);
     } catch {
@@ -158,6 +160,7 @@ export function JsonFormatterTool() {
     anchor.download = "formatted.json";
     anchor.click();
     URL.revokeObjectURL(url);
+    markToolSuccess(output);
   }, [output]);
 
   const clear = useCallback(() => {

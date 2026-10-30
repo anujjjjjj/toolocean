@@ -9,6 +9,7 @@ import { Download, FileText, Loader2, Lock, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { encryptPdf, type PdfPermissionOptions } from "@/lib/pdf/protectPdf";
 import { downloadPdf, pdfDownloadName } from "@/lib/pdf/downloadPdf";
+import { markToolSuccess } from "@/lib/toolResult";
 
 const DEFAULT_PERMISSIONS: PdfPermissionOptions = {
     printing: "highResolution",
@@ -89,6 +90,7 @@ export function PdfEncryptTool() {
                 permissions,
             });
             downloadPdf(encrypted, pdfDownloadName(file.name, "protected"));
+            markToolSuccess(encrypted);
             toast({
                 title: "Password applied",
                 description: "The download is AES-256 encrypted. Open it in a PDF reader to confirm it asks for the password.",

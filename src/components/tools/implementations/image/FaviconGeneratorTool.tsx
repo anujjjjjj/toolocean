@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 // the `new Image()` calls below were invoking a React component and throwing.
 import { Upload, Download, Image as ImageIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { markToolSuccess } from "@/lib/toolResult";
 import { readImageFiles } from "@/lib/image/readImageFiles";
 import JSZip from "jszip";
 
@@ -61,6 +62,7 @@ export function FaviconGeneratorTool() {
       a.download = "favicons.zip";
       a.click();
       URL.revokeObjectURL(a.href);
+      markToolSuccess(content);
       toast({ title: "Downloaded", description: "All favicon sizes saved in favicons.zip" });
     } catch {
       toast({ title: "Error", description: "Failed to generate favicons", variant: "destructive" });
@@ -84,6 +86,7 @@ export function FaviconGeneratorTool() {
         a.download = `favicon-${size}x${size}.png`;
         a.click();
         URL.revokeObjectURL(a.href);
+        markToolSuccess(blob);
       });
     };
     img.src = sourceImage;
