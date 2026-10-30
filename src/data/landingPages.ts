@@ -568,14 +568,20 @@ export const LANDING_PAGES: LandingPage[] = [
   {
     slug: "compress-image-to-20kb",
     seo: {
-      title: "Compress Image to 20 KB – No Upload",
+      title: "Compress Image to 20 KB for Exam & Form Photos",
       description:
-        "Shrink a JPEG toward 20 KB in the browser. Quality is searched, then the picture is scaled if it still will not fit. 1 KB is 1024 bytes. Nothing is uploaded.",
-      keywords: ["compress image to 20kb", "reduce image to 20kb", "jpeg under 20 kb"],
+        "Compress a photo or signature to 20 KB for exam and government application forms. Runs in your browser, 1 KB is 1024 bytes, and nothing is uploaded.",
+      keywords: [
+        "compress image to 20kb",
+        "photo 20kb for exam form",
+        "signature 20kb",
+        "reduce photo size for application form",
+        "jpeg under 20 kb",
+      ],
     },
     h1: "Compress an image to 20 KB",
     footerLabel: "Image to 20 KB",
-    lede: "20 KB is 20,480 bytes. The compressor opens on that chip and writes JPEG unless you switch it to WebP. A noisy 1200 by 800 fixture had to be scaled down before it fit.",
+    lede: "Online exam and government application forms often want a photo or signature no larger than 20 KB. That is 20,480 bytes here. The compressor opens on that chip and writes JPEG unless you switch it to WebP. A noisy 1200 by 800 fixture had to be scaled down before it fit.",
     tools: ["image-compressor"],
     embed: { tool: "image-compressor", targetBytes: 20 * 1024 },
     measurementKey: "compress-image-to-20kb",
@@ -588,6 +594,14 @@ export const LANDING_PAGES: LandingPage[] = [
       ],
     },
     sections: [
+      {
+        heading: "Photo and signature limits on application forms",
+        body: [
+          "Many online application forms, for exams, recruitment, scholarships and government services, cap the photograph at somewhere between 20 KB and 50 KB and the scanned signature at 10 KB to 20 KB. Some also set a minimum, and many fix the pixel dimensions or ask for a plain light background. The numbers differ from form to form and change between years, so check the notice for the form you are filling in rather than trusting a figure from anywhere else, including this page.",
+          "For a size cap, keep the 20 KB chip or type the form's own figure into the custom box, for example 15 KB or 50 KB. For a minimum, put it in the minimum field: a JPEG that would land below it is padded with comment bytes so it clears the floor, and the note says by how much. If the form also fixes width and height, set those in the resizer first and compress the resized file, so the size search does not change the dimensions you just chose.",
+          "A signature scan is usually small already once it is cropped tightly. Crop away the empty paper around the ink before compressing; less blank area means more of the byte budget goes to the strokes themselves.",
+        ],
+      },
       {
         heading: "Scaling is part of hitting 20 KB",
         body: [
@@ -604,6 +618,18 @@ export const LANDING_PAGES: LandingPage[] = [
       {
         question: "What does the padding note mean?",
         answer: "Only if you set a minimum and the JPEG would have been smaller than that floor. Comment bytes are added and counted in the note. The 20 KB fixture did not use a minimum.",
+      },
+      {
+        question: "What size should my exam form photo and signature be?",
+        answer: "Use the figures in your form's own notice. As a general pattern, many online application forms cap photos at 20 KB to 50 KB and signatures at 10 KB to 20 KB, and some set a minimum too. Type the exact ceiling into the custom box if it is not 20 KB.",
+      },
+      {
+        question: "My file is 20 KB here but the form still rejects it. Why?",
+        answer: "This page counts 1 KB as 1024 bytes, so 20 KB is 20,480 bytes. A form that counts in thousands stops at 20,000. If you cannot tell which the form uses, type 19 KB into the custom box. That lands under both readings.",
+      },
+      {
+        question: "Does the form portal see my photo before I upload it there?",
+        answer: "No. This page compresses on your device and sends nothing. The only upload is the one you make yourself on the form's website, with the smaller file.",
       },
     ],
   },
