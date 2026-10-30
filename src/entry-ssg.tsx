@@ -8,6 +8,7 @@ import { TOOL_CONTENT_OVERRIDES, KNOWN_BROKEN } from "./data/toolContent";
 import { SHARED_CONTENT_STRINGS } from "./data/toolContent/shared";
 import { toolSeoData, SHARED_STRINGS } from "./data/toolSeo";
 import { TOOL_CATALOG } from "./data/toolCatalog";
+import { LANDING_PAGES } from "./data/landingPages";
 import { resolveToolContent } from "./lib/toolContentResolver";
 import {
   LANDING_ROUTE_MODULE,
@@ -99,6 +100,8 @@ export {
   PRERENDER_ROUTES,
   CATEGORY_INDEXES,
   LANDING_ROUTES,
+  LANDING_PAGES,
+  headForRoute,
   STATIC_ROUTE_MODULES,
   TOOL_ROUTE_MODULE,
   LANDING_ROUTE_MODULE,

@@ -25,7 +25,7 @@
     "indexnow:changed": "node scripts/indexnow.mjs",
     "serve:dist": "node scripts/serve-dist.mjs",
     "check:hydration": "node --experimental-websocket scripts/check-hydration.mjs",
-    "test": "node --experimental-strip-types --test scripts/qa-regressions.test.mjs scripts/umami.test.mjs scripts/heic.test.mjs scripts/pdf-page-numbers.test.mjs"
+    "test": "node --experimental-strip-types --test scripts/qa-regressions.test.mjs scripts/umami.test.mjs scripts/heic.test.mjs scripts/pdf-page-numbers.test.mjs scripts/traffic-week1.test.mjs"
   },
   "dependencies": {
     "@cantoo/pdf-lib": "^2.11.1",
