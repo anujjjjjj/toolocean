@@ -1,0 +1,65 @@
+# Submit every sitemap URL to IndexNow after Vercel finishes a production
+# deployment of main. Previews, PR deployments and failed deploys are skipped.
+# See docs/INDEXNOW.md.
+name: IndexNow
+
+on:
+  deployment_status:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: indexnow
+  cancel-in-progress: false
+
+jobs:
+  indexnow:
+    # Vercel names its production environment "Production"; previews are
+    # "Preview" (or "Preview – <project>"), so they never match.
+    if: >-
+      github.event.deployment_status.state == 'success' &&
+      github.event.deployment.environment == 'Production'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the deployed commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.deployment.sha }}
+          # Full history so the sitemap's git-derived lastmod matches the deploy.
+          fetch-depth: 0
+
+      # Vercel sets deployment.ref to the commit sha rather than the branch, so
+      # "is this main?" is answered by comparing the sha with main's head.
+      # A production deploy promoted from anything else stops here.
+      - name: Confirm the deployment is main
+        id: gate
+        env:
+          DEPLOY_REF: ${{ github.event.deployment.ref }}
+          DEPLOY_SHA: ${{ github.event.deployment.sha }}
+        run: |
+          MAIN_SHA="$(git ls-remote origin refs/heads/main | cut -f1)"
+          if [ "$DEPLOY_REF" = "main" ] || [ "$DEPLOY_REF" = "refs/heads/main" ] || [ "$DEPLOY_SHA" = "$MAIN_SHA" ]; then
+            echo "main=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Deployment $DEPLOY_SHA ($DEPLOY_REF) is not main's head $MAIN_SHA. Skipping."
+            echo "main=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.gate.outputs.main == 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        if: steps.gate.outputs.main == 'true'
+        run: npm ci
+
+      - name: Generate sitemap
+        if: steps.gate.outputs.main == 'true'
+        run: npm run sitemap
+
+      - name: Submit every sitemap URL
+        if: steps.gate.outputs.main == 'true'
+        run: npm run indexnow

@@ -21,7 +21,8 @@
     "check:uniqueness": "node scripts/check-uniqueness.mjs",
     "check:visible": "node scripts/check-visible-words.mjs",
     "check:name": "node scripts/check-name.mjs",
-    "indexnow": "node scripts/indexnow.mjs",
+    "indexnow": "node scripts/indexnow.mjs --all",
+    "indexnow:changed": "node scripts/indexnow.mjs",
     "serve:dist": "node scripts/serve-dist.mjs",
     "check:hydration": "node --experimental-websocket scripts/check-hydration.mjs",
     "test": "node --experimental-strip-types --test scripts/qa-regressions.test.mjs scripts/umami.test.mjs scripts/heic.test.mjs scripts/pdf-page-numbers.test.mjs"
