@@ -250,6 +250,11 @@ export const pdfSplitContent: Partial<ToolPageContent> = {
 
   related: [
     {
+      name: "Delete PDF Pages",
+      path: "/pdf-delete-pages",
+      description: "Remove a few pages and keep the rest in one file.",
+    },
+    {
       name: "Add Page Numbers",
       path: "/pdf-page-numbers",
       description: "Give an extracted section its own page numbers.",

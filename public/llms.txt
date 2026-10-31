@@ -1,6 +1,6 @@
 # ToolOcean
 
-> 120 file and developer utilities that run entirely in the browser. No upload, no
+> 121 file and developer utilities that run entirely in the browser. No upload, no
 > account, no server. Every tool processes your data locally in JavaScript and
 > WebAssembly, so files never leave the device.
 
@@ -18,8 +18,8 @@ working. Three tools are documented exceptions (see below).
 
 - [Developer tools](https://toolocean.co/dev-tools): JSON, YAML, XML, TOML, CSV,
   regex, hashing, encoding, JWT, timestamps, colour, text transforms
-- [PDF tools](https://toolocean.co/pdf-tools): merge, split, compress, rotate,
-  reorder, watermark, page numbers, PDF to images, images to PDF, visual
+- [PDF tools](https://toolocean.co/pdf-tools): merge, split, delete pages,
+  compress, rotate, reorder, watermark, page numbers, PDF to images, images to PDF, visual
   signature, AES-256 encrypt, unlock (password you already know), metadata,
   AcroForm fill and flatten
 - [Image tools](https://toolocean.co/image-tools): resize, compress, crop, convert

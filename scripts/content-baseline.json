@@ -73,6 +73,7 @@
   "pdf-rotate": 1618,
   "pdf-watermark": 1684,
   "pdf-page-numbers": 1764,
+  "pdf-delete-pages": 1518,
   "pdf-reorder": 1488,
   "pdf-sign": 1881,
   "pdf-encrypt": 2027,

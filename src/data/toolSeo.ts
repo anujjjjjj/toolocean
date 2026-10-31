@@ -1614,6 +1614,12 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       "Insert page numbers into a PDF in this tab: six positions, four formats, a start number and an optional blank cover. Rotated and cropped pages are handled.",
     keywords: ["pdf page numbering", "number pdf pages online free", "add page numbers to pdf", "page x of y"],
   },
+  "pdf-delete-pages": {
+    title: "Delete Pages from PDF – No Upload, Free",
+    description:
+      "Delete or remove pages from a PDF with no upload. See a thumbnail of every page, tap the ones to drop, or type 2-4, 9, then download the shorter copy.",
+    keywords: ["delete pages from pdf", "remove pages from pdf", "delete pdf pages no upload"],
+  },
   "pdf-sign": {
     title: "Sign PDF Online Free – Draw or Type, No Upload",
     description:
