@@ -144,6 +144,7 @@ export function ToolWorkbench({ component: Tool, label, lean = false, slug, butt
       multiple={drop.multiple}
       title={drop.title}
       hint={drop.hint}
+      pageStack={drop.pageStack}
       buttonLabel={buttonLabel}
       onIntent={warmHeavy}
     />
