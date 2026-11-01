@@ -68,6 +68,8 @@
     --drop-line: #cfcabe;
     --drop-over: #fbf4e4;
     --ok: #4c7a3a;
+    --delete: #c0261c;
+    --delete-soft: rgba(192, 38, 28, 0.1);
     --ring-soft: rgba(176, 122, 42, 0.18);
     --logo-wave: #c99a4b;
 
@@ -130,6 +132,8 @@
     --drop-line: #4a4338;
     --drop-over: #2a2318;
     --ok: #8dbb7a;
+    --delete: #e5484d;
+    --delete-soft: rgba(229, 72, 77, 0.14);
     --ring-soft: rgba(217, 162, 78, 0.22);
 
     --background: 36 12.2% 8%;
@@ -283,6 +287,27 @@
     color: var(--ico-ink);
   }
   .paper-drop.is-over .paper-drop-icon { transform: translateY(-3px); }
+  .paper-drop-stack {
+    position: relative;
+    width: 52px;
+    height: 58px;
+  }
+  .paper-drop-stack span {
+    position: absolute;
+    left: 10px;
+    top: 6px;
+    width: 34px;
+    height: 46px;
+    border: 1px solid var(--line-strong);
+    border-radius: 4px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(28, 25, 21, 0.08);
+  }
+  .paper-drop-stack span:nth-child(1) { transform: rotate(-9deg) translateX(-6px); }
+  .paper-drop-stack span:nth-child(2) { transform: rotate(7deg) translateX(6px); }
+  .paper-drop-stack span:nth-child(3) {
+    background: repeating-linear-gradient(#fff 0 6px, var(--line) 6px 7px);
+  }
   .paper-drop-title { font-size: 17px; font-weight: 500; color: var(--ink); }
   .paper-drop-hint {
     font-family: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
@@ -482,6 +507,9 @@
   @media (min-width: 1024px) {
     main[data-lean-shell="csv-to-json"] #tool-workbench { min-height: 1296px; }
   }
+
+  /* Once a file is open the grid is the tool, and the toolbar has its own picker. */
+  main[data-lean-shell="pdf-delete-pages"] #tool-workbench:has([data-pdf-open]) .paper-drop { display: none; }
 
   #tool-workbench .grid > *,
   #tool-workbench .flex > * {

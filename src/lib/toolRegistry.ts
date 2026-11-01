@@ -450,6 +450,7 @@ export const toolRegistry: Record<string, { run: (input: string) => Promise<stri
   "pdf-rotate": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },
   "pdf-watermark": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },
   "pdf-page-numbers": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },
+  "pdf-delete-pages": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },
   "pdf-reorder": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },
   "pdf-sign": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },
   "pdf-encrypt": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },

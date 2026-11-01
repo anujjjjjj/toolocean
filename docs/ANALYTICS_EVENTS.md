@@ -71,6 +71,7 @@ calling `markToolSuccess`, or if a covered slug is missing from this table.
 | image-watermark | `src/components/tools/implementations/image/ImageWatermarkTool.tsx` | 1 |
 | images-to-pdf | `src/components/tools/implementations/pdf/ImagesToPdfTool.tsx` | 1 |
 | pdf-compress | `src/components/tools/implementations/pdf/PdfCompressTool.tsx` | 1 |
+| pdf-delete-pages | `src/components/tools/implementations/pdf/PdfDeletePagesTool.tsx` | 1 |
 | pdf-encrypt | `src/components/tools/implementations/pdf/PdfEncryptTool.tsx` | 1 |
 | pdf-form-fill | `src/components/tools/implementations/pdf/PdfFormFillTool.tsx` | 1 |
 | pdf-merge | `src/components/tools/implementations/pdf/PdfMergeTool.tsx` | 1 |

@@ -215,6 +215,11 @@ export const pdfUnlockContent: Partial<ToolPageContent> = {
   ],
   related: [
     {
+      name: "Delete PDF Pages",
+      path: "/pdf-delete-pages",
+      description: "Trim pages from the unlocked copy.",
+    },
+    {
       name: "Add Page Numbers",
       path: "/pdf-page-numbers",
       description: "Number the pages of the unlocked copy.",

@@ -11,6 +11,7 @@ interface FileDropzoneProps {
   buttonLabel: string;
   className?: string;
   onIntent?: () => void;
+  pageStack?: boolean;
 }
 
 /**
@@ -25,6 +26,7 @@ export function FileDropzone({
   buttonLabel,
   className,
   onIntent,
+  pageStack = false,
 }: FileDropzoneProps) {
   const [over, setOver] = useState(false);
   const depth = useRef(0);
@@ -62,9 +64,17 @@ export function FileDropzone({
       onMouseEnter={onIntent}
       onFocus={onIntent}
     >
-      <span className="paper-drop-icon" aria-hidden="true">
-        <Upload className="h-5 w-5" />
-      </span>
+      {pageStack ? (
+        <span className="paper-drop-stack" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </span>
+      ) : (
+        <span className="paper-drop-icon" aria-hidden="true">
+          <Upload className="h-5 w-5" />
+        </span>
+      )}
       <span className="paper-drop-title">{title}</span>
       <span className="paper-drop-hint">{hint}</span>
       <span className="paper-drop-button">{buttonLabel}</span>

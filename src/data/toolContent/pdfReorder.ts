@@ -225,6 +225,11 @@ export const pdfReorderContent: Partial<ToolPageContent> = {
 
   related: [
     {
+      name: "Delete PDF Pages",
+      path: "/pdf-delete-pages",
+      description: "Drop the pages you no longer need.",
+    },
+    {
       name: "Rotate PDF",
       path: "/pdf-rotate",
       description: "Turn pages the right way up, keeping form fields intact.",

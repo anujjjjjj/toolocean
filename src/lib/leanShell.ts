@@ -14,6 +14,8 @@ export interface ShellDropzoneCopy {
   multiple: boolean;
   title: string;
   hint: string;
+  /** Replaces the upload icon with a small stack of pages. */
+  pageStack?: boolean;
 }
 
 const PDF = "application/pdf,.pdf";
@@ -30,6 +32,13 @@ const COPY: Record<string, ShellDropzoneCopy> = {
     multiple: false,
     title: "Drop a PDF here",
     hint: "or click to browse · PDF only",
+  },
+  "pdf-delete-pages": {
+    accept: PDF,
+    multiple: false,
+    title: "Drop a PDF to see every page",
+    hint: "or choose a file",
+    pageStack: true,
   },
   "pdf-sign": {
     accept: PDF,
