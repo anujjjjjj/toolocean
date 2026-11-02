@@ -22,6 +22,8 @@ import { pdfUnlockContent } from "./pdfUnlock";
 import { pdfMetadataContent } from "./pdfMetadata";
 import { pdfFormFillContent } from "./pdfFormFill";
 import { whatWasItWorthContent } from "./whatWasItWorth";
+import { videoToMp3Content } from "./videoToMp3";
+import { audioCutterContent, videoToGifContent, videoTrimmerContent } from "./videoCrossLinks";
 import {
   csvToJsonContent,
   jsonToCsvContent,
@@ -76,6 +78,10 @@ export const TOOL_CONTENT_OVERRIDES: Record<string, Partial<ToolPageContent>> = 
   "json-to-xml": jsonToXmlContent,
   "json-to-toml": jsonToTomlContent,
   "what-was-it-worth": whatWasItWorthContent,
+  "video-to-mp3": videoToMp3Content,
+  "video-trimmer": videoTrimmerContent,
+  "video-to-gif": videoToGifContent,
+  "audio-cutter": audioCutterContent,
 };
 
 /**

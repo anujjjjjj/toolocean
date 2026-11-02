@@ -141,6 +141,7 @@ export const lazyToolComponents: Record<string, LazyExoticComponent<ComponentTyp
   "video-metadata": lazyTool("video-metadata", () => import("@/components/tools/implementations/video/VideoMetadataTool").then((m) => ({ default: m.VideoMetadataTool }))),
   "video-thumbnail": lazyTool("video-thumbnail", () => import("@/components/tools/implementations/video/VideoThumbnailTool").then((m) => ({ default: m.VideoThumbnailTool }))),
   "video-to-gif": lazyTool("video-to-gif", () => import("@/components/tools/implementations/video/VideoToGifTool").then((m) => ({ default: m.VideoToGifTool }))),
+  "video-to-mp3": lazyTool("video-to-mp3", () => import("@/components/tools/implementations/video/VideoToMp3Tool").then((m) => ({ default: m.VideoToMp3Tool }))),
   "video-trimmer": lazyTool("video-trimmer", () => import("@/components/tools/implementations/video/VideoTrimmerTool").then((m) => ({ default: m.VideoTrimmerTool }))),
   "word-counter": lazyTool("word-counter", () => import("@/components/tools/implementations/WordCounterTool").then((m) => ({ default: m.WordCounterTool }))),
   "xml-formatter": lazyTool("xml-formatter", () => import("@/components/tools/implementations/XmlFormatterTool").then((m) => ({ default: m.XmlFormatterTool }))),

@@ -28,6 +28,7 @@ const encodeImage: Loader = () =>
   });
 const jszip: Loader = () => import("jszip");
 const heic: Loader = () => import("@/lib/image/heicDecoder");
+const videoToMp3: Loader = () => import("@/lib/videoToMp3Client");
 const jpeg: Loader = () => import("@/lib/targetSize/jpeg");
 const signPdf: Loader = () => import("@/lib/pdf/signPdf");
 const fillForm: Loader = () => import("@/lib/pdf/fillPdfForm");
@@ -53,6 +54,7 @@ const BY_SLUG: Record<string, Loader[]> = {
   "image-compressor": [encodeImage, jszip],
   "image-resizer": [jpeg],
   "heic-to-jpg": [heic, jszip],
+  "video-to-mp3": [videoToMp3],
 };
 
 const FONT_PATHS = [
@@ -194,6 +196,10 @@ export function scheduleOfflinePrefetch(slug: string | undefined): () => void {
         const { heicWorkerUrl, heicWasmUrl } = await import("@/lib/image/heicDecoder");
         await expandScriptImports(heicWorkerUrl(), graph);
         graph.add(heicWasmUrl());
+      }
+      if (loaders.includes(videoToMp3)) {
+        const { videoToMp3WorkerUrl } = await import("@/lib/videoToMp3Client");
+        await expandScriptImports(videoToMp3WorkerUrl(), graph);
       }
       if (cancelled) return;
       const urls = [...new Set([...seenAssetUrls(), ...graph])];
