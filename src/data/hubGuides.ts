@@ -182,7 +182,7 @@ export const HUB_GUIDES: Record<string, HubGuideContent> = {
   "/video-tools": {
     heading: "Short video jobs, and the ones that are absent",
     paragraphs: [
-      "Video here means a clip you trim, a frame you save as an image, a look at duration and dimensions, or a short stretch turned into a GIF. The browser's media element does the reading. There is no timeline with multiple layers, no colour grade, and no upload to a transcoder.",
+      "Video here means a clip you trim, a frame you save as an image, a look at duration and dimensions, a short stretch turned into a GIF, or the soundtrack saved as an MP3. The browser's media element does the reading. There is no timeline with multiple layers, no colour grade, and no upload to a transcoder.",
       "GIF export is lossy and looped. It is the wrong choice for a long, sharp clip. Trim first, then convert the short part.",
     ],
     tableCaption: "Video jobs on this hub",
@@ -204,6 +204,12 @@ export const HUB_GUIDES: Record<string, HubGuideContent> = {
         tool: "Video to GIF",
         path: "/video-to-gif",
         limit: "Short clips. Long videos become huge, soft GIFs.",
+      },
+      {
+        task: "Pull out the audio",
+        tool: "Video to MP3",
+        path: "/video-to-mp3",
+        limit: "The whole soundtrack as MP3 or WAV. Long files need a lot of memory.",
       },
       {
         task: "Duration and size",

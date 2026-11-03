@@ -51,7 +51,7 @@ const VideoToolsPage = () => {
           category="video"
           title="Video Tools"
           icon={Video}
-          description="Trim, extract thumbnails, and convert video. All in your browser."
+          description="Trim, extract thumbnails, convert video, and pull out the audio as MP3. All in your browser."
         />
 
         <section className="space-y-3">

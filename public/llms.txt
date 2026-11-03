@@ -1,6 +1,6 @@
 # ToolOcean
 
-> 121 file and developer utilities that run entirely in the browser. No upload, no
+> 122 file and developer utilities that run entirely in the browser. No upload, no
 > account, no server. Every tool processes your data locally in JavaScript and
 > WebAssembly, so files never leave the device.
 
@@ -28,7 +28,8 @@ working. Three tools are documented exceptions (see below).
 - [CSV tools](https://toolocean.co/csv-tools): convert, validate, merge
 - [Spreadsheet tools](https://toolocean.co/spreadsheet-tools): Excel to CSV, CSV to
   Excel, JSON to Excel, read workbooks, extract columns
-- [Video tools](https://toolocean.co/video-tools): trim, thumbnail, metadata, GIF
+- [Video tools](https://toolocean.co/video-tools): trim, thumbnail, metadata, GIF,
+  video to MP3 (extract audio from MP4, MOV, WebM, MKV)
 - [Audio tools](https://toolocean.co/audio-tools): cut, merge
 - [Archive tools](https://toolocean.co/archive-tools): create, extract, preview ZIP
 - [Compression tools](https://toolocean.co/compression-tools): gzip, LZ-String

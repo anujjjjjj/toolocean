@@ -53,9 +53,9 @@ export const CATEGORY_PAGE_SEO: Record<string, StaticPageSeo> = {
       "Resize in pixels, compress a JPEG, crop, convert PNG, JPEG, or WebP, and turn iPhone HEIC into JPG, all in the browser. No background removal.",
   },
   "/video-tools": {
-    title: "Video Tools – Trim, Thumbnail, GIF",
+    title: "Video Tools – Trim, Thumbnail, GIF, MP3",
     description:
-      "Trim a clip, save one frame, read duration and dimensions, or turn a short stretch into a GIF. No timeline editor and no upload.",
+      "Trim a clip, save one frame, read duration and dimensions, make a short GIF, or extract the audio as MP3. No timeline editor and no upload.",
   },
   "/spreadsheet-tools": {
     title: "Spreadsheet Tools – Excel and CSV",

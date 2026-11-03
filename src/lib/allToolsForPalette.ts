@@ -83,6 +83,7 @@ export function getAllToolsForPalette({ includeLandingPages = false } = {}): { c
     { id: "video-thumbnail", name: "Video Thumbnail", description: "Extract frame as image", keywords: ["video", "thumbnail", "frame"], path: "/video-thumbnail", icon: "Film", category: "Video Tools" },
     { id: "video-trimmer", name: "Video Trimmer", description: "Trim video by time range", keywords: ["video", "trim", "cut"], path: "/video-trimmer", icon: "Scissors", category: "Video Tools" },
     { id: "video-to-gif", name: "Video to GIF", description: "Convert to animated GIF", keywords: ["video", "gif", "animated"], path: "/video-to-gif", icon: "Image", category: "Video Tools" },
+    { id: "video-to-mp3", name: "Video to MP3", description: "Extract audio from a video", keywords: ["video", "mp3", "audio", "extract audio", "mp4 to mp3", "mov to mp3"], path: "/video-to-mp3", icon: "FileAudio", category: "Video Tools" },
     { id: "video-metadata", name: "Video Metadata Viewer", description: "Duration, dimensions, codec info", keywords: ["video", "metadata", "duration", "codec", "resolution"], path: "/video-metadata", icon: "Info", category: "Video Tools" },
   ];
 
