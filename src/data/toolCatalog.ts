@@ -97,6 +97,7 @@ const CATEGORY_TOOLS: CatalogTool[] = [
   { id: "pdf-split", category: "pdf", name: "PDF Split", description: "Extract specific pages from a PDF document", icon: "Split", keywords: ["pdf","split","extract"] },
   { id: "pdf-compress", category: "pdf", name: "PDF Compress", description: "Reduce PDF file size while maintaining quality", icon: "Shrink", keywords: ["pdf","compress","shrink"] },
   { id: "pdf-to-images", category: "pdf", name: "PDF to Images", description: "Convert PDF pages to PNG or JPG images", icon: "Image", keywords: ["pdf","image","convert"] },
+  { id: "pdf-to-text", category: "pdf", name: "PDF to Text", description: "Copy the text out of a PDF or save it as a .txt file", icon: "TextSelect", keywords: ["pdf","text","txt","extract text","copy text"] },
   { id: "images-to-pdf", category: "pdf", name: "Images to PDF", description: "Combine multiple images into a single PDF", icon: "FileText", keywords: ["images","pdf","combine"] },
   { id: "pdf-rotate", category: "pdf", name: "PDF Rotate", description: "Rotate PDF pages by 90°, 180°, or 270°", icon: "RotateCw", keywords: ["pdf","rotate"] },
   { id: "pdf-watermark", category: "pdf", name: "PDF Watermark", description: "Add text or image watermark to PDF pages", icon: "Droplets", keywords: ["pdf","watermark"] },

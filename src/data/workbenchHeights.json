@@ -281,6 +281,10 @@
       "sm": 316,
       "lg": 332
     },
+    "pdf-to-text": {
+      "sm": 316,
+      "lg": 332
+    },
     "pdf-reorder": {
       "sm": 228,
       "lg": 248
@@ -430,7 +434,7 @@
       "lg": 248
     },
     "video-to-mp3": {
-      "sm": 337,
+      "sm": 357,
       "lg": 322
     },
     "video-metadata": {

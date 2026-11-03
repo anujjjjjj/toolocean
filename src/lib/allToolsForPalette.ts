@@ -39,6 +39,7 @@ export function getAllToolsForPalette({ includeLandingPages = false } = {}): { c
     { id: "pdf-merge", name: "PDF Merge", description: "Combine multiple PDF files", keywords: ["pdf", "merge", "combine"], path: "/pdf-merge", icon: "Merge", category: "PDF Tools" },
     { id: "pdf-split", name: "PDF Split", description: "Extract specific pages", keywords: ["pdf", "split", "extract"], path: "/pdf-split", icon: "Split", category: "PDF Tools" },
     { id: "pdf-compress", name: "PDF Compress", description: "Reduce PDF file size", keywords: ["pdf", "compress", "shrink"], path: "/pdf-compress", icon: "Shrink", category: "PDF Tools" },
+    { id: "pdf-to-text", name: "PDF to Text", description: "Copy text from a PDF as .txt", keywords: ["pdf", "text", "txt", "extract text", "copy text"], path: "/pdf-to-text", icon: "TextSelect", category: "PDF Tools" },
     { id: "pdf-to-images", name: "PDF to Images", description: "Convert PDF to PNG/JPG", keywords: ["pdf", "image", "convert"], path: "/pdf-to-images", icon: "Image", category: "PDF Tools" },
     { id: "images-to-pdf", name: "Images to PDF", description: "Combine images into PDF", keywords: ["images", "pdf", "combine"], path: "/images-to-pdf", icon: "FileText", category: "PDF Tools" },
     { id: "pdf-rotate", name: "PDF Rotate", description: "Rotate PDF pages", keywords: ["pdf", "rotate"], path: "/pdf-rotate", icon: "RotateCw", category: "PDF Tools" },

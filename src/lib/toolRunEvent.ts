@@ -12,6 +12,11 @@
  *   - a signal without one is dropped within DEDUPE_WINDOW_MS of the last event,
  *     which absorbs a tool that signals from a re-render or twice in one handler
  *
+ * Captured signals (a copy or download noticed by src/lib/toolRunCapture.ts,
+ * for tools that never call markToolSuccess) follow the unkeyed rule, and are
+ * ignored once the mounted tool has sent an explicit signal: that tool reports
+ * its own runs, so a later download of the same result is not a second run.
+ *
  * No imports, so scripts/traffic-week1.test.mjs can load it under node --test.
  */
 
@@ -35,11 +40,18 @@ export function createToolRunReporter({
   send,
   eventName = "tool-run",
   now = Date.now,
-}: ToolRunReporterOptions): (runKey?: unknown) => boolean {
+}: ToolRunReporterOptions): (runKey?: unknown, captured?: boolean) => boolean {
   let lastKey: unknown = NO_KEY;
   let lastAt = Number.NEGATIVE_INFINITY;
+  let reportsItself = false;
 
-  return (runKey?: unknown) => {
+  return (runKey?: unknown, captured = false) => {
+    if (captured) {
+      if (reportsItself) return false;
+      runKey = undefined;
+    } else {
+      reportsItself = true;
+    }
     const at = now();
     if (runKey !== undefined && runKey !== null) {
       if (runKey === lastKey) return false;

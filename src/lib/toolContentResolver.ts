@@ -170,7 +170,7 @@ function defaultSpecs(tool: CatalogTool): ToolSpec[] {
   return [
     { label: "Read via", value: isFile ? "The browser File API, on your device" : "Typed or pasted into the page" },
     { label: "Held in", value: "Your browser tab's memory for as long as it is open" },
-    { label: "Stored", value: "Nothing. No cookies, no database, no server-side copy" },
+    { label: "Stored", value: "Nothing from your files. No database, no server-side copy. Analytics cookies only if you accept" },
     {
       label: "Transmitted",
       value: outbound ? `The value you enter, to ${outbound}` : "Nothing leaves your device",

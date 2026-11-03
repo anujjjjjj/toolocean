@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { trackEvent } from "@/lib/analytics";
 import { subscribeToolSuccess } from "@/lib/toolResult";
 import { createToolRunReporter } from "@/lib/toolRunEvent";
+import { installToolRunCapture } from "@/lib/toolRunCapture";
 import { TOOL_RUN_EVENT, trackUmamiEvent } from "@/lib/umami";
 
 /**
@@ -26,7 +27,9 @@ import { TOOL_RUN_EVENT, trackUmamiEvent } from "@/lib/umami";
  *                 control's text so the report distinguishes Format from Clear.
  *   tool-run      (Umami) the tool produced a result. Clicks cannot tell a
  *                 success from a failed decode, so this one listens for
- *                 markToolSuccess() instead. See useToolRunEvent below.
+ *                 markToolSuccess() instead, or, for tools that never call
+ *                 it, for a copy or download of the result
+ *                 (src/lib/toolRunCapture.ts). See useToolRunEvent below.
  *
  * Only the slug and a static control label are ever sent. Tool input is not
  * touched. That is the one promise this site makes.
@@ -56,18 +59,20 @@ function describeControl(control: Element): string | null {
 
 /**
  * Sends Umami `tool-run` { tool, slug } each time the mounted tool reports a
- * successful result. `tool` is the tool id, `slug` the route it is served
+ * successful result (explicit, or a captured copy or download). `tool` is the tool id, `slug` the route it is served
  * under; a landing page that embeds a tool passes its own slug. Subscribing
  * sends nothing, so a page view alone never produces the event.
  */
 export function useToolRunEvent(tool: string, slug: string) {
-  useEffect(
-    () =>
-      subscribeToolSuccess(
-        createToolRunReporter({ tool, slug, send: trackUmamiEvent, eventName: TOOL_RUN_EVENT }),
-      ),
-    [tool, slug],
-  );
+  useEffect(() => {
+    const report = createToolRunReporter({ tool, slug, send: trackUmamiEvent, eventName: TOOL_RUN_EVENT });
+    const stopCapture = installToolRunCapture();
+    const stopListening = subscribeToolSuccess(report, { includeCaptured: true });
+    return () => {
+      stopListening();
+      stopCapture();
+    };
+  }, [tool, slug]);
 }
 
 /**

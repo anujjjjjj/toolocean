@@ -623,7 +623,7 @@ describe("the page keeps its promises", () => {
 
   it("is listed in the analytics doc and the shared registries", () => {
     assert.match(read("docs/ANALYTICS_EVENTS.md"), /\| video-to-mp3 \| `src\/components\/tools\/implementations\/video\/VideoToMp3Tool\.tsx` \| 1 \|/);
-    assert.match(read("public/llms.txt"), /^> 122 file and developer/m);
+    assert.match(read("public/llms.txt"), /^> 123 file and developer/m);
     for (const file of ["src/data/toolCatalog.ts", "src/lib/allToolsForPalette.ts", "src/lib/lazyToolRegistry.ts", "src/lib/toolRegistry.ts", "src/lib/leanShell.ts", "src/lib/offlinePrefetch.ts"]) {
       assert.match(read(file), /"video-to-mp3"/, file);
     }

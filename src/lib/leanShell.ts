@@ -40,6 +40,13 @@ const COPY: Record<string, ShellDropzoneCopy> = {
     hint: "or choose a file",
     pageStack: true,
   },
+  "pdf-to-text": {
+    accept: PDF,
+    multiple: false,
+    title: "Drop a PDF to copy its text",
+    hint: "or click to browse · PDF only",
+    pageStack: true,
+  },
   "pdf-sign": {
     accept: PDF,
     multiple: false,

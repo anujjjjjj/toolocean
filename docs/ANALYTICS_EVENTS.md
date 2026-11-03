@@ -12,7 +12,9 @@ Analytics. This file covers the one Umami custom event.
 | `slug` | Route slug the tool was used on. Same as `tool` on a tool page; the landing page's slug when a landing page embeds the tool, e.g. `compress-image-to-20kb` |
 
 Nothing else is sent: no file names, sizes, input or output. If `window.umami` is
-missing (blocked, not loaded, prerender) the call does nothing.
+not defined yet (the tag is `defer`), the event waits in a queue of at most 20 that
+is retried every 0.5 s for 30 s and then dropped (blocked or offline). Prerender and
+Node do nothing.
 
 ### Success signal
 
@@ -82,6 +84,7 @@ calling `markToolSuccess`, or if a covered slug is missing from this table.
 | pdf-sign | `src/components/tools/implementations/pdf/PdfSignTool.tsx` | 1 |
 | pdf-split | `src/components/tools/implementations/pdf/PdfSplitTool.tsx` | 1 |
 | pdf-to-images | `src/components/tools/implementations/pdf/PdfToImagesTool.tsx` | 1 |
+| pdf-to-text | `src/components/tools/implementations/pdf/PdfToTextTool.tsx` | 2 |
 | pdf-unlock | `src/components/tools/implementations/pdf/PdfUnlockTool.tsx` | 1 |
 | pdf-watermark | `src/components/tools/implementations/pdf/PdfWatermarkTool.tsx` | 1 |
 | video-to-mp3 | `src/components/tools/implementations/video/VideoToMp3Tool.tsx` | 1 |
@@ -89,5 +92,14 @@ calling `markToolSuccess`, or if a covered slug is missing from this table.
 A file with two calls has two separate success paths (for example the favicon ZIP
 and a single size), or a convert and a download keyed by the same output.
 
-Tools not in this table never send `tool-run`. Adding one is a single
-`markToolSuccess(<output>)` call on its success path.
+Tools not in this table send `tool-run` when the result is taken: a
+`navigator.clipboard.writeText` call or an `<a download>` click (programmatic or
+real) within 60 s of a click or key press inside `#tool-workbench` or a landing
+embed (`[data-lean-embed]`). See `src/lib/toolRunCapture.ts`. Producing output
+alone (a text tool updating as you type) is not a run. A captured signal is
+deferred 250 ms and ignored once the mounted tool has sent its own
+`markToolSuccess`, so the tools above are counted only by their own signal. The
+tip jar listens to explicit signals only.
+
+Adding a tool to this table is a single `markToolSuccess(<output>)` call on its
+success path.
