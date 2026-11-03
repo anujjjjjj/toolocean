@@ -202,17 +202,78 @@ export function trackUmamiPageview(path: string, title: string): void {
 export const TOOL_RUN_EVENT = "tool-run";
 
 /**
- * Custom event. Only static ids belong in `data`, never tool input or a file
- * name. A no-op when the tag is blocked or has not loaded, and a tracker that
- * throws is ignored so a tool's success path cannot fail on analytics.
+ * Events sent before the deferred tag has defined `window.umami` wait here
+ * instead of being dropped. The queue is small, holds only the static ids
+ * already allowed in `data`, and is retried for FLUSH_FOR_MS; if the tag never
+ * arrives (blocked, offline) the events are dropped.
  */
-export function trackUmamiEvent(name: string, data: Record<string, string>): void {
-  if (!isBrowser()) return;
-  const umami = tracker();
-  if (!umami) return;
+export const MAX_PENDING_EVENTS = 20;
+const FLUSH_EVERY_MS = 500;
+const FLUSH_FOR_MS = 30_000;
+const pending: Array<[string, Record<string, string>]> = [];
+let flushTimer: ReturnType<typeof setTimeout> | null = null;
+let flushDeadline = 0;
+
+function deliver(umami: UmamiTracker, name: string, data: Record<string, string>) {
   try {
     umami.track(name, data);
   } catch {
     /* Analytics must not break the tool. */
   }
+}
+
+/** Sends whatever is queued if the tracker exists now. Returns how many went. */
+export function flushUmamiQueue(): number {
+  if (!isBrowser() || pending.length === 0) return 0;
+  const umami = tracker();
+  if (!umami) return 0;
+  const batch = pending.splice(0, pending.length);
+  for (const [name, data] of batch) deliver(umami, name, data);
+  return batch.length;
+}
+
+export function pendingUmamiEvents(): number {
+  return pending.length;
+}
+
+/** Drops the queue and its retry timer. For tests. */
+export function clearUmamiQueue(): void {
+  pending.length = 0;
+  if (flushTimer !== null) clearTimeout(flushTimer);
+  flushTimer = null;
+}
+
+function scheduleFlush() {
+  if (flushTimer !== null) return;
+  flushDeadline = Date.now() + FLUSH_FOR_MS;
+  const tick = () => {
+    flushTimer = null;
+    flushUmamiQueue();
+    if (pending.length === 0) return;
+    if (Date.now() >= flushDeadline) {
+      pending.length = 0;
+      return;
+    }
+    flushTimer = setTimeout(tick, FLUSH_EVERY_MS);
+    (flushTimer as { unref?: () => void }).unref?.();
+  };
+  flushTimer = setTimeout(tick, FLUSH_EVERY_MS);
+  (flushTimer as { unref?: () => void }).unref?.();
+}
+
+/**
+ * Custom event. Only static ids belong in `data`, never tool input or a file
+ * name. Queued until the tag defines `umami` (see above), and a tracker that
+ * throws is ignored so a tool's success path cannot fail on analytics.
+ */
+export function trackUmamiEvent(name: string, data: Record<string, string>): void {
+  if (!isBrowser()) return;
+  const umami = tracker();
+  if (!umami) {
+    if (pending.length < MAX_PENDING_EVENTS) pending.push([name, { ...data }]);
+    scheduleFlush();
+    return;
+  }
+  flushUmamiQueue();
+  deliver(umami, name, data);
 }

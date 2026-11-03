@@ -16,7 +16,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { test } from "node:test";
 import { DEDUPE_WINDOW_MS, createToolRunReporter } from "../src/lib/toolRunEvent.ts";
 import { markToolSuccess, subscribeToolSuccess } from "../src/lib/toolResult.ts";
-import { TOOL_RUN_EVENT, trackUmamiEvent, trackUmamiPageview } from "../src/lib/umami.ts";
+import { TOOL_RUN_EVENT, clearUmamiQueue, trackUmamiEvent, trackUmamiPageview } from "../src/lib/umami.ts";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => readFileSync(join(ROOT, rel), "utf8");
@@ -135,13 +135,14 @@ test("after unsubscribing, success signals send nothing", () => {
   });
 });
 
-test("tool-run is a no-op without window.umami, and a throwing tracker is ignored", () => {
+test("tool-run without window.umami does not throw, and a throwing tracker is ignored", () => {
   withBrowser({ umami: false }, (calls) => {
     const stop = subscribe("pdf-compress", "pdf-compress");
     assert.doesNotThrow(() => markToolSuccess());
     stop();
     assert.deepEqual(calls, []);
   });
+  clearUmamiQueue();
   // No browser at all (prerender / Node).
   assert.doesNotThrow(() => trackUmamiEvent("tool-run", { tool: "x", slug: "x" }));
   assert.doesNotThrow(() => markToolSuccess());
