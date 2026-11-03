@@ -53,7 +53,7 @@ const PdfToolsPage = () => {
           category="pdf"
           title="PDF Tools"
           icon={FileText}
-          description="Fifteen PDF tools that run in the tab. Merge and split, delete or number pages, compress a scan, protect a file with AES-256, unlock one you already know the password for, read or strip metadata, fill an AcroForm, or place a visual signature."
+          description="Sixteen PDF tools that run in the tab. Merge and split, delete or number pages, copy the text out, compress a scan, protect a file with AES-256, unlock one you already know the password for, read or strip metadata, fill an AcroForm, or place a visual signature."
         />
 
         {/* PDF Tools Grid */}

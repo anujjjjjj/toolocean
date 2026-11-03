@@ -250,6 +250,11 @@ export const pdfSplitContent: Partial<ToolPageContent> = {
 
   related: [
     {
+      name: "PDF to Text",
+      path: "/pdf-to-text",
+      description: "Read the text of an extracted section as plain characters.",
+    },
+    {
       name: "Delete PDF Pages",
       path: "/pdf-delete-pages",
       description: "Remove a few pages and keep the rest in one file.",

@@ -49,6 +49,7 @@ const BY_SLUG: Record<string, Loader[]> = {
   "pdf-sign": [signPdf, pdfjs],
   "pdf-compress": [pdfLib, pdfjs, compressTarget],
   "pdf-to-images": [pdfjs],
+  "pdf-to-text": [pdfjs],
   "images-to-pdf": [pdfLib, parseSize, encodeImage],
   "image-compressor": [encodeImage, jszip],
   "image-resizer": [jpeg],

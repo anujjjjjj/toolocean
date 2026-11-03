@@ -445,6 +445,7 @@ export const toolRegistry: Record<string, { run: (input: string) => Promise<stri
   "pdf-merge": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },
   "pdf-split": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },
   "pdf-compress": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },
+  "pdf-to-text": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },
   "pdf-to-images": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },
   "images-to-pdf": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },
   "pdf-rotate": { run: async () => { throw new Error("This tool requires file input. Use it from PDF tools."); } },

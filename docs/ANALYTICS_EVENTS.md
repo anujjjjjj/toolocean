@@ -82,6 +82,7 @@ calling `markToolSuccess`, or if a covered slug is missing from this table.
 | pdf-sign | `src/components/tools/implementations/pdf/PdfSignTool.tsx` | 1 |
 | pdf-split | `src/components/tools/implementations/pdf/PdfSplitTool.tsx` | 1 |
 | pdf-to-images | `src/components/tools/implementations/pdf/PdfToImagesTool.tsx` | 1 |
+| pdf-to-text | `src/components/tools/implementations/pdf/PdfToTextTool.tsx` | 2 |
 | pdf-unlock | `src/components/tools/implementations/pdf/PdfUnlockTool.tsx` | 1 |
 | pdf-watermark | `src/components/tools/implementations/pdf/PdfWatermarkTool.tsx` | 1 |
 

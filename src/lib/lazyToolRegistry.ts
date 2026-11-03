@@ -115,6 +115,7 @@ export const lazyToolComponents: Record<string, LazyExoticComponent<ComponentTyp
   "pdf-rotate": lazyTool("pdf-rotate", () => import("@/components/tools/implementations/pdf/PdfRotateTool").then((m) => ({ default: m.PdfRotateTool }))),
   "pdf-sign": lazyTool("pdf-sign", () => import("@/components/tools/implementations/pdf/PdfSignTool").then((m) => ({ default: m.PdfSignTool }))),
   "pdf-split": lazyTool("pdf-split", () => import("@/components/tools/implementations/pdf/PdfSplitTool").then((m) => ({ default: m.PdfSplitTool }))),
+  "pdf-to-text": lazyTool("pdf-to-text", () => import("@/components/tools/implementations/pdf/PdfToTextTool").then((m) => ({ default: m.PdfToTextTool }))),
   "pdf-to-images": lazyTool("pdf-to-images", () => import("@/components/tools/implementations/pdf/PdfToImagesTool").then((m) => ({ default: m.PdfToImagesTool }))),
   "pdf-unlock": lazyTool("pdf-unlock", () => import("@/components/tools/implementations/pdf/PdfUnlockTool").then((m) => ({ default: m.PdfUnlockTool }))),
   "pdf-watermark": lazyTool("pdf-watermark", () => import("@/components/tools/implementations/pdf/PdfWatermarkTool").then((m) => ({ default: m.PdfWatermarkTool }))),

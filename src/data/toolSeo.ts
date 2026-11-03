@@ -1620,6 +1620,12 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       "Delete or remove pages from a PDF with no upload. See a thumbnail of every page, tap the ones to drop, or type 2-4, 9, then download the shorter copy.",
     keywords: ["delete pages from pdf", "remove pages from pdf", "delete pdf pages no upload"],
   },
+  "pdf-to-text": {
+    title: "PDF to Text – Copy Text From a PDF, No Upload",
+    description:
+      "PDF to text with no upload: copy text from a PDF or extract it to a .txt file in your browser. Pick a page range, keep page breaks, and see which pages are scans.",
+    keywords: ["pdf to text", "extract text from pdf", "pdf to txt without uploading", "copy text from pdf"],
+  },
   "pdf-sign": {
     title: "Sign PDF Online Free – Draw or Type, No Upload",
     description:

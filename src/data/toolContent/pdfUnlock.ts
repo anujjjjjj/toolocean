@@ -215,6 +215,11 @@ export const pdfUnlockContent: Partial<ToolPageContent> = {
   ],
   related: [
     {
+      name: "PDF to Text",
+      path: "/pdf-to-text",
+      description: "Copy the text out once the password is gone.",
+    },
+    {
       name: "Delete PDF Pages",
       path: "/pdf-delete-pages",
       description: "Trim pages from the unlocked copy.",

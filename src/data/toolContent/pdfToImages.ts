@@ -279,6 +279,11 @@ export const pdfToImagesContent: Partial<ToolPageContent> = {
 
   related: [
     {
+      name: "PDF to Text",
+      path: "/pdf-to-text",
+      description: "Copy the words off the pages instead of saving pictures of them.",
+    },
+    {
       name: "Images to PDF",
       path: "/images-to-pdf",
       description: "The reverse trip, turning pictures back into a document.",
