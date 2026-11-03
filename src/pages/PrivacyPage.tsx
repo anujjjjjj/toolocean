@@ -40,10 +40,13 @@ const PrivacyPage = () => {
             browser. They are never uploaded, because there is no server that could receive them.
           </li>
           <li>Three tools do make network requests. They are named below.</li>
-          <li>No account, no sign-up, and no advertising or analytics cookies.</li>
           <li>
-            Page-view analytics, when enabled, are cookieless and count page views only. Your
-            files never leave the browser.
+            No account, no sign-up, and no advertising cookies. Google Analytics sets cookies only
+            if you accept the banner.
+          </li>
+          <li>
+            Umami page-view analytics are cookieless and count page views only. Your files never
+            leave the browser.
           </li>
         </UL>
       </Section>
@@ -103,7 +106,7 @@ const PrivacyPage = () => {
             so you are not asked again.
           </li>
           <li>
-            <Code>darkMode</Code>. Your light or dark theme preference.
+            <Code>theme</Code> and <Code>darkMode</Code>. Your light or dark theme preference.
           </li>
         </UL>
       </Section>
@@ -127,11 +130,13 @@ const PrivacyPage = () => {
           browser. The tools work the same if you block the script.
         </P>
         <P>
-          A build can still include Google Analytics 4 when a measurement id is configured. That
-          tag is separate, loads only after the page is interactive, and stores no analytics cookie
-          until you accept the banner. Advertising signals stay denied. It receives the page path
-          and title, plus a tool name and a button label when you use a control. It does not receive
-          file contents. Declining the banner, or leaving it alone, stores nothing for that tag.
+          ToolOcean also uses Google Analytics 4. That tag is separate, loads only after the page is
+          interactive, and sets no cookie until you accept the banner. If you accept, it can set its
+          standard first-party cookies (<Code>_ga</Code> and <Code>_ga_</Code> followed by the
+          property id) to count returning visits. Advertising signals stay denied. It receives the
+          page path and title, plus a tool name and a button label when you use a control. It does
+          not receive file contents. Declining the banner, or leaving it alone, sets no Google
+          Analytics cookie; a choice you make is saved only in local storage, as listed above.
         </P>
       </Section>
 

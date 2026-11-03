@@ -56,7 +56,7 @@ export function ConsentBanner() {
     >
       <div className="mx-auto flex h-11 max-w-[1120px] items-center gap-3 px-4">
         <p className="min-w-0 flex-1 truncate text-[13px] text-muted-foreground">
-          One analytics cookie counts visits. Files never leave this device.
+          Accept lets Google Analytics set cookies to count visits. Files never leave this device.
         </p>
         <div className="flex shrink-0 gap-2">
           <Button variant="outline" size="sm" onClick={() => choose("denied")}>
