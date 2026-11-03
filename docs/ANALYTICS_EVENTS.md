@@ -85,6 +85,7 @@ calling `markToolSuccess`, or if a covered slug is missing from this table.
 | pdf-to-text | `src/components/tools/implementations/pdf/PdfToTextTool.tsx` | 2 |
 | pdf-unlock | `src/components/tools/implementations/pdf/PdfUnlockTool.tsx` | 1 |
 | pdf-watermark | `src/components/tools/implementations/pdf/PdfWatermarkTool.tsx` | 1 |
+| video-to-mp3 | `src/components/tools/implementations/video/VideoToMp3Tool.tsx` | 1 |
 
 A file with two calls has two separate success paths (for example the favicon ZIP
 and a single size), or a convert and a download keyed by the same output.

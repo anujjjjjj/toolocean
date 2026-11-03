@@ -3,33 +3,38 @@
  * Based on Web Audio API patterns for Float32 PCM -> WAV.
  */
 export function audioBufferToWavBlob(audioBuffer: AudioBuffer): Blob {
-  const numChannels = audioBuffer.numberOfChannels;
-  const sampleRate = audioBuffer.sampleRate;
-  const channelLength = audioBuffer.length;
+  const channels = Array.from({ length: audioBuffer.numberOfChannels }, (_, ch) => audioBuffer.getChannelData(ch));
+  return channelsToWavBlob(channels, audioBuffer.sampleRate);
+}
+
+/** The same encoding from planar samples, for workers, which have no AudioBuffer. */
+export function channelsToWavBlob(channels: Float32Array[], sampleRate: number): Blob {
+  const numChannels = channels.length;
+  const channelLength = channels[0].length;
 
   // Interleave channels
   const interleaved = new Float32Array(channelLength * numChannels);
-  for (let i = 0; i < channelLength; i++) {
-    for (let ch = 0; ch < numChannels; ch++) {
-      interleaved[i * numChannels + ch] = audioBuffer.getChannelData(ch)[i];
+  channels.forEach((channel, ch) => {
+    for (let i = 0; i < channelLength; i++) {
+      interleaved[i * numChannels + ch] = channel[i];
     }
-  }
+  });
 
-  const wavBytes = getWavBytes(interleaved.buffer, {
+  const header = getWavHeader({
     isFloat: true,
     numChannels,
     sampleRate,
     numFrames: channelLength,
   });
-  return new Blob([wavBytes], { type: "audio/wav" });
+  return new Blob([header, interleaved.buffer as ArrayBuffer], { type: "audio/wav" });
 }
 
-function getWavBytes(buffer: ArrayBuffer, options: {
+function getWavHeader(options: {
   isFloat: boolean;
   numChannels: number;
   sampleRate: number;
   numFrames: number;
-}): Uint8Array {
+}): ArrayBuffer {
   const bytesPerSample = options.isFloat ? 4 : 2;
   const format = options.isFloat ? 3 : 1;
   const blockAlign = options.numChannels * bytesPerSample;
@@ -66,8 +71,5 @@ function getWavBytes(buffer: ArrayBuffer, options: {
   writeString("data");
   writeUint32(dataSize);
 
-  const wavBytes = new Uint8Array(44 + buffer.byteLength);
-  wavBytes.set(new Uint8Array(headerBuffer), 0);
-  wavBytes.set(new Uint8Array(buffer), 44);
-  return wavBytes;
+  return headerBuffer;
 }

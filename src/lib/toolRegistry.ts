@@ -471,6 +471,7 @@ export const toolRegistry: Record<string, { run: (input: string) => Promise<stri
   "video-thumbnail": { run: async () => { throw new Error("This tool requires file input. Use it from Video tools."); } },
   "video-trimmer": { run: async () => { throw new Error("This tool requires file input. Use it from Video tools."); } },
   "video-to-gif": { run: async () => { throw new Error("This tool requires file input. Use it from Video tools."); } },
+  "video-to-mp3": { run: async () => { throw new Error("This tool requires file input. Use it from Video tools."); } },
   "excel-reader": { run: async () => { throw new Error("This tool requires file input. Use it from Spreadsheet tools."); } },
   "csv-to-excel": { run: async () => { throw new Error("This tool requires file input. Use it from Spreadsheet tools."); } },
   "excel-to-csv": { run: async () => { throw new Error("This tool requires file input. Use it from Spreadsheet tools."); } },

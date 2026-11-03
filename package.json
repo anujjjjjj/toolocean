@@ -25,7 +25,7 @@
     "indexnow:changed": "node scripts/indexnow.mjs",
     "serve:dist": "node scripts/serve-dist.mjs",
     "check:hydration": "node --experimental-websocket scripts/check-hydration.mjs",
-    "test": "node --experimental-strip-types --test scripts/qa-regressions.test.mjs scripts/umami.test.mjs scripts/heic.test.mjs scripts/pdf-page-numbers.test.mjs scripts/pdf-delete-pages.test.mjs scripts/pdf-to-text.test.mjs scripts/traffic-week1.test.mjs"
+    "test": "node --experimental-strip-types --test scripts/qa-regressions.test.mjs scripts/umami.test.mjs scripts/heic.test.mjs scripts/pdf-page-numbers.test.mjs scripts/pdf-delete-pages.test.mjs scripts/pdf-to-text.test.mjs scripts/video-to-mp3.test.mjs scripts/traffic-week1.test.mjs"
   },
   "dependencies": {
     "@cantoo/pdf-lib": "^2.11.1",
@@ -59,6 +59,7 @@
     "@radix-ui/react-tooltip": "^1.1.4",
     "@tanstack/react-query": "^5.56.2",
     "ajv": "^8.17.1",
+    "audiobox": "1.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",

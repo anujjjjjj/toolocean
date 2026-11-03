@@ -11,8 +11,8 @@
       "score": 0.0968
     },
     "/all-tools": {
-      "hash": "5d797f23e2a4143f",
-      "score": 0.0988
+      "hash": "350784a7f9a2593d",
+      "score": 0.0977
     },
     "/markdown-html": {
       "hash": "a4610bbaf8b03af6",
@@ -338,13 +338,13 @@
       "hash": "0b9c66ce6ed0137e",
       "score": 0.1507
     },
+    "/": {
+      "hash": "0cef549d6c9e40e7",
+      "score": 0.1564
+    },
     "/regex-tester": {
       "hash": "c3b113037382f894",
       "score": 0.1577
-    },
-    "/": {
-      "hash": "28104ac4029715ab",
-      "score": 0.158
     },
     "/env-formatter": {
       "hash": "194625d9e1448797",

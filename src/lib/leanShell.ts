@@ -65,6 +65,12 @@ const COPY: Record<string, ShellDropzoneCopy> = {
     title: "Drop HEIC photos here",
     hint: "or click to browse · HEIC or HEIF · multiple files",
   },
+  "video-to-mp3": {
+    accept: "video/*,.mp4,.mov,.m4v,.webm,.mkv",
+    multiple: false,
+    title: "Drop a video to extract its audio",
+    hint: "or click to browse · MP4, MOV, WebM, MKV",
+  },
   "csv-to-json": {
     accept: ".csv,.json,.txt,text/csv,application/json",
     multiple: false,

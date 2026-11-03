@@ -153,6 +153,7 @@ const CATEGORY_TOOLS: CatalogTool[] = [
   { id: "video-thumbnail", category: "video", name: "Thumbnail Extractor", description: "Capture a frame as image at any timestamp", icon: "Film", keywords: ["video","thumbnail","frame"] },
   { id: "video-trimmer", category: "video", name: "Video Trimmer", description: "Trim video by selecting start and end time", icon: "Scissors", keywords: ["video","trim","cut"] },
   { id: "video-to-gif", category: "video", name: "Video to GIF", description: "Convert video to animated GIF", icon: "Image", keywords: ["video","gif","animated"] },
+  { id: "video-to-mp3", category: "video", name: "Video to MP3", description: "Extract the audio from MP4, MOV, WebM or MKV as MP3 or WAV", icon: "FileAudio", keywords: ["video","mp3","audio","extract audio","mp4 to mp3","mov to mp3"] },
   { id: "video-metadata", category: "video", name: "Metadata Viewer", description: "View duration, dimensions, codec info", icon: "Info", keywords: ["video","metadata","duration","codec","resolution"] },
 
   // ---- Audio ----

@@ -1990,6 +1990,12 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       },
     ],
   },
+  "video-to-mp3": {
+    title: "Video to MP3 – Extract Audio, No Upload, Free",
+    description:
+      "Video to MP3 with no upload: extract audio from MP4, iPhone MOV, WebM or MKV free online. Choose 128, 192 or 320 kbps, or WAV, and download it from this tab.",
+    keywords: ["video to mp3", "extract audio from video online free", "mp4 to mp3 without uploading"],
+  },
   "video-to-gif": {
     title: "Video to GIF Converter: Free, No Upload",
     description:
