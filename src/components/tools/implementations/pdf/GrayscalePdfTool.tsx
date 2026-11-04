@@ -107,6 +107,19 @@ function ErrorPanel({ kind, onRetry }: { kind: Failure; onRetry: () => void }) {
                 <div className="min-w-0">
                     <p className="text-[15px] font-medium text-foreground">{copy.title}</p>
                     <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{copy.body}</p>
+                    {kind === "unreadable" && (
+                        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                            If it opens elsewhere but asks for a password, remove the password with{" "}
+                            <Link to="/remove-password-from-bank-statement-pdf" className="font-medium text-foreground underline underline-offset-2">
+                                Remove PDF Password
+                            </Link>{" "}
+                            or{" "}
+                            <Link to="/pdf-unlock" className="font-medium text-foreground underline underline-offset-2">
+                                Unlock PDF
+                            </Link>
+                            , then try again.
+                        </p>
+                    )}
                     <Button type="button" variant="outline" className="mt-3 h-11 max-sm:w-full" onClick={onRetry}>
                         Choose another file
                     </Button>
