@@ -165,7 +165,7 @@ export const grayscalePdfContent: Partial<ToolPageContent> = {
       topic: "privacy",
       question: "Is my PDF uploaded to convert it to grayscale?",
       answer:
-        "No. The file is processed in your browser and never uploaded. It is opened in this tab, each page is redrawn in memory, and the gray copy is put together on your device before you save it.",
+        "No. The file is processed in your browser and never uploaded. It is opened in this tab, each page is redrawn in memory, and the gray copy is put together on your device before you save it. The one thing sent when it finishes is an anonymous usage count to our Umami analytics, which stores nothing on your device: the tool's name, with no file name, size or content.",
     },
     {
       question: "Can I still select or search the text afterwards?",
@@ -195,7 +195,7 @@ export const grayscalePdfContent: Partial<ToolPageContent> = {
     {
       question: "Is there a page or size limit?",
       answer:
-        "There is no fixed limit, because nothing is sent to a server. Pages are converted one by one and the browser gets a breather after every page, which keeps scrolling smooth and lets Cancel stop straight away. Memory is the practical ceiling: a few hundred pages at 150 DPI is fine on a laptop, while phones do better with smaller batches or 150 DPI. Unusually large pages such as posters are drawn at a lower resolution so they stay within what a browser can hold.",
+        "There is no fixed limit, because the PDF is never sent to a server. Pages are converted one by one and the browser gets a breather after every page, which keeps scrolling smooth and lets Cancel stop straight away. Memory is the practical ceiling: a few hundred pages at 150 DPI is fine on a laptop, while phones do better with smaller batches or 150 DPI. Unusually large pages such as posters are drawn at a lower resolution so they stay within what a browser can hold.",
     },
     {
       question: "Will the pages keep their size and orientation?",

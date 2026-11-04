@@ -91,8 +91,9 @@ const AboutPage = () => {
             download the other {toolCount - 1}. The shared entry bundle is about 130 kB compressed.
           </li>
           <li>
-            No analytics or fonts block the page from rendering, and the analytics tag is only
-            fetched once the page is already interactive.
+            No analytics or fonts block the page from rendering. The cookieless Umami tag is
+            deferred behind the tool code, and Google Analytics is only fetched once the page is
+            already interactive.
           </li>
         </UL>
       </Section>

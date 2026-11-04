@@ -43,7 +43,7 @@ function sharedFeatures(subjectPlural: string): ToolFeature[] {
   return [
     {
       icon: "CloudOff",
-      title: "Your data never leaves the tab",
+      title: "Your input never leaves the tab",
       body: `There is no upload step and no server to receive one. The page loads once, then all work on your ${subjectPlural} happens in local JavaScript.`,
     },
     {
@@ -58,7 +58,7 @@ function textSteps(subject: string, verb: string, output: string): ToolStep[] {
   return [
     {
       title: `Paste your ${subject}`,
-      body: `Paste directly into the editor, drop a file onto it, or use "Open file" to pick one from your device. Nothing is sent anywhere when you do.`,
+      body: `Paste directly into the editor, drop a file onto it, or use "Open file" to pick one from your device. What you paste or open is not sent anywhere.`,
     },
     {
       title: verb,

@@ -219,7 +219,7 @@ export const imageFormatConverterContent: Partial<ToolPageContent> = {
       topic: "privacy",
       question: "Is my image sent to a server to be converted?",
       answer:
-        "No. Decoding and re-encoding are both done by your browser, and no request leaves the page while you work. The conversion also runs perfectly well with the network disconnected, which is the clearest demonstration that no server is involved.",
+        "No. Decoding and re-encoding are both done by your browser, and no request carrying your image leaves the page. The only outgoing traffic is analytics: Google Analytics hits, which set no cookies unless you clicked Accept, and one anonymous Umami count with the tool's name when a conversion finishes. The conversion also runs perfectly well with the network disconnected, which is the clearest demonstration that no server is involved.",
     },
     {
       question: "Is WebP actually smaller than JPEG?",

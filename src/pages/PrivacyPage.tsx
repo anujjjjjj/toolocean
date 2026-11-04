@@ -13,12 +13,13 @@ import { Code, InfoPageLayout, P, Section, UL } from "@/components/layout/InfoPa
  *   - Three tools genuinely do make network requests (dns-lookup, ip-address,
  *     http-request-composer). "Nothing ever leaves your device" is true of every
  *     file-processing tool and false of those three, so they are named.
- *   - index.html loads webfonts from Google's CDN, which discloses the visitor's
- *     IP to Google on every page. That is a third-party request and belongs here.
+ *   - Analytics: Umami (cookieless) counts page views plus one tool-run event
+ *     with the tool id and slug, and GA4 runs under Consent Mode. Both are
+ *     third-party requests and belong here. Fonts are self-hosted in /fonts.
  *
  * If a tool is added that transmits anything, this page has to change with it.
  */
-const LAST_UPDATED = "10 October 2026";
+const LAST_UPDATED = "4 November 2026";
 
 const PrivacyPage = () => {
   useSEO({
@@ -45,8 +46,8 @@ const PrivacyPage = () => {
             if you accept the banner.
           </li>
           <li>
-            Umami page-view analytics are cookieless and count page views only. Your files never
-            leave the browser.
+            Umami analytics are cookieless. They count page views and, when a tool finishes, one
+            anonymous usage count with the tool's name. Your files never leave the browser.
           </li>
         </UL>
       </Section>
@@ -61,7 +62,9 @@ const PrivacyPage = () => {
         <P>
           A practical consequence: once the page has loaded, these tools keep working with your
           network disconnected. That is the clearest proof of the claim. A tool that needed a
-          server would stop.
+          server would stop. To make that work, a tool page fetches the rest of its own code (for
+          example the PDF engine) from <Code>toolocean.co</Code> shortly after it loads, so it is
+          cached for later.
         </P>
       </Section>
 
@@ -115,8 +118,11 @@ const PrivacyPage = () => {
         <P>
           ToolOcean loads a cookieless analytics script from Umami Cloud at{" "}
           <Code>cloud.umami.is</Code>. The tag is deferred and runs after the tool code, so it does
-          not compete with the page. It counts page views only: the path and the title of the page.
-          It sets no cookie. Collection is limited to <Code>toolocean.co</Code>. The script is
+          not compete with the page. It counts page views: the path and the title of the page.
+          When a tool finishes, or you copy or download a tool's result, it also sends one event,{" "}
+          <Code>tool-run</Code>, holding only the tool's id and the page's slug: no file name, size
+          or content. It sets no cookie. Collection is limited to <Code>toolocean.co</Code>. The
+          script is
           loaded with Do Not Track enabled, so a browser that sends that signal is not counted.
         </P>
         <P>
@@ -126,12 +132,14 @@ const PrivacyPage = () => {
           total is zero, the line is not shown. It does not appear on any other page.
         </P>
         <P>
-          Nothing you type, paste, or open is part of either request. Your files never leave the
-          browser. The tools work the same if you block the script.
+          Nothing you type, paste, or open is part of any of these requests. Your files never leave
+          the browser. The tools work the same if you block the script.
         </P>
         <P>
           ToolOcean also uses Google Analytics 4. That tag is separate, loads only after the page is
-          interactive, and sets no cookie until you accept the banner. If you accept, it can set its
+          interactive, and sets no cookie until you accept the banner. Until then it runs in Google's
+          cookieless consent mode, so its requests still go out, without an identifier. If you
+          accept, it can set its
           standard first-party cookies (<Code>_ga</Code> and <Code>_ga_</Code> followed by the
           property id) to count returning visits. Advertising signals stay denied. It receives the
           page path and title, plus a tool name and a button label when you use a control. It does
@@ -148,9 +156,9 @@ const PrivacyPage = () => {
             metadata including IP addresses.
           </li>
           <li>
-            <strong className="text-foreground">Google Fonts</strong> serves the two typefaces the
-            site uses, loaded from Google's CDN. Because the request goes to Google's servers, your
-            IP address is disclosed to Google when a page loads.
+            <strong className="text-foreground">Fonts</strong>. The two typefaces the site uses are
+            self-hosted and served from <Code>toolocean.co</Code> like the rest of the page, so no
+            font request goes to a third party.
           </li>
         </UL>
       </Section>

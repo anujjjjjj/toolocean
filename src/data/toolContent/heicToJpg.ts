@@ -187,7 +187,7 @@ export const heicToJpgContent: Partial<ToolPageContent> = {
     {
       icon: "Briefcase",
       audience: "Work machines you cannot install software on",
-      body: "A managed laptop rarely lets you add the HEVC extension. A browser tab needs no admin rights, and policy that forbids sending photos to outside services is respected, because nothing is sent.",
+      body: "A managed laptop rarely lets you add the HEVC extension. A browser tab needs no admin rights, and policy that forbids sending photos to outside services is respected, because the photos are never sent.",
     },
     {
       icon: "Palette",
@@ -232,7 +232,7 @@ export const heicToJpgContent: Partial<ToolPageContent> = {
       topic: "privacy",
       question: "Are my photos sent anywhere to be converted?",
       answer:
-        "No. The decoder is a WebAssembly build of libheif that runs in a worker inside this tab, and the JPG or PNG is written by your browser's canvas. While a batch converts, the only requests the page makes are for its own script and decoder files, and with those cached it converts in flight mode.",
+        "No. The decoder is a WebAssembly build of libheif that runs in a worker inside this tab, and the JPG or PNG is written by your browser's canvas. While a batch converts, the page requests only its own script and decoder files, plus analytics: Google Analytics hits, with no cookie unless you agreed to the banner, and a single Umami tally naming the tool once the photos are done. None of those requests holds a photo, and with the decoder cached it converts in flight mode.",
     },
     {
       question: "Will portrait photos come out sideways?",

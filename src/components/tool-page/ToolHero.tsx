@@ -18,7 +18,7 @@ export const BADGES: Record<ToolBadgeKey, { icon: LucideIcon; label: string; tit
   "no-uploads": {
     icon: CloudOff,
     label: "No uploads",
-    title: "Your data is never sent to a server. There is no server to send it to.",
+    title: "Your files and text are never sent to a server. There is no server to send them to.",
   },
   offline: {
     icon: WifiOff,

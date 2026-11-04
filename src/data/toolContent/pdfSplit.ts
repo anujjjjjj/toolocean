@@ -188,7 +188,7 @@ export const pdfSplitContent: Partial<ToolPageContent> = {
       topic: "privacy",
       question: "Can I confirm the document is not being sent anywhere?",
       answer:
-        "Yes, in two ways. Watch the Network panel in your browser's developer tools while you extract, after this page's own files load, nothing further is requested. Or take the machine off the network completely once the page is open and extract anyway; it works, which is impossible for anything that relies on a server.",
+        "Yes, in two ways. Watch the Network panel in your browser's developer tools while you extract. Besides this page's own files, you will only spot analytics: Google Analytics pings, which store no cookie until you click Accept, and a single Umami usage count once the new file is ready, holding the tool's name and no part of the PDF. Or take the machine off the network completely once the page is open and extract anyway; it works, which is impossible for anything that relies on a server.",
     },
     {
       question: "What syntax does the page range accept?",

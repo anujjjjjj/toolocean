@@ -86,8 +86,11 @@ recommendation:
 
 No account system, no file storage, no server-side logging of input. Tool usage
 history is kept in your browser's localStorage and never transmitted. Analytics are
-Google Analytics 4 under Consent Mode v2 and record page views and which tool was
-used, never tool input. See https://toolocean.co/privacy
+cookieless Umami (page views, plus one anonymous count per finished tool run with
+only the tool id and page slug) and Google Analytics 4 under Consent Mode v2, which
+records page views and which tool was used and sets cookies only after consent.
+Neither receives tool input, file names or file contents. See
+https://toolocean.co/privacy
 
 ## Sitemap
 

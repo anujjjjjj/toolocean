@@ -108,7 +108,7 @@ export const jsonFormatterContent: Partial<ToolPageContent> = {
     {
       icon: "CloudOff",
       title: "Nothing is uploaded",
-      body: "There is no server to send your JSON to. The page is a static bundle, and the formatting happens in local JavaScript, check your network panel while you use it.",
+      body: "There is no server to send your JSON to. The page is a static bundle, and the formatting happens in local JavaScript, check your network panel while you use it: the only requests are analytics, never your JSON.",
     },
     {
       icon: "AlertTriangle",
@@ -211,7 +211,7 @@ export const jsonFormatterContent: Partial<ToolPageContent> = {
     {
       icon: "ShieldCheck",
       audience: "Working with regulated data",
-      body: "Where policy forbids pasting customer records into third-party sites, a formatter that provably makes no network requests is often the only compliant option available.",
+      body: "Where policy forbids pasting customer records into third-party sites, a formatter that provably never sends the document anywhere is often the only compliant option available.",
     },
   ],
 
@@ -224,7 +224,7 @@ export const jsonFormatterContent: Partial<ToolPageContent> = {
     {
       question: "Is my JSON uploaded to a server?",
       answer:
-        "No. This page has no backend. The formatter is JavaScript that runs in your browser, so your JSON never leaves the tab. You can verify it by opening DevTools, switching to the Network tab, and formatting a document, no request is made.",
+        "No. This page has no backend. The formatter is JavaScript that runs in your browser, so your JSON never leaves the tab. You can verify it by opening DevTools, switching to the Network tab, and formatting a document: no request contains your JSON. What you will see is analytics, Google Analytics hits (cookieless unless you accepted them) and one Umami usage count with the tool's name once a result is ready.",
     },
     {
       question: "What is the difference between beautifying and minifying JSON?",

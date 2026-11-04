@@ -681,7 +681,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   "qr-code-generator": {
     title: "QR Code Generator: Free QR Codes from Text or URLs",
     description:
-      "Generate a QR code from any text or URL and download it as a PNG. Free, unlimited, no watermark, no tracking, and no account, generated in your browser.",
+      "Generate a QR code from any text or URL and download it as a PNG. Free, unlimited, no watermark, no scan tracking, and no account, generated in your browser.",
     keywords: ["qr code generator", "create qr code", "free qr code", "url to qr code", "qr code png download", "qr generator no watermark"],
     faqs: [
       {
@@ -1516,7 +1516,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   "pdf-compress": {
     title: "Compress PDF Online: Reduce PDF File Size Free",
     description:
-      "Shrink PDF file size so documents fit email and upload limits, with control over the quality trade-off. Free PDF compressor that works entirely offline.",
+      "Shrink PDF file size so documents fit email and upload limits, with control over the quality trade-off. Free PDF compressor that works offline once loaded.",
     keywords: ["compress pdf", "reduce pdf size", "pdf compressor online", "shrink pdf", "make pdf smaller", "pdf size reducer free"],
     faqs: [
       privacyFaq("PDF"),
@@ -1791,7 +1791,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   "image-compressor": {
     title: "Image Compressor: Reduce Image File Size Online",
     description:
-      "Compress JPG, PNG, and WebP images with a quality slider and see the size saving before you download. Free image compressor that works entirely offline.",
+      "Compress JPG, PNG, and WebP images with a quality slider and see the size saving before you download. Free image compressor that works offline once loaded.",
     keywords: ["image compressor", "compress jpg online", "reduce image size", "png compressor", "optimize images for web", "shrink photo file size"],
     faqs: [
       privacyFaq("image"),

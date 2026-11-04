@@ -128,7 +128,7 @@ export const LANDING_PAGES: LandingPage[] = [
       {
         question: "How do I know it is really not uploading?",
         answer:
-          "Open your browser's developer tools, switch to the Network tab, and merge a file. You will see the page's own assets load and then nothing further. You can also disconnect from the network entirely after the page loads and the merge still works, which is not possible for a tool that needs a server.",
+          "Open your browser's developer tools, switch to the Network tab, and merge a file. You will see the page's own code and the cookieless Umami analytics script load, Google Analytics requests that set no cookies unless you clicked Accept, and one small Umami event when the merge finishes, which names the tool and nothing else. None of them carries your PDF. You can also disconnect from the network entirely after the page loads and the merge still works, which is not possible for a tool that needs a server.",
       },
       {
         question: "Is there a file size or page count limit?",
