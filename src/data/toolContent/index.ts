@@ -15,6 +15,7 @@ import { pdfWatermarkContent } from "./pdfWatermark";
 import { pdfPageNumbersContent } from "./pdfPageNumbers";
 import { pdfDeletePagesContent } from "./pdfDeletePages";
 import { pdfToTextContent, wordCounterContent } from "./pdfToText";
+import { grayscalePdfContent, imageFiltersContent } from "./grayscalePdf";
 import { pdfReorderContent } from "./pdfReorder";
 import { pdfCompressContent } from "./pdfCompress";
 import { pdfSignContent } from "./pdfSign";
@@ -66,6 +67,8 @@ export const TOOL_CONTENT_OVERRIDES: Record<string, Partial<ToolPageContent>> = 
   "pdf-delete-pages": pdfDeletePagesContent,
   "pdf-to-text": pdfToTextContent,
   "word-counter": wordCounterContent,
+  "grayscale-pdf": grayscalePdfContent,
+  "image-filters": imageFiltersContent,
   "pdf-reorder": pdfReorderContent,
   "pdf-compress": pdfCompressContent,
   "pdf-sign": pdfSignContent,

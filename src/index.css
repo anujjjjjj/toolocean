@@ -511,6 +511,7 @@
   /* Once a file is open the grid is the tool, and the toolbar has its own picker. */
   main[data-lean-shell="pdf-delete-pages"] #tool-workbench:has([data-pdf-open]) .paper-drop { display: none; }
   main[data-lean-shell="pdf-to-text"] #tool-workbench:has([data-p2t-state="working"], [data-p2t-state="done"]) .paper-drop { display: none; }
+  main[data-lean-shell="grayscale-pdf"] #tool-workbench:has([data-gs-state="ready"], [data-gs-state="working"], [data-gs-state="done"]) .paper-drop { display: none; }
   main[data-lean-shell="video-to-mp3"] #tool-workbench:has([data-v2m-state]:not([data-v2m-state="empty"])) .paper-drop { display: none; }
 
   #tool-workbench .grid > *,

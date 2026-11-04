@@ -1626,6 +1626,12 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       "PDF to text with no upload: copy text from a PDF or extract it to a .txt file in your browser. Pick a page range, keep page breaks, and see which pages are scans.",
     keywords: ["pdf to text", "extract text from pdf", "pdf to txt without uploading", "copy text from pdf"],
   },
+  "grayscale-pdf": {
+    title: "Grayscale PDF – Print Black and White, Save Ink",
+    description:
+      "Convert a PDF to grayscale or pure black and white for printing, and save colour ink or toner. Done in your browser with no upload. Choose 150 or 300 DPI.",
+    keywords: ["convert pdf to grayscale", "pdf to black and white", "make pdf black and white for printing", "grayscale pdf"],
+  },
   "pdf-sign": {
     title: "Sign PDF Online Free – Draw or Type, No Upload",
     description:

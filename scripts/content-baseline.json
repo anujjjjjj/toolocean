@@ -70,6 +70,7 @@
   "pdf-compress": 2162,
   "pdf-to-images": 2099,
   "pdf-to-text": 1722,
+  "grayscale-pdf": 1793,
   "images-to-pdf": 2048,
   "pdf-rotate": 1618,
   "pdf-watermark": 1684,

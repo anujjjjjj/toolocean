@@ -47,6 +47,13 @@ const COPY: Record<string, ShellDropzoneCopy> = {
     hint: "or click to browse · PDF only",
     pageStack: true,
   },
+  "grayscale-pdf": {
+    accept: PDF,
+    multiple: false,
+    title: "Drop a PDF to print it in gray",
+    hint: "or click to browse · PDF only",
+    pageStack: true,
+  },
   "pdf-sign": {
     accept: PDF,
     multiple: false,
