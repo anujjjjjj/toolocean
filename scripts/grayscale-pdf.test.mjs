@@ -16,6 +16,13 @@ import {
   DEFAULT_DPI,
   DEFAULT_THRESHOLD,
   MAX_PAGE_PIXELS,
+  MAX_CANVAS_SIDE,
+  FALLBACK_PAGE_PIXELS,
+  ConvertStageError,
+  classifyConvertError,
+  convertFailureCopy,
+  fallbackGeometry,
+  isMemoryError,
   chooseSmaller,
   compareSizes,
   encodePageImage,
@@ -478,5 +485,59 @@ describe("the page keeps its promises", () => {
     assert.match(read("public/llms.txt"), /^> 124 file and developer/m);
     assert.match(read("src/index.css"), /data-lean-shell="grayscale-pdf"/);
     assert.match(read("src/data/pdfHubContent.ts"), /Seventeen tools/);
+  });
+});
+
+describe("canvas limits", () => {
+  it("caps the longest side as well as the area", () => {
+    const banner = pageGeometry(200, 14400, 300); // 2.8 in x 200 in
+    assert.ok(banner.pixelHeight <= MAX_CANVAS_SIDE);
+    assert.ok(banner.pixelWidth * banner.pixelHeight <= MAX_PAGE_PIXELS);
+    assert.ok(Math.abs(banner.pixelWidth / banner.pixelHeight - 200 / 14400) < 0.01);
+    assert.ok(banner.dpi < 300);
+  });
+  it("offers one smaller retry, then none", () => {
+    const letter300 = pageGeometry(612, 792, 300);
+    const smaller = fallbackGeometry(letter300);
+    assert.ok(smaller);
+    assert.ok(smaller.pixelWidth * smaller.pixelHeight <= FALLBACK_PAGE_PIXELS * 1.01);
+    assert.equal(fallbackGeometry(smaller), null);
+    assert.equal(fallbackGeometry(pageGeometry(612, 792, 150)), null);
+  });
+});
+
+describe("conversion error mapping", () => {
+  const named = (name, message = "x") => Object.assign(new Error(message), { name });
+  it("treats allocation failures as memory", () => {
+    assert.ok(isMemoryError(new RangeError("Array buffer allocation failed")));
+    assert.ok(isMemoryError(named("RangeError", "Invalid typed array length: 99999999999")));
+    assert.ok(isMemoryError(new Error("Could not get a 2D canvas context")));
+    assert.ok(isMemoryError(named("IndexSizeError", "The source width is 0.")));
+    assert.ok(isMemoryError(named("QuotaExceededError")));
+    assert.ok(isMemoryError(new Error("Out of memory")));
+    assert.ok(isMemoryError(named("WorkerStoppedError", "The conversion worker stopped")));
+    assert.ok(!isMemoryError(new Error("Invalid PDF structure")));
+    assert.ok(!isMemoryError(null));
+  });
+  it("maps stages and pages", () => {
+    assert.deepEqual(classifyConvertError(new ConvertStageError("canvas", 7, new Error("Could not get a 2D canvas context"))), { kind: "memory", page: 7 });
+    assert.deepEqual(classifyConvertError(new ConvertStageError("read", 3, new RangeError("x"))), { kind: "memory", page: 3 });
+    assert.deepEqual(classifyConvertError(new ConvertStageError("encode", 2, named("RangeError"))), { kind: "memory", page: 2 });
+    assert.deepEqual(classifyConvertError(new ConvertStageError("render", 4, new Error("Bad XRef entry"))), { kind: "page", page: 4 });
+    assert.deepEqual(classifyConvertError(new ConvertStageError("save", 0, new RangeError("x"))), { kind: "save", page: 0 });
+    assert.deepEqual(classifyConvertError(new Error("something")), { kind: "page", page: 0 });
+    assert.deepEqual(classifyConvertError(undefined), { kind: "page", page: 0 });
+  });
+  it("suggests 150 DPI at 300, otherwise a lighter setting, and always splitting", () => {
+    const at300 = convertFailureCopy({ kind: "memory", page: 12 }, 300, "gray");
+    assert.match(at300.title, /page 12/);
+    assert.match(at300.body, /150 DPI/);
+    assert.match(convertFailureCopy({ kind: "memory", page: 1 }, 150, "gray").body, /Black & white/);
+    assert.match(convertFailureCopy({ kind: "save", page: 0 }, 150, "bw").body, /other tabs/);
+    for (const kind of ["memory", "page", "save"]) {
+      const copy = convertFailureCopy({ kind, page: 0 }, 300, "bw");
+      assert.match(copy.body, /split the PDF/);
+      assert.doesNotMatch(copy.title, /undefined|page 0/);
+    }
   });
 });

@@ -21,6 +21,10 @@ export const JPEG_QUALITY = 80;
  * only posters and drawings ever reach it, and they render at a lower DPI.
  */
 export const MAX_PAGE_PIXELS = 16_000_000;
+/** Longest canvas side browsers accept (Safari and older Chrome stop at 16,384). */
+export const MAX_CANVAS_SIDE = 16_384;
+/** Pixel budget for the one retry after a page runs out of memory: 150 DPI on a letter or A4 page. */
+export const FALLBACK_PAGE_PIXELS = 2_250_000;
 
 /**
  * Rec. 601 luma of RGBA pixels, composited over white, one byte per pixel.
@@ -90,12 +94,15 @@ export interface PageGeometry {
 
 /**
  * Raster size for a page shown at `widthPt` x `heightPt` points. DPI / 72 is
- * the pdf.js scale. Pages that would pass `maxPixels` are scaled down evenly.
+ * the pdf.js scale. Pages that would pass `maxPixels`, or
+ * MAX_CANVAS_SIDE on either side (a 1:20 banner), are scaled down evenly.
  */
 export function pageGeometry(widthPt: number, heightPt: number, dpi: number, maxPixels = MAX_PAGE_PIXELS): PageGeometry {
   let scale = dpi / 72;
   const area = widthPt * scale * heightPt * scale;
   if (area > maxPixels) scale *= Math.sqrt(maxPixels / area);
+  const longest = Math.max(widthPt, heightPt) * scale;
+  if (longest > MAX_CANVAS_SIDE) scale *= MAX_CANVAS_SIDE / longest;
   const pixelWidth = Math.max(1, Math.round(widthPt * scale));
   const pixelHeight = Math.max(1, Math.round(heightPt * scale));
   return { widthPt, heightPt, pixelWidth, pixelHeight, scale, dpi: Math.round(scale * 72) };
@@ -305,4 +312,87 @@ export function compareSizes(inputBytes: number, outputBytes: number): SizeCompa
     delta = ratio >= 2 ? `${ratio.toFixed(1)}× larger` : `${Math.round((ratio - 1) * 100)}% larger`;
   }
   return { change, delta, text: `${arrow}, ${delta}` };
+}
+
+/**
+ * Smaller raster for one retry after a page runs out of memory, or null when
+ * the page is already at or under the fallback budget (retrying would not help).
+ */
+export function fallbackGeometry(geometry: PageGeometry): PageGeometry | null {
+  // 1% slack: rounding can put a capped page a few pixels over the budget.
+  if (geometry.pixelWidth * geometry.pixelHeight <= FALLBACK_PAGE_PIXELS * 1.01) return null;
+  return pageGeometry(geometry.widthPt, geometry.heightPt, geometry.dpi, FALLBACK_PAGE_PIXELS);
+}
+
+/** Where a conversion was when it failed. */
+export type ConvertStage = "canvas" | "render" | "read" | "encode" | "save";
+
+/** A conversion failure tagged with the stage and the page (0 for the save step). */
+export class ConvertStageError extends Error {
+  readonly stage: ConvertStage;
+  readonly page: number;
+  readonly cause: unknown;
+  constructor(stage: ConvertStage, page: number, cause: unknown) {
+    super(cause instanceof Error ? cause.message : String(cause));
+    this.name = "ConvertStageError";
+    this.stage = stage;
+    this.page = page;
+    this.cause = cause;
+  }
+}
+
+const MEMORY_NAMES = new Set(["RangeError", "QuotaExceededError", "IndexSizeError", "TimeoutError", "WorkerStoppedError"]);
+const MEMORY_WORDS = /memory|alloc|too large|invalid array length|array buffer|exceed|canvas|context|worker stopped/i;
+
+/** True for errors browsers throw when a canvas or buffer is too big to allocate. */
+export function isMemoryError(error: unknown): boolean {
+  if (error instanceof ConvertStageError) return isMemoryError(error.cause);
+  const { name, message } = (error ?? {}) as { name?: unknown; message?: unknown };
+  if (typeof name === "string" && MEMORY_NAMES.has(name)) return true;
+  return typeof message === "string" && MEMORY_WORDS.test(message);
+}
+
+export type ConvertFailureKind = "memory" | "page" | "save";
+
+export interface ConvertFailure {
+  kind: ConvertFailureKind;
+  /** 1-based page number, 0 when the failure was not on one page. */
+  page: number;
+}
+
+/** Maps anything convertToGrayscale threw (other than a cancel) to what the tool tells the user. */
+export function classifyConvertError(error: unknown): ConvertFailure {
+  const page = error instanceof ConvertStageError ? error.page : 0;
+  if (error instanceof ConvertStageError && error.stage === "save") return { kind: "save", page: 0 };
+  if (isMemoryError(error)) return { kind: "memory", page };
+  return { kind: "page", page };
+}
+
+/** Title and advice for a failed conversion. The tool links PDF Split under the body. */
+export function convertFailureCopy(failure: ConvertFailure, dpi: number, mode: GrayMode): { title: string; body: string } {
+  const lighter =
+    dpi > 150
+      ? "Try again at 150 DPI, which needs a quarter of the memory"
+      : mode === "gray"
+        ? "Try Black & white, which makes much smaller pages"
+        : "Close other tabs and try again";
+  const split = "or split the PDF into parts and convert each one.";
+  const where = failure.page > 0 ? `page ${failure.page}` : "a page";
+  switch (failure.kind) {
+    case "memory":
+      return {
+        title: `This device ran out of memory on ${where}.`,
+        body: `Large or detailed pages need a lot of memory to redraw. ${lighter}, ${split}`,
+      };
+    case "save":
+      return {
+        title: "The finished PDF could not be put together.",
+        body: `Every page was converted, but the device ran short of memory joining them. ${lighter}, ${split}`,
+      };
+    default:
+      return {
+        title: `The conversion stopped at ${where}.`,
+        body: `That page could not be drawn here. ${lighter}, ${split}`,
+      };
+  }
 }
