@@ -12,6 +12,7 @@ import {
     classifyConvertError,
     compareSizes,
     convertFailureCopy,
+    effectiveDpiLabel,
     formatBytes,
     grayscaleFileName,
     luminanceFromRgba,
@@ -40,6 +41,8 @@ interface Result {
     mode: GrayMode;
     /** Pages redrawn at about 150 DPI after running out of memory. */
     reducedPages: number[];
+    /** Effective DPI of each page. */
+    pageDpis: number[];
 }
 
 /** What went wrong in a conversion, worded for the settings it ran with. */
@@ -402,7 +405,7 @@ export function GrayscalePdfTool() {
             if (!pdf || !alive()) return;
             const { convertToGrayscale } = await import("@/lib/pdf/grayscaleClient");
             if (!alive()) return;
-            const { blob, reducedPages } = await convertToGrayscale(pdf, {
+            const { blob, reducedPages, pageDpis } = await convertToGrayscale(pdf, {
                 dpi,
                 encode: { mode, threshold },
                 signal: controller.signal,
@@ -412,7 +415,7 @@ export function GrayscalePdfTool() {
             });
             if (!alive()) return;
             closeDoc();
-            setResult({ blob, dpi, mode, reducedPages });
+            setResult({ blob, dpi, mode, reducedPages, pageDpis });
             setState("done");
         } catch (error) {
             if (!alive() || controller.signal.aborted) return;
@@ -716,7 +719,8 @@ export function GrayscalePdfTool() {
                                         comparison.change === "larger" ? "text-[color:var(--ochre-ink)]" : "text-muted-foreground",
                                     )}
                                 >
-                                    {comparison.delta} · {plural(pageCount, "page")} at {result.dpi} DPI
+                                    {comparison.delta} · {plural(pageCount, "page")} at{" "}
+                                    <span data-gs-dpi-label>{effectiveDpiLabel(result.dpi, result.pageDpis)}</span>
                                 </p>
                                 {result.reducedPages.length > 0 && (
                                     <p data-gs-reduced={result.reducedPages.join(",")} className="mt-1 text-sm text-[color:var(--ochre-ink)]">

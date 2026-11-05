@@ -143,6 +143,8 @@ export interface ConvertResult {
   blob: Blob;
   /** Pages (1-based) that ran out of memory and were redrawn at about 150 DPI. */
   reducedPages: number[];
+  /** Effective DPI of each page, lower than asked where a cap or the retry applied. */
+  pageDpis: number[];
 }
 
 /**
@@ -170,6 +172,7 @@ export async function convertToGrayscale(pdf: PDFDocumentProxy, { dpi, encode, s
     });
     const total = pdf.numPages;
     const reducedPages: number[] = [];
+    const pageDpis: number[] = [];
 
     for (let number = 1; number <= total; number++) {
       onProgress(number - 1, total);
@@ -243,6 +246,7 @@ export async function convertToGrayscale(pdf: PDFDocumentProxy, { dpi, encode, s
         throw new ConvertStageError("encode", number, error);
       });
       check();
+      pageDpis.push(geometry.dpi);
       try {
         writer.addPage(geometry.widthPt, geometry.heightPt, report.image);
       } catch (error) {
@@ -262,7 +266,7 @@ export async function convertToGrayscale(pdf: PDFDocumentProxy, { dpi, encode, s
       if (signal.aborted) throw error;
       throw new ConvertStageError("save", 0, error);
     }
-    return { blob, reducedPages };
+    return { blob, reducedPages, pageDpis };
   } catch (error) {
     if (signal.aborted || (error as { name?: string } | null)?.name === "RenderingCancelledException") {
       throw new ConversionCancelled();

@@ -396,3 +396,20 @@ export function convertFailureCopy(failure: ConvertFailure, dpi: number, mode: G
       };
   }
 }
+
+/**
+ * The resolution line on the result screen. `pageDpis` is the effective DPI of
+ * each page; pages under `chosen` were capped (MAX_PAGE_PIXELS, MAX_CANVAS_SIDE)
+ * or redrawn smaller after running out of memory.
+ *   all at 300                -> "300 DPI"
+ *   three at 288              -> "300 DPI (288 DPI on 3 large pages)"
+ *   one at 288, one at 150    -> "300 DPI (down to 150 DPI on 2 large pages)"
+ */
+export function effectiveDpiLabel(chosen: number, pageDpis: readonly number[]): string {
+  const lowered = pageDpis.filter((dpi) => dpi < chosen);
+  if (lowered.length === 0) return `${chosen} DPI`;
+  const lowest = Math.min(...lowered);
+  const pages = `${lowered.length} large ${lowered.length === 1 ? "page" : "pages"}`;
+  const same = lowered.every((dpi) => dpi === lowest);
+  return `${chosen} DPI (${same ? "" : "down to "}${lowest} DPI on ${pages})`;
+}

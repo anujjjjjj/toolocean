@@ -20,6 +20,7 @@ import {
   FALLBACK_PAGE_PIXELS,
   ConvertStageError,
   classifyConvertError,
+  effectiveDpiLabel,
   convertFailureCopy,
   fallbackGeometry,
   isMemoryError,
@@ -539,5 +540,21 @@ describe("conversion error mapping", () => {
       assert.match(copy.body, /split the PDF/);
       assert.doesNotMatch(copy.title, /undefined|page 0/);
     }
+  });
+});
+
+describe("effective DPI label", () => {
+  it("says the chosen DPI when no page was lowered", () => {
+    assert.equal(effectiveDpiLabel(300, [300, 300]), "300 DPI");
+    assert.equal(effectiveDpiLabel(150, []), "150 DPI");
+  });
+  it("names the DPI and count when capped pages share one DPI", () => {
+    const a3 = pageGeometry(841.89, 1190.55, 300).dpi;
+    assert.equal(a3, 288);
+    assert.equal(effectiveDpiLabel(300, [300, a3, 300, a3, a3]), "300 DPI (288 DPI on 3 large pages)");
+    assert.equal(effectiveDpiLabel(300, [a3]), "300 DPI (288 DPI on 1 large page)");
+  });
+  it("gives the lowest when lowered pages differ", () => {
+    assert.equal(effectiveDpiLabel(300, [300, 288, 150]), "300 DPI (down to 150 DPI on 2 large pages)");
   });
 });
