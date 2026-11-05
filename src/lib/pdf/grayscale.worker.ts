@@ -19,7 +19,7 @@ export interface GrayscaleRequest {
 
 export type GrayscaleResponse =
   | ({ id: number; ok: true } & EncodeReport)
-  | { id: number; ok: false; message: string };
+  | { id: number; ok: false; name: string; message: string };
 
 const scope = self as unknown as { postMessage(message: GrayscaleResponse, transfer?: Transferable[]): void };
 
@@ -30,7 +30,13 @@ self.onmessage = async (event: MessageEvent<GrayscaleRequest>) => {
     const response: GrayscaleResponse = { id, ok: true, ...report };
     scope.postMessage(response, [report.image.bytes.buffer]);
   } catch (error) {
-    const response: GrayscaleResponse = { id, ok: false, message: error instanceof Error ? error.message : String(error) };
+    const response: GrayscaleResponse = {
+      id,
+      ok: false,
+      // The name survives so a RangeError from a failed allocation still reads as "out of memory".
+      name: error instanceof Error ? error.name : "Error",
+      message: error instanceof Error ? error.message : String(error),
+    };
     scope.postMessage(response);
   }
 };

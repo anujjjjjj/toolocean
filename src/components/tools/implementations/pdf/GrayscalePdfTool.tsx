@@ -9,11 +9,14 @@ import {
     DEFAULT_DPI,
     DEFAULT_THRESHOLD,
     DPI_OPTIONS,
+    classifyConvertError,
     compareSizes,
+    convertFailureCopy,
     formatBytes,
     grayscaleFileName,
     luminanceFromRgba,
     thresholdGray,
+    type ConvertFailureKind,
     type Dpi,
     type GrayMode,
 } from "@/lib/pdf/grayscalePdf";
@@ -35,6 +38,17 @@ interface Result {
     blob: Blob;
     dpi: Dpi;
     mode: GrayMode;
+    /** Pages redrawn at about 150 DPI after running out of memory. */
+    reducedPages: number[];
+}
+
+/** What went wrong in a conversion, worded for the settings it ran with. */
+interface ConvertProblem {
+    kind: ConvertFailureKind;
+    title: string;
+    body: string;
+    /** The run was at 300 DPI, so "Try at 150 DPI" is offered. */
+    canLowerDpi: boolean;
 }
 
 const TRUST_CHIPS = ["No upload", "Works offline once loaded", "Free"];
@@ -94,14 +108,23 @@ const FAILURE_COPY: Record<Failure, { title: string; body: string }> = {
     },
     convert: {
         title: "The conversion stopped part way.",
-        body: "A page could not be drawn, often because the device ran short of memory. Try again at 150 DPI, or split the file and convert it in parts.",
+        body: "A page could not be drawn, often because the device ran short of memory. Try again at 150 DPI, or split the PDF with PDF Split and convert it in parts.",
     },
 };
 
-function ErrorPanel({ kind, onRetry }: { kind: Failure; onRetry: () => void }) {
-    const copy = FAILURE_COPY[kind];
+interface ErrorPanelProps {
+    kind: Failure;
+    problem: ConvertProblem | null;
+    onRetry: () => void;
+    onSettings: () => void;
+    onLowerDpi: () => void;
+}
+
+function ErrorPanel({ kind, problem, onRetry, onSettings, onLowerDpi }: ErrorPanelProps) {
+    const convertProblem = kind === "convert" ? problem : null;
+    const copy = convertProblem ?? FAILURE_COPY[kind];
     return (
-        <div data-gs-error={kind} role="alert" className="rounded-[14px] border border-border bg-card p-4 sm:p-5">
+        <div data-gs-error={kind} data-gs-error-kind={convertProblem?.kind} role="alert" className="rounded-[14px] border border-border bg-card p-4 sm:p-5">
             <div className="flex items-start gap-3">
                 <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-[color:var(--delete)]" aria-hidden="true" />
                 <div className="min-w-0">
@@ -120,9 +143,30 @@ function ErrorPanel({ kind, onRetry }: { kind: Failure; onRetry: () => void }) {
                             , then try again.
                         </p>
                     )}
-                    <Button type="button" variant="outline" className="mt-3 h-11 max-sm:w-full" onClick={onRetry}>
-                        Choose another file
-                    </Button>
+                    {kind === "convert" && (
+                        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                            Split it with{" "}
+                            <Link to="/pdf-split" data-gs-split-link className="font-medium text-foreground underline underline-offset-2">
+                                PDF Split
+                            </Link>
+                            , then convert each part here.
+                        </p>
+                    )}
+                    <div className="mt-3 grid gap-2 sm:flex sm:flex-wrap">
+                        {convertProblem?.canLowerDpi && (
+                            <Button type="button" className="h-11" onClick={onLowerDpi} data-gs-lower-dpi>
+                                Try again at 150 DPI
+                            </Button>
+                        )}
+                        {kind === "convert" && (
+                            <Button type="button" variant="outline" className="h-11" onClick={onSettings} data-gs-error-settings>
+                                Change settings
+                            </Button>
+                        )}
+                        <Button type="button" variant="outline" className="h-11" onClick={onRetry}>
+                            Choose another file
+                        </Button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -221,6 +265,7 @@ export function GrayscalePdfTool() {
 
     const [state, setState] = useState<State>("empty");
     const [failure, setFailure] = useState<Failure>("unreadable");
+    const [problem, setProblem] = useState<ConvertProblem | null>(null);
     const [opening, setOpening] = useState(false);
     const [stoppedNote, setStoppedNote] = useState(false);
     const [file, setFile] = useState<File | null>(null);
@@ -357,7 +402,7 @@ export function GrayscalePdfTool() {
             if (!pdf || !alive()) return;
             const { convertToGrayscale } = await import("@/lib/pdf/grayscaleClient");
             if (!alive()) return;
-            const blob = await convertToGrayscale(pdf, {
+            const { blob, reducedPages } = await convertToGrayscale(pdf, {
                 dpi,
                 encode: { mode, threshold },
                 signal: controller.signal,
@@ -367,7 +412,7 @@ export function GrayscalePdfTool() {
             });
             if (!alive()) return;
             closeDoc();
-            setResult({ blob, dpi, mode });
+            setResult({ blob, dpi, mode, reducedPages });
             setState("done");
         } catch (error) {
             if (!alive() || controller.signal.aborted) return;
@@ -376,6 +421,8 @@ export function GrayscalePdfTool() {
                 setState("locked");
                 return;
             }
+            const classified = classifyConvertError(error);
+            setProblem({ kind: classified.kind, ...convertFailureCopy(classified, dpi, mode), canLowerDpi: dpi > 150 });
             setFailure("convert");
             setState("error");
         } finally {
@@ -488,7 +535,18 @@ export function GrayscalePdfTool() {
 
             {state === "locked" && <LockedNotice />}
 
-            {state === "error" && <ErrorPanel kind={failure} onRetry={pickAnother} />}
+            {state === "error" && (
+                <ErrorPanel
+                    kind={failure}
+                    problem={problem}
+                    onRetry={pickAnother}
+                    onSettings={() => setState("ready")}
+                    onLowerDpi={() => {
+                        setDpi(150);
+                        setState("ready");
+                    }}
+                />
+            )}
 
             {state === "ready" && file && (
                 <div className="space-y-4">
@@ -660,6 +718,13 @@ export function GrayscalePdfTool() {
                                 >
                                     {comparison.delta} · {plural(pageCount, "page")} at {result.dpi} DPI
                                 </p>
+                                {result.reducedPages.length > 0 && (
+                                    <p data-gs-reduced={result.reducedPages.join(",")} className="mt-1 text-sm text-[color:var(--ochre-ink)]">
+                                        {result.reducedPages.length === 1
+                                            ? `Page ${result.reducedPages[0]} was too large for this device's memory, so it was drawn at about 150 DPI.`
+                                            : `${result.reducedPages.length} pages were too large for this device's memory, so they were drawn at about 150 DPI.`}
+                                    </p>
+                                )}
                                 <div className="mt-5 grid gap-2 sm:flex sm:flex-wrap">
                                     <Button
                                         type="button"
