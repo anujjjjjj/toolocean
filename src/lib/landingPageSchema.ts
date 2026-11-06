@@ -47,10 +47,14 @@ export function buildLandingPageGraph(page: LandingPage) {
       breadcrumb: { "@id": `${pageUrl}#breadcrumb` },
       // The sections are the substance of the page; naming them helps a parser
       // pick the relevant passage rather than the whole document.
-      hasPart: page.sections.map((section) => ({
-        "@type": "WebPageElement",
-        name: section.heading,
-      })),
+      hasPart: [
+        page.steps?.heading,
+        page.comparison?.heading,
+        page.benchmark?.heading,
+        ...page.sections.map((section) => section.heading),
+      ]
+        .filter((name): name is string => Boolean(name))
+        .map((name) => ({ "@type": "WebPageElement", name })),
     },
     {
       "@type": "BreadcrumbList",

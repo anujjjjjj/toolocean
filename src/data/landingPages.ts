@@ -9,10 +9,9 @@ import type { ToolFaqEntry } from "@/types/toolContent";
  * chatbot instead.
  *
  * What is winnable is the qualified version of the same intent: "merge pdf without
- * uploading", "smallpdf alternative no upload". Lower volume, far lower
- * competition, and the qualifier is the one thing this site can honestly claim that
- * the incumbents cannot. They all upload. A page that answers the qualifier
- * directly can outrank a stronger domain that only answers the head term.
+ * uploading", "smallpdf alternative". Lower volume, far lower competition. Do not
+ * assume a competitor uploads: several ship desktop apps that work offline. Say
+ * only what their own pages say, and cite it on the row (see LandingComparisonRow).
  *
  * Each page has to earn its place: it makes a specific claim, backs it with how the
  * thing actually works, and links to the tools that do the job. A page that only
@@ -28,10 +27,14 @@ export interface LandingSection {
 
 export interface LandingComparisonRow {
   capability: string;
-  /** What the named competitor does. Must be verifiable from their own site. */
+  /** What the named competitor's own page says, for the product and plan named. */
   them: string;
   /** What ToolOcean does. Must be true of the linked tools right now. */
   us: string;
+  /** The official page `them` was read from. Shown on the row. */
+  source: { url: string; label: string };
+  /** ISO date the source was read. Shown on the row; recheck before editing. */
+  checkedOn: string;
 }
 
 /** A working tool rendered at the top of the page, opened on a preset. */
@@ -57,12 +60,24 @@ export interface LandingPage {
   /** Tool slugs surfaced as the primary conversion path, in order. */
   tools: string[];
   sections: LandingSection[];
-  /** Optional honest comparison table. Only for "X alternative" pages. */
+  /**
+   * Optional comparison table. Only for "X alternative" pages. Keep it to the
+   * few rows the competitor's own pages support; an unsupported row is removed,
+   * not guessed.
+   */
   comparison?: {
     heading: string;
+    intro: string;
     competitor: string;
     rows: LandingComparisonRow[];
   };
+  /**
+   * Visible numbered steps. Rendered like howTo but not emitted as HowTo schema,
+   * so a page can be actionable without widening its structured data.
+   */
+  steps?: { heading: string; items: { title: string; body: string }[] };
+  /** A measured table from src/data/landingBenchmarks.json. */
+  benchmark?: { key: "compress-100kb" | "merge"; heading: string; intro: string };
   faqs: ToolFaqEntry[];
   /** When set, the page renders that tool with its preset already chosen. */
   embed?: LandingEmbed;
@@ -82,13 +97,27 @@ export interface LandingPage {
 const HOW_IT_WORKS =
   "The tools are ordinary web pages. When you pick a file, the browser hands your code a reference to it and the work happens in JavaScript and WebAssembly on your own machine. There is no server component to send it to, which is why there is no upload progress bar and no queue.";
 
+/**
+ * Official competitor pages read for the comparison rows, and the date they were
+ * read. Excerpts for every kept claim are recorded outside the repo alongside the
+ * fetched text; recheck the page before changing a row.
+ */
+const CHECKED_ON = "2026-11-06";
+const SOURCES = {
+  smallpdfMerge: { url: "https://smallpdf.com/merge-pdf", label: "Smallpdf, Merge PDF page" },
+  smallpdfPricing: { url: "https://smallpdf.com/pricing", label: "Smallpdf, Pricing page" },
+  ilovepdfPricing: { url: "https://www.ilovepdf.com/pricing", label: "iLovePDF, Pricing page" },
+  ilovepdfDesktop: { url: "https://www.ilovepdf.com/desktop", label: "iLovePDF, Desktop page" },
+  ilovepdfSecurity: { url: "https://www.ilovepdf.com/help/security", label: "iLovePDF, Security page" },
+} as const;
+
 export const LANDING_PAGES: LandingPage[] = [
   {
     slug: "merge-pdf-without-uploading",
     seo: {
-      title: "Merge PDFs Without Uploading Them Anywhere",
+      title: "Merge PDFs Without Uploading: Steps and a Check",
       description:
-        "Combine PDF files entirely inside your browser. No upload, no account, no watermark, and no file size limit imposed by a server, because there is no server.",
+        "Combine PDFs in this browser tab: choose the files, drag them into order, save merged.pdf. With a network check you can run and a measured test on generated files.",
       keywords: [
         "merge pdf without uploading",
         "combine pdf offline",
@@ -96,49 +125,99 @@ export const LANDING_PAGES: LandingPage[] = [
         "private pdf merger",
       ],
     },
-    h1: "Merge PDFs without uploading them anywhere",
+    h1: "Merge PDFs without uploading them",
     footerLabel: "Merge PDFs",
     lede:
-      "Most online PDF mergers upload your document to their server, merge it there, and hand back a download link. This one does the merge in the browser tab you already have open, so the file never goes anywhere.",
-    tools: ["pdf-merge", "pdf-split", "pdf-reorder", "pdf-compress", "pdf-unlock"],
+      "Merge PDF reads your files and joins them inside this browser tab, then saves the result as merged.pdf. The PDFs are not sent to a server. Below: the steps, what can stop a merge, and how to check the no-upload part yourself.",
+    tools: ["pdf-merge", "pdf-reorder", "pdf-delete-pages", "pdf-split", "pdf-unlock"],
+    steps: {
+      heading: "How to merge PDFs here",
+      items: [
+        {
+          title: "Open Merge PDF and choose two or more files",
+          body: "Each file appears as a numbered row with its page count. Choose several at once, or add them one at a time.",
+        },
+        {
+          title: "Put the rows in order",
+          body: "Drag a row by its handle to move it; the merged file follows the numbers. If dragging is awkward, remove a row with its × button and use Add More Files, which always adds to the end.",
+        },
+        {
+          title: "Press Merge & Download",
+          body: "The button needs at least two files. Your browser saves merged.pdf holding every page of every file, in that order.",
+        },
+        {
+          title: "Fix single pages afterwards",
+          body: "To move, drop or pull out individual pages rather than whole files, open merged.pdf in PDF Page Reorder, Delete PDF Pages or PDF Split.",
+        },
+      ],
+    },
     sections: [
       {
-        heading: "Why the upload matters",
+        heading: "Files the merge cannot read",
         body: [
-          "A PDF you need to merge is rarely a blank one. It is a signed contract, a set of payslips, a scan of a passport, a medical letter. Uploading it means handing a copy to a company you have no relationship with, whose retention policy you have not read, and whose breach history you cannot check.",
-          "Most services are not doing anything sinister with it. That is not really the point. The point is that the merge does not require the upload at all, so the risk is being taken for no reason.",
+          "Merge PDF has to open each file to copy its pages. An encrypted PDF, whether it asks for a password to open or only restricts editing, is reported as \"Error reading PDF\" and left off the list, and so is a damaged file. If you know the password, remove it with Unlock PDF on the same device and merge the unlocked copy.",
         ],
       },
       {
-        heading: "How merging locally actually works",
+        heading: "What the merge keeps and drops",
         body: [
-          HOW_IT_WORKS,
-          "For PDFs specifically, the merge is a structural operation: the page objects from each document are copied into a new document and the cross-reference table is rebuilt. Nothing needs to be rendered or re-encoded, which is why it finishes almost instantly even on a large file, and why the text stays selectable and the quality is untouched.",
+          "Each page is carried into the new file unchanged. Nothing is redrawn, so text stays text and images keep their resolution; in the measured run below, the merged file's text was still selectable. No watermark is added.",
+          "Document-level parts are not carried across. Bookmarks and fillable form fields from the source files do not survive into merged.pdf, and its title and author fields start empty. Fill and save forms before merging, and add bookmarks afterwards in a desktop PDF editor if you need them.",
         ],
       },
       {
-        heading: "What you give up",
+        heading: "Memory, not a server quota, is the limit",
         body: [
-          "Honestly, two things. The work happens on your device, so a very large document is bounded by your available memory rather than by a server with 64 GB of RAM. On a phone with a lot of tabs open, a few hundred megabytes is where it starts to struggle.",
-          "And the first load has to fetch the PDF library, which is a few hundred kilobytes. After that it is cached and the tool opens instantly, including with the network off. A file that still asks for a password is refused. Unlock PDF removes a password you already know, on the same machine, and the clear copy is what you merge.",
+          "Every chosen file is read into the tab's memory, and merged.pdf is built there before it is saved. This site sets no file-count or size cap; the ceiling is how much memory your browser gives the tab. We measured a desktop browser only, so we do not quote a figure for phones.",
+        ],
+      },
+      {
+        heading: "Check the no-upload part yourself",
+        body: [
+          "On the Merge PDF page, open your browser's developer tools, select the Network tab, tick Preserve log and clear the list. Choose your files and press Merge & Download. Requests that fetch script files from this site are the page loading its own code. Look at every request that sends a body: none should contain your documents. The analytics requests, which do send small bodies, are described in the first question below so you can recognise them.",
+          "For a stronger test, choose the files while online, set the Network tab's throttling menu to Offline, then press Merge & Download. merged.pdf is still produced, which a server-side merger cannot do. That is the offline run in the table above.",
         ],
       },
     ],
+    benchmark: {
+      key: "merge",
+      heading: "Measured: three generated PDFs merged in a desktop browser",
+      intro:
+        "Five runs of the real Merge PDF page on one machine, plus one run with the network switched off after the files were chosen. These are this machine's numbers, not a promise for your files or device.",
+    },
     faqs: [
       {
-        question: "How do I know it is really not uploading?",
+        question: "Is anything sent while I merge?",
         answer:
-          "Open your browser's developer tools, switch to the Network tab, and merge a file. You will see the page's own code and the cookieless Umami analytics script load, Google Analytics requests that set no cookies unless you clicked Accept, and one small Umami event when the merge finishes, which names the tool and nothing else. None of them carries your PDF. You can also disconnect from the network entirely after the page loads and the merge still works, which is not possible for a tool that needs a server.",
+          "Your PDFs are not. The site does send analytics about the visit, and that is separate from your files. When a page loads, the Umami script records a page view, and Google Analytics, when configured, is set up to send page views without setting cookies unless you accept the banner. On the Merge PDF page, the site is also set up to send Google Analytics interaction events named tool_engage and tool_action, carrying the tool's slug and the fixed name of the button pressed. When a merge succeeds, Umami receives an event named tool-run whose only fields are tool and slug, here pdf-merge and pdf-merge. None of these include file names, sizes, page counts or contents. The page also fetches its own script files from this site as you use it.",
+      },
+      {
+        question: "Why was one of my files left off the list?",
+        answer:
+          "It could not be opened. That happens with encrypted PDFs, including ones that open without a password but restrict editing, and with damaged files. Remove a password you know with Unlock PDF, then add the unlocked copy.",
       },
       {
         question: "Is there a file size or page count limit?",
         answer:
-          "There is no limit we impose, because there is no server tier to enforce one. The practical ceiling is your device's memory, since the documents are held in RAM while they are combined. A laptop handles far larger files than a phone.",
+          "None set by this site. The files and the merged copy are held in the tab's memory, so the limit is your device and browser. Our measured run merged about 4 MB of input on a desktop; we have not measured phones.",
       },
       {
-        question: "Does merging reduce quality or add a watermark?",
+        question: "Does merging lower the quality or add a watermark?",
         answer:
-          "Neither. Pages are copied across as-is rather than re-rendered, so text stays selectable, images keep their original resolution, and nothing is stamped onto the output.",
+          "No. Pages are copied without being redrawn, so text stays selectable, images keep their resolution and nothing is stamped on them. Bookmarks and fillable form fields are not carried over.",
+      },
+    ],
+    related: [
+      { path: "/pdf-tools", label: "All PDF tools", note: "Every PDF tool on the site, each running in the browser." },
+      {
+        path: "/compress-pdf-to-100kb",
+        label: "Compress a PDF to 100 KB",
+        note: "When the merged file has to fit a 100 KB upload limit.",
+      },
+      {
+        path: "/grayscale-pdf",
+        label: "Grayscale PDF",
+        note: "For a black-and-white printout of the merged file without spending colour ink.",
       },
     ],
   },
@@ -256,170 +335,232 @@ export const LANDING_PAGES: LandingPage[] = [
   {
     slug: "smallpdf-alternative",
     seo: {
-      title: "A Smallpdf Alternative That Doesn't Upload Your Files",
+      title: "Smallpdf Alternative for Merging, Splitting and Compressing",
       description:
-        "Smallpdf processes your documents on its servers and limits free use. This alternative runs in your browser: no upload, no daily task limit, no account, no watermark.",
+        "Choosing between Smallpdf and ToolOcean to merge, split or compress PDFs: where files go, free-plan limits and features, with each Smallpdf fact cited and dated.",
       keywords: [
         "smallpdf alternative",
         "smallpdf alternative free",
-        "smallpdf without account",
-        "pdf tools no upload",
+        "smallpdf daily limit",
+        "merge pdf without smallpdf",
       ],
     },
-    h1: "A Smallpdf alternative that does not upload your files",
+    h1: "A Smallpdf alternative for merging, splitting and compressing",
     footerLabel: "Smallpdf alternative",
     lede:
-      "Smallpdf is a good product. It is also a server-side one with a free tier designed to run out, which makes it the wrong shape for confidential documents and for anyone who just needs to merge something twice a day.",
-    tools: [
-      "pdf-merge",
-      "pdf-split",
-      "pdf-compress",
-      "pdf-sign",
-      "pdf-encrypt",
-      "pdf-unlock",
-      "pdf-form-fill",
-      "pdf-metadata",
-      "pdf-rotate",
-      "pdf-watermark",
-      "pdf-to-images",
-    ],
+      "Smallpdf's online merge uploads your files, and its Windows app, according to Smallpdf, works offline. ToolOcean's tools run in your browser tab. This page compares the two for the jobs people most often switch for, cites a Smallpdf page on every row, and says when Smallpdf is the better choice.",
+    tools: ["pdf-merge", "pdf-split", "pdf-compress", "images-to-pdf"],
     sections: [
       {
-        heading: "The two differences that actually matter",
+        heading: "Which one to use",
         body: [
-          "The first is where the work happens. Smallpdf uploads your document, processes it in their infrastructure, and deletes it on a stated schedule. That is a normal and well-run arrangement, and it is still an upload of a document you may not be permitted to upload.",
-          "The second is the free tier. Server-side processing costs money per document, so a free tier has to be metered. Client-side processing costs nothing per document, because the compute is yours, which is why there is no counter here.",
+          "Use ToolOcean when the job is a merge, split or compress of PDFs you would rather not upload, and you want no account, app or daily allowance. For the merge itself, the merge-without-uploading page has the steps and a check you can run. For an upload form with a size limit, the 100 KB page explains the byte counts and shows where a file cannot fit.",
+          "Use Smallpdf when you need what its pricing page lists and this site does not have: OCR, text editing, redaction, e-signatures through Sign.com, conversion to and from Word, Excel and PowerPoint, and a mobile app. Smallpdf describes its Windows app as merging, editing and organising PDFs without an internet connection, if you want that on a PC. Its pricing page also states ISO/IEC 27001 certification and offers team plans with centralised billing, which matter when your organisation needs a supplier it can contract with.",
         ],
       },
       {
-        heading: "Where Smallpdf is still the better choice",
+        heading: "What we did not compare",
         body: [
-          "It has substantially more features, including OCR, certified e-signature workflows, in-place text editing, redaction, and true PDF-to-Word conversion with layout reconstruction. Those are genuinely hard problems and some of them need real server compute. A visual mark placed on a page here is not a substitute for that e-signature product.",
-          "It also has a team behind it, a support address, and an enterprise agreement you can sign. If you need someone accountable, that matters more than where the bytes are processed.",
+          "We have not tested Smallpdf's speed, output sizes or Windows app, so this page makes no performance claim about it. Each row is what a Smallpdf page said on the date shown beside it; if that page changes, the row can be out of date until it is rechecked.",
         ],
       },
     ],
     comparison: {
-      heading: "Side by side",
+      heading: "Smallpdf and ToolOcean, row by row",
+      intro:
+        "Four questions, each answered from the Smallpdf page cited on its row. Prices are left out because the pricing page we read did not give them as text, and anything we could not find on Smallpdf's own pages is left out rather than guessed.",
       competitor: "Smallpdf",
       rows: [
         {
-          capability: "Where files are processed",
-          them: "Uploaded to their servers, deleted on a stated schedule",
-          us: "In your browser tab; never transmitted",
+          capability: "Online merge: where the files go",
+          them: "You upload them. Smallpdf says they are encrypted with TLS and deleted from its servers after one hour.",
+          us: "Read and merged in your browser tab. Not uploaded.",
+          source: SOURCES.smallpdfMerge,
+          checkedOn: CHECKED_ON,
         },
-        { capability: "Free tier limits", them: "Metered free tasks per day", us: "No counter, no metering" },
-        { capability: "Account required", them: "For most workflows", us: "Never" },
-        { capability: "Works offline", them: "No", us: "Yes, once the page has loaded" },
-        { capability: "Password-protect a PDF (AES-256)", them: "Yes", us: "Yes, in the browser" },
-        { capability: "Unlock a PDF you already know the password for", them: "Yes", us: "Yes. No password search" },
-        { capability: "Fill an AcroForm and flatten it", them: "Yes", us: "Yes, in the browser" },
-        { capability: "View or strip document metadata", them: "Yes", us: "Yes. Info dictionary and a shallow XMP read" },
         {
-          capability: "Signature",
-          them: "Certified e-sign workflows",
-          us: "A visual mark only. Not a certificate",
+          capability: "Working without internet",
+          them: "The Smallpdf Windows app, which Smallpdf says merges, edits and organizes PDFs on your PC without an internet connection.",
+          us: "No app. With the page loaded and files chosen, a merge still finished offline in our test.",
+          source: SOURCES.smallpdfMerge,
+          checkedOn: CHECKED_ON,
         },
-        { capability: "OCR", them: "Yes", us: "Not available" },
-        { capability: "In-place text editing", them: "Yes", us: "Not available" },
-        { capability: "Redaction", them: "Yes", us: "Not available" },
-        { capability: "PDF to Word", them: "Yes", us: "Not available" },
-        { capability: "Support and enterprise agreements", them: "Yes", us: "No" },
+        {
+          capability: "Free plan",
+          them: "Free lists \"Limited document downloads\"; Pro lists \"Unlimited document downloads\".",
+          us: "No plans and no download counter.",
+          source: SOURCES.smallpdfPricing,
+          checkedOn: CHECKED_ON,
+        },
+        {
+          capability: "Merging Word, Excel or image files",
+          them: "Supported. Smallpdf says PDFs can be combined with Word, Excel, PowerPoint and JPG or PNG files.",
+          us: "PDFs only. Turn images into a PDF first with Images to PDF.",
+          source: SOURCES.smallpdfMerge,
+          checkedOn: CHECKED_ON,
+        },
       ],
     },
     faqs: [
       {
-        question: "Is this actually free, or free until a limit?",
+        question: "Does Smallpdf upload my files?",
         answer:
-          "Free with no limit, because there is no per-document cost to recover. The processing runs on your device, so a thousand merges cost us exactly what zero merges cost us.",
+          "Its online Merge PDF page says you upload them, that they are encrypted with TLS, and that they are deleted from its servers after one hour. The same page offers a Windows app that, by Smallpdf's description, merges PDFs without an internet connection. We have not tested either.",
       },
       {
-        question: "Can it replace Smallpdf entirely?",
+        question: "Is ToolOcean free without a daily limit?",
         answer:
-          "For merge, split, compress, rotate, watermark, reorder, PDF-to-image, a visual signature, password protection, unlock, metadata, and AcroForm filling, yes. For OCR, certified e-signatures, in-place text editing, redaction, and high-fidelity PDF-to-Word, no, and it would be dishonest to claim otherwise.",
+          "Yes. There is no account, plan or counter, because the work runs on your own device and costs the site nothing per file.",
+      },
+      {
+        question: "What does Smallpdf do that ToolOcean does not?",
+        answer:
+          "From its pricing and merge pages: OCR, text editing, redaction, e-signatures through Sign.com, Office conversions, merging Word, Excel, PowerPoint and image files directly, cloud storage and a mobile app. ToolOcean has none of those. Its Sign PDF tool places a visual signature, not an e-signature workflow.",
+      },
+      {
+        question: "Which suits a merge that must stay on my computer?",
+        answer:
+          "ToolOcean in the browser does, and by Smallpdf's own description so does its Windows app. Smallpdf's online merge does not, because it uploads. Your organisation's policy decides which suppliers you may use.",
+      },
+    ],
+    related: [
+      {
+        path: "/merge-pdf-without-uploading",
+        label: "Merge PDFs without uploading",
+        note: "Step-by-step merge, with a network check and measured runs.",
+      },
+      {
+        path: "/compress-pdf-to-100kb",
+        label: "Compress a PDF to 100 KB",
+        note: "For upload forms with a size limit, including files that cannot fit.",
+      },
+      {
+        path: "/ilovepdf-alternative",
+        label: "iLovePDF alternative",
+        note: "The same choice against iLovePDF's web tools, Desktop app and mobile apps.",
       },
     ],
   },
   {
     slug: "ilovepdf-alternative",
     seo: {
-      title: "An iLovePDF Alternative With No Upload and No Limits",
+      title: "iLovePDF Alternative: Web, Desktop or In-Browser Tools",
       description:
-        "iLovePDF uploads your documents and caps free usage. This alternative does the same core PDF tasks in your browser, with no account, no watermark and no task limit.",
+        "iLovePDF's web tools, Desktop app and free limits next to ToolOcean's in-browser merge and compress, with every iLovePDF fact cited to its own pages and dated.",
       keywords: [
         "ilovepdf alternative",
-        "ilovepdf alternative no upload",
-        "free pdf tools no limit",
+        "ilovepdf desktop alternative",
+        "ilovepdf free limit",
         "ilovepdf without account",
       ],
     },
-    h1: "An iLovePDF alternative with no upload and no limits",
+    h1: "An iLovePDF alternative: web, desktop or browser tab",
     footerLabel: "iLovePDF alternative",
     lede:
-      "iLovePDF covers a lot of ground and does it well. Every task still starts by uploading your document, and the free tier is bounded. If your blocker is either of those, the core tools here do the same jobs locally.",
-    tools: [
-      "pdf-merge",
-      "pdf-split",
-      "pdf-compress",
-      "pdf-reorder",
-      "pdf-sign",
-      "pdf-encrypt",
-      "pdf-unlock",
-      "pdf-form-fill",
-      "pdf-metadata",
-      "images-to-pdf",
-      "pdf-watermark",
-    ],
+      "iLovePDF is three products: web tools that process files on its platform, a Desktop app for Windows and macOS that it says works on your computer, and mobile apps. ToolOcean is a website whose tools run in your browser tab. Which comparison matters depends on which iLovePDF you would otherwise use.",
+    tools: ["pdf-merge", "pdf-split", "pdf-compress", "pdf-reorder"],
     sections: [
       {
-        heading: "What changes when the processing is local",
+        heading: "Picking by situation",
         body: [
-          "No upload means no wait proportional to your connection speed, no queue, and no copy of your document in someone else's storage. On a slow connection with a large file, the local version finishes while the hosted one is still transferring.",
-          "It also means the privacy question stops being about trust. You do not have to believe a retention policy if nothing was ever sent.",
+          "You want to merge or compress a few PDFs now, without installing anything or making an account: ToolOcean in a browser tab does that, and the work stays on your device. The merge-without-uploading and 100 KB pages walk through both jobs, with measured runs and the cases that fail.",
+          "You work with PDFs daily on one computer and want right-click conversions, bulk processing and an offline reader: iLovePDF describes its Desktop app as built for that, and its tools come with the paid plan.",
+          "You need OCR, PDF to Word, Excel or PowerPoint, repair, redaction, comparison or PDF/A: those are on iLovePDF's pricing page and are not on this site.",
         ],
       },
       {
-        heading: "An honest scope check",
+        heading: "What iLovePDF offers that this site cannot",
         body: [
-          "iLovePDF has a far larger catalogue, including OCR, PDF repair, in-place text editing, redaction, and conversions to and from Office formats that genuinely need heavy server-side work. Those are not here and are not planned. Certified e-signatures are not here either. The sign tool places a visual mark and says so on the page.",
-          "What is here is the set most people actually open these sites for: merge, split, compress, reorder, rotate, watermark, images to PDF, PDF to images, plus password protection, unlock, metadata, form filling, and a visual signature.",
+          "iLovePDF's security page says it holds ISO/IEC 27001:2022 certification, and its pricing page lists regional file processing on Premium and single sign-on on Business, along with shared billing for teams. If your organisation needs a contracted supplier with those, that is a reason to choose it. The security page also says signed documents are kept for up to five years for legal reasons, which is worth knowing before you sign there.",
+        ],
+      },
+      {
+        heading: "Speed and output size",
+        body: [
+          "We have not measured iLovePDF's speed or output sizes, and we make no claim that this site is faster. Our own timings, for this site alone, are on the merge and 100 KB pages.",
         ],
       },
     ],
     comparison: {
-      heading: "Side by side",
+      heading: "iLovePDF and ToolOcean, row by row",
+      intro:
+        "Each iLovePDF answer comes from the page cited on its row and names the product or plan it applies to. Limits and prices change, so check the source before relying on one.",
       competitor: "iLovePDF",
       rows: [
-        { capability: "Where files are processed", them: "Uploaded to their servers", us: "In your browser tab" },
-        { capability: "Free tier limits", them: "Metered tasks, larger files need Premium", us: "No metering" },
-        { capability: "Account required", them: "For higher limits and some tools", us: "Never" },
-        { capability: "Works offline", them: "No", us: "Yes, once the page has loaded" },
-        { capability: "Password-protect a PDF (AES-256)", them: "Yes", us: "Yes, in the browser" },
-        { capability: "Unlock a PDF you already know the password for", them: "Yes", us: "Yes. No password search" },
-        { capability: "Fill an AcroForm and flatten it", them: "Yes", us: "Yes, in the browser" },
-        { capability: "View or strip document metadata", them: "Yes", us: "Yes. Info dictionary and a shallow XMP read" },
         {
-          capability: "Signature",
-          them: "E-sign tools on their site",
-          us: "A visual mark only. Not a certificate",
+          capability: "Web tools: where the files go",
+          them: "For ordinary web processing, its security page says files are deleted automatically within two hours; signed documents can be kept for up to five years.",
+          us: "Processed in your browser tab. Not uploaded.",
+          source: SOURCES.ilovepdfSecurity,
+          checkedOn: CHECKED_ON,
         },
-        { capability: "OCR", them: "Yes", us: "Not available" },
-        { capability: "In-place text editing", them: "Yes", us: "Not available" },
-        { capability: "Redaction", them: "Yes", us: "Not available" },
-        { capability: "PDF to Word and other Office conversion", them: "Yes", us: "Not available" },
-        { capability: "Mobile apps", them: "Yes", us: "No, it is a website" },
+        {
+          capability: "Desktop app",
+          them: "Windows and macOS. iLovePDF says it processes files on your computer. The reader is free; Desktop Tools and Reader is listed at US$9 a month or US$60 a year.",
+          us: "Nothing to install. In our offline test the merge completed once the page and files were loaded.",
+          source: SOURCES.ilovepdfDesktop,
+          checkedOn: CHECKED_ON,
+        },
+        {
+          capability: "Free merge on the web (Basic plan)",
+          them: "Up to 25 files and 100 MB per Merge task. Premium: 500 files and 4 GB.",
+          us: "No file-count or size cap set by the site. Your device's memory is the limit.",
+          source: SOURCES.ilovepdfPricing,
+          checkedOn: CHECKED_ON,
+        },
+        {
+          capability: "Free compress on the web (Basic plan)",
+          them: "Up to 2 files and 200 MB per Compress task. Premium: 10 files and 4 GB.",
+          us: "One PDF at a time, no size cap set by the site, with a target-size option such as 100 KB.",
+          source: SOURCES.ilovepdfPricing,
+          checkedOn: CHECKED_ON,
+        },
+        {
+          capability: "Phones",
+          them: "iOS and Android apps are linked, and the Premium subscription lists work on web, mobile and desktop.",
+          us: "A website only. Our measurements did not include phones.",
+          source: SOURCES.ilovepdfDesktop,
+          checkedOn: CHECKED_ON,
+        },
       ],
     },
     faqs: [
       {
-        question: "Why would a browser-based tool be faster?",
+        question: "Does iLovePDF Desktop upload files?",
         answer:
-          "Because the file never crosses the network. A hosted tool has to upload the document, wait for a worker, then download the result. A local tool skips all three. On a large file over a typical connection the difference is substantial.",
+          "Its Desktop page says it processes files on your computer. We have not tested the app. The web tools are different: files are processed on iLovePDF's platform and, according to its security page, deleted within two hours.",
       },
       {
-        question: "Does it add a watermark to free output?",
+        question: "How many files can I merge for free on iLovePDF?",
         answer:
-          "No. There is no paid tier for a watermark to be advertising, so nothing is stamped on the output.",
+          "Its pricing page, read on 6 November 2026, lists 25 files and 100 MB per Merge task on the free Basic plan. ToolOcean sets no count or size limit; your device's memory is the practical one.",
+      },
+      {
+        question: "Does ToolOcean have a desktop or mobile app?",
+        answer:
+          "No. It is a website. The merge we tested kept working offline once the page and files had loaded, but there is nothing to install, no right-click integration and no app-store version.",
+      },
+      {
+        question: "Is ToolOcean faster than iLovePDF?",
+        answer:
+          "We have not compared them, so we do not claim it. The timings we publish are for this site alone, on generated files and one desktop machine.",
+      },
+    ],
+    related: [
+      {
+        path: "/merge-pdf-without-uploading",
+        label: "Merge PDFs without uploading",
+        note: "The steps, what stops a merge, and a check you can run.",
+      },
+      {
+        path: "/compress-pdf-to-100kb",
+        label: "Compress a PDF to 100 KB",
+        note: "Byte counts for upload forms, and what happens when a file will not fit.",
+      },
+      {
+        path: "/smallpdf-alternative",
+        label: "Smallpdf alternative",
+        note: "The same decision against Smallpdf, with its own sourced rows.",
       },
     ],
   },
@@ -480,47 +621,97 @@ export const LANDING_PAGES: LandingPage[] = [
     seo: {
       title: "Compress PDF to 100 KB – No Upload",
       description:
-        "Fit a PDF under 100 KB in the browser. Lossless first when that is enough, otherwise the pages become JPEG pictures. 1 KB is 1024 bytes. Nothing is uploaded.",
-      keywords: ["compress pdf to 100kb", "pdf under 100kb", "reduce pdf to 100 kb"],
+        "Aim a PDF at 100 KB (102,400 bytes, or type 100000) in your browser. Lossless first, JPEG pages only if needed, and a plain note when a file cannot fit.",
+      keywords: ["compress pdf to 100kb", "pdf under 100kb", "reduce pdf to 100 kb", "pdf 100000 bytes"],
     },
     h1: "Compress a PDF to 100 KB",
     footerLabel: "PDF to 100 KB",
-    lede: "The control below is already set to 100 KB, which is 102,400 bytes. A lossless rewrite is tried first. Rasterising is only the fallback, and it means the text can no longer be selected.",
-    tools: ["pdf-compress"],
+    lede: "The size control below starts at 100 KB, which here is 102,400 bytes. If your form counts 100 KB as 100,000 bytes, type 100000 into the custom box. Some PDFs cannot get that small, and the note under the tool tells you when that happens.",
+    tools: ["pdf-compress", "pdf-split", "pdf-delete-pages"],
     embed: { tool: "pdf-compress", targetBytes: 100 * 1024 },
-    measurementKey: "compress-pdf-to-100kb",
     howTo: {
       name: "How to compress a PDF to 100 KB",
       steps: [
         { title: "Open the file", body: "Choose a PDF from this device. The bytes stay in the tab." },
-        { title: "Leave the ceiling at 100 KB", body: "The chip is already selected. 1 KB means 1024 bytes, so the ceiling is 102400 bytes." },
-        { title: "Download and read the note", body: "If the note says the text is still selectable, the lossless rewrite fit. If it says pages were rasterised, the copy is pictures." },
+        {
+          title: "Check the ceiling",
+          body: "The 100 KB chip is already selected. 1 KB means 1024 bytes, so that is 102,400 bytes. For a limit of 100,000 bytes, type 100000 in the custom box and press Use.",
+        },
+        {
+          title: "Press Fit to size & Download, then read the note",
+          body: "The note says whether the lossless rewrite fit, so the text is still selectable; whether the pages became JPEG pictures to fit; or that even the smallest picture copy is still over the target. If that copy would be bigger than your original, nothing is downloaded.",
+        },
       ],
     },
     sections: [
       {
-        heading: "What 100 KB is on this page",
+        heading: "100,000 or 102,400 bytes",
         body: [
-          "The button labelled 100 KB means 100 times 1024 bytes, not 100 times 1000. A form that asks for 100 KB and then rejects 100000-byte files is using the binary unit, and that is the unit written next to the field.",
-          "The fixture for this address is a one-page letter set in Helvetica. The measured result is printed under the tool, from the same JSON the build stores, rather than typed in by hand. A letter that small usually fits a lossless rewrite, so the text stays selectable. A photograph embedded in a PDF will not, and the 200 KB page records that other path.",
+          "Both meanings of 100 KB are in use, and upload forms rarely say which one they apply. This tool counts 1 KB as 1024 bytes, so its 100 KB chip is 102,400 bytes. If the form gives no hint, aim for 100,000: a file under 100,000 bytes passes either reading.",
+          "The gap is small but real. In the measured table, the 36-page text report rewrites losslessly to 101,411 bytes. That passes a 102,400-byte ceiling with its text intact and fails a 100,000-byte one.",
         ],
       },
       {
-        heading: "When the file cannot stay text",
+        heading: "What the tool tries, in order",
         body: [
-          "If stripping metadata still leaves the file over 102400 bytes, the pages are drawn and saved as JPEG. That is the only way this browser tool reaches a hard ceiling on a scan. The download note says the text is no longer selectable. Do not use that copy for a contract you still need to search.",
+          "First a lossless rewrite: the title, author, subject, keywords, producer and creator fields are cleared and the file is saved again with compressed object streams. If that is under the ceiling, that is your file, with the text untouched.",
+          "Otherwise every page is drawn at twice its size, which is 144 pixels per inch of page, and saved as a JPEG picture. The tool searches JPEG quality between 0.15 and 0.85; if no quality fits, it shrinks the pictures to 70% and searches again, up to five times. The smallest pictures it will try are about 24 pixels per inch, far too coarse for body text.",
+        ],
+      },
+      {
+        heading: "When a file cannot fit",
+        body: [
+          "There are two ways to miss, and the measured table shows both. If even the smallest picture copy is over the ceiling but smaller than your original, it is downloaded anyway and the note says it is still over the target; the 24-page noise test file ends there. If the smallest picture copy would be bigger than the original, nothing is downloaded and a message says re-encoding would make it bigger. Text-heavy files tend to end there, because pictures of text cost far more than the text, and the 36-page report at 100,000 bytes is that case.",
+          "What helps: send fewer pages, using PDF Split or Delete PDF Pages and uploading the parts separately if the form allows it; ask whether the form accepts a larger file; or, for a scan, rescan at a lower resolution. Retrying the same file at the same ceiling gives the same answer.",
+        ],
+      },
+      {
+        heading: "Selectable text or a picture copy",
+        body: [
+          "A lossless result is still the original document, so its words can be searched, copied and read aloud by a screen reader. A picture copy has no text layer, so none of that works. In our runs the one-page photo test file fit at 144 pixels per inch, but a dense page pushed to the low end of the search can be unreadable. Open the download and zoom in before you submit it.",
         ],
       },
     ],
+    benchmark: {
+      key: "compress-100kb",
+      heading: "Measured on generated test files",
+      intro:
+        "Each row is the tool on this page, run five times on one desktop machine. Two of the rows are files that could not be brought under the target.",
+    },
     faqs: [
       {
-        question: "Is 100 KB exactly 100000 bytes?",
-        answer: "No. On this page 1 KB is 1024 bytes, so 100 KB is 102400 bytes. The note under the tool states the unit.",
+        question: "Is 100 KB 100,000 or 102,400 bytes here?",
+        answer:
+          "102,400. The tool counts 1 KB as 1024 bytes. For a form that means 100,000 bytes, type 100000 in the custom box; a bare number is read as bytes.",
+      },
+      {
+        question: "Why did nothing download?",
+        answer:
+          "The smallest picture copy the tool could make was bigger than your original, so it kept the original rather than hand you a larger file. That is common for text-heavy PDFs. Send fewer pages, or check whether the form accepts a bigger file.",
       },
       {
         question: "Will the words still be selectable?",
-        answer: "Only when the lossless rewrite already fits under 102400 bytes. The result note says which path ran. A raster copy is pictures of the pages.",
+        answer:
+          "Only if the lossless rewrite fits. The note under the tool says which path ran. A picture copy has no text layer, so it cannot be searched or copied.",
       },
+      {
+        question: "Can every PDF be brought under 100 KB?",
+        answer:
+          "No. In our measured runs a 36-page text report could not get under 100,000 bytes, and a 24-page noise-filled file stayed well over a 102,400-byte target. The note tells you when this happens.",
+      },
+    ],
+    related: [
+      {
+        path: "/compress-pdf-to-200kb",
+        label: "Compress a PDF to 200 KB",
+        note: "The same tool with a 204,800-byte ceiling.",
+      },
+      {
+        path: "/merge-pdf-without-uploading",
+        label: "Merge PDFs without uploading",
+        note: "Join files first, then bring the result down to size here.",
+      },
+      { path: "/pdf-tools", label: "All PDF tools", note: "Split, delete pages and the rest, all in the browser." },
     ],
   },
   {

@@ -165,7 +165,7 @@ export const grayscalePdfContent: Partial<ToolPageContent> = {
       topic: "privacy",
       question: "Is my PDF uploaded to convert it to grayscale?",
       answer:
-        "No. The file is processed in your browser and never uploaded. It is opened in this tab, each page is redrawn in memory, and the gray copy is put together on your device before you save it. The one thing sent when it finishes is an anonymous usage count to our Umami analytics, which stores nothing on your device: the tool's name, with no file name, size or content.",
+        "No. The file is processed in your browser and never uploaded. It is opened in this tab, each page is redrawn in memory, and the gray copy is put together on your device before you save it. On the first download of each converted result, our Umami analytics receives a tool-run event whose only fields are the tool and the page slug, with no file name, size or content, and Umami stores nothing on your device. That event is separate from the page-view analytics and from the page's own script files, which load as on any visit.",
     },
     {
       question: "Can I still select or search the text afterwards?",
