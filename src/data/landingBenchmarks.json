@@ -1,0 +1,228 @@
+{
+  "kb": 1024,
+  "measuredOn": "2026-11-06",
+  "timeZone": "UTC",
+  "environment": {
+    "browser": "Chromium 153.0.8010.12 headless (Playwright)",
+    "os": "Debian GNU/Linux 13 (trixie), Linux 6.12.94+",
+    "cpu": "Intel(R) Xeon(R) Processor, 8 logical cores",
+    "ramGiB": 15.6,
+    "commit": "bb3e0a1",
+    "viewport": "1280x900",
+    "deviceScaleFactor": 1
+  },
+  "method": "Built site served locally from dist/. One fresh browser context per run, viewport 1280x900. The fixture is given to the page's own file input and the page's own button is pressed. Time runs from the button press to the moment the page hands the file to the download (or, when nothing is downloaded, until the refusal message appears); choosing the file is not timed. Output bytes are the downloaded file. Text selectability is pypdf text extraction on page 1. Analytics hosts were blocked at DNS and by request routing before the first navigation.",
+  "fixtureRecipe": {
+    "command": "node scripts/build-landing-fixtures.mjs <dir>",
+    "prng": "mulberry32",
+    "seed": 20261106
+  },
+  "fixtures": [
+    {
+      "file": "seed-letter-1p.pdf",
+      "seed": 20261106,
+      "bytes": 4463,
+      "pages": 1,
+      "sha256": "e900de79b69ed37caa0edeee4f67ffc104a321e6e24625366cd9ea1e10cc1878",
+      "what": "One A4 page of Helvetica text (invented syllables), no images."
+    },
+    {
+      "file": "seed-report-36p.pdf",
+      "seed": 20261107,
+      "bytes": 145194,
+      "pages": 36,
+      "sha256": "cced9f4a43bc041d5e367f9dea1d5eaa87ad744ec22f0d5255a459ab30abe5ec",
+      "what": "35 full A4 pages plus a 15-line page of Helvetica text, no images. Sized so the lossless rewrite lands between 100,000 and 102,400 bytes."
+    },
+    {
+      "file": "seed-photo-1p.pdf",
+      "seed": 20261108,
+      "bytes": 3955782,
+      "pages": 1,
+      "sha256": "e165fc4e5cb0e1d7585aeb1e187427c3752dfb125b691842fe1292ab0fb96f4a",
+      "what": "One A4 page filled by a 1000x1414 RGB image of gradients plus seeded grain (Flate), no text."
+    },
+    {
+      "file": "seed-noise-24p.pdf",
+      "seed": 20261109,
+      "bytes": 5449141,
+      "pages": 24,
+      "sha256": "dfc1488e81bfa26ee4bf6951f2125b319401d8d3147d3b4e0ceeeed456181709",
+      "what": "24 A4 pages, each filled by a different 400x566 gray noise image (Flate), no text. A deliberately hostile scan stand-in."
+    }
+  ],
+  "compress": [
+    {
+      "fixture": "seed-letter-1p.pdf",
+      "targetBytes": 102400,
+      "outcome": "fit-lossless",
+      "runs": 5,
+      "inconsistentRuns": 0,
+      "outputBytes": [
+        3516
+      ],
+      "note": "Lossless rewrite fit under the target, so text is still selectable. 3.4 KB.",
+      "refusal": null,
+      "textSelectable": true,
+      "page1Ppi": null,
+      "msMedian": 12,
+      "msMin": 10,
+      "msMax": 12,
+      "toolRunEvent": {
+        "tool": "pdf-compress",
+        "slug": "compress-pdf-to-100kb"
+      },
+      "requestsWithBodyAfterChoosing": 0
+    },
+    {
+      "fixture": "seed-letter-1p.pdf",
+      "targetBytes": 100000,
+      "outcome": "fit-lossless",
+      "runs": 5,
+      "inconsistentRuns": 0,
+      "outputBytes": [
+        3516,
+        3517
+      ],
+      "note": "Lossless rewrite fit under the target, so text is still selectable. 3.4 KB.",
+      "refusal": null,
+      "textSelectable": true,
+      "page1Ppi": null,
+      "msMedian": 14,
+      "msMin": 14,
+      "msMax": 16,
+      "toolRunEvent": {
+        "tool": "pdf-compress",
+        "slug": "compress-pdf-to-100kb"
+      },
+      "requestsWithBodyAfterChoosing": 0
+    },
+    {
+      "fixture": "seed-report-36p.pdf",
+      "targetBytes": 102400,
+      "outcome": "fit-lossless",
+      "runs": 5,
+      "inconsistentRuns": 0,
+      "outputBytes": [
+        101411
+      ],
+      "note": "Lossless rewrite fit under the target, so text is still selectable. 99.0 KB.",
+      "refusal": null,
+      "textSelectable": true,
+      "page1Ppi": null,
+      "msMedian": 26,
+      "msMin": 26,
+      "msMax": 28,
+      "toolRunEvent": {
+        "tool": "pdf-compress",
+        "slug": "compress-pdf-to-100kb"
+      },
+      "requestsWithBodyAfterChoosing": 0
+    },
+    {
+      "fixture": "seed-report-36p.pdf",
+      "targetBytes": 100000,
+      "outcome": "cannot-fit-refused",
+      "runs": 5,
+      "inconsistentRuns": 0,
+      "outputBytes": [],
+      "note": "The smallest raster copy is still 181.8 KB, over the target. Text is no longer selectable.",
+      "refusal": "Re-encoding would make this biggerThere was nothing to strip. The file is already 141.8 KB. Nothing was downloaded.",
+      "textSelectable": null,
+      "page1Ppi": null,
+      "msMedian": 22946,
+      "msMin": 22536,
+      "msMax": 23124,
+      "toolRunEvent": null,
+      "requestsWithBodyAfterChoosing": 0
+    },
+    {
+      "fixture": "seed-photo-1p.pdf",
+      "targetBytes": 102400,
+      "outcome": "fit-raster",
+      "runs": 5,
+      "inconsistentRuns": 0,
+      "outputBytes": [
+        98626
+      ],
+      "note": "Pages were rasterised to fit. Text is no longer selectable. 96.3 KB.",
+      "refusal": null,
+      "textSelectable": false,
+      "page1Ppi": 144,
+      "msMedian": 296,
+      "msMin": 269,
+      "msMax": 302,
+      "toolRunEvent": {
+        "tool": "pdf-compress",
+        "slug": "compress-pdf-to-100kb"
+      },
+      "requestsWithBodyAfterChoosing": 0
+    },
+    {
+      "fixture": "seed-noise-24p.pdf",
+      "targetBytes": 102400,
+      "outcome": "cannot-fit-over-target",
+      "runs": 5,
+      "inconsistentRuns": 0,
+      "outputBytes": [
+        268862
+      ],
+      "note": "The smallest raster copy is still 262.6 KB, over the target. Text is no longer selectable.",
+      "refusal": null,
+      "textSelectable": false,
+      "page1Ppi": 24,
+      "msMedian": 16718,
+      "msMin": 16339,
+      "msMax": 16964,
+      "toolRunEvent": {
+        "tool": "pdf-compress",
+        "slug": "compress-pdf-to-100kb"
+      },
+      "requestsWithBodyAfterChoosing": 0
+    }
+  ],
+  "merge": {
+    "files": [
+      "seed-letter-1p.pdf",
+      "seed-report-36p.pdf",
+      "seed-photo-1p.pdf"
+    ],
+    "runs": 5,
+    "downloads": 5,
+    "outputBytes": [
+      4059576
+    ],
+    "msMedian": 42,
+    "msMin": 41,
+    "msMax": 44,
+    "pages": 38,
+    "textSelectable": true,
+    "requestsWithBodyAfterChoosing": 0,
+    "nonAnalyticsRequestsAfterChoosing": 0,
+    "anyBodyCarriedPdf": false,
+    "toolRunEvent": {
+      "tool": "pdf-merge",
+      "slug": "pdf-merge"
+    },
+    "offline": {
+      "outputBytes": 4059576,
+      "pages": 38
+    }
+  },
+  "pixelRatioCheck": [
+    {
+      "fixture": "seed-report-36p.pdf",
+      "targetBytes": 100000,
+      "deviceScaleFactor": 2,
+      "outputBytes": null,
+      "note": "The smallest raster copy is still 183.9 KB, over the target. Text is no longer selectable."
+    },
+    {
+      "fixture": "seed-photo-1p.pdf",
+      "targetBytes": 102400,
+      "deviceScaleFactor": 2,
+      "outputBytes": 98626,
+      "note": "Pages were rasterised to fit. Text is no longer selectable. 96.3 KB."
+    }
+  ]
+}
