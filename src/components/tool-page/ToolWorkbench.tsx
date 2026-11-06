@@ -71,7 +71,7 @@ export function ToolWorkbench({ component: Tool, label, lean = false, slug, butt
   const warmHeavy = () => {
     if (!slug) return;
     prefetchTool(slug, "hover");
-    if (slug.startsWith("pdf-")) {
+    if (slug.startsWith("pdf-") || slug === "grayscale-pdf") {
       prefetchPdfLib();
       prefetchPdfJs();
     }

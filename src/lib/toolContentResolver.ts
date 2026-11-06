@@ -128,7 +128,7 @@ function categoryFaqs(tool: CatalogTool): ToolFaqEntry[] {
       question: `Is my ${profile.subject} uploaded to a server?`,
       answer: outbound
         ? `${tool.name} is a static page with no backend of its own, and nothing you type is stored or logged here. It is one of the few tools on this site that does have to reach the network: answering the question at all means querying ${outbound}, so the value you enter is sent there. Every other tool in the catalogue is fully local.`
-        : `No. ${tool.name} is a static page with no backend. Your ${profile.subject} is read and processed by JavaScript running in this tab, and it is never transmitted. You can confirm this by opening your browser's network panel while you use the tool. There are no outbound requests.`,
+        : `No. ${tool.name} is a static page with no backend. Your ${profile.subject} is read and processed by JavaScript running in this tab, and it is never transmitted. Open your browser's network panel while you use the tool and you will see the page's own code and the cookieless Umami script load, Google Analytics requests (no cookies unless you clicked Accept), and one small Umami event once a result is ready, carrying only the tool's name. No request carries your ${profile.subject}.`,
     },
     {
       topic: "size",
@@ -173,7 +173,7 @@ function defaultSpecs(tool: CatalogTool): ToolSpec[] {
     { label: "Stored", value: "Nothing from your files. No database, no server-side copy. Analytics cookies only if you accept" },
     {
       label: "Transmitted",
-      value: outbound ? `The value you enter, to ${outbound}` : "Nothing leaves your device",
+      value: outbound ? `The value you enter, to ${outbound}` : "Never your input. One anonymous usage count (the tool's name only) goes to Umami when a result is ready",
     },
     { label: "Retained after you close the tab", value: "Nothing" },
     {

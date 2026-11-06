@@ -1,6 +1,6 @@
 # ToolOcean
 
-> 123 file and developer utilities that run entirely in the browser. No upload, no
+> 124 file and developer utilities that run entirely in the browser. No upload, no
 > account, no server. Every tool processes your data locally in JavaScript and
 > WebAssembly, so files never leave the device.
 
@@ -19,8 +19,9 @@ working. Three tools are documented exceptions (see below).
 - [Developer tools](https://toolocean.co/dev-tools): JSON, YAML, XML, TOML, CSV,
   regex, hashing, encoding, JWT, timestamps, colour, text transforms
 - [PDF tools](https://toolocean.co/pdf-tools): merge, split, delete pages,
-  compress, rotate, reorder, watermark, page numbers, PDF to images, PDF to text
-  (reads the text layer; scanned pages have none), images to PDF, visual
+  compress, rotate, reorder, watermark, page numbers, grayscale or black and white
+  (pages become images), PDF to images, PDF to text (reads the text layer; scanned
+  pages have none), images to PDF, visual
   signature, AES-256 encrypt, unlock (password you already know), metadata,
   AcroForm fill and flatten
 - [Image tools](https://toolocean.co/image-tools): resize, compress, crop, convert
@@ -85,8 +86,11 @@ recommendation:
 
 No account system, no file storage, no server-side logging of input. Tool usage
 history is kept in your browser's localStorage and never transmitted. Analytics are
-Google Analytics 4 under Consent Mode v2 and record page views and which tool was
-used, never tool input. See https://toolocean.co/privacy
+cookieless Umami (page views, plus one anonymous count per finished tool run with
+only the tool id and page slug) and Google Analytics 4 under Consent Mode v2, which
+records page views and which tool was used and sets cookies only after consent.
+Neither receives tool input, file names or file contents. See
+https://toolocean.co/privacy
 
 ## Sitemap
 

@@ -71,6 +71,7 @@ calling `markToolSuccess`, or if a covered slug is missing from this table.
 | image-rotate-flip | `src/components/tools/implementations/image/ImageRotateFlipTool.tsx` | 1 |
 | image-to-base64 | `src/components/tools/implementations/image/ImageToBase64Tool.tsx` | 1 |
 | image-watermark | `src/components/tools/implementations/image/ImageWatermarkTool.tsx` | 1 |
+| grayscale-pdf | `src/components/tools/implementations/pdf/GrayscalePdfTool.tsx` | 1 |
 | images-to-pdf | `src/components/tools/implementations/pdf/ImagesToPdfTool.tsx` | 1 |
 | pdf-compress | `src/components/tools/implementations/pdf/PdfCompressTool.tsx` | 1 |
 | pdf-delete-pages | `src/components/tools/implementations/pdf/PdfDeletePagesTool.tsx` | 1 |

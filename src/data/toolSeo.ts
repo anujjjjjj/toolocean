@@ -681,7 +681,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   "qr-code-generator": {
     title: "QR Code Generator: Free QR Codes from Text or URLs",
     description:
-      "Generate a QR code from any text or URL and download it as a PNG. Free, unlimited, no watermark, no tracking, and no account, generated in your browser.",
+      "Generate a QR code from any text or URL and download it as a PNG. Free, unlimited, no watermark, no scan tracking, and no account, generated in your browser.",
     keywords: ["qr code generator", "create qr code", "free qr code", "url to qr code", "qr code png download", "qr generator no watermark"],
     faqs: [
       {
@@ -1516,7 +1516,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   "pdf-compress": {
     title: "Compress PDF Online: Reduce PDF File Size Free",
     description:
-      "Shrink PDF file size so documents fit email and upload limits, with control over the quality trade-off. Free PDF compressor that works entirely offline.",
+      "Shrink PDF file size so documents fit email and upload limits, with control over the quality trade-off. Free PDF compressor that works offline once loaded.",
     keywords: ["compress pdf", "reduce pdf size", "pdf compressor online", "shrink pdf", "make pdf smaller", "pdf size reducer free"],
     faqs: [
       privacyFaq("PDF"),
@@ -1625,6 +1625,12 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
     description:
       "PDF to text with no upload: copy text from a PDF or extract it to a .txt file in your browser. Pick a page range, keep page breaks, and see which pages are scans.",
     keywords: ["pdf to text", "extract text from pdf", "pdf to txt without uploading", "copy text from pdf"],
+  },
+  "grayscale-pdf": {
+    title: "Grayscale PDF – Print Black and White, Save Ink",
+    description:
+      "Convert a PDF to grayscale or pure black and white for printing, and save colour ink or toner. Done in your browser with no upload. Choose 150 or 300 DPI.",
+    keywords: ["convert pdf to grayscale", "pdf to black and white", "make pdf black and white for printing", "grayscale pdf"],
   },
   "pdf-sign": {
     title: "Sign PDF Online Free – Draw or Type, No Upload",
@@ -1785,7 +1791,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   "image-compressor": {
     title: "Image Compressor: Reduce Image File Size Online",
     description:
-      "Compress JPG, PNG, and WebP images with a quality slider and see the size saving before you download. Free image compressor that works entirely offline.",
+      "Compress JPG, PNG, and WebP images with a quality slider and see the size saving before you download. Free image compressor that works offline once loaded.",
     keywords: ["image compressor", "compress jpg online", "reduce image size", "png compressor", "optimize images for web", "shrink photo file size"],
     faqs: [
       privacyFaq("image"),

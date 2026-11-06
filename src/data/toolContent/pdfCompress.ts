@@ -254,6 +254,11 @@ export const pdfCompressContent: Partial<ToolPageContent> = {
   ],
   related: [
     {
+      name: "Grayscale PDF",
+      path: "/grayscale-pdf",
+      description: "Drop the colour before printing. Black and white pages store one bit per pixel.",
+    },
+    {
       name: "PDF Split",
       path: "/pdf-split",
       description: "Drop pages you do not need. On a text PDF that removes more bytes than either compress mode.",

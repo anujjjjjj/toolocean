@@ -187,7 +187,7 @@ export const pdfMergeContent: Partial<ToolPageContent> = {
       topic: "privacy",
       question: "How can I check the files are really not being uploaded?",
       answer:
-        "Open your browser's developer tools, switch to the Network tab, and merge something. You will see this page's own assets load and then nothing at all while the work happens. The stronger test is to disconnect from the network entirely once the page has loaded and merge anyway. It still works, which is not something a tool that needs a server can do.",
+        "Open your browser's developer tools, switch to the Network tab, and merge something. Alongside this page's own files you will see our analytics: the Umami script, one small Umami count when the merge completes (the tool's name, no file name or size), and Google Analytics calls, which store no cookies unless you accepted the banner. No request contains your documents. The stronger test is to disconnect from the network entirely once the page has loaded and merge anyway. It still works, which is not something a tool that needs a server can do.",
     },
     {
       question: "Does merging reduce the quality of scanned pages?",

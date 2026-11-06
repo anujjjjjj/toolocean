@@ -212,7 +212,7 @@ export const zipCreatorContent: Partial<ToolPageContent> = {
       topic: "privacy",
       question: "Are my files uploaded to build the archive?",
       answer:
-        "No. The files are read from your disk by the page and compressed in the tab, and the finished archive is handed straight to your downloads. Open your browser's Network panel while you do it and you will see no requests at all after the page itself has loaded.",
+        "No. The files are read from your disk by the page and compressed in the tab, and the finished archive is handed straight to your downloads. Open your browser's Network panel while you do it: once the page and its scripts have loaded you will see analytics only, Google Analytics requests (no cookies unless you accepted them) and one tiny Umami event for the finished archive that names the tool. Nothing you zipped is in any of them.",
     },
     {
       question: "Why is my ZIP of photos the same size as the photos?",

@@ -211,7 +211,7 @@ export const imageResizerContent: Partial<ToolPageContent> = {
       topic: "privacy",
       question: "Does my image leave my device?",
       answer:
-        "It does not. The picture is decoded, drawn at the new size and encoded again by your own browser, with no request made at any point. If you want to satisfy yourself, put the machine into aeroplane mode after this page has loaded and resize something; it works exactly as before.",
+        "It does not. The picture is decoded, drawn at the new size and encoded again by your own browser, and no request ever carries the picture; after a resize, the page reports just an anonymous Umami tally with this tool's name. If you want to satisfy yourself, put the machine into aeroplane mode after this page has loaded and resize something; it works exactly as before.",
     },
     {
       question: "Will resizing reduce the quality?",

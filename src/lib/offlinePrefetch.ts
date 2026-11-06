@@ -34,6 +34,7 @@ const signPdf: Loader = () => import("@/lib/pdf/signPdf");
 const fillForm: Loader = () => import("@/lib/pdf/fillPdfForm");
 const metadata: Loader = () => import("@/lib/pdf/pdfMetadata");
 const unlock: Loader = () => import("@/lib/pdf/unlockPdf");
+const grayscale: Loader = () => import("@/lib/pdf/grayscaleClient");
 
 const BY_SLUG: Record<string, Loader[]> = {
   "pdf-merge": [pdfLib],
@@ -51,6 +52,7 @@ const BY_SLUG: Record<string, Loader[]> = {
   "pdf-compress": [pdfLib, pdfjs, compressTarget],
   "pdf-to-images": [pdfjs],
   "pdf-to-text": [pdfjs],
+  "grayscale-pdf": [pdfLib, pdfjs, grayscale],
   "images-to-pdf": [pdfLib, parseSize, encodeImage],
   "image-compressor": [encodeImage, jszip],
   "image-resizer": [jpeg],
@@ -197,6 +199,11 @@ export function scheduleOfflinePrefetch(slug: string | undefined): () => void {
         const { heicWorkerUrl, heicWasmUrl } = await import("@/lib/image/heicDecoder");
         await expandScriptImports(heicWorkerUrl(), graph);
         graph.add(heicWasmUrl());
+      }
+      if (loaders.includes(grayscale)) {
+        // The page encoder worker starts only on Convert, so it is not in resource timing yet.
+        const { grayscaleWorkerUrl } = await import("@/lib/pdf/grayscaleClient");
+        await expandScriptImports(grayscaleWorkerUrl(), graph);
       }
       if (loaders.includes(videoToMp3)) {
         const { videoToMp3WorkerUrl } = await import("@/lib/videoToMp3Client");

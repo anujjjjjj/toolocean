@@ -279,6 +279,11 @@ export const pdfToImagesContent: Partial<ToolPageContent> = {
 
   related: [
     {
+      name: "Grayscale PDF",
+      path: "/grayscale-pdf",
+      description: "Keep the pages as a PDF but make them gray or black and white for printing.",
+    },
+    {
       name: "PDF to Text",
       path: "/pdf-to-text",
       description: "Copy the words off the pages instead of saving pictures of them.",

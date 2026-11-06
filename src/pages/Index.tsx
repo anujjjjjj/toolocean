@@ -135,7 +135,7 @@ const Index = () => {
             <h3>Instant Results</h3>
             <p>No upload delays. No server queues. Get results instantly.</p>
             <h3>Works Offline</h3>
-            <p>Once loaded, tools work without an internet connection. No accounts, no tracking, no ads.</p>
+            <p>Once loaded, tools work without an internet connection. No accounts and no ads. Analytics are cookieless unless you accept the cookie banner.</p>
             <h3>Explore Tools</h3>
             <p>Chain tools together into an automated pipeline. Start Building. Dev Tools. PDF Tools.</p>
             <p>JSON formatters, encoders, converters, and more utilities for developers.</p>

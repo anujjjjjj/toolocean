@@ -26,7 +26,7 @@ export function ToolFeatures({ features, heading, lede }: { features: ToolFeatur
         {features.map((feature) => {
           const Icon = resolveIcon(feature.icon);
           const shared =
-            feature.title === "Your data never leaves the tab" || feature.title === "No caps or paywalls";
+            feature.title === "Your input never leaves the tab" || feature.title === "No caps or paywalls";
           return (
             <li key={feature.title} className="bg-card p-6" {...(shared ? { "data-seo-chrome": "true" } : {})}>
               <Icon className="h-5 w-5 text-primary" aria-hidden="true" />
