@@ -52,17 +52,17 @@ export function ConsentBanner() {
       role="region"
       aria-label="Analytics cookie notice"
       data-consent-banner=""
-      className="shrink-0 border-t border-border bg-card"
+      className="shrink-0 border-t border-border bg-card pb-[env(safe-area-inset-bottom,0px)]"
     >
-      <div className="mx-auto flex h-11 max-w-[1120px] items-center gap-3 px-4">
-        <p className="min-w-0 flex-1 truncate text-[13px] text-muted-foreground">
+      <div className="mx-auto flex min-h-11 max-w-[1120px] flex-wrap items-center gap-x-3 gap-y-2 px-4 py-1.5">
+        <p className="w-full min-w-0 text-[13px] text-muted-foreground sm:w-auto sm:flex-1">
           Accept lets Google Analytics set cookies to count visits. Files never leave this device.
         </p>
-        <div className="flex shrink-0 gap-2">
-          <Button variant="outline" size="sm" onClick={() => choose("denied")}>
+        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:shrink-0">
+          <Button variant="outline" size="sm" className="h-11 sm:h-8" onClick={() => choose("denied")}>
             Decline
           </Button>
-          <Button size="sm" onClick={() => choose("granted")}>
+          <Button size="sm" className="h-11 sm:h-8" onClick={() => choose("granted")}>
             Accept
           </Button>
         </div>
