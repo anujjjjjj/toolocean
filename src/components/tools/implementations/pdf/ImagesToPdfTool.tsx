@@ -357,7 +357,7 @@ export function ImagesToPdfTool({ preset }: { preset?: ImagesToPdfPreset } = {})
                             <p className="text-xs text-muted-foreground">1 KB = 1024 bytes. When set, each picture is re-encoded as JPEG so the PDF can land under that ceiling. Leave blank to embed the original bytes.</p>
                         </div>
 
-                        <div className="flex gap-3">
+                        <div className="flex flex-col gap-3 sm:flex-row">
                             <Button
                                 onClick={() => fileInputRef.current?.click()}
                                 variant="outline"

@@ -257,6 +257,14 @@ test("the image tool embeds by sniffed bytes, not by file.type", () => {
   assert.match(source, /markToolSuccess\(blob\)/);
 });
 
+test("the image tool's action row stacks below sm so both buttons fit at 375px", () => {
+  const source = read("src/components/tools/implementations/pdf/ImagesToPdfTool.tsx");
+  assert.match(
+    source,
+    /<div className="flex flex-col gap-3 sm:flex-row">\s*<Button\s+onClick=\{\(\) => fileInputRef\.current\?\.click\(\)\}/,
+  );
+});
+
 test("the landing embed switch is exhaustive and warms pdf-lib for images-to-pdf", () => {
   const source = read("src/pages/LandingRoutePage.tsx");
   assert.match(source, /default:\s*return assertNever\(embed\);/);
