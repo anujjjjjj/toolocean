@@ -42,7 +42,9 @@ export type LandingEmbed =
   | { tool: "image-compressor" | "pdf-compress"; targetBytes: number }
   | { tool: "image-format-converter"; output: "image/jpeg" | "image/png" | "image/webp" }
   | { tool: "heic-to-jpg"; format: "jpg" | "png" }
-  | { tool: "pdf-unlock" };
+  | { tool: "pdf-unlock" }
+  | { tool: "images-to-pdf"; input: "jpeg" | "png" }
+  | { tool: "pdf-to-images"; output: "png" | "jpeg" };
 
 export interface LandingPage {
   /** Root-level path segment, e.g. "merge-pdf-without-uploading". */
@@ -1144,6 +1146,358 @@ export const LANDING_PAGES: LandingPage[] = [
       icon: "LockOpen",
       category: "PDF Tools",
     },
+  },
+  {
+    slug: "jpg-to-pdf",
+    seo: {
+      title: "JPG to PDF Converter – JPEGs Kept As-Is, No Upload",
+      description:
+        "Turn JPG photos into one PDF in your browser. Each JPEG goes onto its own page byte for byte, without re-encoding, and files that are not JPEG are named and refused.",
+      keywords: ["jpg to pdf", "jpeg to pdf", "convert jpg to pdf", "jpg to pdf without uploading", "jfif to pdf"],
+    },
+    h1: "Convert JPG to PDF",
+    footerLabel: "JPG to PDF",
+    lede:
+      "This page takes JPEG files only. Each photo you add is checked by its first bytes, placed on a page the size of the photo, and copied into images_combined.pdf without being decoded and saved again, so every page is exactly as sharp as the original file.",
+    tools: ["images-to-pdf", "image-compressor", "heic-to-jpg", "pdf-compress"],
+    embed: { tool: "images-to-pdf", input: "jpeg" },
+    howTo: {
+      name: "How to convert JPG to PDF",
+      steps: [
+        {
+          title: "Add the JPG files",
+          body: "Drop them on the box or browse. A file counts as JPEG when its first three bytes are FF D8 FF, so .jfif and .jpe files and files with a blank type are taken, while a PNG renamed to .jpg is turned away by name.",
+        },
+        {
+          title: "Arrange the thumbnails",
+          body: "The number on each thumbnail is its page number. Drag a thumbnail onto another to move it, or hover over it and press × to take it out.",
+        },
+        {
+          title: "Press Create PDF",
+          body: "Your browser saves images_combined.pdf with one page per photo, in thumbnail order. Leave the size box empty to keep every JPEG byte for byte.",
+        },
+      ],
+    },
+    sections: [
+      {
+        heading: "What happens to each JPEG",
+        body: [
+          "A PDF can hold JPEG data untouched, because its DCT filter is the same compression a .jpg file uses. The pdf-lib library reads the photo's width, height and colour channels from its header and copies the compressed data into the document unchanged. Nothing is decoded and encoded again, so there is no extra round of loss, and building the file takes very little time.",
+          "Each page is made exactly as many points wide and high as the photo has pixels. A 12 megapixel phone picture of 4000 by 3000 pixels therefore becomes a page about 55 by 42 inches. PDF viewers zoom it to fit the window, and printing with Fit to page brings it down to paper size, but it is the reason the pages are not A4.",
+        ],
+      },
+      {
+        heading: "Phone photos that come out sideways",
+        body: [
+          "Phones often store a portrait photo as landscape pixels plus an EXIF orientation tag telling viewers to turn it. This tool does not read that tag. The stored pixels go onto the page as they are, and the page takes their landscape shape. The thumbnail may still look upright, because browsers apply the tag when they display a picture.",
+          "If a page arrives turned on its side, fix it afterwards with Rotate PDF, or rotate the photo in an editor and save it before adding it here.",
+        ],
+      },
+      {
+        heading: "When the PDF has to stay under a size",
+        body: [
+          "The optional box under the thumbnails takes a ceiling such as 500 KB. With it filled in, every photo is decoded and written again as a smaller JPEG to fit its share of the budget, so this is the one path where pixels change. If the finished file is still over the ceiling, a message says how large it came out. 1 KB here means 1024 bytes.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Does the JPG lose quality inside the PDF?",
+        answer:
+          "Not while the size box is empty. The JPEG data is copied into the PDF unchanged, so each page shows exactly the pixels of its photo. Only a size ceiling makes the tool encode the pictures again.",
+      },
+      {
+        question: "Why was my file rejected as not a JPG?",
+        answer:
+          "The check reads the start of the file, not its name. A screenshot saved as PNG and renamed .jpg begins with the PNG signature, so it is refused and named in the status line above the thumbnails. Images to PDF accepts a mix of formats and converts the others for you.",
+      },
+      {
+        question: "Can I add .jfif or .jpeg files?",
+        answer:
+          "Yes. .jpeg, .jfif and .jpe are the same format under other names, and the file picker offers them. A JPEG whose type your browser reports as blank is accepted as well, because the bytes decide.",
+      },
+      {
+        question: "What page size will the PDF have?",
+        answer:
+          "Each page matches its photo, one point per pixel, so pages from different cameras come out different sizes. To print evenly, resize the photos to the same dimensions first or choose Fit to page in the print dialog.",
+      },
+      {
+        question: "Are my photos uploaded to make the PDF?",
+        answer:
+          "No. The photos are read and assembled into the PDF inside this tab. The site does collect visit analytics, which is separate from your files: a page view when the page opens, and, after a PDF is created, an Umami event named tool-run whose only fields are tool and slug, here images-to-pdf and jpg-to-pdf. Neither carries file names, sizes or contents.",
+      },
+    ],
+    related: [
+      { path: "/images-to-pdf", label: "Images to PDF", note: "The same converter without the JPG lock, for JPG, PNG and WebP together" },
+      { path: "/png-to-pdf", label: "PNG to PDF", note: "For screenshots and diagrams saved as PNG" },
+      { path: "/pdf-to-jpg", label: "PDF to JPG", note: "The opposite direction, pages back out as photos" },
+      { path: "/heic-to-jpg", label: "HEIC to JPG", note: "Turn iPhone photos into JPEGs before adding them here" },
+      { path: "/compress-pdf-to-100kb", label: "Compress a PDF to 100 KB", note: "When the finished PDF meets an upload limit" },
+      { path: "/pdf-tools", label: "All PDF tools", note: "Every PDF page on this site" },
+    ],
+  },
+  {
+    slug: "png-to-pdf",
+    seo: {
+      title: "PNG to PDF Converter – Lossless Pages, No Upload",
+      description:
+        "Put PNG screenshots and diagrams into one PDF in your browser. Pixels are stored losslessly, transparency is kept as a mask, and files that are not PNGs are refused.",
+      keywords: ["png to pdf", "convert png to pdf", "screenshot to pdf", "png to pdf without uploading", "transparent png to pdf"],
+    },
+    h1: "Convert PNG to PDF",
+    footerLabel: "PNG to PDF",
+    lede:
+      "Screenshots, diagrams and scanned line art are usually PNGs, and this page accepts PNG files only. Each one is decoded, stored in the PDF with lossless compression on a page the size of the image, and saved with the rest as images_combined.pdf.",
+    tools: ["images-to-pdf", "image-format-converter", "image-compressor", "pdf-compress"],
+    embed: { tool: "images-to-pdf", input: "png" },
+    howTo: {
+      name: "How to convert PNG to PDF",
+      steps: [
+        {
+          title: "Add the PNG files",
+          body: "A file is accepted when it begins with the eight-byte PNG signature. A JPEG renamed to .png is refused, and the line above the thumbnails names it.",
+        },
+        {
+          title: "Set the page order",
+          body: "Pages follow the numbered badges. Drag one thumbnail over another to change places; hover a thumbnail and press × to remove it.",
+        },
+        {
+          title: "Create the PDF",
+          body: "Leave the size box blank so nothing is turned into JPEG, then press Create PDF. images_combined.pdf downloads with one page per PNG.",
+        },
+      ],
+    },
+    sections: [
+      {
+        heading: "How a PNG is stored in the PDF",
+        body: [
+          "A PNG cannot be dropped into a PDF as it is, the way a JPEG can, because PDF has no PNG filter. pdf-lib decodes each file to 8-bit red, green, blue and alpha values and writes the colour into the document with Flate, the same deflate compression PNG uses inside. The picture on the page matches the decoded pixels exactly.",
+          "Two side effects follow. A 16-bit PNG, as some scientific and photo-editing exports are, is reduced to 8 bits per channel. A palette PNG, the compact kind with 256 colours or fewer, is expanded to full colour, so its page can take noticeably more bytes than the original file. An animated PNG stops the conversion with the message Animated PNGs are not supported.",
+        ],
+      },
+      {
+        heading: "Transparent areas",
+        body: [
+          "If any pixel is less than fully opaque, the alpha values are written into the PDF as a soft mask next to the colour, so see-through areas stay see-through. Nothing is painted behind them; what shows there is whatever the PDF viewer draws under the page, which in most viewers is white. A PNG with no transparent pixels gets no mask at all.",
+        ],
+      },
+      {
+        heading: "PNG or JPG for this PDF",
+        body: [
+          "For screenshots, text and flat colour, PNG keeps edges crisp. For photographs it usually makes a far heavier PDF than the same pictures as JPEG, so convert those with the image format converter and use JPG to PDF instead.",
+          "The optional size box turns every page into JPEG to reach its ceiling, which undoes the reason for choosing PNG. Use it only when the size limit matters more than exact pixels.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is PNG to PDF lossless?",
+        answer:
+          "For ordinary 8-bit PNGs, yes: the decoded pixels are stored with lossless compression. There are two exceptions. A 16-bit image is reduced to 8 bits per channel, and filling in the size ceiling re-encodes every picture as JPEG.",
+      },
+      {
+        question: "Does transparency survive in the PDF?",
+        answer:
+          "Yes. Partly or fully transparent pixels are written as a soft mask, so nothing is filled in. The PDF adds no background colour of its own; most viewers show a white page underneath.",
+      },
+      {
+        question: "Why is the PDF bigger than my PNG files?",
+        answer:
+          "PNG encoders choose a prediction filter for each row and often use a colour palette. The PDF stores plain 8-bit colour with deflate and neither of those tricks, so screenshots with few colours grow the most.",
+      },
+      {
+        question: "My file was rejected as not a PNG. Why?",
+        answer:
+          "Its first bytes are not the PNG signature. Phone photos and many web downloads are JPEG or WebP even when they are named .png. Use JPG to PDF for JPEGs, or Images to PDF for a mix of formats.",
+      },
+      {
+        question: "Do my screenshots leave the device?",
+        answer:
+          "No. Decoding and building the PDF both run in this tab. What the site does send is visit analytics: a page view when the page loads, and an Umami event called tool-run once a PDF has been made, with only two fields, tool and slug, here images-to-pdf and png-to-pdf. File names, sizes and contents are not part of either.",
+      },
+    ],
+    related: [
+      { path: "/images-to-pdf", label: "Images to PDF", note: "Mix PNG, JPG and WebP in one document" },
+      { path: "/jpg-to-pdf", label: "JPG to PDF", note: "For photographs, embedded without re-encoding" },
+      { path: "/pdf-to-png", label: "PDF to PNG", note: "Turn PDF pages back into lossless PNGs" },
+      { path: "/image-format-converter", label: "Image format converter", note: "Switch a photo from PNG to JPG before building the PDF" },
+      { path: "/compress-pdf-to-200kb", label: "Compress a PDF to 200 KB", note: "When a portal caps the upload size" },
+      { path: "/pdf-tools", label: "All PDF tools", note: "Every PDF page on this site" },
+    ],
+  },
+  {
+    slug: "pdf-to-jpg",
+    seo: {
+      title: "PDF to JPG Converter – Pick the Quality, No Upload",
+      description:
+        "Turn PDF pages into JPG images in your browser. Set JPEG quality from 50 to 100 and 72, 144 or 288 dpi, convert a page range, then save single pages or one ZIP.",
+      keywords: ["pdf to jpg", "convert pdf to jpg", "pdf to jpeg", "pdf page to jpg", "pdf to jpg without uploading"],
+    },
+    h1: "Convert PDF to JPG",
+    footerLabel: "PDF to JPG",
+    lede:
+      "The converter below has JPG fixed as the output, so the only choices are how sharp and how compressed. Pages are drawn by pdf.js inside this tab, encoded as JPEG, and offered one at a time or together in a ZIP.",
+    tools: ["pdf-to-images", "pdf-split", "image-compressor", "pdf-compress"],
+    embed: { tool: "pdf-to-images", output: "jpeg" },
+    howTo: {
+      name: "How to convert PDF to JPG",
+      steps: [
+        {
+          title: "Choose the PDF",
+          body: "Its page count appears as soon as the file is read, so you know which page numbers are valid.",
+        },
+        {
+          title: "Set quality, scale and pages",
+          body: "Quality starts at 90 and moves in steps of 5 between 50 and 100. Scale is 1x, 2x or 4x, with 2x preselected. Type a range such as 1-3, 7 or leave it as all.",
+        },
+        {
+          title: "Convert and save",
+          body: "Press Convert to Images. Each page gets a Download button and a name like report_page_3.jpg, and Download ZIP packs them all into report_images.zip.",
+        },
+      ],
+    },
+    sections: [
+      {
+        heading: "What scale means in pixels",
+        body: [
+          "A PDF measures pages in points, 72 to the inch. At 1x a page gets one pixel per point, so an A4 page of 595 by 842 points becomes an image about 595 by 842 pixels. 2x doubles both sides to roughly 1190 by 1684, and 4x gives about 2380 by 3368. US Letter at 2x is 1224 by 1584. Each step up multiplies the pixel count by four, and the memory needed with it.",
+          "For reading on a screen or pasting into a document, 2x is plenty. Pick 4x for printing or for small print you need to zoom into, and convert long files a page range at a time.",
+        ],
+      },
+      {
+        heading: "Quality, and what it costs",
+        body: [
+          "The quality number is handed straight to the browser's JPEG encoder. Lower values give smaller files with softer edges around lettering; at 90 most pages are hard to tell from the PDF on screen. The setting applies to every page in a run, and converting again replaces the previous set, so try another value if the first result is too heavy.",
+        ],
+      },
+      {
+        heading: "What a JPG of a page is not",
+        body: [
+          "The result is a picture. Text in it cannot be selected or searched, and links and form fields stop working. Pages are drawn onto a white background, so any transparent part of the PDF comes out white. If you need the words rather than an image of them, PDF to Text copies them out.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "What JPEG quality should I use?",
+        answer:
+          "Start with the default of 90. Move toward 70 if the images are going by email or chat and size matters, and use 100 only if you will edit the pages further. The slider covers 50 to 100.",
+      },
+      {
+        question: "How do I convert just one page?",
+        answer:
+          "Type its number in the page range box, for example 4. Ranges and lists work too, like 2-5, 9. Numbers outside the document are skipped, and if nothing valid remains the tool asks for a valid range.",
+      },
+      {
+        question: "What are the JPG files called?",
+        answer:
+          "Each one keeps the PDF's name plus its page number in the original document, such as invoice_page_2.jpg. The ZIP is named after the PDF as well, as invoice_images.zip.",
+      },
+      {
+        question: "Can I get PNG instead?",
+        answer:
+          "Not on this page; JPG is locked so it cannot change between runs. PDF to PNG has the same controls with PNG output, and PDF to Images lets you switch between the two.",
+      },
+      {
+        question: "Is the PDF uploaded to convert it?",
+        answer:
+          "No. pdf.js renders the pages in this tab and the browser encodes them. Separately, the visit is counted: a page view when the page loads, and once a conversion finishes, an Umami event named tool-run that holds only tool and slug, here pdf-to-images and pdf-to-jpg. It is sent when the images are ready, not on download, and includes no file name, page count or content.",
+      },
+    ],
+    related: [
+      { path: "/pdf-to-images", label: "PDF to Images", note: "The same converter with a JPG or PNG choice" },
+      { path: "/pdf-to-png", label: "PDF to PNG", note: "Lossless page images for diagrams and editing" },
+      { path: "/jpg-to-pdf", label: "JPG to PDF", note: "Put photos back into a single PDF" },
+      { path: "/compress-image-to-100kb", label: "Compress an image to 100 KB", note: "When one page image is still too big for a form" },
+      { path: "/pdf-tools", label: "All PDF tools", note: "Every PDF page on this site" },
+    ],
+  },
+  {
+    slug: "pdf-to-png",
+    seo: {
+      title: "PDF to PNG Converter – Lossless Page Images, Free",
+      description:
+        "Save PDF pages as PNG images in your browser: lossless pixels at 72, 144 or 288 dpi, a page range, single downloads or one ZIP. Your PDF never leaves this tab.",
+      keywords: ["pdf to png", "convert pdf to png", "pdf page to png", "pdf to png high resolution", "pdf to png without uploading"],
+    },
+    h1: "Convert PDF to PNG",
+    footerLabel: "PDF to PNG",
+    lede:
+      "PNG output keeps every rendered pixel exactly, which is what you want for diagrams, line art and pages you will edit again. The converter below has PNG fixed, so there is no quality slider: choose the scale and the pages, then save.",
+    tools: ["pdf-to-images", "pdf-to-text", "image-crop", "pdf-split"],
+    embed: { tool: "pdf-to-images", output: "png" },
+    howTo: {
+      name: "How to convert PDF to PNG",
+      steps: [
+        {
+          title: "Open the PDF",
+          body: "The page count is read first, so the range box knows its limits.",
+        },
+        {
+          title: "Pick a scale and the pages",
+          body: "2x is preselected; 4x doubles each side again for print work. Leave the range as all, or list pages like 1, 4-6.",
+        },
+        {
+          title: "Convert, then save",
+          body: "Convert to Images draws each page and shows a preview. Download saves one page as name_page_N.png; Download ZIP saves them all as name_images.zip.",
+        },
+      ],
+    },
+    sections: [
+      {
+        heading: "Why PNG pages get large",
+        body: [
+          "PNG compresses without throwing anything away, which suits flat colour and sharp edges, but it stores every pixel of the page, white margins included. In measurements taken for the general converter, a 40 page text PDF of 165,897 bytes turned into 25,256,591 bytes of PNG at 2x, and a 12 page scan produced 23,899,262 bytes as PNG against 3,006,308 as JPEG at quality 90.",
+          "If the images are for sending rather than editing, PDF to JPG will give you much smaller files.",
+        ],
+      },
+      {
+        heading: "Backgrounds and transparency",
+        body: [
+          "pdf.js fills the canvas with white before it draws a page, and this converter keeps that default. Even a PDF with transparent areas therefore produces opaque PNGs on white. A cut-out with real transparency has to be made in an image editor afterwards.",
+        ],
+      },
+      {
+        heading: "Choosing the scale for PNG",
+        body: [
+          "Scale multiplies the PDF's 72 points per inch: 1x is 72 dpi, 2x is 144 and 4x is 288. For slides or a web page, 2x stays crisp on high-density screens. 4x is for printing diagrams or reading fine print, and holds sixteen times the pixels of 1x, which PNG stores in full.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is PDF to PNG lossless?",
+        answer:
+          "The PNG step is: the pixels pdf.js draws are saved exactly. The drawing step turns vector text and shapes into a fixed grid of pixels at the scale you chose, so a higher scale keeps more detail.",
+      },
+      {
+        question: "Will the PNG have a transparent background?",
+        answer:
+          "No. Pages are drawn onto white, so the images are opaque even where the PDF page is empty.",
+      },
+      {
+        question: "Why is there no quality setting?",
+        answer:
+          "PNG has no quality level to pick; it is always lossless. File size depends on the scale and on how busy the page is. For a smaller file, use PDF to JPG.",
+      },
+      {
+        question: "How do I save every page at once?",
+        answer:
+          "After converting, press Download ZIP. The archive holds one PNG per converted page, numbered by its position in the original document, so a range of 5-8 gives page 5 to page 8 rather than 1 to 4.",
+      },
+      {
+        question: "Does the PDF get sent anywhere?",
+        answer:
+          "No. Rendering and PNG encoding happen in this tab. Apart from your file, the site sends visit analytics: a page view on load, and when conversion completes, an Umami event named tool-run carrying just tool and slug, here pdf-to-images and pdf-to-png. No file name, page count or page content is included.",
+      },
+    ],
+    related: [
+      { path: "/pdf-to-images", label: "PDF to Images", note: "The same converter with a JPG or PNG choice" },
+      { path: "/pdf-to-jpg", label: "PDF to JPG", note: "Much smaller page images for sharing" },
+      { path: "/png-to-pdf", label: "PNG to PDF", note: "Put PNG images back into one PDF" },
+      { path: "/pdf-to-text", label: "PDF to Text", note: "Copy the words instead of a picture of them" },
+      { path: "/pdf-tools", label: "All PDF tools", note: "Every PDF page on this site" },
+    ],
   },
 ];
 

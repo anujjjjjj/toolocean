@@ -19,6 +19,7 @@ import { prefetchTool } from "@/lib/prefetchTool";
 import measurements from "@/data/targetSizeMeasurements.json";
 import benchmarks from "@/data/landingBenchmarks.json";
 import { formatBytes } from "@/lib/targetSize/parseSize";
+import { FORMAT_ACCEPT, FORMAT_LABEL } from "@/lib/image/sniffImageFormat";
 import NotFound from "./NotFound";
 
 const ImageCompressorTool = lazy(() =>
@@ -37,6 +38,12 @@ const HeicToJpgTool = lazy(() =>
 );
 const PdfUnlockTool = lazy(() =>
   import("@/components/tools/implementations/pdf/PdfUnlockTool").then((m) => ({ default: m.PdfUnlockTool })),
+);
+const ImagesToPdfTool = lazy(() =>
+  import("@/components/tools/implementations/pdf/ImagesToPdfTool").then((m) => ({ default: m.ImagesToPdfTool })),
+);
+const PdfToImagesTool = lazy(() =>
+  import("@/components/tools/implementations/pdf/PdfToImagesTool").then((m) => ({ default: m.PdfToImagesTool })),
 );
 
 type FixtureRow = {
@@ -300,13 +307,38 @@ function PresetTool({ embed }: { embed: LandingEmbed }) {
       return <HeicToJpgTool preset={{ format: embed.format }} />;
     case "pdf-unlock":
       return <PdfUnlockTool />;
+    case "images-to-pdf":
+      return <ImagesToPdfTool preset={{ input: embed.input }} />;
+    case "pdf-to-images":
+      return <PdfToImagesTool preset={{ output: embed.output }} />;
+    default:
+      return assertNever(embed);
   }
 }
 
-function pickerLabel(tool: LandingEmbed["tool"]) {
-  if (tool.startsWith("pdf-")) return "Choose a PDF";
-  if (tool === "heic-to-jpg") return "Choose HEIC photos";
+function assertNever(value: never): never {
+  throw new Error(`Unhandled landing embed: ${JSON.stringify(value)}`);
+}
+
+function pickerLabel(embed: LandingEmbed) {
+  if (embed.tool === "images-to-pdf") return `Choose ${FORMAT_LABEL[embed.input]} images`;
+  if (embed.tool.startsWith("pdf-")) return "Choose a PDF";
+  if (embed.tool === "heic-to-jpg") return "Choose HEIC photos";
   return "Choose an image";
+}
+
+/** The shell dropzone for this embed. Single-format pages narrow the parent tool's copy. */
+function embedDropzoneCopy(embed: LandingEmbed) {
+  const base = shellDropzoneCopy(embed.tool);
+  if (embed.tool !== "images-to-pdf" || !base) return base;
+  const label = FORMAT_LABEL[embed.input];
+  return {
+    ...base,
+    accept: FORMAT_ACCEPT[embed.input],
+    multiple: true,
+    title: `Drop ${label} images here`,
+    hint: `or click to browse · ${label} only · multiple files`,
+  };
 }
 
 function EmbeddedTool({ embed, slug }: { embed: LandingEmbed; slug: string }) {
@@ -316,9 +348,10 @@ function EmbeddedTool({ embed, slug }: { embed: LandingEmbed; slug: string }) {
   // tool-run reports the embedded tool's id under this page's own slug.
   useToolRunEvent(tool, slug);
   useEffect(() => scheduleOfflinePrefetch(tool), [tool]);
-  const drop = shellDropzoneCopy(tool);
+  const drop = embedDropzoneCopy(embed);
   const warm = () => {
     prefetchTool(tool, "hover");
+    if (tool === "images-to-pdf") prefetchPdfLib();
     if (tool.startsWith("pdf-")) {
       prefetchPdfLib();
       prefetchPdfJs();
@@ -332,7 +365,7 @@ function EmbeddedTool({ embed, slug }: { embed: LandingEmbed; slug: string }) {
           multiple={drop.multiple}
           title={drop.title}
           hint={drop.hint}
-          buttonLabel={pickerLabel(tool)}
+          buttonLabel={pickerLabel(embed)}
           onIntent={warm}
         />
       )}

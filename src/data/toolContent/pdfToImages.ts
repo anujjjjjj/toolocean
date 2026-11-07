@@ -279,6 +279,16 @@ export const pdfToImagesContent: Partial<ToolPageContent> = {
 
   related: [
     {
+      name: "PDF to JPG",
+      path: "/pdf-to-jpg",
+      description: "This converter with JPG output fixed, for pages you are going to send.",
+    },
+    {
+      name: "PDF to PNG",
+      path: "/pdf-to-png",
+      description: "This converter with PNG output fixed, for exact pixels.",
+    },
+    {
       name: "Grayscale PDF",
       path: "/grayscale-pdf",
       description: "Keep the pages as a PDF but make them gray or black and white for printing.",
