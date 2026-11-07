@@ -288,3 +288,23 @@ survives. Reorder, merge and split copy pages into a new document, and only
 page-level objects make that trip. It is worth stating on the pages, because
 "will my fillable form still work afterwards" has a different answer depending on
 which of these tools you reach for.
+
+## Landing-page benchmarks (generated fixtures)
+
+`/compress-pdf-to-100kb` and `/merge-pdf-without-uploading` render
+`src/data/landingBenchmarks.json`. Those fixtures are generated rather than
+collected, so anyone can rebuild them and compare hashes:
+
+```bash
+node scripts/build-landing-fixtures.mjs /tmp/landing-fixtures   # seeded PDFs + manifest.json
+node scripts/serve-dist.mjs 4791 &                              # after npm run build
+python3 -P scripts/bench-landing-pdfs.py --fixtures /tmp/landing-fixtures \
+  --qaguard <dir containing qaguard.py> --out /tmp/landing-raw.json \
+  --dataset src/data/landingBenchmarks.json
+```
+
+The benchmark drives the built pages in Playwright Chromium with analytics
+blocked before the first navigation, repeats each case, and records browser
+version, OS, CPU, RAM and commit in the dataset. It benchmarks ToolOcean only.
+`scripts/seo-landings.test.mjs` checks the dataset's shape, that outcomes agree
+with their byte counts, and that at least one row is an honest cannot-fit.

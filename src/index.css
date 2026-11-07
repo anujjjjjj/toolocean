@@ -445,6 +445,50 @@
     font-size: 15px;
   }
   .paper-acc .acc-body h3 { font-size: 15px; color: var(--ink); font-weight: 500; }
+
+  /*
+   * Comparison and measurement tables. A plain table from 768px up; below that
+   * each row becomes a card and every cell prints its column name from
+   * data-label, so a 375px screen never scrolls sideways.
+   */
+  .paper-table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; }
+  .paper-table th,
+  .paper-table td { padding: 10px 12px; vertical-align: top; border-top: 1px solid var(--line); overflow-wrap: anywhere; }
+  .paper-table thead th { border-top: 0; color: var(--ink); font-weight: 500; }
+  .paper-table tbody th { color: var(--ink); font-weight: 500; }
+  .paper-table td { color: var(--muted-ink); }
+  .paper-table a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+  .paper-table .paper-cite { font-size: 13px; }
+  @media (max-width: 767px) {
+    .paper-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .paper-table,
+    .paper-table tbody,
+    .paper-table tr,
+    .paper-table th,
+    .paper-table td { display: block; }
+    .paper-table tr {
+      margin-bottom: 12px;
+      padding: 4px 16px 8px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+    .paper-table th,
+    .paper-table td { padding: 8px 0; border-top: 0; }
+    .paper-table td { border-top: 1px solid var(--line); }
+    .paper-table td[data-label]::before {
+      content: attr(data-label);
+      display: block;
+      margin-bottom: 2px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+  }
+  .paper-evidence { display: grid; gap: 12px; max-width: 100%; font-size: 14px; color: var(--muted-ink); }
+  .paper-evidence > p { max-width: 68ch; }
+  .paper-hashes { list-style: none; padding: 0; display: grid; gap: 6px; font-size: 12.5px; }
+  .paper-hashes code { font-family: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace; overflow-wrap: anywhere; color: var(--ink); }
   .lean-fold section { border: 0; padding-top: 8px; padding-bottom: 8px; background: transparent; }
   .lean-fold .container { max-width: none; padding-left: 0; padding-right: 0; }
 
