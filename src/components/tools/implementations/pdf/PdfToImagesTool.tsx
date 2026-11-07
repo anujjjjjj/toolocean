@@ -25,10 +25,17 @@ interface ConvertedImage {
     filename: string;
 }
 
-export function PdfToImagesTool() {
+/** Landing pages lock the output format. The format menu is not rendered at all. */
+export interface PdfToImagesPreset {
+    output: "png" | "jpeg";
+}
+
+export function PdfToImagesTool({ preset }: { preset?: PdfToImagesPreset } = {}) {
     const [pdfFile, setPdfFile] = useState<File | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
-    const [format, setFormat] = useState<"png" | "jpeg">("png");
+    const [chosenFormat, setFormat] = useState<"png" | "jpeg">("png");
+    // Derived rather than stored, so no reset or new file can unlock it.
+    const format = preset?.output ?? chosenFormat;
     const [quality, setQuality] = useState([90]);
     const [scale, setScale] = useState<"1x" | "2x" | "4x">("2x");
     const [pageRange, setPageRange] = useState<string>("all");
@@ -325,18 +332,20 @@ export function PdfToImagesTool() {
                         </CardHeader>
                         <CardContent className="space-y-6">
                             {/* Format Selection */}
-                            <div className="space-y-2">
-                                <Label htmlFor="format">Image Format</Label>
-                                <Select value={format} onValueChange={(value: "png" | "jpeg") => setFormat(value)}>
-                                    <SelectTrigger id="format">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="png">PNG (Lossless)</SelectItem>
-                                        <SelectItem value="jpeg">JPEG (Compressed)</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
+                            {!preset && (
+                                <div className="space-y-2">
+                                    <Label htmlFor="format">Image Format</Label>
+                                    <Select value={format} onValueChange={(value: "png" | "jpeg") => setFormat(value)}>
+                                        <SelectTrigger id="format">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="png">PNG (Lossless)</SelectItem>
+                                            <SelectItem value="jpeg">JPEG (Compressed)</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            )}
 
                             {/* JPEG Quality (only shown for JPEG) */}
                             {format === "jpeg" && (

@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +7,20 @@ import { Upload, Download, X, FileImage, GripVertical, Loader2 } from "lucide-re
 import { useToast } from "@/hooks/use-toast";
 import { markToolSuccess } from "@/lib/toolResult";
 import { readImageFiles } from "@/lib/image/readImageFiles";
+import {
+    FORMAT_ACCEPT,
+    FORMAT_LABEL,
+    rejectionReason,
+    sniffImageFile,
+    sniffImageFormat,
+    summarizeBatch,
+} from "@/lib/image/sniffImageFormat";
+
+/** Landing pages lock the input to one format, checked by the file's first bytes. */
+export interface ImagesToPdfPreset {
+    input: "jpeg" | "png";
+}
+
 interface ImageFile {
     id: string;
     file: File;
@@ -13,17 +28,43 @@ interface ImageFile {
     preview: string;
 }
 
-export function ImagesToPdfTool() {
+export function ImagesToPdfTool({ preset }: { preset?: ImagesToPdfPreset } = {}) {
     const [images, setImages] = useState<ImageFile[]>([]);
+    const [batch, setBatch] = useState<{ text: string; rejected: boolean } | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
     const [limitText, setLimitText] = useState("");
     const [draggedItem, setDraggedItem] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
 
+    /** Keeps files whose bytes match the preset, whatever their MIME type or extension says. */
+    const filterByPreset = async (files: File[], wanted: ImagesToPdfPreset["input"]) => {
+        const matched: File[] = [];
+        const rejected: string[] = [];
+        const mime = wanted === "jpeg" ? "image/jpeg" : "image/png";
+        for (const file of files) {
+            const found = await sniffImageFile(file);
+            if (found !== wanted) {
+                rejected.push(rejectionReason(file.name, found, wanted));
+                continue;
+            }
+            // An empty or odd MIME type would fail readImageFiles; the bytes already decided.
+            matched.push(file.type === mime ? file : new File([file], file.name, { type: mime, lastModified: file.lastModified }));
+        }
+        return { matched, rejected };
+    };
+
     const processFiles = async (files: FileList | File[]) => {
-        const { accepted, errors } = await readImageFiles(Array.from(files));
-        if (errors.length) {
+        let incoming = Array.from(files);
+        let rejected: string[] = [];
+        if (preset) {
+            ({ matched: incoming, rejected } = await filterByPreset(incoming, preset.input));
+        }
+        const { accepted, errors } = await readImageFiles(incoming);
+        if (preset) {
+            const problems = [...rejected, ...errors];
+            setBatch({ text: summarizeBatch(accepted.length, problems), rejected: problems.length > 0 });
+        } else if (errors.length) {
             toast({
                 title: "Could not read an image",
                 description: errors.join(" "),
@@ -133,9 +174,9 @@ export function ImagesToPdfTool() {
                     const encoded = await encodeImageToTarget(bitmap, { targetBytes: perImage, mime: "image/jpeg" });
                     bitmap.close();
                     image = await pdfDoc.embedJpg(encoded.bytes);
-                } else if (imageFile.file.type === "image/png") {
+                } else if (sniffImageFormat(uint8Array) === "png") {
                     image = await pdfDoc.embedPng(uint8Array);
-                } else if (imageFile.file.type === "image/jpeg" || imageFile.file.type === "image/jpg") {
+                } else if (sniffImageFormat(uint8Array) === "jpeg") {
                     image = await pdfDoc.embedJpg(uint8Array);
                 } else {
                     // For other formats, try to convert via canvas
@@ -224,21 +265,39 @@ export function ImagesToPdfTool() {
                         <div className="w-16 h-16 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center mb-4">
                             <Upload className="h-8 w-8 text-purple-500" />
                         </div>
-                        <h3 className="font-semibold text-lg mb-2">Choose images</h3>
+                        <h3 className="font-semibold text-lg mb-2">{preset ? `Choose ${FORMAT_LABEL[preset.input]} images` : "Choose images"}</h3>
                         <p className="text-muted-foreground text-sm text-center">
-                            Click to select or drag and drop images (JPG, PNG) to combine into a PDF
+                            {preset
+                                ? `Click to select or drag and drop ${FORMAT_LABEL[preset.input]} files to combine into a PDF`
+                                : "Click to select or drag and drop images (JPG, PNG) to combine into a PDF"}
                         </p>
                     </div>
                     <input
                         ref={fileInputRef}
                         type="file"
-                        accept="image/*"
+                        accept={preset ? FORMAT_ACCEPT[preset.input] : "image/*"}
                         multiple
                         onChange={handleFileSelect}
                         className="hidden"
                     />
                 </CardContent>
             </Card>
+
+            {preset && (
+                <div role="status" aria-live="polite" className="text-sm" data-batch-status>
+                    {batch && (
+                        <p className={batch.rejected ? "text-destructive" : "text-muted-foreground"}>
+                            {batch.text}
+                            {batch.rejected && (
+                                <>
+                                    {" "}For a mix of formats, use{" "}
+                                    <Link to="/images-to-pdf" className="underline underline-offset-2">Images to PDF</Link>.
+                                </>
+                            )}
+                        </p>
+                    )}
+                </div>
+            )}
 
             {/* Image List */}
             {images.length > 0 && (
@@ -298,7 +357,7 @@ export function ImagesToPdfTool() {
                             <p className="text-xs text-muted-foreground">1 KB = 1024 bytes. When set, each picture is re-encoded as JPEG so the PDF can land under that ceiling. Leave blank to embed the original bytes.</p>
                         </div>
 
-                        <div className="flex gap-3">
+                        <div className="flex flex-col gap-3 sm:flex-row">
                             <Button
                                 onClick={() => fileInputRef.current?.click()}
                                 variant="outline"

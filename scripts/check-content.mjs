@@ -42,6 +42,7 @@ const {
   SHARED_STRINGS,
   SHARED_CONTENT_STRINGS,
   TOOL_CATALOG,
+  LANDING_PAGES,
 } = await import(pathToFileURL(join(ROOT, "dist-ssg", "entry-ssg.js")).href);
 
 /** Authored word floors by tier. Well under the targets, so a terse tool still passes. */
@@ -164,11 +165,11 @@ for (const tool of TOOL_CATALOG) {
   }
 
   // Internal links must resolve. RelatedTools renders these blindly, so a typo
-  // ships a 404 from every page that links it.
-  const slugs = new Set(TOOL_CATALOG.map((entry) => entry.id));
+  // ships a 404 from every page that links it. Landing pages are prerendered too.
+  const slugs = new Set([...TOOL_CATALOG.map((entry) => entry.id), ...LANDING_PAGES.map((page) => page.slug)]);
   for (const link of content.related ?? []) {
     const target = link.path?.replace(/^\//, "");
-    if (target && !slugs.has(target)) fail(`${slug}: related link points at /${target}, which is not a tool`);
+    if (target && !slugs.has(target)) fail(`${slug}: related link points at /${target}, which is not a tool or landing page`);
   }
 
   // Measurements must be reproducible, or they are marketing with decimal points.

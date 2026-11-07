@@ -266,6 +266,16 @@ export const imagesToPdfContent: Partial<ToolPageContent> = {
 
   related: [
     {
+      name: "JPG to PDF",
+      path: "/jpg-to-pdf",
+      description: "The same converter locked to JPG, which says which files it turned away.",
+    },
+    {
+      name: "PNG to PDF",
+      path: "/png-to-pdf",
+      description: "Only PNG files, for screenshots and diagrams.",
+    },
+    {
       name: "PDF to Images",
       path: "/pdf-to-images",
       description: "The reverse, rendering document pages back out as pictures.",
