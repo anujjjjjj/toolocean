@@ -60,6 +60,13 @@ const COPY: Record<string, ShellDropzoneCopy> = {
     title: "Drop a PDF here",
     hint: "or click to browse · PDF only",
   },
+  // An image tool filed under PDF: without this entry the category fallback offered PDFs only.
+  "images-to-pdf": {
+    accept: "image/*",
+    multiple: true,
+    title: "Drop images here",
+    hint: "or click to browse · JPG, PNG and other images · multiple files",
+  },
   "image-compressor": {
     accept: "image/*",
     multiple: true,
