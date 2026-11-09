@@ -54,7 +54,25 @@ export const HUB_GUIDES: Record<string, HubGuideContent> = {
         task: "WebP a form will not take",
         tool: "WebP to JPG",
         path: "/webp-to-jpg",
-        limit: "The format converter opened on JPG. Transparent areas become white.",
+        limit: "WebP in, JPG out at 92%. Transparent areas become white.",
+      },
+      {
+        task: "WebP with a clear background",
+        tool: "WebP to PNG",
+        path: "/webp-to-png",
+        limit: "WebP in, lossless PNG out. Transparency is kept.",
+      },
+      {
+        task: "A PNG too heavy for a form",
+        tool: "PNG to JPG",
+        path: "/png-to-jpg",
+        limit: "PNG in, JPG out at 92%. Transparent areas become white.",
+      },
+      {
+        task: "A JPG that has to be PNG",
+        tool: "JPG to PNG",
+        path: "/jpg-to-png",
+        limit: "JPEG in, lossless PNG out. Often about eight times larger, never sharper.",
       },
       {
         task: "Open an iPhone photo",

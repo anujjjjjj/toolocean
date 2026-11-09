@@ -12,9 +12,9 @@ export const imageFormatConverterContent: Partial<ToolPageContent> = {
   tier: "A",
 
   seo: {
-    title: "PNG to JPG Converter (and WebP) – No Upload",
+    title: "Image Format Converter: PNG, JPG and WebP – No Upload",
     description:
-      "PNG to JPG in your browser, plus WebP to JPG, JPG to PNG and WebP output. Transparent areas are filled with white in a JPG, never black. Nothing is uploaded.",
+      "Convert images between PNG, JPG and WebP in your browser. JPG and WebP are saved at a fixed 92%, PNG is lossless, and transparency turns white in a JPG. No upload.",
     keywords: [
       "convert image format",
       "png to webp",
@@ -28,7 +28,7 @@ export const imageFormatConverterContent: Partial<ToolPageContent> = {
   },
 
   hero: {
-    h1: "PNG to JPG Converter, Plus JPG to PNG and WebP",
+    h1: "Image Format Converter",
     subtitle:
       "Move an image between PNG, JPEG and WebP without uploading it. Each format is good at something different, and picking the wrong one can multiply your file size rather than reduce it.",
     badges: ["browser-first", "no-uploads", "offline", "free"],
@@ -280,6 +280,26 @@ export const imageFormatConverterContent: Partial<ToolPageContent> = {
   ],
 
   related: [
+    {
+      name: "PNG to JPG",
+      path: "/png-to-jpg",
+      description: "The same converter locked to PNG in and JPG out, for lighter files.",
+    },
+    {
+      name: "JPG to PNG",
+      path: "/jpg-to-png",
+      description: "Only JPEG files in, a lossless PNG copy for editing out.",
+    },
+    {
+      name: "WebP to PNG",
+      path: "/webp-to-png",
+      description: "Open a WebP in older software and keep its transparency.",
+    },
+    {
+      name: "WebP to JPG",
+      path: "/webp-to-jpg",
+      description: "Turn a WebP into a JPG that upload forms accept.",
+    },
     {
       name: "Compress Image",
       path: "/image-compressor",

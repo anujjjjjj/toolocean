@@ -1810,7 +1810,7 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
   "image-format-converter": {
     title: "Image Format Converter: PNG, JPG & WebP",
     description:
-      "Convert images between PNG, JPEG, and WebP with quality control. A free format converter that runs in your browser, so photos never leave your device.",
+      "Convert images between PNG, JPEG, and WebP. Quality is fixed at 92% for JPG and WebP and PNG is lossless. Runs in your browser, so photos never leave your device.",
     keywords: ["image format converter", "png to jpg", "jpg to webp", "webp converter", "convert image format online", "png to webp"],
     faqs: [
       privacyFaq("image"),
