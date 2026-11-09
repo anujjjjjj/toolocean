@@ -516,6 +516,12 @@
     display: none;
   }
 
+  /* Same for the format converter: the shell dropzone stays the only picker, before and after a result. */
+  main[data-lean-shell="image-format-converter"] #tool-workbench button[data-analytics-label="Select Image"],
+  [data-lean-embed="image-format-converter"] button[data-analytics-label="Select Image"] {
+    display: none;
+  }
+
   [data-lean-embed] .border-dashed {
     display: none;
   }

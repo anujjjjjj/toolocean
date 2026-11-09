@@ -362,3 +362,19 @@ test("markToolSuccess runs only after the null-blob and WebP type guards", () =>
   assert.match(source, /ctx\.fillStyle = "#ffffff";/, "JPEG keeps the white fill");
   assert.match(source, /\? 0\.92 : undefined/, "quality stays 0.92");
 });
+
+test("the format converter's outline picker is hidden wherever the shell dropzone is the picker", () => {
+  const css = read("src/index.css");
+  const rule = css.match(/main\[data-lean-shell="image-format-converter"\][^{]*\{[^}]*\}/)?.[0];
+  assert.ok(rule, "no rule for the format converter's outline picker");
+  assert.match(rule, /#tool-workbench button\[data-analytics-label="Select Image"\]/);
+  assert.match(rule, /\[data-lean-embed="image-format-converter"\] button\[data-analytics-label="Select Image"\]/);
+  assert.match(rule, /display: none/);
+  // The button it targets still carries that label, and its file input is a separate element,
+  // so the shell dropzone can keep handing files to the tool.
+  const tool = read("src/components/tools/implementations/image/ImageFormatConverterTool.tsx");
+  assert.match(tool, /<Button onClick=\{\(\) => fileInputRef\.current\?\.click\(\)\} variant="outline" data-analytics-label="Select Image">/);
+  assert.match(tool, /<input\s+ref=\{fileInputRef\}\s+type="file"/);
+  // No rule hides the shell dropzone for this tool, so it stays available after a result.
+  assert.doesNotMatch(css, /image-format-converter[^{]*\.paper-drop/);
+});
