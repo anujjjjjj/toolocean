@@ -25,7 +25,7 @@ const NEW_PAGES = ["/webp-to-jpg", "/heic-to-png", "/remove-password-from-bank-s
 const RETITLED = {
   "/images-to-pdf": "JPG to PDF",
   "/pdf-compress": "Compress PDF Online Free",
-  "/image-format-converter": "PNG to JPG",
+  "/image-format-converter": "Image Format Converter",
 };
 const CHECKED = [...NEW_PAGES, ...Object.keys(RETITLED), "/compress-image-to-20kb"];
 
@@ -290,6 +290,7 @@ test("new pages embed a tool, link siblings and a hub, and have a palette entry"
   }
   assert.deepEqual(ssr.LANDING_PAGES.find((p) => p.slug === "webp-to-jpg").embed, {
     tool: "image-format-converter",
+    input: "webp",
     output: "image/jpeg",
   });
   assert.deepEqual(ssr.LANDING_PAGES.find((p) => p.slug === "heic-to-png").embed, { tool: "heic-to-jpg", format: "png" });

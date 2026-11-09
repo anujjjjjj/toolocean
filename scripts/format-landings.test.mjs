@@ -40,13 +40,14 @@ const PNG = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00
 /* Sniffer                                                             */
 /* ------------------------------------------------------------------ */
 
-test("sniffImageFormat reads JPEG and PNG signatures and nothing else", () => {
+test("sniffImageFormat reads JPEG, PNG and WebP signatures and nothing else", () => {
   assert.equal(sniffImageFormat(JPEG), "jpeg");
   assert.equal(sniffImageFormat(PNG), "png");
   assert.equal(sniffImageFormat(new Uint8Array()), "other");
   assert.equal(sniffImageFormat(new Uint8Array([0xff, 0xd8])), "other", "truncated JPEG marker");
   assert.equal(sniffImageFormat(PNG.slice(0, 7)), "other", "truncated PNG signature");
-  assert.equal(sniffImageFormat(new TextEncoder().encode("RIFF\0\0\0\0WEBP")), "other");
+  assert.equal(sniffImageFormat(new TextEncoder().encode("RIFF\0\0\0\0WEBP")), "webp");
+  assert.equal(sniffImageFormat(new TextEncoder().encode("RIFF\0\0\0\0WAVE")), "other", "RIFF that is not WebP");
   assert.equal(sniffImageFormat(new TextEncoder().encode("%PDF-1.7")), "other");
 });
 

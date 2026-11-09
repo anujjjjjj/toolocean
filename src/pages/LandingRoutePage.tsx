@@ -302,7 +302,7 @@ function PresetTool({ embed }: { embed: LandingEmbed }) {
     case "pdf-compress":
       return <PdfCompressTool preset={{ targetBytes: embed.targetBytes }} />;
     case "image-format-converter":
-      return <ImageFormatConverterTool preset={{ output: embed.output }} />;
+      return <ImageFormatConverterTool preset={{ input: embed.input, output: embed.output }} />;
     case "heic-to-jpg":
       return <HeicToJpgTool preset={{ format: embed.format }} />;
     case "pdf-unlock":
@@ -322,6 +322,7 @@ function assertNever(value: never): never {
 
 function pickerLabel(embed: LandingEmbed) {
   if (embed.tool === "images-to-pdf") return `Choose ${FORMAT_LABEL[embed.input]} images`;
+  if (embed.tool === "image-format-converter") return `Choose ${FORMAT_LABEL[embed.input]}`;
   if (embed.tool.startsWith("pdf-")) return "Choose a PDF";
   if (embed.tool === "heic-to-jpg") return "Choose HEIC photos";
   return "Choose an image";
@@ -330,7 +331,18 @@ function pickerLabel(embed: LandingEmbed) {
 /** The shell dropzone for this embed. Single-format pages narrow the parent tool's copy. */
 function embedDropzoneCopy(embed: LandingEmbed) {
   const base = shellDropzoneCopy(embed.tool);
-  if (embed.tool !== "images-to-pdf" || !base) return base;
+  if (!base) return base;
+  if (embed.tool === "image-format-converter") {
+    const label = FORMAT_LABEL[embed.input];
+    return {
+      ...base,
+      accept: FORMAT_ACCEPT[embed.input],
+      multiple: false,
+      title: `Drop a ${label} here`,
+      hint: `or click to browse · ${label} only`,
+    };
+  }
+  if (embed.tool !== "images-to-pdf") return base;
   const label = FORMAT_LABEL[embed.input];
   return {
     ...base,

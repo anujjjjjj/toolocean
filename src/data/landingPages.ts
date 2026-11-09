@@ -40,7 +40,7 @@ export interface LandingComparisonRow {
 /** A working tool rendered at the top of the page, opened on a preset. */
 export type LandingEmbed =
   | { tool: "image-compressor" | "pdf-compress"; targetBytes: number }
-  | { tool: "image-format-converter"; output: "image/jpeg" | "image/png" | "image/webp" }
+  | { tool: "image-format-converter"; input: "jpeg" | "png" | "webp"; output: "image/jpeg" | "image/png" | "image/webp" }
   | { tool: "heic-to-jpg"; format: "jpg" | "png" }
   | { tool: "pdf-unlock" }
   | { tool: "images-to-pdf"; input: "jpeg" | "png" }
@@ -913,21 +913,21 @@ export const LANDING_PAGES: LandingPage[] = [
     seo: {
       title: "WebP to JPG Converter – Free, No Upload",
       description:
-        "Convert WebP to JPG in your browser. The converter opens with JPG selected, fills transparent areas with white and keeps the pixel size. Nothing is uploaded.",
+        "Convert WebP to JPG in your browser. Output is fixed to JPG at 92% quality, transparent areas are filled with white and the pixel size is kept. Nothing is uploaded.",
       keywords: ["webp to jpg", "convert webp to jpg", "webp to jpeg", "webp converter no upload", "save webp as jpg"],
     },
     h1: "Convert WebP to JPG",
     footerLabel: "WebP to JPG",
     lede:
-      "Browsers and many websites now hand out pictures as .webp, and a lot of desktop software and upload forms still turn them away. The converter below already has JPG chosen as the output: pick the WebP and download a .jpg with the same width and height.",
+      "Browsers and many websites now hand out pictures as .webp, and a lot of desktop software and upload forms still turn them away. The converter below takes WebP files only and has JPG fixed as the output: pick the WebP and download a .jpg with the same width and height.",
     tools: ["image-format-converter", "image-compressor", "image-resizer", "heic-to-jpg"],
-    embed: { tool: "image-format-converter", output: "image/jpeg" },
+    embed: { tool: "image-format-converter", input: "webp", output: "image/jpeg" },
     howTo: {
       name: "How to convert WebP to JPG",
       steps: [
-        { title: "Pick the .webp file", body: "Drop it on the box or browse to it. Your browser decodes it inside this tab." },
-        { title: "Keep JPEG as the output", body: "This page opens with JPEG selected. PNG and WebP are still in the menu if you change your mind." },
-        { title: "Download the JPG", body: "The file keeps its original name with a .jpg extension and is written at quality 0.92." },
+        { title: "Pick the .webp file", body: "Drop it on the box or browse to it. Your browser decodes it inside this tab, and a file that is not really a WebP is named and refused." },
+        { title: "Output is fixed to JPG", body: "There is no format menu on this page, so every download is a JPG. If the transparency has to stay, WebP to PNG is the page for that." },
+        { title: "Download the JPG", body: "The file keeps its original name with a .jpg extension and is written at a fixed quality of 92%." },
       ],
     },
     sections: [
@@ -951,17 +951,17 @@ export const LANDING_PAGES: LandingPage[] = [
       {
         question: "Is the WebP uploaded to convert it?",
         answer:
-          "No. Decoding and encoding both happen in your browser's canvas. You can load the page, switch off the network, and the conversion still completes, which a server-based converter could not do.",
+          "No. Decoding and encoding both happen in your browser's canvas, and the WebP never leaves this tab; with the network switched off the conversion still completes. Visit analytics are separate from your file: an anonymous page view when the page opens and, once a JPG is made, one Umami event named tool-run holding only tool and slug, here image-format-converter and webp-to-jpg, with no file name or content. Google Analytics stores cookies only after you give consent in the cookie notice; before that it receives cookieless page-view pings.",
       },
       {
         question: "Why did my transparent WebP get a white background?",
         answer:
-          "JPG has no alpha channel, so something has to fill the see-through areas. White is what most people expect on a document or form. If you need the transparency kept, switch the output to PNG instead.",
+          "JPG has no alpha channel, so something has to fill the see-through areas. White is what most people expect on a document or form. If you need the transparency kept, use WebP to PNG instead, which paints nothing behind the picture.",
       },
       {
         question: "Will the JPG lose quality compared with the WebP?",
         answer:
-          "A little, in principle, because every lossy encode discards some detail. At quality 0.92 the difference is very hard to see on a photograph. Converting does not recover anything the WebP encoder already removed.",
+          "A little, in principle, because every lossy encode discards some detail. Quality is fixed at 92% with no slider, and at that level the difference is very hard to see on a photograph. Converting does not recover anything the WebP encoder already removed.",
       },
       {
         question: "Can I convert a folder of WebP images at once?",
@@ -976,6 +976,8 @@ export const LANDING_PAGES: LandingPage[] = [
     ],
     related: [
       { path: "/image-format-converter", label: "Image format converter", note: "The same tool with every direction between PNG, JPG and WebP" },
+      { path: "/webp-to-png", label: "WebP to PNG", note: "Keeps the transparent areas instead of filling them with white" },
+      { path: "/png-to-jpg", label: "PNG to JPG", note: "Shrink a PNG screenshot or export for a form" },
       { path: "/heic-to-jpg", label: "HEIC to JPG", note: "For iPhone photos, which this converter cannot decode" },
       { path: "/compress-image-to-20kb", label: "Compress an image to 20 KB", note: "When the form also caps the file size" },
       { path: "/image-tools", label: "All image tools", note: "Resize, crop, compress and convert in the browser" },
@@ -987,6 +989,267 @@ export const LANDING_PAGES: LandingPage[] = [
       icon: "Repeat",
       category: "Image Tools",
     },
+  },
+  {
+    slug: "png-to-jpg",
+    seo: {
+      title: "PNG to JPG Converter – Smaller Files, No Upload",
+      description:
+        "Convert a PNG to JPG in your browser for upload forms and email. Quality is fixed at 92%, transparent areas turn white and the pixel size stays. No upload.",
+      keywords: ["png to jpg", "convert png to jpg", "png to jpeg", "screenshot to jpg", "png to jpg without uploading"],
+    },
+    h1: "Convert PNG to JPG",
+    footerLabel: "PNG to JPG",
+    lede:
+      "A PNG screenshot or export is often several times heavier than an upload form or a mail client wants. The converter below accepts PNG files only, writes a JPG at a fixed quality of 92%, and lays any transparent area on white so it never comes out black.",
+    tools: ["image-format-converter", "image-compressor", "image-resizer", "images-to-pdf"],
+    embed: { tool: "image-format-converter", input: "png", output: "image/jpeg" },
+    howTo: {
+      name: "How to convert PNG to JPG",
+      steps: [
+        {
+          title: "Choose the PNG",
+          body: "Drop it on the box or browse to it. The first eight bytes have to be the PNG signature, so a JPEG renamed .png is named in the status line and turned away.",
+        },
+        {
+          title: "Check the preview",
+          body: "JPG is the only output on this page, so there is no format to pick. The preview shows the PNG exactly as your browser read it.",
+        },
+        {
+          title: "Download the JPG",
+          body: "Press Download JPG. You get the same width and height, the same file name ending in .jpg, and quality 92%.",
+        },
+      ],
+    },
+    sections: [
+      {
+        heading: "How much smaller the JPG gets",
+        body: [
+          "On the 3840 by 2160 photograph used for the format converter's measurements, a 10,887,764 byte PNG became a 1,825,404 byte JPG at quality 0.92, about 83 percent smaller, in 200 milliseconds. Photographs, and screenshots of photographs, shrink the most, because PNG keeps every grain of noise exactly while JPEG is designed to drop it.",
+          "That is often the difference between an attachment a form refuses and one it takes. If the form also names a ceiling in kilobytes, send the JPG through the compressor afterwards and give it the exact size.",
+        ],
+      },
+      {
+        heading: "Transparent PNGs become white",
+        body: [
+          "JPG has no alpha channel. Before the picture is drawn, this converter paints the canvas white, so a logo or cut-out with a see-through background comes back on a white rectangle rather than the black one a bare canvas export gives. There is no colour choice. If the background has to stay clear, keep the PNG.",
+        ],
+      },
+      {
+        heading: "When to leave it as a PNG",
+        body: [
+          "Text, line art, charts and interface screenshots with flat colour are where JPEG is weakest: faint halos appear around hard edges and small lettering becomes harder to read. Those PNGs are often compact already, so converting saves little and costs clarity. Turning the JPG back into a PNG later keeps the halos.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Why is the JPG so much smaller than my PNG?",
+        answer:
+          "PNG is lossless and stores every pixel exactly, photographic noise included. JPEG discards fine detail the eye rarely notices. On one 4K test photograph the JPG came out about 83 percent smaller than the PNG it was made from.",
+      },
+      {
+        question: "Can I change the JPG quality?",
+        answer:
+          "Not on this page. Quality is fixed at 92%, high enough that a photograph looks the same on screen. For a lighter file, open the JPG in the image compressor, which has a quality slider and an exact-size mode.",
+      },
+      {
+        question: "Can the JPG keep my transparent background?",
+        answer:
+          "No, a JPG cannot store transparency at all. White is painted behind the image so nothing turns black. Keep the original PNG wherever the background must stay see-through.",
+      },
+      {
+        question: "Why was my file refused as not a PNG?",
+        answer:
+          "The check reads the file's first bytes rather than its name, and plenty of files called .png are really JPEG or WebP inside. A JPEG needs no conversion to be a JPG; a WebP can go through WebP to JPG.",
+      },
+      {
+        question: "Is my PNG uploaded to convert it?",
+        answer:
+          "No. The PNG is decoded and the JPG is encoded inside this tab, and neither file leaves your device. Separately, the site records visit analytics: an anonymous page view when the page opens and, after a JPG is created, one Umami event named tool-run whose only fields are tool and slug, here image-format-converter and png-to-jpg. No file names, sizes or contents are included. Google Analytics stores cookies only after you give consent in the cookie notice; until then it receives cookieless page-view pings.",
+      },
+    ],
+    related: [
+      { path: "/image-format-converter", label: "Image format converter", note: "Every direction between PNG, JPG and WebP, with a format menu" },
+      { path: "/jpg-to-png", label: "JPG to PNG", note: "The opposite direction, for a lossless editing copy" },
+      { path: "/webp-to-jpg", label: "WebP to JPG", note: "For WebP pictures a form will not take" },
+      { path: "/webp-to-png", label: "WebP to PNG", note: "WebP into PNG with its transparency intact" },
+      { path: "/image-tools", label: "All image tools", note: "Resize, crop, compress and convert in the browser" },
+    ],
+  },
+  {
+    slug: "jpg-to-png",
+    seo: {
+      title: "JPG to PNG Converter – Lossless Copy, No Upload",
+      description:
+        "Convert a JPG to PNG in your browser for editing or a tool that only takes PNG. The PNG is lossless but much larger, close to eight times on a photo. No upload.",
+      keywords: ["jpg to png", "convert jpg to png", "jpeg to png", "jfif to png", "jpg to png without uploading"],
+    },
+    h1: "Convert JPG to PNG",
+    footerLabel: "JPG to PNG",
+    lede:
+      "Some editors, plugins and submission systems insist on PNG, and a PNG working copy stops repeated saves from piling up new JPEG artefacts. The converter below takes JPEG files only, .jfif and .jpe included, and writes a lossless PNG with no quality setting to choose.",
+    tools: ["image-format-converter", "image-crop", "image-resizer", "image-compressor"],
+    embed: { tool: "image-format-converter", input: "jpeg", output: "image/png" },
+    howTo: {
+      name: "How to convert JPG to PNG",
+      steps: [
+        {
+          title: "Choose the JPEG",
+          body: "Any file starting with the bytes FF D8 FF is taken, whatever its extension or reported type, so .jpeg, .jfif and .jpe all work. A PNG named .jpg is refused by name.",
+        },
+        {
+          title: "Confirm it in the preview",
+          body: "PNG is locked in as the output. There is no quality control, because PNG keeps every decoded pixel exactly.",
+        },
+        {
+          title: "Download the PNG",
+          body: "Press Download PNG. Width and height match the JPEG, and the name stays the same apart from the .png ending.",
+        },
+      ],
+    },
+    sections: [
+      {
+        heading: "Bigger, not better",
+        body: [
+          "PNG stores exactly what it is handed, and a JPEG has already thrown detail away by the time it reaches you. Measured on a 3840 by 2160 photograph, a 2,057,152 byte JPEG became a 16,015,580 byte PNG, close to eight times larger and not one pixel sharper. Converting freezes the picture as it stands; it cannot restore what the JPEG encoder removed.",
+        ],
+      },
+      {
+        heading: "When the PNG copy earns its size",
+        body: [
+          "Editing is the good reason. Every time a JPEG is opened, changed and saved again it goes through another lossy encode, and blocky artefacts gather around edges. Working from a PNG means those rounds add nothing, and one final JPEG can be exported at the end.",
+          "The other reason is a requirement you cannot argue with: a design tool, a game engine, a print template or an upload field that lists PNG only. For sharing or email, keep the JPG, which does the same job in a fraction of the bytes.",
+        ],
+      },
+      {
+        heading: "What carries over",
+        body: [
+          "Pixels only. The PNG is fully opaque, since a JPEG never had transparency to pass on, and EXIF fields such as camera model, capture time and GPS position are not copied into it.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Does converting JPG to PNG improve quality?",
+        answer:
+          "No. PNG is lossless, which means it keeps the JPEG's pixels exactly, compression artefacts and all. Nothing lost when the JPEG was first saved comes back.",
+      },
+      {
+        question: "Why is the PNG so much larger than the JPG?",
+        answer:
+          "JPEG compression is built for photographs and PNG for exact reproduction. On a 4K test photo the PNG was 16,015,580 bytes against 2,057,152 for the JPEG, roughly eight times the size.",
+      },
+      {
+        question: "Is there a quality or compression setting?",
+        answer:
+          "No. PNG output is lossless, so there is no quality level to pick, and the browser chooses its own compression. To make the picture lighter, reduce its dimensions with the image resizer first.",
+      },
+      {
+        question: "Will the PNG have a transparent background?",
+        answer:
+          "No. A JPEG cannot hold transparency, so there is none to carry across and every pixel of the PNG is opaque. Cutting out a background needs an image editor.",
+      },
+      {
+        question: "Does my photo leave the device?",
+        answer:
+          "No. The JPEG is read and the PNG written in this browser tab, and the photo is never uploaded. What the site does send is visit analytics, kept apart from your file: an anonymous page view on load and, when a PNG has been made, one Umami event called tool-run with just two fields, tool and slug, here image-format-converter and jpg-to-png. It carries no file name or content. Google Analytics stores cookies only after you give consent in the cookie notice; without that it receives cookieless page-view pings.",
+      },
+    ],
+    related: [
+      { path: "/image-format-converter", label: "Image format converter", note: "Every direction between PNG, JPG and WebP, with a format menu" },
+      { path: "/png-to-jpg", label: "PNG to JPG", note: "Back to a small JPG once the editing is done" },
+      { path: "/webp-to-png", label: "WebP to PNG", note: "The same lossless PNG output for WebP files" },
+      { path: "/webp-to-jpg", label: "WebP to JPG", note: "WebP into JPG for forms and older software" },
+      { path: "/image-tools", label: "All image tools", note: "Resize, crop, compress and convert in the browser" },
+    ],
+  },
+  {
+    slug: "webp-to-png",
+    seo: {
+      title: "WebP to PNG Converter – Keeps Transparency, No Upload",
+      description:
+        "Convert a WebP to PNG in your browser so older software can open it. Transparent areas stay transparent, the PNG is lossless, and your file is never uploaded.",
+      keywords: ["webp to png", "convert webp to png", "transparent webp to png", "open webp file", "webp to png without uploading"],
+    },
+    h1: "Convert WebP to PNG",
+    footerLabel: "WebP to PNG",
+    lede:
+      "Pictures saved from websites often arrive as .webp, and older photo editors, office suites and some print services refuse to open them. The converter below accepts WebP files only and writes a lossless PNG in which see-through areas stay see-through.",
+    tools: ["image-format-converter", "image-crop", "image-resizer", "favicon-generator"],
+    embed: { tool: "image-format-converter", input: "webp", output: "image/png" },
+    howTo: {
+      name: "How to convert WebP to PNG",
+      steps: [
+        {
+          title: "Choose the .webp file",
+          body: "A WebP announces itself with RIFF in its first four bytes and WEBP from byte 8. A JPEG or PNG that was renamed .webp lacks those markers and is refused by name.",
+        },
+        {
+          title: "Look over the preview",
+          body: "Output is set to PNG and cannot be changed here. A transparent background shows through the preview just as it will in the saved file.",
+        },
+        {
+          title: "Save the PNG",
+          body: "Press Download PNG to store it under the same name with a .png ending, at the WebP's own width and height.",
+        },
+      ],
+    },
+    sections: [
+      {
+        heading: "Why a WebP will not open",
+        body: [
+          "Websites serve WebP because it is compact, and every current browser reads it. The trouble begins after Save image as: an older release of an editor, a slide program, label-printer software or a mail client on an ageing system may not recognise the file at all. PNG has been readable by practically everything for decades, which makes it the safe target when the picture is going to be edited or placed somewhere else.",
+        ],
+      },
+      {
+        heading: "Transparency, and how this differs from WebP to JPG",
+        body: [
+          "WebP and PNG both carry an alpha channel. Nothing is painted behind the picture on this page, so an icon, sticker or logo with a clear background keeps it. WebP to JPG cannot do that: JPG has no alpha, so that page fills the clear areas with white.",
+          "Choose PNG for graphics, cut-outs and anything headed for an editor. Choose JPG when the WebP is a photograph that only has to get through an upload form, where a lighter file matters more.",
+        ],
+      },
+      {
+        heading: "File size, and what gets dropped",
+        body: [
+          "PNG is lossless, so this conversion adds no new loss and offers no quality setting. The flip side is that a photographic WebP usually grows a great deal, because PNG keeps the noise lossy WebP had discarded. An animated WebP keeps only its first frame, and EXIF metadata is left behind.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Does the transparent background survive?",
+        answer:
+          "Yes. PNG stores alpha just as WebP does, and this page paints nothing behind the image, so fully and partly transparent pixels come through as they were.",
+      },
+      {
+        question: "Why is the PNG bigger than the WebP?",
+        answer:
+          "Most WebP images on the web are lossy and tightly compressed. PNG keeps every pixel exactly, so a photograph in particular needs far more bytes. For a lighter copy of a photo, use WebP to JPG instead.",
+      },
+      {
+        question: "Is WebP to PNG lossless?",
+        answer:
+          "The PNG step is. There is no quality setting, and the decoded pixels are stored exactly. Any loss from the original lossy WebP encode is already in the picture and stays there.",
+      },
+      {
+        question: "What happens to an animated WebP?",
+        answer:
+          "The image is drawn onto the canvas once, so the PNG holds a still of the first frame. PNG output here has no animation.",
+      },
+      {
+        question: "Is the WebP sent to a server?",
+        answer:
+          "No. Decoding the WebP and encoding the PNG both happen in your browser, and the file stays on your device. Apart from that, the site counts visits: an anonymous page view as the page loads and, after a PNG is produced, one Umami event named tool-run containing only tool and slug, here image-format-converter and webp-to-png. File names and contents are never part of it. Google Analytics stores cookies only after you give consent in the cookie notice; before then it receives cookieless page-view pings.",
+      },
+    ],
+    related: [
+      { path: "/image-format-converter", label: "Image format converter", note: "Every direction between PNG, JPG and WebP, with a format menu" },
+      { path: "/webp-to-jpg", label: "WebP to JPG", note: "A smaller file for photos, with transparent areas filled white" },
+      { path: "/jpg-to-png", label: "JPG to PNG", note: "Lossless PNG copies of JPEG photos" },
+      { path: "/png-to-jpg", label: "PNG to JPG", note: "Shrink the PNG later for a form or email" },
+      { path: "/image-tools", label: "All image tools", note: "Resize, crop, compress and convert in the browser" },
+    ],
   },
   {
     slug: "heic-to-png",
