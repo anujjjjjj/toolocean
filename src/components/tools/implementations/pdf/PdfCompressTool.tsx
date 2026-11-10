@@ -404,21 +404,6 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
                                 Click to select a PDF to compress
                             </p>
                         </div>
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            accept=".pdf,application/pdf"
-                            onChange={handleFileSelect}
-                            onMouseEnter={() => {
-                                prefetchPdfLib();
-                                prefetchPdfJs();
-                            }}
-                            onFocus={() => {
-                                prefetchPdfLib();
-                                prefetchPdfJs();
-                            }}
-                            className="hidden"
-                        />
                     </CardContent>
                 </Card>
             )}
@@ -615,6 +600,23 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
                     </Card>
                 </>
             )}
+
+            {/* Always mounted: the landing-page shell dropzone replays later picks onto this input. Last so space-y adds no gap. */}
+            <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,application/pdf"
+                onChange={handleFileSelect}
+                onMouseEnter={() => {
+                    prefetchPdfLib();
+                    prefetchPdfJs();
+                }}
+                onFocus={() => {
+                    prefetchPdfLib();
+                    prefetchPdfJs();
+                }}
+                className="hidden"
+            />
         </div>
     );
 }

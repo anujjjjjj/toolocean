@@ -277,6 +277,21 @@ test("pdf tool (source): changing the target clears the previous result, and the
   assert.ok(accepted > 0 && select.lastIndexOf('event.target.value = "";') > accepted, "the input resets after an accepted pick");
 });
 
+test("pdf tool (source): the file input stays mounted so a second shell-dropzone pick replaces the file", () => {
+  const source = read(PDF_TOOL);
+  const input = source.search(/<input\s+ref=\{fileInputRef\}[^>]*?onChange=\{handleFileSelect\}/);
+  assert.ok(input > 0, "the tool renders its own file input");
+  // The upload card only renders while no file is loaded; the input must sit outside it.
+  const uploadStart = source.indexOf("{!pdfFile && (");
+  const uploadEnd = source.indexOf("\n            )}", uploadStart);
+  assert.ok(uploadStart > 0 && uploadEnd > uploadStart, "upload card block found");
+  assert.ok(input < uploadStart || input > uploadEnd, "the input is not inside {!pdfFile && (...)}");
+  const select = source.match(/const handleFileSelect = async[\s\S]*?\n\s*\};\n/)?.[0] ?? "";
+  for (const reset of ["setExactNote(null);", "setResult(null);", 'event.target.value = "";']) {
+    assert.ok(select.includes(reset), `handleFileSelect still calls ${reset}`);
+  }
+});
+
 test("the PDF result note shows no pixels-per-inch number and always asks for a zoom check on raster fits", () => {
   const source = read(PDF_TOOL);
   const note = source.slice(source.indexOf("function ExactOutcomeNote"), source.indexOf("export function PdfCompressTool"));
