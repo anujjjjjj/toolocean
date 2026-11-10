@@ -134,6 +134,13 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
         setTargetBytes(presetTarget);
     }, [presetTarget]);
 
+    // A result is only valid for the target that produced it.
+    const applyTarget = (bytes: number) => {
+        setTargetBytes(bytes);
+        setExactNote(null);
+        setResult(null);
+    };
+
     const formatSize = (bytes: number) => {
         if (bytes < 1024) return `${bytes} B`;
         if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -163,6 +170,8 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
         setOriginalSize(file.size);
         setExactNote(null);
         setResult(null);
+        // Lets the same file be picked again.
+        event.target.value = "";
     };
 
     /**
@@ -511,7 +520,10 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
                                                 variant={targetBytes === item.bytes ? "default" : "outline"}
                                                 data-analytics-label={`pdf-target-${item.label.replace(/\s+/g, "-").toLowerCase()}`}
                                                 disabled={isProcessing}
-                                                onClick={() => setTargetBytes(item.bytes)}
+                                                onClick={() => {
+                                                    applyTarget(item.bytes);
+                                                    setCustomSize("");
+                                                }}
                                             >
                                                 {item.label}
                                             </Button>
@@ -537,7 +549,7 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
                                                     toast({ title: "Unrecognised size", description: "Use KB or MB, or a plain number of bytes. 1 KB = 1024 bytes.", variant: "destructive" });
                                                     return;
                                                 }
-                                                setTargetBytes(parsed);
+                                                applyTarget(parsed);
                                             }}
                                         >
                                             Use

@@ -241,6 +241,42 @@ test("both tools guard against repeated submits and report errors", () => {
   assert.match(read(PDF_TOOL), /onClick=\{compressPdf\}\s*disabled=\{isProcessing\}/);
 });
 
+// Source checks: there is no DOM test setup, so these read the component text.
+const customUseHandler = (source) => {
+  const start = source.indexOf("const parsed = parseSize(customSize);");
+  return start === -1 ? "" : source.slice(start, source.indexOf("}}", start));
+};
+
+test("image tool (source): changing an applied setting clears the previous result", () => {
+  const source = read(IMAGE_TOOL);
+  assert.match(source, /const clearOutcome = \(\) => \{\s*setNotes\(null\);\s*setSummary\(null\);\s*\};/);
+  assert.match(source, /const applyTarget = \(bytes: number\) => \{\s*setTargetBytes\(bytes\);\s*clearOutcome\(\);\s*\};/);
+  assert.match(source, /onClick=\{\(\) => \{\s*applyTarget\(item\.bytes\);\s*setCustomSize\(""\);\s*\}\}/, "chip applies and clears the custom box");
+  const custom = customUseHandler(source);
+  assert.ok(custom.includes("applyTarget(parsed);"), "custom Use applies through applyTarget");
+  assert.ok(custom.indexOf("return;") < custom.indexOf("applyTarget(parsed);"), "an unrecognised value returns before clearing");
+  assert.doesNotMatch(source, /setTargetBytes\((?:item\.bytes|parsed)\)/, "no target change bypasses applyTarget");
+  for (const mime of ["jpeg", "webp"]) {
+    assert.match(source, new RegExp(`setMime\\("image/${mime}"\\);\\s*setFormatExplicit\\(true\\);\\s*clearOutcome\\(\\);`), mime);
+  }
+  assert.match(source, /setMinSize\(event\.target\.value\);\s*clearOutcome\(\);/, "minimum change clears");
+  assert.match(source, /onChange=\{\(event\) => setCustomSize\(event\.target\.value\)\}/, "typing a custom size clears nothing");
+});
+
+test("pdf tool (source): changing the target clears the previous result, and the same file can be picked again", () => {
+  const source = read(PDF_TOOL);
+  assert.match(source, /const applyTarget = \(bytes: number\) => \{\s*setTargetBytes\(bytes\);\s*setExactNote\(null\);\s*setResult\(null\);\s*\};/);
+  assert.match(source, /onClick=\{\(\) => \{\s*applyTarget\(item\.bytes\);\s*setCustomSize\(""\);\s*\}\}/, "chip applies and clears the custom box");
+  const custom = customUseHandler(source);
+  assert.ok(custom.includes("applyTarget(parsed);"), "custom Use applies through applyTarget");
+  assert.ok(custom.indexOf("return;") < custom.indexOf("applyTarget(parsed);"), "an unrecognised value returns before clearing");
+  assert.doesNotMatch(source, /setTargetBytes\((?:item\.bytes|parsed)\)/, "no target change bypasses applyTarget");
+  assert.match(source, /onChange=\{\(event\) => setCustomSize\(event\.target\.value\)\}/, "typing a custom size clears nothing");
+  const select = source.match(/const handleFileSelect = async[\s\S]*?\n\s*\};\n/)?.[0] ?? "";
+  const accepted = select.indexOf("setPdfFile(file);");
+  assert.ok(accepted > 0 && select.lastIndexOf('event.target.value = "";') > accepted, "the input resets after an accepted pick");
+});
+
 test("the PDF result note shows no pixels-per-inch number and always asks for a zoom check on raster fits", () => {
   const source = read(PDF_TOOL);
   const note = source.slice(source.indexOf("function ExactOutcomeNote"), source.indexOf("export function PdfCompressTool"));

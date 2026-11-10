@@ -169,6 +169,17 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
     setSummary(null);
   };
 
+  // A result is only valid for the settings that produced it.
+  const clearOutcome = () => {
+    setNotes(null);
+    setSummary(null);
+  };
+
+  const applyTarget = (bytes: number) => {
+    setTargetBytes(bytes);
+    clearOutcome();
+  };
+
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = [...(e.target.files ?? [])];
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -434,7 +445,10 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
                 variant={targetBytes === item.bytes ? "default" : "outline"}
                 data-analytics-label={`image-target-${item.label.replace(/\s+/g, "-").toLowerCase()}`}
                 disabled={busy}
-                onClick={() => setTargetBytes(item.bytes)}
+                onClick={() => {
+                  applyTarget(item.bytes);
+                  setCustomSize("");
+                }}
               >
                 {item.label}
               </Button>
@@ -460,7 +474,7 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
                   toast({ title: "Unrecognised size", description: "Use KB or MB, or a plain number of bytes. 1 KB = 1024 bytes.", variant: "destructive" });
                   return;
                 }
-                setTargetBytes(parsed);
+                applyTarget(parsed);
               }}
             >
               Use
@@ -476,6 +490,7 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
               onClick={() => {
                 setMime("image/jpeg");
                 setFormatExplicit(true);
+                clearOutcome();
               }}
             >
               JPEG
@@ -489,6 +504,7 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
               onClick={() => {
                 setMime("image/webp");
                 setFormatExplicit(true);
+                clearOutcome();
               }}
             >
               WebP
@@ -499,7 +515,10 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
             <input
               id="min-kb"
               value={minSize}
-              onChange={(event) => setMinSize(event.target.value)}
+              onChange={(event) => {
+                setMinSize(event.target.value);
+                clearOutcome();
+              }}
               placeholder="e.g. 20 KB"
               disabled={busy}
               className="mt-1 flex h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
