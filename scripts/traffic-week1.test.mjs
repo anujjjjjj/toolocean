@@ -161,7 +161,7 @@ test("tool-run without window.umami does not throw, and a throwing tracker is ig
  */
 const SUCCESS_PATHS = [
   ["src/components/tools/implementations/image/ImageFormatConverterTool.tsx", "a.click();", null],
-  ["src/components/tools/implementations/image/ImageCompressorTool.tsx", "if (!delivered.length) {", null],
+  ["src/components/tools/implementations/image/ImageCompressorTool.tsx", 'if (plan.kind === "none") {', null],
   ["src/components/tools/implementations/image/HeicToJpgTool.tsx", "converted += 1;", null],
   ["src/components/tools/implementations/pdf/ImagesToPdfTool.tsx", "a.click();", "} catch (error)"],
   ["src/components/tools/implementations/pdf/PdfCompressTool.tsx", "a.click();", null],

@@ -162,6 +162,7 @@
       "fixture": "seed-noise-24p.pdf",
       "targetBytes": 102400,
       "outcome": "cannot-fit-over-target",
+      "historical": "Measured on the build before misses stopped downloading; not re-measured.",
       "runs": 5,
       "inconsistentRuns": 0,
       "outputBytes": [

@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { loadPdfJs, prefetchPdfJs, prefetchPdfLib } from "@/lib/pdf/lazyPdf";
 import { markToolSuccess } from "@/lib/toolResult";
 import { KILOBYTE, parseSize } from "@/lib/targetSize/parseSize";
-import { byteCount, decidePdfOutcome, pdfDownloadName, type PdfOutcome } from "@/lib/targetOutcome";
+import { byteCount, createRunGuard, decidePdfOutcome, pdfDownloadName, type PdfOutcome } from "@/lib/targetOutcome";
 
 type CompressionMode = "lossless" | "raster" | "exact";
 
@@ -123,15 +123,16 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
     const [result, setResult] = useState<{ before: number; after: number } | null>(null);
     const [progress, setProgress] = useState<{ page: number; total: number } | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    // State updates land a render late; the ref stops a second click starting a second run.
-    const busyRef = useRef(false);
+    // State updates land a render late; the guard stops a second click starting a second run.
+    const [run] = useState(createRunGuard);
     const { toast } = useToast();
 
+    const presetTarget = preset?.targetBytes;
     useEffect(() => {
-        if (!preset) return;
+        if (presetTarget == null) return;
         setMode("exact");
-        setTargetBytes(preset.targetBytes);
-    }, [preset]);
+        setTargetBytes(presetTarget);
+    }, [presetTarget]);
 
     const formatSize = (bytes: number) => {
         if (bytes < 1024) return `${bytes} B`;
@@ -140,6 +141,11 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
     };
 
     const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (run.busy()) {
+            event.target.value = "";
+            toast({ title: "Still working", description: "Wait for the current file to finish before choosing another." });
+            return;
+        }
         const file = event.target.files?.[0];
         if (!file) return;
 
@@ -152,6 +158,7 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
             return;
         }
 
+        run.bump();
         setPdfFile(file);
         setOriginalSize(file.size);
         setExactNote(null);
@@ -248,9 +255,10 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
      * says whether that attempt may be handed over. A miss, or a copy that is not
      * smaller than the original, is never downloaded and never counted as a run.
      */
-    const compressExact = async (arrayBuffer: ArrayBuffer) => {
+    const compressExact = async (arrayBuffer: ArrayBuffer, token: number) => {
         const { compressPdfToTarget } = await import("@/lib/targetSize/compressPdfToTarget");
         const exact = await compressPdfToTarget(arrayBuffer, targetBytes);
+        if (!run.isCurrent(token)) return;
         const outcome = decidePdfOutcome({
             originalBytes: originalSize,
             outputBytes: exact.bytes.byteLength,
@@ -271,8 +279,8 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
     };
 
     const compressPdf = async () => {
-        if (!pdfFile || busyRef.current) return;
-        busyRef.current = true;
+        if (!pdfFile || !run.tryStart()) return;
+        const token = run.token();
 
         setIsProcessing(true);
         setResult(null);
@@ -281,13 +289,14 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
         try {
             const arrayBuffer = await pdfFile.arrayBuffer();
             if (mode === "exact") {
-                await compressExact(arrayBuffer);
+                await compressExact(arrayBuffer, token);
                 return;
             }
             const compressedBytes =
                 mode === "raster"
                     ? await compressRaster(arrayBuffer, (n, total) => setProgress({ page: n, total }))
                     : await compressLossless(arrayBuffer);
+            if (!run.isCurrent(token)) return;
 
             const blob = new Blob([compressedBytes], { type: "application/pdf" });
             const newSize = blob.size;
@@ -348,7 +357,7 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
                 variant: "destructive",
             });
         } finally {
-            busyRef.current = false;
+            run.finish();
             setIsProcessing(false);
             setProgress(null);
         }
@@ -450,6 +459,7 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
                                 <RadioGroup
                                     value={mode}
                                     onValueChange={(value) => setMode(value as CompressionMode)}
+                                    disabled={isProcessing}
                                     className="gap-3"
                                 >
                                     <div className="flex items-start gap-3 rounded-lg border border-border/70 p-3">
@@ -500,6 +510,7 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
                                                 size="sm"
                                                 variant={targetBytes === item.bytes ? "default" : "outline"}
                                                 data-analytics-label={`pdf-target-${item.label.replace(/\s+/g, "-").toLowerCase()}`}
+                                                disabled={isProcessing}
                                                 onClick={() => setTargetBytes(item.bytes)}
                                             >
                                                 {item.label}
@@ -513,15 +524,17 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
                                             placeholder="Custom, e.g. 350 KB"
                                             className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
                                             aria-label="Custom PDF size"
+                                            disabled={isProcessing}
                                         />
                                         <Button
                                             type="button"
                                             variant="outline"
                                             data-analytics-label="pdf-target-custom"
+                                            disabled={isProcessing}
                                             onClick={() => {
                                                 const parsed = parseSize(customSize);
                                                 if (!parsed) {
-                                                    toast({ title: "Unrecognised size", description: "Use a number with KB or MB. 1 KB = 1024 bytes.", variant: "destructive" });
+                                                    toast({ title: "Unrecognised size", description: "Use KB or MB, or a plain number of bytes. 1 KB = 1024 bytes.", variant: "destructive" });
                                                     return;
                                                 }
                                                 setTargetBytes(parsed);

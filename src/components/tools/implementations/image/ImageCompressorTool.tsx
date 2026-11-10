@@ -11,10 +11,12 @@ import type { TargetMime } from "@/lib/targetSize/types";
 import { readImageFiles } from "@/lib/image/readImageFiles";
 import {
   byteCount,
+  createRunGuard,
   decideImageOutcome,
   formatChangeLabel,
-  imageDownloadName,
+  planImageDelivery,
   sniffImageInput,
+  type ImageDeliveryLine,
   type ImageOutcome,
   type ImageOutputFormat,
 } from "@/lib/targetOutcome";
@@ -105,6 +107,9 @@ function ImageNoteLine({ note }: { note: ImageNote }) {
     case "not-smaller":
       body = `Your original is already ${byteCount(originalBytes)}${targetBytes != null ? ", under the target," : ""} and the new copy was not smaller, so nothing was downloaded. Upload the original as it is.`;
       break;
+    case "format-unsupported":
+      body = "This browser could not save WebP and returned a different format, so nothing was saved. Choose JPEG and try again.";
+      break;
     default: {
       const _exhaustive: never = outcome;
       return _exhaustive;
@@ -145,17 +150,18 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
   const [notes, setNotes] = useState<ImageNote[] | null>(null);
   const [summary, setSummary] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  // State updates land a render late; the ref stops a second click starting a second run.
-  const busyRef = useRef(false);
+  // State updates land a render late; the guard stops a second click starting a second run.
+  const [run] = useState(createRunGuard);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
+  const presetTarget = preset?.targetBytes;
   useEffect(() => {
-    if (!preset) return;
+    if (presetTarget == null) return;
     setMode("exact");
-    setTargetBytes(preset.targetBytes);
-  }, [preset]);
+    setTargetBytes(presetTarget);
+  }, [presetTarget]);
 
   const switchMode = (next: "quality" | "exact") => {
     setMode(next);
@@ -166,11 +172,21 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = [...(e.target.files ?? [])];
     if (fileInputRef.current) fileInputRef.current.value = "";
+    if (run.busy()) {
+      toast({ title: "Still working", description: "Wait for the current file to finish before choosing another." });
+      return;
+    }
     const { accepted, errors } = await readImageFiles(selected);
+    // A run can start while the read is pending; don't swap its input mid-run.
+    if (run.busy()) {
+      toast({ title: "Still working", description: "Wait for the current file to finish before choosing another." });
+      return;
+    }
     if (errors.length) {
       toast({ title: "Could not read an image", description: errors.join(" "), variant: "destructive" });
     }
     if (!accepted.length) return;
+    run.bump();
     setFiles(accepted);
     setPreviewUrl((current) => {
       if (current) URL.revokeObjectURL(current);
@@ -182,8 +198,7 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
 
   /** Runs one job at a time, and reports a thrown error instead of failing silently. */
   const guarded = async (job: () => Promise<void>) => {
-    if (busyRef.current) return;
-    busyRef.current = true;
+    if (!run.tryStart()) return;
     setBusy(true);
     setNotes(null);
     setSummary(null);
@@ -196,7 +211,7 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
         variant: "destructive",
       });
     } finally {
-      busyRef.current = false;
+      run.finish();
       setBusy(false);
     }
   };
@@ -205,6 +220,7 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
     const file = files[0];
     const canvas = canvasRef.current;
     if (!file || !canvas) return;
+    const token = run.token();
     const inputFormat = await sniffFile(file);
     const bitmap = await createImageBitmap(file);
     canvas.width = bitmap.width;
@@ -228,6 +244,7 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
       outputFormat: "jpeg",
       formatExplicit: false,
     });
+    if (!run.isCurrent(token)) return;
     setNotes([
       {
         name: file.name,
@@ -254,18 +271,19 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
     if (!files.length) return;
     const minBytes = minSize.trim() ? parseSize(minSize) : undefined;
     if (minSize.trim() && !minBytes) {
-      toast({ title: "Unrecognised minimum", description: "Use a number with KB. 1 KB = 1024 bytes.", variant: "destructive" });
+      toast({ title: "Unrecognised minimum", description: "Use KB, or a plain number of bytes. 1 KB = 1024 bytes.", variant: "destructive" });
       return;
     }
     if (minBytes && minBytes > targetBytes) {
       toast({ title: "Minimum is above the target", description: "The floor has to be smaller than the ceiling.", variant: "destructive" });
       return;
     }
+    const token = run.token();
     const { encodeImageToTarget } = await import("@/lib/targetSize/encodeImageToTarget");
     const outputFormat: ImageOutputFormat = mime === "image/webp" ? "webp" : "jpeg";
     const batch = files.length > 1;
     const lines: ImageNote[] = [];
-    const delivered: { name: string; bytes: Uint8Array }[] = [];
+    const outputs: ImageDeliveryLine[] = [];
     const skipped: string[] = [];
     for (const file of files) {
       let bitmap: ImageBitmap;
@@ -291,6 +309,8 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
         scale: result.scale,
         inputFormat,
         outputFormat,
+        // The browser may ignore the requested type, e.g. PNG bytes when WebP is unsupported.
+        actualFormat: sniffImageInput(result.bytes.subarray(0, 12)),
         formatExplicit,
       });
       lines.push({
@@ -304,36 +324,42 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
         formatChange: formatChangeLabel({ input: inputFormat, output: outputFormat }),
         paddingBytes: result.paddingBytes,
       });
-      if (outcome.deliver) delivered.push({ name: imageDownloadName({ name: file.name, format: outputFormat }), bytes: result.bytes });
+      outputs.push({ name: file.name, outcome, bytes: result.bytes, format: outputFormat });
     }
+    if (!run.isCurrent(token)) return;
     if (skipped.length) {
       toast({ title: "Skipped a file", description: skipped.join(" "), variant: "destructive" });
     }
     if (!lines.length) return;
     setNotes(lines);
-    if (batch) setSummary(`${delivered.length} of ${lines.length} files went into the ZIP. Files that missed the target or were not smaller are listed below and were left out.`);
+    const plan = planImageDelivery(outputs, { batch });
+    if (batch) {
+      const undecodable = skipped.length ? ` ${skipped.length} could not be decoded and were skipped.` : "";
+      setSummary(
+        `${plan.files.length} of ${files.length} selected files went into the ZIP.${undecodable} Files that missed the target, were not smaller or came back in another format are listed below and were left out.`,
+      );
+    }
 
-    if (!delivered.length) {
-      const title = lines.every((line) => line.outcome.kind === "not-smaller") ? "Nothing downloaded" : "Still over the target";
-      toast({ title, description: "No file was saved. The note above the button says why." });
+    if (plan.kind === "none") {
+      toast({ title: plan.toastTitle, description: "No file was saved. The note above the button says why." });
       return;
     }
 
     let saved: Blob;
-    if (batch) {
+    if (plan.kind === "zip") {
       const JSZip = (await import("jszip")).default;
       const zip = new JSZip();
-      for (const item of delivered) zip.file(item.name, item.bytes);
+      for (const item of plan.files) zip.file(item.name, item.bytes);
       saved = await zip.generateAsync({ type: "blob" });
       saveBlob(saved, "compressed-images.zip");
     } else {
-      saved = new Blob([delivered[0].bytes], { type: mime });
-      saveBlob(saved, delivered[0].name);
+      saved = new Blob([plan.files[0].bytes], { type: mime });
+      saveBlob(saved, plan.files[0].name);
     }
-    markToolSuccess(saved);
+    if (plan.signal) markToolSuccess(saved);
     toast({
-      title: batch ? "ZIP downloaded" : "Downloaded",
-      description: batch ? `${delivered.length} of ${lines.length} files.` : `${byteCount(lines[0].originalBytes)} → ${byteCount(lines[0].outputBytes)}`,
+      title: plan.toastTitle,
+      description: plan.kind === "zip" ? `${plan.files.length} of ${files.length} files.` : `${byteCount(lines[0].originalBytes)} → ${byteCount(lines[0].outputBytes)}`,
     });
   };
 
@@ -407,6 +433,7 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
                 size="sm"
                 variant={targetBytes === item.bytes ? "default" : "outline"}
                 data-analytics-label={`image-target-${item.label.replace(/\s+/g, "-").toLowerCase()}`}
+                disabled={busy}
                 onClick={() => setTargetBytes(item.bytes)}
               >
                 {item.label}
@@ -419,16 +446,18 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
               onChange={(event) => setCustomSize(event.target.value)}
               placeholder="Custom, e.g. 80 KB"
               aria-label="Custom image size"
+              disabled={busy}
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
             />
             <Button
               type="button"
               variant="outline"
               data-analytics-label="image-target-custom"
+              disabled={busy}
               onClick={() => {
                 const parsed = parseSize(customSize);
                 if (!parsed) {
-                  toast({ title: "Unrecognised size", description: "Use a number with KB or MB. 1 KB = 1024 bytes.", variant: "destructive" });
+                  toast({ title: "Unrecognised size", description: "Use KB or MB, or a plain number of bytes. 1 KB = 1024 bytes.", variant: "destructive" });
                   return;
                 }
                 setTargetBytes(parsed);
@@ -443,6 +472,7 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
               size="sm"
               variant={mime === "image/jpeg" ? "default" : "outline"}
               data-analytics-label="image-mime-jpeg"
+              disabled={busy}
               onClick={() => {
                 setMime("image/jpeg");
                 setFormatExplicit(true);
@@ -455,6 +485,7 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
               size="sm"
               variant={mime === "image/webp" ? "default" : "outline"}
               data-analytics-label="image-mime-webp"
+              disabled={busy}
               onClick={() => {
                 setMime("image/webp");
                 setFormatExplicit(true);
@@ -470,6 +501,7 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
               value={minSize}
               onChange={(event) => setMinSize(event.target.value)}
               placeholder="e.g. 20 KB"
+              disabled={busy}
               className="mt-1 flex h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
             />
           </div>

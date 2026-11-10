@@ -641,7 +641,7 @@ export const LANDING_PAGES: LandingPage[] = [
         },
         {
           title: "Press Fit to size & Download, then read the note",
-          body: "The note says whether the lossless rewrite fit, so the text is still selectable; whether the pages became JPEG pictures to fit; or that even the smallest picture copy is still over the target. If that copy would be bigger than your original, nothing is downloaded.",
+          body: "The note says whether the lossless rewrite fit, so the text is still selectable; whether the pages became JPEG pictures to fit; or that even the smallest picture copy is still over the target. Either way, a copy that misses the target is not downloaded.",
         },
       ],
     },
@@ -998,7 +998,7 @@ export const LANDING_PAGES: LandingPage[] = [
       },
       {
         question: "Does the form portal see my photo before I upload it there?",
-        answer: "No. This page compresses on your device and sends nothing. The only upload is the one you make yourself on the form's website, with the smaller file.",
+        answer: "No. The photo is compressed on your device and is not sent anywhere from this page. The site still counts visits: a page view in Umami, and in Google Analytics when configured, without cookies unless you accept the banner. After a file is saved, Umami also gets a tool-run event holding only tool and slug. The only upload of the photo is the one you make on the form's website.",
       },
     ],
     related: [

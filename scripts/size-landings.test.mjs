@@ -202,12 +202,10 @@ test("image tool: markToolSuccess and downloads sit behind a delivering outcome"
   assert.ok(quality.indexOf("if (!outcome.success) {") < quality.indexOf("saveBlob("), "quality mode saves only after the guard");
   assert.ok(quality.indexOf("saveBlob(") < quality.indexOf("markToolSuccess("));
   const exact = source.slice(source.indexOf("const compressExact"), source.indexOf("const working"));
-  assert.match(exact, /if \(outcome\.deliver\) delivered\.push\(/);
-  assert.match(exact, /for \(const item of delivered\) zip\.file\(item\.name, item\.bytes\);/, "the ZIP holds delivered files only");
-  assert.match(exact, /new Blob\(\[delivered\[0\]\.bytes\]/, "a single download is a delivered file");
-  const guard = exact.indexOf("if (!delivered.length) {");
+  // What gets saved is decided by planImageDelivery, covered in size-guards.test.mjs.
+  assert.match(exact, /planImageDelivery\(outputs, \{ batch \}\)/);
+  const guard = exact.indexOf('if (plan.kind === "none") {');
   assert.ok(guard > 0 && guard < exact.indexOf("saveBlob(") && guard < exact.indexOf("markToolSuccess("), "nothing saved or signalled without a delivery");
-  assert.doesNotMatch(exact, /result\.bytes\][^;]*saveBlob|zip\.file\(name, result\.bytes\)/);
 });
 
 test("pdf tool: exact mode downloads and signals only behind a success outcome", () => {
@@ -225,12 +223,19 @@ test("pdf tool: exact mode downloads and signals only behind a success outcome",
 test("both tools guard against repeated submits and report errors", () => {
   for (const file of [IMAGE_TOOL, PDF_TOOL]) {
     const source = read(file);
-    assert.match(source, /const busyRef = useRef\(false\);/, file);
-    assert.match(source, /if \([^)]*busyRef\.current\) return;/, file);
-    assert.match(source, /busyRef\.current = true;/, file);
-    assert.match(source, /finally \{\s*busyRef\.current = false;/, file);
+    // The guard's behaviour is covered in size-guards.test.mjs.
+    assert.match(source, /const \[run\] = useState\(createRunGuard\);/, file);
+    assert.match(source, /finally \{\s*run\.finish\(\);/, file);
     assert.match(source, /catch \(error\) \{\s*toast\(\{[\s\S]*?variant: "destructive"/, file);
     assert.match(source, /Working…/, file);
+    // The last busy check in handleFileSelect must come after any await and before the input changes.
+    const select = source.match(/const handleFileSelect = async[\s\S]*?\n\s*\};\n/)?.[0] ?? "";
+    const lastBusy = select.lastIndexOf("run.busy()");
+    const setter = file === IMAGE_TOOL ? "setFiles(" : "setPdfFile(";
+    assert.ok(lastBusy !== -1, `${file}: handleFileSelect checks run.busy()`);
+    assert.ok(select.includes(setter) && lastBusy < select.indexOf(setter), `${file}: run.busy() before ${setter}`);
+    assert.ok(select.includes("run.bump()") && lastBusy < select.indexOf("run.bump()"), `${file}: run.busy() before run.bump()`);
+    assert.ok(select.lastIndexOf("await ") < lastBusy, `${file}: no await between the last busy check and the state change`);
   }
   assert.match(read(IMAGE_TOOL), /disabled=\{busy\} data-analytics-label="image-exact-size"/);
   assert.match(read(PDF_TOOL), /onClick=\{compressPdf\}\s*disabled=\{isProcessing\}/);

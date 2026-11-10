@@ -64,13 +64,17 @@ export type ImageOutcome =
   /** Exact mode: even the smallest attempt is over the target. */
   | ({ kind: "miss" } & Withheld)
   /** Not smaller than the original and no explicit conversion: upload the original. */
-  | ({ kind: "not-smaller" } & Withheld);
+  | ({ kind: "not-smaller" } & Withheld)
+  /** The browser returned a different format than the one asked for, e.g. PNG for WebP. */
+  | ({ kind: "format-unsupported" } & Withheld);
 
 interface ImageOutcomeBase {
   originalBytes: number;
   outputBytes: number;
   inputFormat: ImageInputFormat;
   outputFormat: ImageOutputFormat;
+  /** What the output bytes actually are, sniffed. Omitted when not checked. */
+  actualFormat?: ImageInputFormat;
   /** True only when the person pressed a format button. The default JPEG is not a choice. */
   formatExplicit: boolean;
 }
@@ -80,7 +84,9 @@ export type ImageOutcomeArgs =
   | (ImageOutcomeBase & { mode: "quality" });
 
 export function decideImageOutcome(args: ImageOutcomeArgs): ImageOutcome {
+  if (args.actualFormat && args.actualFormat !== args.outputFormat) return { kind: "format-unsupported", ...WITHHELD };
   if (args.mode === "exact" && !args.withinTarget) return { kind: "miss", ...WITHHELD };
+  // Pending decision: a minimum-padded output that is not smaller than the original is withheld.
   if (args.outputBytes >= args.originalBytes) {
     const explicitConversion = args.formatExplicit && args.outputFormat !== args.inputFormat;
     return explicitConversion ? { kind: "converted-larger", ...DELIVERED } : { kind: "not-smaller", ...WITHHELD };
@@ -100,6 +106,67 @@ export function decideImageOutcome(args: ImageOutcomeArgs): ImageOutcome {
 export function imageDownloadName({ name, format }: { name: string; format: ImageOutputFormat }): string {
   return `${name.replace(/\.[^.]+$/, "")}-sized.${format === "webp" ? "webp" : "jpg"}`;
 }
+
+export interface ImageDeliveryLine {
+  /** The original file name. */
+  name: string;
+  outcome: ImageOutcome;
+  bytes: Uint8Array;
+  format: ImageOutputFormat;
+}
+
+export interface ImageDeliveryPlan {
+  kind: "none" | "single" | "zip";
+  files: { name: string; bytes: Uint8Array }[];
+  /** Whether the run counts as a success for the tool-run event. */
+  signal: boolean;
+  toastTitle: string;
+}
+
+/** "photo-sized.jpg", then "photo-sized-2.jpg", "photo-sized-3.jpg" for repeats. */
+function uniqueName(name: string, taken: Set<string>): string {
+  let candidate = name;
+  for (let n = 2; taken.has(candidate); n++) candidate = name.replace(/(\.[^.]+)?$/, `-${n}$1`);
+  taken.add(candidate);
+  return candidate;
+}
+
+/** Which files an exact-size run saves, and how. Withheld outcomes never reach a file. */
+export function planImageDelivery(lines: ImageDeliveryLine[], { batch }: { batch: boolean }): ImageDeliveryPlan {
+  const taken = new Set<string>();
+  const files = lines
+    .filter((line) => line.outcome.deliver)
+    .map((line) => ({ name: uniqueName(imageDownloadName(line), taken), bytes: line.bytes }));
+  if (!files.length) {
+    const kinds = new Set(lines.map((line) => line.outcome.kind));
+    const toastTitle = kinds.has("miss") ? "Still over the target" : kinds.has("format-unsupported") ? "Format not supported by this browser" : "Nothing downloaded";
+    return { kind: "none", files, signal: false, toastTitle };
+  }
+  return batch ? { kind: "zip", files, signal: true, toastTitle: "ZIP downloaded" } : { kind: "single", files, signal: true, toastTitle: "Downloaded" };
+}
+
+/** One run at a time, plus a token that goes stale when the file changes. */
+export function createRunGuard() {
+  let running = false;
+  let current = 0;
+  return {
+    tryStart(): boolean {
+      if (running) return false;
+      running = true;
+      return true;
+    },
+    finish() {
+      running = false;
+    },
+    busy: () => running,
+    token: () => current,
+    /** Call on every file change; runs holding an older token drop their result. */
+    bump: () => ++current,
+    isCurrent: (token: number) => token === current,
+  };
+}
+
+export type RunGuard = ReturnType<typeof createRunGuard>;
 
 /* ------------------------------------------------------------------ */
 /* PDFs                                                                */
