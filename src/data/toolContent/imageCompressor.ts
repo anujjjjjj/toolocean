@@ -247,7 +247,12 @@ export const imageCompressorContent: Partial<ToolPageContent> = {
     {
       question: "Can I compress several images at once?",
       answer:
-        "One at a time. The page takes a single image, which suits the common case of getting one photograph under a limit and is tedious for a folder of two hundred. A desktop batch tool is the better answer for that.",
+        "In exact-size mode, yes: select several and the ones that land under the ceiling are saved together as one ZIP, with any that miss listed in the note instead of included. JPEG-quality mode takes a single image, which suits the common case of getting one photograph under a limit. For a folder of two hundred, a desktop batch tool is still the better answer.",
+    },
+    {
+      question: "Is there a page already set to a size such as 10 KB?",
+      answer:
+        "Yes. [10 KB](/compress-image-to-10kb), [20 KB](/compress-image-to-20kb), [50 KB](/compress-image-to-50kb), [100 KB](/compress-image-to-100kb) and [200 KB](/compress-image-to-200kb) each open this compressor in exact-size mode with that ceiling chosen. 1 KB is 1024 bytes there too, and a result that misses the ceiling, or is no smaller than your original, is not saved.",
     },
     {
       question: "Why did compressing my screenshot make it look worse?",

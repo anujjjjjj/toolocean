@@ -241,9 +241,9 @@ export const pdfCompressContent: Partial<ToolPageContent> = {
     },
     {
       topic: "size",
-      question: "Can I open the page already aimed at 100 KB or 200 KB?",
+      question: "Can I open the page already aimed at a set size?",
       answer:
-        "Yes. [Compress a PDF to 100 KB](/compress-pdf-to-100kb) and [compress a PDF to 200 KB](/compress-pdf-to-200kb) load this same tool with that ceiling selected. 1 KB is 1024 bytes. Lossless is attempted before any page is turned into a picture.",
+        "Yes. [Compress a PDF to 100 KB](/compress-pdf-to-100kb), [200 KB](/compress-pdf-to-200kb), [500 KB](/compress-pdf-to-500kb) and [1 MB](/compress-pdf-to-1mb) load this same tool with that ceiling selected. 1 KB is 1024 bytes. Lossless is attempted before any page is turned into a picture, and a copy that is still over the ceiling is not downloaded.",
     },
     {
       topic: "size",

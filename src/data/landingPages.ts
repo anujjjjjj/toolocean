@@ -663,7 +663,7 @@ export const LANDING_PAGES: LandingPage[] = [
       {
         heading: "When a file cannot fit",
         body: [
-          "There are two ways to miss, and the measured table shows both. If even the smallest picture copy is over the ceiling but smaller than your original, it is downloaded anyway and the note says it is still over the target; the 24-page noise test file ends there. If the smallest picture copy would be bigger than the original, nothing is downloaded and a message says re-encoding would make it bigger. Text-heavy files tend to end there, because pictures of text cost far more than the text, and the 36-page report at 100,000 bytes is that case.",
+          "There are two ways to miss, and the measured table shows both. If even the smallest picture copy is over the ceiling but smaller than your original, nothing is downloaded and the note gives that copy's size next to the target; the 24-page noise test file ends there. If the smallest picture copy would be bigger than the original, nothing is downloaded and a message says re-encoding would make it bigger. Text-heavy files tend to end there, because pictures of text cost far more than the text, and the 36-page report at 100,000 bytes is that case.",
           "What helps: send fewer pages, using PDF Split or Delete PDF Pages and uploading the parts separately if the form allows it; ask whether the form accepts a larger file; or, for a scan, rescan at a lower resolution. Retrying the same file at the same ceiling gives the same answer.",
         ],
       },
@@ -708,11 +708,14 @@ export const LANDING_PAGES: LandingPage[] = [
         label: "Compress a PDF to 200 KB",
         note: "The same tool with a 204,800-byte ceiling.",
       },
+      { path: "/compress-pdf-to-500kb", label: "Compress a PDF to 500 KB", note: "A 512,000-byte ceiling for scanned certificates." },
+      { path: "/compress-pdf-to-1mb", label: "Compress a PDF to 1 MB", note: "A 1,048,576-byte ceiling for multi-page uploads." },
       {
         path: "/merge-pdf-without-uploading",
         label: "Merge PDFs without uploading",
         note: "Join files first, then bring the result down to size here.",
       },
+      { path: "/pdf-compress", label: "Compress PDF", note: "The full tool, with lossless, picture and exact-size modes." },
       { path: "/pdf-tools", label: "All PDF tools", note: "Split, delete pages and the rest, all in the browser." },
     ],
   },
@@ -756,6 +759,179 @@ export const LANDING_PAGES: LandingPage[] = [
         question: "Why did my scan become unselectable?",
         answer: "The lossless rewrite did not fit under 204800 bytes, so each page was painted and stored as a JPEG. That is stated in the result note.",
       },
+    ],
+    related: [
+      { path: "/compress-pdf-to-100kb", label: "Compress a PDF to 100 KB", note: "A tighter 102,400-byte ceiling, with measured runs." },
+      { path: "/compress-pdf-to-500kb", label: "Compress a PDF to 500 KB", note: "More room for a scanned certificate or marksheet." },
+      { path: "/compress-pdf-to-1mb", label: "Compress a PDF to 1 MB", note: "For uploads that bundle several pages." },
+      { path: "/pdf-compress", label: "Compress PDF", note: "Every mode and ceiling in one tool." },
+      { path: "/pdf-tools", label: "All PDF tools", note: "Split, merge and delete pages without uploading." },
+    ],
+  },
+  {
+    slug: "compress-pdf-to-500kb",
+    seo: {
+      title: "Compress PDF to 500 KB for Online Forms – No Upload",
+      description:
+        "Aim a scanned certificate or marksheet PDF under 500 KB in your browser. Lossless first, JPEG pages only if needed, and a plain note when it cannot fit.",
+      keywords: ["compress pdf to 500kb", "pdf under 500kb", "reduce pdf size to 500 kb", "certificate pdf 500kb"],
+    },
+    h1: "Compress a PDF to 500 KB",
+    footerLabel: "PDF to 500 KB",
+    lede: "Some online application forms cap a scanned certificate or marksheet at 500 KB; check your form's notice for its exact limit. Here that ceiling is 512,000 bytes, and the size control below opens on it. The tool keeps the text when a lossless rewrite is small enough, and otherwise redraws the pages as JPEG pictures.",
+    tools: ["pdf-compress", "pdf-split", "pdf-delete-pages"],
+    embed: { tool: "pdf-compress", targetBytes: 500 * 1024 },
+    howTo: {
+      name: "How to compress a PDF to 500 KB",
+      steps: [
+        { title: "Choose the scan", body: "Pick the PDF from this device. It is read inside the tab, so there is no upload wait." },
+        {
+          title: "Leave 500 KB, or pick 488 KB",
+          body: "The 500 KB chip means 512,000 bytes. If the form counts 500 KB as 500,000 bytes, type 488 KB in the custom box and press Use; 499,712 bytes passes both readings.",
+        },
+        {
+          title: "Press Fit to size, then check every page",
+          body: "A file is saved only when it lands under the ceiling and is smaller than your original. Open it and zoom in on each page before you send it to the form.",
+        },
+      ],
+    },
+    sections: [
+      {
+        heading: "What happens to a scan on the way to 500 KB",
+        body: [
+          "The first attempt changes nothing you can see. The document's title, author and similar fields are cleared, and the file is saved again with compressed object streams. A PDF made from typed text can land under 512,000 bytes this way, and its words stay searchable.",
+          "A phone or office scan is different, because each page is already a large picture. The tool then paints every page, stores it as a JPEG and searches for the highest JPEG quality that still fits. When even the lowest quality in that search is too big, the pictures are made smaller and the search runs again. It gives up quality before pixels.",
+        ],
+      },
+      {
+        heading: "Long files and readability",
+        body: [
+          "The ceiling is shared by every page, so a long scan leaves fewer bytes for each sheet. A fit on a long file can mean pages drawn at reduced resolution, and when that happens the note warns that small print may be hard to read. Fit or not, look at the result yourself before submitting it.",
+          "Every page is painted and held in memory at the same time, so a scan with many pages takes longer and can exhaust a phone's memory. If the form allows separate uploads, split the file first and compress each part.",
+        ],
+      },
+      {
+        heading: "When it cannot reach 500 KB",
+        body: [
+          "If the smallest copy the tool can make is still over the ceiling, nothing is downloaded and the run is not counted as finished. The note shows the bytes it reached beside the target. From there: split the document with PDF Split, drop pages the form did not ask for with Delete PDF Pages, rescan at a lower resolution or in greyscale, or ask whether the form takes a larger file.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is 500 KB 500,000 or 512,000 bytes here?",
+        answer: "512,000. This tool counts 1 KB as 1024 bytes. When a form means 500,000 bytes, choose 488 KB in the custom box instead: 499,712 bytes is under both figures.",
+      },
+      {
+        question: "My scan is many megabytes. Can it get under 500 KB?",
+        answer:
+          "It depends on the page count and how much detail each page holds. A scan is mostly picture data, so redrawing its pages as JPEG pictures can shrink it a lot, but there is no promise, and each extra page shares the same budget. The note reports the result in bytes; if it says the pages were drawn at reduced resolution, zoom in before you submit.",
+      },
+      {
+        question: "Why can I no longer select the text?",
+        answer:
+          "The lossless rewrite was not small enough, so each page became a JPEG picture. Pictures carry no text layer, so search and copy stop working. A plain scan has no text layer to begin with, so in that case nothing is lost on that front.",
+      },
+      {
+        question: "The note says it is still over the target. What now?",
+        answer:
+          "Nothing was saved. Split the PDF and upload the parts if the form allows it, delete pages it did not ask for, rescan the paper at a lower resolution or in greyscale, or check whether the form accepts a bigger file.",
+      },
+      {
+        question: "Is my PDF uploaded anywhere?",
+        answer:
+          "No, your files aren't uploaded: the PDF is read and rewritten inside this tab. The site does count visits, separately from files. Umami records a page view, and Google Analytics, when configured, sends page views without cookies unless you accept the banner. After a PDF is saved under the ceiling, Umami also gets an event named tool-run whose only fields are tool and slug, here pdf-compress and compress-pdf-to-500kb. No file name, size or content is included.",
+      },
+    ],
+    related: [
+      { path: "/compress-pdf-to-100kb", label: "Compress a PDF to 100 KB", note: "For forms with a much tighter cap." },
+      { path: "/compress-pdf-to-200kb", label: "Compress a PDF to 200 KB", note: "A 204,800-byte ceiling." },
+      { path: "/compress-pdf-to-1mb", label: "Compress a PDF to 1 MB", note: "Twice the room, for longer documents." },
+      { path: "/pdf-compress", label: "Compress PDF", note: "The parent tool, with every mode." },
+      { path: "/pdf-tools", label: "All PDF tools", note: "Split, delete pages and merge in the browser." },
+    ],
+  },
+  {
+    slug: "compress-pdf-to-1mb",
+    seo: {
+      title: "Compress PDF to 1 MB for Scans & Certificates – No Upload",
+      description:
+        "Aim a PDF under 1 MB (1,048,576 bytes) without uploading it. Text PDFs may pass losslessly; scans become JPEG pages, and the note says which happened.",
+      keywords: ["compress pdf to 1mb", "pdf under 1mb", "reduce pdf to 1 mb", "scanned pdf 1mb"],
+    },
+    h1: "Compress a PDF to 1 MB",
+    footerLabel: "PDF to 1 MB",
+    lede: "1 MB here is 1,048,576 bytes, the ceiling the size control opens on. It suits uploads that bundle several pages, such as a degree certificate with its marksheets, or a CV with scanned attachments. If the lossless rewrite already fits, the text is kept; if not, the pages become JPEG pictures.",
+    tools: ["pdf-compress", "pdf-merge", "pdf-split"],
+    embed: { tool: "pdf-compress", targetBytes: 1024 * 1024 },
+    howTo: {
+      name: "How to compress a PDF to 1 MB",
+      steps: [
+        { title: "Select the PDF", body: "One file at a time. To send several documents as one, join them with Merge PDF first." },
+        {
+          title: "Keep 1 MB, or use 976 KB",
+          body: "The 1 MB chip equals 1,048,576 bytes. A form that treats 1 MB as 1,000,000 bytes is safer with 976 KB typed in the custom box: 999,424 bytes, under either count.",
+        },
+        {
+          title: "Read the note before uploading",
+          body: "It says whether the text survived, gives the bytes before and after, and asks you to zoom in on the pages. A result over the ceiling is not saved.",
+        },
+      ],
+    },
+    sections: [
+      {
+        heading: "More room per page than 500 KB",
+        body: [
+          "Doubling the ceiling doubles what each page can spend. On a multi-page scan that can mean the search stops at a larger picture size or a higher JPEG quality than it would for 500 KB. Whether it does for your file depends on how much detail the pages carry, which is why the note reports the result instead of predicting it.",
+        ],
+      },
+      {
+        heading: "Combining documents before compressing",
+        body: [
+          "Some forms want one PDF holding several certificates. Join them with Merge PDF, which also runs in the browser, and then bring the merged file here. Compressing each part first and merging afterwards works too, but then you have to share the ceiling out between the parts by hand.",
+        ],
+      },
+      {
+        heading: "Why a result can sit far below 1 MB",
+        body: [
+          "The picture search starts at full size and looks for the best JPEG quality that fits, with quality capped at 0.85. A short scan can fit well under the ceiling even at that cap, so a one-page certificate may come back much smaller than 1 MB. That is expected, not a fault.",
+          "A typed PDF that already fits after the lossless rewrite keeps its text and loses only its metadata fields. If your original is under the ceiling and the rewrite does not shrink it, nothing is saved, and the note tells you to upload the original.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Does 1 MB mean 1,000,000 or 1,048,576 bytes here?",
+        answer: "1,048,576, because 1 KB is 1024 bytes on this site. For a form counting in thousands, enter 976 KB in the custom box, which is 999,424 bytes.",
+      },
+      {
+        question: "My PDF is already under 1 MB. Why did nothing download?",
+        answer:
+          "When the original already fits and a lossless rewrite does not make it smaller, the tool keeps your file rather than hand back a copy that is no better. The note shows the original's size in bytes. Upload it as it is.",
+      },
+      {
+        question: "Will a typed document lose its text?",
+        answer:
+          "Not if the lossless rewrite fits, which a text-only PDF can do at this ceiling. The note says so. Only when pages are redrawn as pictures does the text stop being selectable.",
+      },
+      {
+        question: "My long scan is still over 1 MB. What can I do?",
+        answer:
+          "Nothing is saved in that case. Divide the file with PDF Split, remove unneeded pages with Delete PDF Pages, scan again at a lower resolution or in greyscale, or confirm whether the form allows a larger upload.",
+      },
+      {
+        question: "Does anything leave my device?",
+        answer:
+          "Your files aren't uploaded; the rewrite runs in this tab. Visit analytics are kept apart from files: a page view goes to Umami, and to Google Analytics if it is configured, which sets no cookies until you accept the banner. When a PDF is saved under the ceiling, Umami receives a tool-run event with just two fields, tool and slug, here pdf-compress and compress-pdf-to-1mb. File names, sizes and contents are never part of it.",
+      },
+    ],
+    related: [
+      { path: "/compress-pdf-to-100kb", label: "Compress a PDF to 100 KB", note: "The tightest preset, with measured runs." },
+      { path: "/compress-pdf-to-200kb", label: "Compress a PDF to 200 KB", note: "For portals with a 200 KB cap." },
+      { path: "/compress-pdf-to-500kb", label: "Compress a PDF to 500 KB", note: "Half this ceiling, for single certificates." },
+      { path: "/merge-pdf-without-uploading", label: "Merge PDFs without uploading", note: "Combine the documents before compressing." },
+      { path: "/pdf-compress", label: "Compress PDF", note: "The parent tool, with every mode." },
+      { path: "/pdf-tools", label: "All PDF tools", note: "Everything for PDFs that runs in the browser." },
     ],
   },
   {
@@ -825,6 +1001,14 @@ export const LANDING_PAGES: LandingPage[] = [
         answer: "No. This page compresses on your device and sends nothing. The only upload is the one you make yourself on the form's website, with the smaller file.",
       },
     ],
+    related: [
+      { path: "/compress-image-to-10kb", label: "Compress an image to 10 KB", note: "For a scanned signature with a tighter cap." },
+      { path: "/compress-image-to-50kb", label: "Compress an image to 50 KB", note: "A 51,200-byte ceiling." },
+      { path: "/compress-image-to-100kb", label: "Compress an image to 100 KB", note: "A 102,400-byte ceiling." },
+      { path: "/compress-image-to-200kb", label: "Compress an image to 200 KB", note: "For document photos and larger caps." },
+      { path: "/image-compressor", label: "Image Compressor", note: "The parent tool, with quality and exact-size modes." },
+      { path: "/image-tools", label: "All image tools", note: "Resize, crop and convert in the browser." },
+    ],
   },
   {
     slug: "compress-image-to-50kb",
@@ -845,7 +1029,7 @@ export const LANDING_PAGES: LandingPage[] = [
       steps: [
         { title: "Pick the image", body: "The decode happens in the tab. Several files download as one ZIP." },
         { title: "Confirm the 50 KB chip", body: "It is selected when this page opens. 50 KB is 51200 bytes." },
-        { title: "Save the file the note describes", body: "Within the target means the bytes are at or under 51200. Over the target means even the smallest try missed." },
+        { title: "Save the file the note describes", body: "Within the target means the bytes are at or under 51200 and the file is saved. Over the target means even the smallest try missed, so nothing is saved." },
       ],
     },
     sections: [
@@ -865,6 +1049,14 @@ export const LANDING_PAGES: LandingPage[] = [
         question: "Is the 50 KB figure a guarantee?",
         answer: "No. It is the output of one noise fixture, printed from the measurement file. Your picture gets its own search.",
       },
+    ],
+    related: [
+      { path: "/compress-image-to-10kb", label: "Compress an image to 10 KB", note: "The smallest preset, for signatures." },
+      { path: "/compress-image-to-20kb", label: "Compress an image to 20 KB", note: "For exam and form photos." },
+      { path: "/compress-image-to-100kb", label: "Compress an image to 100 KB", note: "Twice this ceiling." },
+      { path: "/compress-image-to-200kb", label: "Compress an image to 200 KB", note: "For document photos." },
+      { path: "/image-compressor", label: "Image Compressor", note: "Every ceiling, plus a JPEG quality slider." },
+      { path: "/image-tools", label: "All image tools", note: "Resize, crop and convert in the browser." },
     ],
   },
   {
@@ -906,6 +1098,178 @@ export const LANDING_PAGES: LandingPage[] = [
         question: "Can I set a minimum as well as 100 KB?",
         answer: "Yes. A JPEG under that floor is padded with comment bytes, and the padding is included in the reported size. It will not pad past the ceiling.",
       },
+    ],
+    related: [
+      { path: "/compress-image-to-10kb", label: "Compress an image to 10 KB", note: "For signatures and thumbnails." },
+      { path: "/compress-image-to-20kb", label: "Compress an image to 20 KB", note: "For exam and form photos." },
+      { path: "/compress-image-to-50kb", label: "Compress an image to 50 KB", note: "Half this ceiling." },
+      { path: "/compress-image-to-200kb", label: "Compress an image to 200 KB", note: "Twice this ceiling." },
+      { path: "/image-compressor", label: "Image Compressor", note: "Every ceiling, plus a JPEG quality slider." },
+      { path: "/image-tools", label: "All image tools", note: "Resize, crop and convert in the browser." },
+    ],
+  },
+  {
+    slug: "compress-image-to-200kb",
+    seo: {
+      title: "Compress Image to 200 KB for Form Photos – No Upload",
+      description:
+        "Aim a phone photo or document scan under 200 KB for exam, job and government forms. Runs in your browser, keeps full pixel size when it can, no upload.",
+      keywords: ["compress image to 200kb", "photo under 200kb", "reduce image size to 200 kb", "jpg 200kb for form"],
+    },
+    h1: "Compress an image to 200 KB",
+    footerLabel: "Image to 200 KB",
+    lede: "200 KB is 204,800 bytes, and the compressor below opens on that chip. Some forms use it as the cap for a photo of a document, such as a certificate photographed on a phone, or for a portrait photo. If your file is already under the ceiling, the tool says so and leaves the original for you to upload.",
+    tools: ["image-compressor", "image-crop", "image-resizer"],
+    embed: { tool: "image-compressor", targetBytes: 200 * 1024 },
+    howTo: {
+      name: "How to compress an image to 200 KB",
+      steps: [
+        { title: "Pick the photo", body: "JPG, PNG or WebP. Convert a HEIC photo with HEIC to JPG first." },
+        {
+          title: "Keep 200 KB, or use 195 KB",
+          body: "The chip is 204,800 bytes. If the form's 200 KB means 200,000 bytes, type 195 KB in the custom box: 199,680 bytes fits both.",
+        },
+        {
+          title: "Check bytes and pixel size",
+          body: "The note lists the original and new size in bytes, the pixel dimensions and any format change. A copy that is not smaller than your original is not saved.",
+        },
+      ],
+    },
+    sections: [
+      {
+        heading: "Pixel size at 200 KB",
+        body: [
+          "The search keeps every pixel whenever some JPEG quality fits at full size. It tries full size first, looking for the highest JPEG quality under 204,800 bytes, and only reduces the dimensions, by a quarter at a time, if no quality fits. The note prints the final width and height, so you can see whether that happened.",
+        ],
+      },
+      {
+        heading: "Already under 200 KB?",
+        body: [
+          "A passport-size photo or a cropped signature may already be well under the cap. Re-encoding such a file can make it bigger, not smaller, so the tool compares the two and keeps your original when the new copy is not smaller.",
+          "The exception is a format you asked for. If you press JPEG or WebP and that differs from the original's format, the converted copy is saved even when it grows, and the note shows the change, for example PNG → JPEG.",
+        ],
+      },
+      {
+        heading: "Photographing a document",
+        body: [
+          "Lay the paper flat in even light and crop away the table around it before compressing. Background pixels cost bytes like any others, and a tight crop leaves more of the budget for the printed text. Transparent areas, if any, are filled with white.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Will my photo be resized to reach 200 KB?",
+        answer: "Only if no JPEG quality fits at full size. Then the dimensions shrink by a quarter and the search repeats. The note shows the final pixel size.",
+      },
+      {
+        question: "Why was nothing downloaded for my small photo?",
+        answer: "Your original was already under 204,800 bytes and the new copy came out no smaller, so the tool kept the original. Upload that file as it is.",
+      },
+      {
+        question: "Is 200 KB 200,000 or 204,800 bytes?",
+        answer: "204,800 here. Type 195 KB, which is 199,680 bytes, to pass a form that counts 200 KB as 200,000.",
+      },
+      {
+        question: "Can I compress several photos at once?",
+        answer:
+          "Yes. Choose more than one file and the photos that land under the ceiling are saved together in one ZIP. Any that miss the target or come out no smaller are listed in the note and left out.",
+      },
+      {
+        question: "Are my photos uploaded?",
+        answer:
+          "No, your files aren't uploaded. Decoding and encoding run in this tab. The site keeps visit analytics apart from files: Umami counts a page view, Google Analytics does too when configured, without cookies unless you accept the banner, and after a file is saved Umami logs a tool-run event holding only tool and slug, here image-compressor and compress-image-to-200kb.",
+      },
+    ],
+    related: [
+      { path: "/compress-image-to-10kb", label: "Compress an image to 10 KB", note: "For signatures." },
+      { path: "/compress-image-to-20kb", label: "Compress an image to 20 KB", note: "For exam and form photos." },
+      { path: "/compress-image-to-50kb", label: "Compress an image to 50 KB", note: "A 51,200-byte ceiling." },
+      { path: "/compress-image-to-100kb", label: "Compress an image to 100 KB", note: "Half this ceiling." },
+      { path: "/image-compressor", label: "Image Compressor", note: "The parent tool, with quality and exact-size modes." },
+      { path: "/image-tools", label: "All image tools", note: "Resize, crop and convert in the browser." },
+    ],
+  },
+  {
+    slug: "compress-image-to-10kb",
+    seo: {
+      title: "Compress Image to 10 KB for Signatures & Forms",
+      description:
+        "Aim a signature or small photo under 10 KB for application forms. Runs in your browser; large photos may be scaled down to fit, and nothing is uploaded.",
+      keywords: ["compress image to 10kb", "signature 10kb", "photo under 10kb", "reduce signature size", "jpg 10 kb"],
+    },
+    h1: "Compress an image to 10 KB",
+    footerLabel: "Image to 10 KB",
+    lede: "10 KB is 10,240 bytes. Some application forms ask for a scanned signature or a small photo at about this size, and this page opens the compressor on the 10 KB chip. A tightly cropped signature is cheap to store; a full camera photo has to be shrunk a long way first.",
+    tools: ["image-compressor", "image-resizer", "image-crop"],
+    embed: { tool: "image-compressor", targetBytes: 10 * 1024 },
+    howTo: {
+      name: "How to compress an image to 10 KB",
+      steps: [
+        { title: "Crop or resize first", body: "Crop the signature close to the ink. For a photo, set the form's pixel size with the Image Resizer before compressing." },
+        {
+          title: "Keep the 10 KB chip, or try 9 KB",
+          body: "10 KB here is 10,240 bytes. For a form that counts 10 KB as 10,000 bytes, enter 9 KB in the custom box, which is 9,216 bytes.",
+        },
+        { title: "Zoom in on the result", body: "The note gives bytes, pixel size and format. Check that strokes or facial features are still clear before you upload." },
+      ],
+    },
+    sections: [
+      {
+        heading: "Signatures and thumbnails",
+        body: [
+          "A signature is mostly blank paper with thin dark lines, which JPEG stores cheaply. Once the empty margins are cropped off, the search may keep the full pixel size. A passport-size photo already at the pixel size a form asks for is in a similar position.",
+        ],
+      },
+      {
+        heading: "What 10 KB does to a camera photo",
+        body: [
+          "A phone photo has millions of pixels and fine texture. To fit 10,240 bytes the tool lowers JPEG quality and then reduces the dimensions by a quarter at a time, down to about 13% of each side at the lowest quality it tries. The result fits, but it can look blocky up close, and the note prints the final width and height whenever the tool had to scale.",
+        ],
+      },
+      {
+        heading: "Choosing the pixel size yourself",
+        body: [
+          "If the form's notice gives pixel dimensions, resize to those with the Image Resizer, then come back and compress. That way the dimensions are the ones the form asked for, not the ones the size search settled on. Check the notice each time; sizes differ between forms and from one year to the next.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Is 10 KB 10,000 or 10,240 bytes here?",
+        answer: "10,240. If a form counts in thousands, use 9 KB (9,216 bytes), which is under both.",
+      },
+      {
+        question: "Why did my photo come out so small?",
+        answer:
+          "No JPEG quality fit 10,240 bytes at full size, so the tool reduced the dimensions until one did. The note shows the new width and height. Resize to the form's pixel size first if you want to choose them yourself.",
+      },
+      {
+        question: "What pixel size should a signature or photo be?",
+        answer: "Whatever your form's notice says. The figures vary, so this page does not suggest one. Resize to that size first, then compress.",
+      },
+      {
+        question: "The form also sets a minimum, such as 4 KB. How do I meet it?",
+        answer:
+          "Type the minimum into the optional minimum field. A JPEG that would come out smaller is padded with comment bytes to clear it, and the note says how many. WebP is not padded.",
+      },
+      {
+        question: "JPEG or WebP for an application form?",
+        answer: "Use the format your form lists. JPEG is the default here; press WebP only if the form accepts it.",
+      },
+      {
+        question: "Does my signature leave my device?",
+        answer:
+          "No, your files aren't uploaded. The image is decoded and re-encoded in this tab. Separately, the site counts visits: a page view in Umami, and in Google Analytics when configured, which stays cookieless unless you accept the banner. When a file is saved, Umami gets a tool-run event with only tool and slug, here image-compressor and compress-image-to-10kb.",
+      },
+    ],
+    related: [
+      { path: "/compress-image-to-20kb", label: "Compress an image to 20 KB", note: "For exam and form photos." },
+      { path: "/compress-image-to-50kb", label: "Compress an image to 50 KB", note: "A 51,200-byte ceiling." },
+      { path: "/compress-image-to-100kb", label: "Compress an image to 100 KB", note: "A 102,400-byte ceiling." },
+      { path: "/compress-image-to-200kb", label: "Compress an image to 200 KB", note: "For document photos." },
+      { path: "/image-resizer", label: "Image Resizer", note: "Set the form's pixel size before compressing." },
+      { path: "/image-compressor", label: "Image Compressor", note: "The parent tool, with quality and exact-size modes." },
+      { path: "/image-tools", label: "All image tools", note: "Resize, crop and convert in the browser." },
     ],
   },
   {

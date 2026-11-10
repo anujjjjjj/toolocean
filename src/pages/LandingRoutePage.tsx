@@ -127,7 +127,7 @@ type CompressRun = (typeof benchmarks.compress)[number];
 const OUTCOME_LABEL: Record<string, string> = {
   "fit-lossless": "Fit. Lossless rewrite",
   "fit-raster": "Fit. Pages saved as JPEG",
-  "cannot-fit-over-target": "Cannot fit. Smallest copy downloaded, still over",
+  "cannot-fit-over-target": "Cannot fit. Smallest copy still over the target",
   "cannot-fit-refused": "Cannot fit. Nothing downloaded",
 };
 

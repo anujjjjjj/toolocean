@@ -199,7 +199,7 @@ test("the 100 KB page renders every measured row with exact bytes and the cannot
   }
   assert.ok(visible.includes("100,000 bytes") && visible.includes("102,400 bytes"));
   assert.match(visible, /Cannot fit\. Nothing downloaded/);
-  assert.match(visible, /Cannot fit\. Smallest copy downloaded, still over/);
+  assert.match(visible, /Cannot fit\. Smallest copy still over the target/);
   assert.match(visible, /1 KB = 1024 bytes/);
   for (const fixture of bench.fixtures) assert.ok(visible.includes(fixture.sha256));
   assert.equal(page("compress-pdf-to-100kb").embed.targetBytes, 102400);

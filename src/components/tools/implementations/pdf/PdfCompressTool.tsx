@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,8 +11,97 @@ import { useToast } from "@/hooks/use-toast";
 import { loadPdfJs, prefetchPdfJs, prefetchPdfLib } from "@/lib/pdf/lazyPdf";
 import { markToolSuccess } from "@/lib/toolResult";
 import { KILOBYTE, parseSize } from "@/lib/targetSize/parseSize";
+import { byteCount, decidePdfOutcome, pdfDownloadName, type PdfOutcome } from "@/lib/targetOutcome";
 
 type CompressionMode = "lossless" | "raster" | "exact";
+
+interface ExactNote {
+    outcome: PdfOutcome;
+    originalBytes: number;
+    outputBytes: number;
+    targetBytes: number;
+}
+
+function exactToastTitle(outcome: PdfOutcome): string {
+    switch (outcome.kind) {
+        case "lossless-fit":
+        case "raster-fit":
+        case "raster-fit-low-res":
+            return "PDF compressed";
+        case "miss":
+            return "Still over the target";
+        case "already-under":
+            return "Already under the target";
+        case "not-smaller-over-target":
+            return "Re-encoding would make this bigger";
+        default: {
+            const _exhaustive: never = outcome;
+            return _exhaustive;
+        }
+    }
+}
+
+const linkClass = "text-primary underline";
+
+function PdfNextSteps({ rescan }: { rescan: boolean }) {
+    return (
+        <>
+            {" "}Next: split it with <Link className={linkClass} to="/pdf-split">PDF Split</Link> and upload the parts,
+            remove pages with <Link className={linkClass} to="/pdf-delete-pages">Delete PDF Pages</Link>,
+            {rescan ? " rescan at a lower resolution or in greyscale," : ""} or check whether the form accepts a larger file.
+        </>
+    );
+}
+
+const CHECK_PAGES = " Open the file and zoom in to check every page before you upload it.";
+
+function ExactOutcomeNote({ note }: { note: ExactNote }) {
+    const { outcome, originalBytes, outputBytes, targetBytes } = note;
+    const target = byteCount(targetBytes);
+    const headline = `${byteCount(originalBytes)} → ${byteCount(outputBytes)} · target ${target}`;
+    let body: React.ReactNode;
+    switch (outcome.kind) {
+        case "lossless-fit":
+            body = `Lossless rewrite fit under ${target}, so the text is still selectable. Downloaded.`;
+            break;
+        case "raster-fit":
+            body = `Pages were redrawn as JPEG pictures to fit under ${target}. Text is no longer selectable. Downloaded.${CHECK_PAGES}`;
+            break;
+        case "raster-fit-low-res":
+            body = `Pages were redrawn as JPEG pictures at a reduced resolution to fit under ${target}, so small print may be hard to read. Text is no longer selectable. Downloaded.${CHECK_PAGES}`;
+            break;
+        case "miss":
+            body = (
+                <>
+                    Still over the target. The smallest copy the tool could make is {byteCount(outputBytes)}, against {target}, so nothing was downloaded.
+                    <PdfNextSteps rescan />
+                </>
+            );
+            break;
+        case "already-under":
+            body = `Your PDF is already ${byteCount(originalBytes)}, under ${target}, so nothing was downloaded. Upload the original as it is.`;
+            break;
+        case "not-smaller-over-target":
+            body = (
+                <>
+                    Even the smallest picture copy ({byteCount(outputBytes)}) is bigger than your original ({byteCount(originalBytes)}), so nothing was
+                    downloaded. Pictures of text cost more bytes than the text itself.
+                    <PdfNextSteps rescan={false} />
+                </>
+            );
+            break;
+        default: {
+            const _exhaustive: never = outcome;
+            return _exhaustive;
+        }
+    }
+    return (
+        <div className="rounded-lg border border-border/70 p-4 text-sm" role="status">
+            <p className="font-medium">{headline}</p>
+            <p className="mt-1 text-muted-foreground">{body}</p>
+        </div>
+    );
+}
 
 const EXACT_PRESETS = [
     { label: "100 KB", bytes: 100 * KILOBYTE },
@@ -29,10 +119,12 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
     const [mode, setMode] = useState<CompressionMode>(preset ? "exact" : "lossless");
     const [targetBytes, setTargetBytes] = useState(preset?.targetBytes ?? 200 * KILOBYTE);
     const [customSize, setCustomSize] = useState("");
-    const [exactNote, setExactNote] = useState<string | null>(null);
+    const [exactNote, setExactNote] = useState<ExactNote | null>(null);
     const [result, setResult] = useState<{ before: number; after: number } | null>(null);
     const [progress, setProgress] = useState<{ page: number; total: number } | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    // State updates land a render late; the ref stops a second click starting a second run.
+    const busyRef = useRef(false);
     const { toast } = useToast();
 
     useEffect(() => {
@@ -62,6 +154,8 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
 
         setPdfFile(file);
         setOriginalSize(file.size);
+        setExactNote(null);
+        setResult(null);
     };
 
     /**
@@ -137,33 +231,63 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
         return out.save({ useObjectStreams: true });
     };
 
-    const compressPdf = async () => {
+    const downloadPdf = (blob: Blob, raster: boolean) => {
         if (!pdfFile) return;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = pdfDownloadName({ name: pdfFile.name, raster });
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
+    /**
+     * Exact size. The engine always returns its best attempt; decidePdfOutcome
+     * says whether that attempt may be handed over. A miss, or a copy that is not
+     * smaller than the original, is never downloaded and never counted as a run.
+     */
+    const compressExact = async (arrayBuffer: ArrayBuffer) => {
+        const { compressPdfToTarget } = await import("@/lib/targetSize/compressPdfToTarget");
+        const exact = await compressPdfToTarget(arrayBuffer, targetBytes);
+        const outcome = decidePdfOutcome({
+            originalBytes: originalSize,
+            outputBytes: exact.bytes.byteLength,
+            targetBytes,
+            withinTarget: exact.withinTarget,
+            mode: exact.mode,
+            scale: exact.scale,
+        });
+        setExactNote({ outcome, originalBytes: originalSize, outputBytes: exact.bytes.byteLength, targetBytes });
+        if (!outcome.success) {
+            toast({ title: exactToastTitle(outcome), description: "Nothing was downloaded. The note under the size buttons says why." });
+            return;
+        }
+        const blob = new Blob([exact.bytes], { type: "application/pdf" });
+        downloadPdf(blob, exact.mode === "raster");
+        markToolSuccess(blob);
+        toast({ title: "PDF compressed", description: `${byteCount(originalSize)} → ${byteCount(blob.size)}, under the ${byteCount(targetBytes)} target.` });
+    };
+
+    const compressPdf = async () => {
+        if (!pdfFile || busyRef.current) return;
+        busyRef.current = true;
 
         setIsProcessing(true);
         setResult(null);
+        setExactNote(null);
 
         try {
             const arrayBuffer = await pdfFile.arrayBuffer();
-            let exactMessage: string | null = null;
-            let compressedBytes: Uint8Array;
             if (mode === "exact") {
-                const { compressPdfToTarget } = await import("@/lib/targetSize/compressPdfToTarget");
-                const exact = await compressPdfToTarget(arrayBuffer, targetBytes);
-                compressedBytes = exact.bytes;
-                exactMessage = exact.textSelectable
-                    ? `Lossless rewrite fit under the target, so text is still selectable. ${formatSize(exact.bytes.byteLength)}.`
-                    : exact.withinTarget
-                      ? `Pages were rasterised to fit. Text is no longer selectable. ${formatSize(exact.bytes.byteLength)}.`
-                      : `The smallest raster copy is still ${formatSize(exact.bytes.byteLength)}, over the target. Text is no longer selectable.`;
-                setExactNote(exactMessage);
-            } else {
-                setExactNote(null);
-                compressedBytes =
-                    mode === "raster"
-                        ? await compressRaster(arrayBuffer, (n, total) => setProgress({ page: n, total }))
-                        : await compressLossless(arrayBuffer);
+                await compressExact(arrayBuffer);
+                return;
             }
+            const compressedBytes =
+                mode === "raster"
+                    ? await compressRaster(arrayBuffer, (n, total) => setProgress({ page: n, total }))
+                    : await compressLossless(arrayBuffer);
 
             const blob = new Blob([compressedBytes], { type: "application/pdf" });
             const newSize = blob.size;
@@ -191,14 +315,7 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
                 return;
             }
 
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = pdfFile.name.replace(/\.pdf$/i, "") + (mode === "raster" ? "-compressed.pdf" : "-optimised.pdf");
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            downloadPdf(blob, mode === "raster");
 
             setResult({ before: originalSize, after: newSize });
 
@@ -231,6 +348,7 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
                 variant: "destructive",
             });
         } finally {
+            busyRef.current = false;
             setIsProcessing(false);
             setProgress(null);
         }
@@ -305,9 +423,12 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
                                 <Button
                                     variant="outline"
                                     size="sm"
+                                    disabled={isProcessing}
                                     onClick={() => {
                                         setPdfFile(null);
                                         setOriginalSize(0);
+                                        setExactNote(null);
+                                        setResult(null);
                                     }}
                                 >
                                     Change File
@@ -409,7 +530,7 @@ export function PdfCompressTool({ preset }: { preset?: { targetBytes: number } }
                                             Use
                                         </Button>
                                     </div>
-                                    {exactNote && <p className="text-sm text-muted-foreground">{exactNote}</p>}
+                                    {exactNote && <ExactOutcomeNote note={exactNote} />}
                                 </div>
                             )}
 
