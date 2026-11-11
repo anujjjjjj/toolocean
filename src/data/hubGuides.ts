@@ -115,7 +115,7 @@ export const HUB_GUIDES: Record<string, HubGuideContent> = {
       {
         question: "Can I hit an exact size such as 20 KB?",
         answer:
-          "Yes, on the compressor's exact-size mode and on [compress an image to 20 KB](/compress-image-to-20kb), [50 KB](/compress-image-to-50kb), and [100 KB](/compress-image-to-100kb). 1 KB is 1024 bytes. The search may shrink the pixel dimensions. A minimum, if you set one, can pad a JPEG with comment bytes, and the page says when it did.",
+          "Yes, on the compressor's exact-size mode and on [compress an image to 10 KB](/compress-image-to-10kb), [20 KB](/compress-image-to-20kb), [50 KB](/compress-image-to-50kb), [100 KB](/compress-image-to-100kb), and [200 KB](/compress-image-to-200kb). 1 KB is 1024 bytes. The search may shrink the pixel dimensions. A minimum, if you set one, can pad a JPEG with comment bytes, and the page says when it did.",
       },
       {
         question: "Will compression strip the location from a phone photo?",

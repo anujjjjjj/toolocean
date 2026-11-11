@@ -127,7 +127,7 @@ type CompressRun = (typeof benchmarks.compress)[number];
 const OUTCOME_LABEL: Record<string, string> = {
   "fit-lossless": "Fit. Lossless rewrite",
   "fit-raster": "Fit. Pages saved as JPEG",
-  "cannot-fit-over-target": "Cannot fit. Smallest copy downloaded, still over",
+  "cannot-fit-over-target": "Cannot fit. Smallest copy still over the target",
   "cannot-fit-refused": "Cannot fit. Nothing downloaded",
 };
 
@@ -145,7 +145,13 @@ function timing(row: { runs: number; msMedian: number | null; msMin: number | nu
 /** The tool's note gives the smallest raster attempt in its own KB format, e.g. "181.8 KB". */
 const smallestAttempt = (note: string | null) => note?.match(/still ([\d.]+ KB)/)?.[1] ?? "not reported";
 
+/** A row measured before misses stopped downloading. The current build saves nothing for it. */
+const isHistorical = (row: CompressRun) => "historical" in row && Boolean(row.historical);
+
 function outputCell(row: CompressRun) {
+  if (isHistorical(row)) {
+    return `Nothing downloaded in the current version. Earlier build: smallest copy ${bytes(row.outputBytes[0])} was saved.`;
+  }
   if (row.outcome === "cannot-fit-refused") {
     return `None. The tool said re-encoding would make the file bigger and kept the original. Smallest raster attempt: ${smallestAttempt(row.note)}.`;
   }
@@ -153,6 +159,7 @@ function outputCell(row: CompressRun) {
 }
 
 function textCell(row: CompressRun) {
+  if (isHistorical(row)) return "No file saved now";
   if (row.outcome === "cannot-fit-refused") return "Original kept; nothing changed";
   if (row.textSelectable) return "Selectable";
   return row.page1Ppi ? `Not selectable. Page image about ${row.page1Ppi} ppi` : "Not selectable";
@@ -198,7 +205,10 @@ function CompressBenchmark() {
               <td data-label="Result">{OUTCOME_LABEL[row.outcome]}</td>
               <td data-label="Output">{outputCell(row)}</td>
               <td data-label="Text">{textCell(row)}</td>
-              <td data-label="Time">{timing(row)}</td>
+              <td data-label="Time">
+                {timing(row)}
+                {isHistorical(row) ? " (earlier build)" : ""}
+              </td>
             </tr>
           ))}
         </tbody>
