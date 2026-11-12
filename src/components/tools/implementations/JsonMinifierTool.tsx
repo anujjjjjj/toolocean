@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Copy, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { parseJsonAst, stringifyJsonAst } from "@/lib/jsonLossless";
 
 export function JsonMinifierTool() {
   const [input, setInput] = useState("");
@@ -23,26 +24,28 @@ export function JsonMinifierTool() {
 
   const minify = () => {
     if (!input.trim()) { setOutput(""); setError(""); return; }
-    try {
-      const parsed = JSON.parse(input);
-      setOutput(JSON.stringify(parsed));
-      setError("");
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Invalid JSON");
+    const result = parseJsonAst(input);
+    if (result.status === "error") {
+      const { message, line, column } = result.error;
+      setError(`${message}, line ${line}, column ${column}`);
       setOutput("");
+      return;
     }
+    setOutput(stringifyJsonAst(result.ast));
+    setError("");
   };
 
   const prettify = () => {
     if (!input.trim()) { setOutput(""); setError(""); return; }
-    try {
-      const parsed = JSON.parse(input);
-      setOutput(JSON.stringify(parsed, null, 2));
-      setError("");
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Invalid JSON");
+    const result = parseJsonAst(input);
+    if (result.status === "error") {
+      const { message, line, column } = result.error;
+      setError(`${message}, line ${line}, column ${column}`);
       setOutput("");
+      return;
     }
+    setOutput(stringifyJsonAst(result.ast, 2));
+    setError("");
   };
 
   const copy = () => {
