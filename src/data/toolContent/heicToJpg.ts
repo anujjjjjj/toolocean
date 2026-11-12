@@ -304,6 +304,11 @@ export const heicToJpgContent: Partial<ToolPageContent> = {
       description: "Move a converted JPG or PNG on to WebP.",
     },
     {
+      name: "HEIC to PDF",
+      path: "/heic-to-pdf",
+      description: "The same decoder, placing each still on its own PDF page.",
+    },
+    {
       name: "Images to PDF",
       path: "/images-to-pdf",
       description: "Collect converted photos of documents into one PDF.",

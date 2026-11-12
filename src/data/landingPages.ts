@@ -42,6 +42,7 @@ export type LandingEmbed =
   | { tool: "image-compressor" | "pdf-compress"; targetBytes: number }
   | { tool: "image-format-converter"; output: "image/jpeg" | "image/png" | "image/webp" }
   | { tool: "heic-to-jpg"; format: "jpg" | "png" }
+  | { tool: "heic-to-pdf" }
   | { tool: "pdf-unlock" }
   | { tool: "images-to-pdf"; input: "jpeg" | "png" }
   | { tool: "pdf-to-images"; output: "png" | "jpeg" };
@@ -1861,6 +1862,100 @@ export const LANDING_PAGES: LandingPage[] = [
       { path: "/png-to-pdf", label: "PNG to PDF", note: "Put PNG images back into one PDF" },
       { path: "/pdf-to-text", label: "PDF to Text", note: "Copy the words instead of a picture of them" },
       { path: "/pdf-tools", label: "All PDF tools", note: "Every PDF page on this site" },
+    ],
+  },
+  {
+    slug: "heic-to-pdf",
+    seo: {
+      title: "HEIC to PDF Converter, No Upload",
+      description:
+        "Convert HEIC photos to a PDF in your browser. A bundled decoder works in Chrome, Firefox and Edge, each still sits upright on its own page, and nothing is uploaded.",
+      keywords: [
+        "heic to pdf",
+        "heif to pdf",
+        "iphone heic to pdf",
+        "convert heic to pdf",
+        "heic to pdf no upload",
+        "live photo to pdf",
+      ],
+    },
+    h1: "Convert HEIC photos to a PDF",
+    footerLabel: "HEIC to PDF",
+    lede:
+      "iPhone photos are often saved as HEIC, which Chrome, Firefox and Edge will not open on their own. This page carries the same wasm decoder as HEIC to JPG, turns each still into a JPEG at quality 0.92, and places those pictures into one PDF, one page per photo, in the order you add them.",
+    tools: ["heic-to-jpg", "images-to-pdf", "image-compressor", "pdf-compress"],
+    embed: { tool: "heic-to-pdf" },
+    howTo: {
+      name: "How to convert HEIC photos to a PDF",
+      steps: [
+        {
+          title: "Add the HEIC or HEIF files",
+          body: "Drop them on the box or browse. Each file is checked by its first bytes, so a JPEG renamed .heic is named and refused before the decoder starts.",
+        },
+        {
+          title: "Wait until each still has decoded",
+          body: "A worker in this tab decodes the photo with a bundled copy of libheif. Portrait shots come out upright because the decoder applies the file's rotation. A Live Photo contributes only its main still; the motion clip is not added.",
+        },
+        {
+          title: "Press Create PDF",
+          body: "Your browser saves a PDF with one page per decoded photo, in the list order, each page as many points wide and high as the picture has pixels. If nothing decoded, nothing is downloaded.",
+        },
+      ],
+    },
+    sections: [
+      {
+        heading: "How the photos become a PDF",
+        body: [
+          "Chrome, Firefox and Edge cannot decode HEIC with their ordinary image APIs. The converter therefore loads libheif as WebAssembly, already a dependency of HEIC to JPG, and runs it in a worker. The pixels that come back have already had the file's irot, imir and clap transforms applied, so a portrait photo is taller than it is wide and does not need a second rotation on the canvas.",
+          "Those pixels are encoded as JPEG at quality 0.92, the same default as HEIC to JPG, and then handed to the same pdf-lib assembly Images to PDF uses: one page per picture, sized to the pixel dimensions. This is a re-encode, not a byte-for-byte copy of the HEIC. Camera EXIF, GPS and the Live Photo motion track are not written into the PDF.",
+        ],
+      },
+      {
+        heading: "When a file cannot be used",
+        body: [
+          "A file that is not HEIC or HEIF, including a JPEG or PNG with a .heic name, is refused immediately and listed with the reason. A genuine HEIC that the decoder cannot read, or a browser in which the wasm decoder fails to start, is also listed in plain language. The Create PDF button stays off until at least one photo has decoded, and a withheld run does not fire the tool-run analytics event.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Does this work in Chrome, Firefox or Edge, or only in Safari?",
+        answer:
+          "It works in those browsers because the decoder is bundled as WebAssembly, not borrowed from the browser's built-in image loader. Safari can often preview a HEIC on its own, but this page still uses the same decoder so the result does not depend on which browser you opened.",
+      },
+      {
+        question: "Will a portrait photo come out sideways in the PDF?",
+        answer:
+          "No, for the usual iPhone case. libheif applies the rotation stored in the HEIC while it decodes, and the PDF page is made from those already-upright pixels. That is different from JPG to PDF, which copies JPEG bytes as they are and does not read an EXIF orientation tag.",
+      },
+      {
+        question: "What happens to a Live Photo?",
+        answer:
+          "A Live Photo HEIC can hold more than one image. This page converts the primary still, the same one HEIC to JPG keeps, and says so on the row when the file contained extras. The short motion clip is not placed in the PDF.",
+      },
+      {
+        question: "Does the picture lose quality inside the PDF?",
+        answer:
+          "The HEIC is decoded and then saved again as JPEG at quality 0.92, so there is a second lossy step. The original HEIC bytes are not copied in. If you want a lossless still first, convert to PNG on HEIC to JPG and build the PDF from those files on Images to PDF.",
+      },
+      {
+        question: "What if a file will not decode?",
+        answer:
+          "The row shows why, the photo is left out of the PDF, and if nothing decoded, Create PDF stays off and nothing is downloaded. A damaged file, an unsupported HEIF variant, or a decoder that failed to start in this browser are the usual causes.",
+      },
+      {
+        question: "Are my photos uploaded to make the PDF?",
+        answer:
+          "No, your files aren't uploaded. Decoding and building the PDF both run in this tab. Separately, the site counts visits: a page view in Umami, and in Google Analytics when configured, which stays cookieless unless you accept the banner. When a PDF is saved, Umami gets a tool-run event with only tool and slug, here heic-to-pdf and heic-to-pdf. Neither carries file names, sizes or contents.",
+      },
+    ],
+    related: [
+      { path: "/heic-to-jpg", label: "HEIC to JPG", note: "The same decoder, saving each still as a JPEG or PNG" },
+      { path: "/images-to-pdf", label: "Images to PDF", note: "Build a PDF from JPG, PNG or WebP you already have" },
+      { path: "/jpg-to-pdf", label: "JPG to PDF", note: "Place existing JPEGs on pages without decoding HEIC" },
+      { path: "/image-tools", label: "All image tools", note: "Resize, compress and convert in the browser" },
+      { path: "/pdf-tools", label: "All PDF tools", note: "Every PDF page on this site" },
+      { path: "/converter-tools", label: "All converter tools", note: "Other format conversions on this site" },
     ],
   },
 ];

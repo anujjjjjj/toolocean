@@ -57,6 +57,7 @@ const BY_SLUG: Record<string, Loader[]> = {
   "image-compressor": [encodeImage, jszip],
   "image-resizer": [jpeg],
   "heic-to-jpg": [heic, jszip],
+  "heic-to-pdf": [heic, pdfLib],
   "video-to-mp3": [videoToMp3],
 };
 

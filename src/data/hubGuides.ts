@@ -63,6 +63,12 @@ export const HUB_GUIDES: Record<string, HubGuideContent> = {
         limit: "HEIC or HEIF in, JPG or PNG out, in batches. EXIF and Live Photo motion are not kept.",
       },
       {
+        task: "iPhone photos into a PDF",
+        tool: "HEIC to PDF",
+        path: "/heic-to-pdf",
+        limit: "The same bundled decoder, in Chrome and Firefox too. Each still becomes one upright page.",
+      },
+      {
         task: "Cut a rectangle",
         tool: "Image crop",
         path: "/image-crop",
@@ -125,7 +131,7 @@ export const HUB_GUIDES: Record<string, HubGuideContent> = {
       {
         question: "Why will a HEIC not open?",
         answer:
-          "Most of these pages use the browser's own decoder, which accepts PNG, JPEG, WebP, and the other types it already displays. Outside Safari, HEIC is not one of them. Run the photo through [HEIC to JPG](/heic-to-jpg) first, which brings its own decoder, then resize or compress the JPG.",
+          "Most of these pages use the browser's own decoder, which accepts PNG, JPEG, WebP, and the other types it already displays. Outside Safari, HEIC is not one of them. Run the photo through [HEIC to JPG](/heic-to-jpg) first, which brings its own decoder, then resize or compress the JPG. To put the stills into a document, use [HEIC to PDF](/heic-to-pdf), which uses that same decoder.",
       },
       {
         question: "Can I resize for a 4 by 6 print?",
@@ -444,6 +450,7 @@ export const HUB_GUIDES: Record<string, HubGuideContent> = {
     paragraphs: [
       "JSON, YAML, XML, CSV, and TOML each have a page whose name is the direction you came for. CSV to JSON and JSON to CSV used to be three overlapping tools. They are two pages now, and the old addresses redirect. The same split applies to YAML and XML. TOML stays one page, JSON to TOML, and the swap control on it still flips toward JSON.",
       "The stronger converter was kept: file open, and the options that page already had. A swap button is still there if you arrived with the other format. The canonical link is the direction in the address, so search engines are not offered two URLs for one default.",
+      "Photo and document conversions live on the image and PDF hubs. iPhone HEIC stills can be placed into a PDF on [HEIC to PDF](/heic-to-pdf), which runs a bundled decoder in the tab rather than relying on Safari.",
     ],
     tableCaption: "Directional converters",
     rows: [

@@ -266,6 +266,11 @@ export const imagesToPdfContent: Partial<ToolPageContent> = {
 
   related: [
     {
+      name: "HEIC to PDF",
+      path: "/heic-to-pdf",
+      description: "iPhone HEIC photos decoded in the tab and placed on PDF pages.",
+    },
+    {
       name: "JPG to PDF",
       path: "/jpg-to-pdf",
       description: "The same converter locked to JPG, which says which files it turned away.",
