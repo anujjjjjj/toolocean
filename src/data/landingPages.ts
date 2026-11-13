@@ -1889,13 +1889,6 @@ export const LANDING_PAGES: LandingPage[] = [
       "iPhone photos are often saved as HEIC, which Chrome, Firefox and Edge will not open on their own. This page carries the same wasm decoder as HEIC to JPG, turns each still into a JPEG at quality 0.92, and places those pictures into one PDF, one page per photo, in the order you set. The default page is the size of the picture; A4, Letter, orientation and a margin are optional.",
     tools: ["heic-to-jpg", "images-to-pdf", "image-compressor", "pdf-compress"],
     embed: { tool: "heic-to-pdf" },
-    palette: {
-      name: "HEIC to PDF",
-      description: "Convert iPhone HEIC photos into a single PDF",
-      keywords: ["heic", "heif", "pdf", "iphone", "convert", "heic to pdf"],
-      icon: "FileText",
-      category: "Image Tools",
-    },
     howTo: {
       name: "How to convert iPhone photos from HEIC to PDF",
       steps: [

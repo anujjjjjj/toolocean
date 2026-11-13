@@ -236,7 +236,7 @@ test("the landing exists with a unique title, description and H1, and a branded 
   assert.equal(page.h1, "Convert iPhone photos from HEIC to PDF");
   assert.equal(page.footerLabel, "HEIC to PDF");
   assert.ok(page.lede);
-  assert.equal(page.palette?.name, "HEIC to PDF");
+  assert.ok(!page.palette, "catalog entry covers the command palette; a landing palette would duplicate it");
   assert.ok(ssr.PRERENDER_ROUTES.includes("/heic-to-pdf"));
 });
 
@@ -282,7 +282,7 @@ test("related links resolve, and the hubs and parent tools point at the page", (
   }
   for (const path of paths) assert.ok(ssr.PRERENDER_ROUTES.includes(path), `related ${path} is not prerendered`);
   for (const tool of page.tools) assert.ok(ssr.TOOL_CATALOG.some((entry) => entry.id === tool), tool);
-  assert.ok(!ssr.TOOL_CATALOG.some((entry) => entry.id === SLUG), "a catalog entry would retitle / and /all-tools and break uniqueness allowlists");
+  assert.ok(ssr.TOOL_CATALOG.some((entry) => entry.id === SLUG));
   assert.equal(ssr.PRERENDER_ROUTES.filter((route) => route === "/heic-to-pdf").length, 1);
   assert.match(hubs["image-tools"], /href="\/heic-to-pdf"/);
   assert.match(hubs["pdf-tools"], /href="\/heic-to-pdf"/);
@@ -292,6 +292,7 @@ test("related links resolve, and the hubs and parent tools point at the page", (
   assert.match(hubs["images-to-pdf"], /href="\/heic-to-pdf"/);
   assert.match(hubs["jpg-to-pdf"], /href="\/heic-to-pdf"/);
   assert.match(hubs["png-to-pdf"], /href="\/heic-to-pdf"/);
+  assert.match(hubs["all-tools"], /href="\/heic-to-pdf"/);
   const llms = read("public/llms.txt");
   assert.match(llms, /HEIC to PDF/);
   assert.match(llms, /https:\/\/toolocean\.co\/heic-to-pdf/);
