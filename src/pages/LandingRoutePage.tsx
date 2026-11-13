@@ -36,6 +36,9 @@ const ImageFormatConverterTool = lazy(() =>
 const HeicToJpgTool = lazy(() =>
   import("@/components/tools/implementations/image/HeicToJpgTool").then((m) => ({ default: m.HeicToJpgTool })),
 );
+const HeicToPdfTool = lazy(() =>
+  import("@/components/tools/implementations/image/HeicToPdfTool").then((m) => ({ default: m.HeicToPdfTool })),
+);
 const PdfUnlockTool = lazy(() =>
   import("@/components/tools/implementations/pdf/PdfUnlockTool").then((m) => ({ default: m.PdfUnlockTool })),
 );
@@ -315,6 +318,8 @@ function PresetTool({ embed }: { embed: LandingEmbed }) {
       return <ImageFormatConverterTool preset={{ output: embed.output }} />;
     case "heic-to-jpg":
       return <HeicToJpgTool preset={{ format: embed.format }} />;
+    case "heic-to-pdf":
+      return <HeicToPdfTool />;
     case "pdf-unlock":
       return <PdfUnlockTool />;
     case "images-to-pdf":
@@ -333,7 +338,7 @@ function assertNever(value: never): never {
 function pickerLabel(embed: LandingEmbed) {
   if (embed.tool === "images-to-pdf") return `Choose ${FORMAT_LABEL[embed.input]} images`;
   if (embed.tool.startsWith("pdf-")) return "Choose a PDF";
-  if (embed.tool === "heic-to-jpg") return "Choose HEIC photos";
+  if (embed.tool === "heic-to-jpg" || embed.tool === "heic-to-pdf") return "Choose HEIC photos";
   return "Choose an image";
 }
 
@@ -362,6 +367,7 @@ function EmbeddedTool({ embed, slug }: { embed: LandingEmbed; slug: string }) {
   const warm = () => {
     prefetchTool(tool, "hover");
     if (tool === "images-to-pdf") prefetchPdfLib();
+    if (tool === "heic-to-pdf") prefetchPdfLib();
     if (tool.startsWith("pdf-")) {
       prefetchPdfLib();
       prefetchPdfJs();

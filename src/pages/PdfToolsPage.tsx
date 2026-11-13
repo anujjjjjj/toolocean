@@ -90,7 +90,9 @@ const PdfToolsPage = () => {
                 {" "}and{" "}
                 <Link to="/ilovepdf-alternative" className="font-medium text-primary hover:underline">iLovePDF alternative</Link>
                 {" "}pages. If the only job is combining documents without an upload, start at{" "}
-                <Link to="/merge-pdf-without-uploading" className="font-medium text-primary hover:underline">merge PDFs without uploading</Link>.
+                <Link to="/merge-pdf-without-uploading" className="font-medium text-primary hover:underline">merge PDFs without uploading</Link>
+                . iPhone photos saved as HEIC can go straight into a document on{" "}
+                <Link to="/heic-to-pdf" className="font-medium text-primary hover:underline">HEIC to PDF</Link>.
               </p>
               <p>
                 A statement from a bank or card issuer that opens only with a password you were given can be cleared on{" "}

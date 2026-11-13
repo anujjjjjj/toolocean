@@ -1840,6 +1840,21 @@ export const toolSeoData: Record<string, ToolSeoEntry> = {
       },
     ],
   },
+  "heic-to-pdf": {
+    title: "HEIC to PDF: iPhone Photos, No Upload",
+    description:
+      "Convert iPhone HEIC photos to a PDF in your browser. A bundled decoder works in Chrome and Firefox, each still stays upright, and nothing is uploaded.",
+    keywords: ["heic to pdf", "convert iphone photos to pdf", "heif to pdf", "iphone heic to pdf", "convert heic to pdf", "heic to pdf no upload"],
+    faqs: [
+      privacyFaq("photo"),
+      {
+        question: "Does this work outside Safari?",
+        answer:
+          "Yes. The page loads a WebAssembly build of libheif in a worker, the same decoder as HEIC to JPG, so Chrome, Firefox and Edge can convert the stills without a server.",
+      },
+    ],
+  },
+
   "image-crop": {
     title: "Crop Image Online: Free Photo Cropper",
     description:

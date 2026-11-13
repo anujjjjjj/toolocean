@@ -62,6 +62,7 @@ calling `markToolSuccess`, or if a covered slug is missing from this table.
 | json-formatter | `src/components/tools/implementations/JsonFormatterTool.tsx` | 2 |
 | favicon-generator | `src/components/tools/implementations/image/FaviconGeneratorTool.tsx` | 2 |
 | heic-to-jpg | `src/components/tools/implementations/image/HeicToJpgTool.tsx` | 1 |
+| heic-to-pdf | `src/components/tools/implementations/image/HeicToPdfTool.tsx` | 1 |
 | color-picker | `src/components/tools/implementations/image/ImageColorPickerTool.tsx` | 1 |
 | image-compressor | `src/components/tools/implementations/image/ImageCompressorTool.tsx` | 2 |
 | image-crop | `src/components/tools/implementations/image/ImageCropTool.tsx` | 1 |

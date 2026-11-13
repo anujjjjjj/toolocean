@@ -37,13 +37,25 @@ export const INFO_ROUTES = Object.keys(INFO_PAGE_SEO);
 /** Every path the build emits static HTML for. */
 export const LANDING_ROUTES = LANDING_PAGES.map((page) => `/${page.slug}`);
 
-export const PRERENDER_ROUTES: string[] = [
+/** Preserve first-seen order so a landing at the same slug as a catalog tool wins. */
+function uniqueRoutes(routes: string[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const route of routes) {
+    if (seen.has(route)) continue;
+    seen.add(route);
+    out.push(route);
+  }
+  return out;
+}
+
+export const PRERENDER_ROUTES: string[] = uniqueRoutes([
   "/",
   ...CATEGORY_INDEXES,
   ...INFO_ROUTES,
   ...LANDING_ROUTES,
   ...TOOL_CATALOG.map((tool) => toolPath(tool)),
-];
+]);
 
 /** Builds the <head> markup for a prerendered route. */
 export function headForRoute(path: string): string {
