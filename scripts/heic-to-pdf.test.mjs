@@ -11,7 +11,15 @@ import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { test } from "node:test";
 import { heicFileError } from "../src/lib/image/heic.ts";
-import { assembleImagesPdf, heicToPdfOutcome, heicToPdfOutputName } from "../src/lib/image/heicToPdf.ts";
+import {
+  A4_PAGE_SIZE,
+  LETTER_PAGE_SIZE,
+  assembleImagesPdf,
+  heicToPdfOutcome,
+  heicToPdfOutputName,
+  imagePlacement,
+  pageDimensions,
+} from "../src/lib/image/heicToPdf.ts";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (rel) => readFileSync(join(ROOT, rel), "utf8");
@@ -87,6 +95,62 @@ test("assembleImagesPdf refuses an empty list", async () => {
   await assert.rejects(() => assembleImagesPdf([]), /No decoded photos/);
 });
 
+test("pageDimensions covers A4, Letter, Fit and orientation swaps", () => {
+  assert.deepEqual(pageDimensions(8, 16), { width: 8, height: 16 });
+  assert.deepEqual(pageDimensions(8, 16, { pageSize: "fit", orientation: "auto" }), { width: 8, height: 16 });
+  assert.deepEqual(pageDimensions(16, 8, { pageSize: "fit", orientation: "portrait" }), { width: 8, height: 16 });
+  assert.deepEqual(pageDimensions(8, 16, { pageSize: "fit", orientation: "landscape" }), { width: 16, height: 8 });
+  assert.deepEqual(pageDimensions(8, 16, { pageSize: "a4", orientation: "portrait" }), { width: A4_PAGE_SIZE[0], height: A4_PAGE_SIZE[1] });
+  assert.deepEqual(pageDimensions(8, 16, { pageSize: "a4", orientation: "landscape" }), { width: A4_PAGE_SIZE[1], height: A4_PAGE_SIZE[0] });
+  assert.deepEqual(pageDimensions(16, 8, { pageSize: "a4", orientation: "auto" }), { width: A4_PAGE_SIZE[1], height: A4_PAGE_SIZE[0] });
+  assert.deepEqual(pageDimensions(8, 16, { pageSize: "a4", orientation: "auto" }), { width: A4_PAGE_SIZE[0], height: A4_PAGE_SIZE[1] });
+  assert.deepEqual(pageDimensions(8, 16, { pageSize: "letter", orientation: "portrait" }), { width: LETTER_PAGE_SIZE[0], height: LETTER_PAGE_SIZE[1] });
+  assert.deepEqual(pageDimensions(8, 16, { pageSize: "letter", orientation: "landscape" }), { width: LETTER_PAGE_SIZE[1], height: LETTER_PAGE_SIZE[0] });
+});
+
+test("imagePlacement is edge-to-edge with no margin, and inset or centred otherwise", () => {
+  assert.deepEqual(imagePlacement(8, 16, 8, 16, 0), { x: 0, y: 0, width: 8, height: 16 });
+  assert.deepEqual(imagePlacement(16, 8, 16, 8, 2), { x: 4, y: 2, width: 8, height: 4 });
+  const letterboxed = imagePlacement(A4_PAGE_SIZE[0], A4_PAGE_SIZE[1], 16, 8, 0);
+  assert.equal(letterboxed.width, A4_PAGE_SIZE[0]);
+  assert.ok(letterboxed.height < A4_PAGE_SIZE[1]);
+  assert.equal(letterboxed.x, 0);
+  assert.ok(letterboxed.y > 0);
+  const tight = imagePlacement(100, 100, 80, 80, 200);
+  assert.equal(tight.width, 0);
+  assert.equal(tight.height, 0);
+  assert.equal(tight.x, 50);
+  assert.equal(tight.y, 50);
+});
+
+test("assembleImagesPdf writes A4, Letter and landscape page sizes, and margin does not change them", async () => {
+  const portrait = { name: "portrait.jpg", bytes: PORTRAIT, format: "jpeg" };
+  const landscape = { name: "landscape.jpg", bytes: LANDSCAPE, format: "jpeg" };
+  const { PDFDocument } = await import("pdf-lib");
+
+  const a4 = await PDFDocument.load(await assembleImagesPdf([portrait], { pageSize: "a4", orientation: "portrait" }));
+  assert.deepEqual(a4.getPages()[0].getSize(), { width: A4_PAGE_SIZE[0], height: A4_PAGE_SIZE[1] });
+
+  const letter = await PDFDocument.load(await assembleImagesPdf([portrait], { pageSize: "letter", orientation: "portrait" }));
+  assert.deepEqual(letter.getPages()[0].getSize(), { width: LETTER_PAGE_SIZE[0], height: LETTER_PAGE_SIZE[1] });
+
+  const landscapeA4 = await PDFDocument.load(await assembleImagesPdf([landscape], { pageSize: "a4", orientation: "landscape" }));
+  assert.deepEqual(landscapeA4.getPages()[0].getSize(), { width: A4_PAGE_SIZE[1], height: A4_PAGE_SIZE[0] });
+
+  const fit = await PDFDocument.load(await assembleImagesPdf([portrait, landscape]));
+  const fitSizes = fit.getPages().map((page) => page.getSize());
+  assert.deepEqual(fitSizes[0], { width: 8, height: 16 });
+  assert.deepEqual(fitSizes[1], { width: 16, height: 8 });
+
+  const margined = await PDFDocument.load(
+    await assembleImagesPdf([portrait], { pageSize: "a4", orientation: "portrait", margin: 36 }),
+  );
+  assert.deepEqual(margined.getPages()[0].getSize(), { width: A4_PAGE_SIZE[0], height: A4_PAGE_SIZE[1] });
+  const box = imagePlacement(A4_PAGE_SIZE[0], A4_PAGE_SIZE[1], 8, 16, 36);
+  assert.ok(box.x >= 36 && box.y >= 36);
+  assert.ok(box.width < A4_PAGE_SIZE[0] - 72 || box.height < A4_PAGE_SIZE[1] - 72);
+});
+
 test("the tool withholds a download and a success mark when nothing is ready", () => {
   const source = read("src/components/tools/implementations/image/HeicToPdfTool.tsx");
   assert.match(source, /heicToPdfOutcome\(ready\.length\)/);
@@ -99,6 +163,13 @@ test("the tool withholds a download and a success mark when nothing is ready", (
   assert.match(source, /The decoder could not start in this browser/);
   assert.match(source, /This photo could not be decoded/);
   assert.doesNotMatch(source, /from "libheif-js"/);
+  assert.match(source, /data-heic-pdf-page-size/);
+  assert.match(source, /data-heic-pdf-orientation/);
+  assert.match(source, /data-heic-pdf-margin/);
+  assert.match(source, /data-heic-pdf-move-up/);
+  assert.match(source, /data-heic-pdf-move-down/);
+  assert.match(source, /data-heic-pdf-progress/);
+  assert.match(source, /assembleImagesPdf\(images, \{ pageSize, orientation, margin \}\)/);
 });
 
 function loadSsr() {
@@ -113,6 +184,10 @@ function loadSsr() {
     "src/data/toolContent/imagesToPdf.ts",
     "src/pages/PdfToolsPage.tsx",
     "src/components/tools/implementations/image/HeicToPdfTool.tsx",
+    "src/data/toolCatalog.ts",
+    "src/lib/prerenderRoutes.ts",
+    "src/lib/pdf/assembleImagesPdf.ts",
+    "src/lib/allToolsForPalette.ts",
   ];
   const stale = !existsSync(entry) || sources.some((rel) => statSync(join(ROOT, rel)).mtimeMs > statSync(entry).mtimeMs);
   if (stale) {
@@ -132,7 +207,11 @@ const hubs = {
   "pdf-tools": (await ssr.renderRoute("/pdf-tools")).html,
   "converter-tools": (await ssr.renderRoute("/converter-tools")).html,
   "heic-to-jpg": (await ssr.renderRoute("/heic-to-jpg")).html,
+  "heic-to-png": (await ssr.renderRoute("/heic-to-png")).html,
   "images-to-pdf": (await ssr.renderRoute("/images-to-pdf")).html,
+  "jpg-to-pdf": (await ssr.renderRoute("/jpg-to-pdf")).html,
+  "png-to-pdf": (await ssr.renderRoute("/png-to-pdf")).html,
+  "all-tools": (await ssr.renderRoute("/all-tools")).html,
 };
 
 function graph() {
@@ -145,7 +224,7 @@ function graph() {
 test("the landing exists with a unique title, description and H1, and a branded title that fits", () => {
   assert.ok(page);
   assert.deepEqual(page.embed, { tool: "heic-to-pdf" });
-  assert.equal(page.seo.title, "HEIC to PDF Converter, No Upload");
+  assert.equal(page.seo.title, "HEIC to PDF – Convert iPhone Photos");
   assert.ok(page.seo.title.length + " | ToolOcean".length <= 60);
   assert.ok(!page.seo.title.includes("ToolOcean"));
   assert.ok(page.seo.description.length >= 140 && page.seo.description.length <= 165, page.seo.description.length);
@@ -154,16 +233,16 @@ test("the landing exists with a unique title, description and H1, and a branded 
     assert.notEqual(page.seo.description, other.seo.description);
     assert.notEqual(page.h1, other.h1);
   }
-  assert.equal(page.h1, "Convert HEIC photos to a PDF");
+  assert.equal(page.h1, "Convert iPhone photos from HEIC to PDF");
   assert.equal(page.footerLabel, "HEIC to PDF");
   assert.ok(page.lede);
-  assert.ok(!page.palette, "this landing should not add a palette entry");
+  assert.equal(page.palette?.name, "HEIC to PDF");
   assert.ok(ssr.PRERENDER_ROUTES.includes("/heic-to-pdf"));
 });
 
-test("the page has a 3-step how-to, 5 or 6 FAQs, FAQPage schema and a self canonical", () => {
+test("the page has a 3-step how-to, 5 to 7 FAQs, FAQPage schema and a self canonical", () => {
   assert.equal(page.howTo.steps.length, 3);
-  assert.ok(page.faqs.length >= 5 && page.faqs.length <= 6, page.faqs.length);
+  assert.ok(page.faqs.length >= 5 && page.faqs.length <= 7, page.faqs.length);
   const types = graph().map((node) => node["@type"]);
   assert.ok(types.includes("FAQPage"));
   assert.ok(types.includes("HowTo"));
@@ -174,7 +253,7 @@ test("the page has a 3-step how-to, 5 or 6 FAQs, FAQPage schema and a self canon
   assert.deepEqual(schema, visible);
   const head = ssr.headForRoute(`/${SLUG}`);
   assert.match(head, /<link rel="canonical" href="https:\/\/toolocean\.co\/heic-to-pdf"/);
-  assert.match(head, /<title>HEIC to PDF Converter, No Upload \| ToolOcean<\/title>/);
+  assert.match(head, /<title>HEIC to PDF – Convert iPhone Photos \| ToolOcean<\/title>/);
 });
 
 test("privacy copy names Umami, optional GA, and tool-run fields tool and slug", () => {
@@ -189,16 +268,33 @@ test("privacy copy names Umami, optional GA, and tool-run fields tool and slug",
 
 test("related links resolve, and the hubs and parent tools point at the page", () => {
   const paths = page.related.map((link) => link.path);
-  for (const required of ["/heic-to-jpg", "/images-to-pdf", "/image-tools", "/pdf-tools", "/converter-tools"]) {
+  for (const required of [
+    "/heic-to-jpg",
+    "/heic-to-png",
+    "/images-to-pdf",
+    "/jpg-to-pdf",
+    "/png-to-pdf",
+    "/image-tools",
+    "/pdf-tools",
+    "/all-tools",
+  ]) {
     assert.ok(paths.includes(required), `missing ${required}`);
   }
   for (const path of paths) assert.ok(ssr.PRERENDER_ROUTES.includes(path), `related ${path} is not prerendered`);
   for (const tool of page.tools) assert.ok(ssr.TOOL_CATALOG.some((entry) => entry.id === tool), tool);
+  assert.ok(!ssr.TOOL_CATALOG.some((entry) => entry.id === SLUG), "a catalog entry would retitle / and /all-tools and break uniqueness allowlists");
+  assert.equal(ssr.PRERENDER_ROUTES.filter((route) => route === "/heic-to-pdf").length, 1);
   assert.match(hubs["image-tools"], /href="\/heic-to-pdf"/);
   assert.match(hubs["pdf-tools"], /href="\/heic-to-pdf"/);
   assert.match(hubs["converter-tools"], /href="\/heic-to-pdf"/);
   assert.match(hubs["heic-to-jpg"], /href="\/heic-to-pdf"/);
+  assert.match(hubs["heic-to-png"], /href="\/heic-to-pdf"/);
   assert.match(hubs["images-to-pdf"], /href="\/heic-to-pdf"/);
+  assert.match(hubs["jpg-to-pdf"], /href="\/heic-to-pdf"/);
+  assert.match(hubs["png-to-pdf"], /href="\/heic-to-pdf"/);
+  const llms = read("public/llms.txt");
+  assert.match(llms, /HEIC to PDF/);
+  assert.match(llms, /https:\/\/toolocean\.co\/heic-to-pdf/);
 });
 
 test("the prerendered workbench dropzone accepts HEIC and the embed is wired", () => {

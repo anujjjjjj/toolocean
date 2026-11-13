@@ -160,12 +160,16 @@ const routes = [
   { path: "/privacy", priority: "0.3", changefreq: "yearly", source: "src/pages/PrivacyPage.tsx" },
   { path: "/terms", priority: "0.3", changefreq: "yearly", source: "src/pages/TermsPage.tsx" },
   // Tool pages are the money pages. They matter more than the listings.
-  ...toolSlugs.map((slug) => ({
-    path: `/${slug}`,
-    priority: "0.8",
-    changefreq: "monthly",
-    source: authoredContentPath(slug) ?? "src/data/toolSeo.ts",
-  })),
+  // A catalog tool that also has a landing at the same slug (for example
+  // /heic-to-pdf) is already listed above; a second <loc> would be a sitemap bug.
+  ...toolSlugs
+    .filter((slug) => !landingSlugs.includes(slug))
+    .map((slug) => ({
+      path: `/${slug}`,
+      priority: "0.8",
+      changefreq: "monthly",
+      source: authoredContentPath(slug) ?? "src/data/toolSeo.ts",
+    })),
 ];
 
 const urlEntries = routes

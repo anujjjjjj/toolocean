@@ -15,6 +15,7 @@ import {
     sniffImageFormat,
     summarizeBatch,
 } from "@/lib/image/sniffImageFormat";
+import { assembleImagesPdf, type ImagesPdfImage } from "@/lib/pdf/assembleImagesPdf";
 
 /** Landing pages lock the input to one format, checked by the file's first bytes. */
 export interface ImagesToPdfPreset {
@@ -139,7 +140,6 @@ export function ImagesToPdfTool({ preset }: { preset?: ImagesToPdfPreset } = {})
     };
 
     const convertToPdf = async () => {
-        const { PDFDocument } = await import("pdf-lib");
         if (images.length === 0) {
             toast({
                 title: "No images",
@@ -159,25 +159,24 @@ export function ImagesToPdfTool({ preset }: { preset?: ImagesToPdfPreset } = {})
                 setIsProcessing(false);
                 return;
             }
-            const pdfDoc = await PDFDocument.create();
             const budget = limitBytes ? Math.max(8 * KILOBYTE, limitBytes - 2048 - images.length * 400) : null;
             const perImage = budget ? Math.floor(budget / images.length) : null;
+            const payloads: ImagesPdfImage[] = [];
 
             for (const imageFile of images) {
                 const arrayBuffer = await imageFile.file.arrayBuffer();
                 const uint8Array = new Uint8Array(arrayBuffer);
 
-                let image;
                 if (perImage) {
                     const { encodeImageToTarget } = await import("@/lib/targetSize/encodeImageToTarget");
                     const bitmap = await createImageBitmap(imageFile.file);
                     const encoded = await encodeImageToTarget(bitmap, { targetBytes: perImage, mime: "image/jpeg" });
                     bitmap.close();
-                    image = await pdfDoc.embedJpg(encoded.bytes);
+                    payloads.push({ name: imageFile.name, bytes: encoded.bytes, format: "jpeg" });
                 } else if (sniffImageFormat(uint8Array) === "png") {
-                    image = await pdfDoc.embedPng(uint8Array);
+                    payloads.push({ name: imageFile.name, bytes: uint8Array, format: "png" });
                 } else if (sniffImageFormat(uint8Array) === "jpeg") {
-                    image = await pdfDoc.embedJpg(uint8Array);
+                    payloads.push({ name: imageFile.name, bytes: uint8Array, format: "jpeg" });
                 } else {
                     // For other formats, try to convert via canvas
                     const img = new window.Image();
@@ -200,19 +199,11 @@ export function ImagesToPdfTool({ preset }: { preset?: ImagesToPdfPreset } = {})
                     for (let i = 0; i < binaryString.length; i++) {
                         bytes[i] = binaryString.charCodeAt(i);
                     }
-                    image = await pdfDoc.embedJpg(bytes);
+                    payloads.push({ name: imageFile.name, bytes, format: "jpeg" });
                 }
-
-                const page = pdfDoc.addPage([image.width, image.height]);
-                page.drawImage(image, {
-                    x: 0,
-                    y: 0,
-                    width: image.width,
-                    height: image.height,
-                });
             }
 
-            const pdfBytes = await pdfDoc.save();
+            const pdfBytes = await assembleImagesPdf(payloads);
             if (limitBytes && pdfBytes.byteLength > limitBytes) {
                 toast({
                     title: "Still over the limit",

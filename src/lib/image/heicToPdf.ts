@@ -1,16 +1,19 @@
 /**
- * Thin glue for /heic-to-pdf: names, the deliver/withhold decision, and
- * assembling already-encoded JPEG or PNG bytes into a one-page-per-image PDF.
+ * Thin glue for /heic-to-pdf: names and the deliver/withhold decision.
  *
- * HEIC decoding stays in heicDecoder.ts; this file never touches the wasm
- * engine. Relative-free of DOM so node --test can import it directly.
+ * HEIC decoding stays in heicDecoder.ts. PDF page layout lives in
+ * assembleImagesPdf.ts, shared with Images to PDF. This file never touches
+ * the wasm engine and is DOM-free so node --test can import it directly.
  */
 
-export type HeicPdfImage = {
-  name: string;
-  bytes: Uint8Array;
-  format: "jpeg" | "png";
-};
+export {
+  A4_PAGE_SIZE,
+  LETTER_PAGE_SIZE,
+  assembleImagesPdf,
+  imagePlacement,
+  pageDimensions,
+} from "../pdf/assembleImagesPdf.ts";
+export type { ImagesPdfImage as HeicPdfImage, ImagesPdfOptions, PdfOrientation, PdfPageSize } from "../pdf/assembleImagesPdf.ts";
 
 export type HeicPdfOutcome =
   | { deliver: true; success: true }
@@ -29,30 +32,4 @@ export function heicToPdfOutputName(names: string[]): string {
     return `${base || "image"}.pdf`;
   }
   return "heic-photos.pdf";
-}
-
-/**
- * One page per image, in array order, sized to the photo's pixel width and
- * height. Callers must pass already-upright pixels (libheif applies irot
- * before encode). The original HEIC bytes are not copied in.
- */
-export async function assembleImagesPdf(images: HeicPdfImage[]): Promise<Uint8Array> {
-  if (images.length === 0) {
-    const error = new Error("No decoded photos to put in the PDF.");
-    (error as { reason?: string }).reason = "no-decoded";
-    throw error;
-  }
-  const { PDFDocument } = await import("pdf-lib");
-  const pdfDoc = await PDFDocument.create();
-  for (const image of images) {
-    const embedded = image.format === "png" ? await pdfDoc.embedPng(image.bytes) : await pdfDoc.embedJpg(image.bytes);
-    const page = pdfDoc.addPage([embedded.width, embedded.height]);
-    page.drawImage(embedded, {
-      x: 0,
-      y: 0,
-      width: embedded.width,
-      height: embedded.height,
-    });
-  }
-  return pdfDoc.save();
 }

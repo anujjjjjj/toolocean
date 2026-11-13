@@ -1415,6 +1415,7 @@ export const LANDING_PAGES: LandingPage[] = [
     ],
     related: [
       { path: "/heic-to-jpg", label: "HEIC to JPG", note: "The full converter page, with measurements for both outputs" },
+      { path: "/heic-to-pdf", label: "HEIC to PDF", note: "The same decoder, placing the stills into one document" },
       { path: "/webp-to-jpg", label: "WebP to JPG", note: "For WebP images a form or program will not accept" },
       { path: "/image-format-converter", label: "Image format converter", note: "Move the PNG on to WebP or JPG later" },
       { path: "/image-tools", label: "All image tools", note: "Every image page on this site" },
@@ -1597,6 +1598,7 @@ export const LANDING_PAGES: LandingPage[] = [
       { path: "/png-to-pdf", label: "PNG to PDF", note: "For screenshots and diagrams saved as PNG" },
       { path: "/pdf-to-jpg", label: "PDF to JPG", note: "The opposite direction, pages back out as photos" },
       { path: "/heic-to-jpg", label: "HEIC to JPG", note: "Turn iPhone photos into JPEGs before adding them here" },
+      { path: "/heic-to-pdf", label: "HEIC to PDF", note: "Decode iPhone HEIC stills straight into a PDF" },
       { path: "/compress-pdf-to-100kb", label: "Compress a PDF to 100 KB", note: "When the finished PDF meets an upload limit" },
       { path: "/pdf-tools", label: "All PDF tools", note: "Every PDF page on this site" },
     ],
@@ -1684,6 +1686,7 @@ export const LANDING_PAGES: LandingPage[] = [
     related: [
       { path: "/images-to-pdf", label: "Images to PDF", note: "Mix PNG, JPG and WebP in one document" },
       { path: "/jpg-to-pdf", label: "JPG to PDF", note: "For photographs, embedded without re-encoding" },
+      { path: "/heic-to-pdf", label: "HEIC to PDF", note: "Decode iPhone HEIC stills straight into a PDF" },
       { path: "/pdf-to-png", label: "PDF to PNG", note: "Turn PDF pages back into lossless PNGs" },
       { path: "/image-format-converter", label: "Image format converter", note: "Switch a photo from PNG to JPG before building the PDF" },
       { path: "/compress-pdf-to-200kb", label: "Compress a PDF to 200 KB", note: "When a portal caps the upload size" },
@@ -1867,11 +1870,12 @@ export const LANDING_PAGES: LandingPage[] = [
   {
     slug: "heic-to-pdf",
     seo: {
-      title: "HEIC to PDF Converter, No Upload",
+      title: "HEIC to PDF – Convert iPhone Photos",
       description:
-        "Convert HEIC photos to a PDF in your browser. A bundled decoder works in Chrome, Firefox and Edge, each still sits upright on its own page, and nothing is uploaded.",
+        "Convert iPhone photos from HEIC to a PDF in this tab. The bundled decoder works in Chrome, Firefox and Edge; choose A4, Letter or fit pages; nothing is uploaded.",
       keywords: [
         "heic to pdf",
+        "convert iphone photos to pdf",
         "heif to pdf",
         "iphone heic to pdf",
         "convert heic to pdf",
@@ -1879,26 +1883,33 @@ export const LANDING_PAGES: LandingPage[] = [
         "live photo to pdf",
       ],
     },
-    h1: "Convert HEIC photos to a PDF",
+    h1: "Convert iPhone photos from HEIC to PDF",
     footerLabel: "HEIC to PDF",
     lede:
-      "iPhone photos are often saved as HEIC, which Chrome, Firefox and Edge will not open on their own. This page carries the same wasm decoder as HEIC to JPG, turns each still into a JPEG at quality 0.92, and places those pictures into one PDF, one page per photo, in the order you add them.",
+      "iPhone photos are often saved as HEIC, which Chrome, Firefox and Edge will not open on their own. This page carries the same wasm decoder as HEIC to JPG, turns each still into a JPEG at quality 0.92, and places those pictures into one PDF, one page per photo, in the order you set. The default page is the size of the picture; A4, Letter, orientation and a margin are optional.",
     tools: ["heic-to-jpg", "images-to-pdf", "image-compressor", "pdf-compress"],
     embed: { tool: "heic-to-pdf" },
+    palette: {
+      name: "HEIC to PDF",
+      description: "Convert iPhone HEIC photos into a single PDF",
+      keywords: ["heic", "heif", "pdf", "iphone", "convert", "heic to pdf"],
+      icon: "FileText",
+      category: "Image Tools",
+    },
     howTo: {
-      name: "How to convert HEIC photos to a PDF",
+      name: "How to convert iPhone photos from HEIC to PDF",
       steps: [
         {
           title: "Add the HEIC or HEIF files",
-          body: "Drop them on the box or browse. Each file is checked by its first bytes, so a JPEG renamed .heic is named and refused before the decoder starts.",
+          body: "Drop them on the box or browse. You can add a batch. Each file is checked by its first bytes, so a JPEG renamed .heic is named and refused before the decoder starts.",
         },
         {
-          title: "Wait until each still has decoded",
-          body: "A worker in this tab decodes the photo with a bundled copy of libheif. Portrait shots come out upright because the decoder applies the file's rotation. A Live Photo contributes only its main still; the motion clip is not added.",
+          title: "Reorder and choose the page",
+          body: "Drag a row or use the move buttons to set the page order. Pick A4, Letter, or fit to the photo, set portrait, landscape or auto, and a margin if you want a border. A worker in this tab decodes each still with a bundled copy of libheif, so portrait shots come out upright. A Live Photo contributes only its main still.",
         },
         {
           title: "Press Create PDF",
-          body: "Your browser saves a PDF with one page per decoded photo, in the list order, each page as many points wide and high as the picture has pixels. If nothing decoded, nothing is downloaded.",
+          body: "Your browser saves one PDF of the photos that decoded, in list order. Failed rows stay visible and are left out. If nothing decoded, nothing is downloaded.",
         },
       ],
     },
@@ -1907,13 +1918,13 @@ export const LANDING_PAGES: LandingPage[] = [
         heading: "How the photos become a PDF",
         body: [
           "Chrome, Firefox and Edge cannot decode HEIC with their ordinary image APIs. The converter therefore loads libheif as WebAssembly, already a dependency of HEIC to JPG, and runs it in a worker. The pixels that come back have already had the file's irot, imir and clap transforms applied, so a portrait photo is taller than it is wide and does not need a second rotation on the canvas.",
-          "Those pixels are encoded as JPEG at quality 0.92, the same default as HEIC to JPG, and then handed to the same pdf-lib assembly Images to PDF uses: one page per picture, sized to the pixel dimensions. This is a re-encode, not a byte-for-byte copy of the HEIC. Camera EXIF, GPS and the Live Photo motion track are not written into the PDF.",
+          "Those pixels are encoded as JPEG at quality 0.92, the same default as HEIC to JPG, and then handed to the same pdf-lib assembly Images to PDF uses. By default each page is as many points wide and high as the picture has pixels, with no margin. A4 and Letter, portrait or landscape, and a margin are optional: the photo is scaled uniformly to sit inside the sheet. This is a re-encode, not a byte-for-byte copy of the HEIC. Camera EXIF, GPS and the Live Photo motion track are not written into the PDF.",
         ],
       },
       {
         heading: "When a file cannot be used",
         body: [
-          "A file that is not HEIC or HEIF, including a JPEG or PNG with a .heic name, is refused immediately and listed with the reason. A genuine HEIC that the decoder cannot read, or a browser in which the wasm decoder fails to start, is also listed in plain language. The Create PDF button stays off until at least one photo has decoded, and a withheld run does not fire the tool-run analytics event.",
+          "A file that is not HEIC or HEIF, including a JPEG or PNG with a .heic name, is refused immediately and listed with the reason. A genuine HEIC that the decoder cannot read, or a browser in which the wasm decoder fails to start, is also listed in plain language. The rest of a mixed batch still converts. The Create PDF button stays off until at least one photo has decoded, and a withheld run does not fire the tool-run analytics event.",
         ],
       },
     ],
@@ -1929,6 +1940,11 @@ export const LANDING_PAGES: LandingPage[] = [
           "No, for the usual iPhone case. libheif applies the rotation stored in the HEIC while it decodes, and the PDF page is made from those already-upright pixels. That is different from JPG to PDF, which copies JPEG bytes as they are and does not read an EXIF orientation tag.",
       },
       {
+        question: "Can I choose A4 or Letter, or add a margin?",
+        answer:
+          "Yes. The default is fit image: each page is the size of the photo, with no margin. A4 is 595.28 by 841.89 points, Letter is 612 by 792, and either can be portrait or landscape. Auto picks the orientation that matches the photo. A margin, in points, shrinks the picture inside the page; it does not change the page size.",
+      },
+      {
         question: "What happens to a Live Photo?",
         answer:
           "A Live Photo HEIC can hold more than one image. This page converts the primary still, the same one HEIC to JPG keeps, and says so on the row when the file contained extras. The short motion clip is not placed in the PDF.",
@@ -1936,12 +1952,12 @@ export const LANDING_PAGES: LandingPage[] = [
       {
         question: "Does the picture lose quality inside the PDF?",
         answer:
-          "The HEIC is decoded and then saved again as JPEG at quality 0.92, so there is a second lossy step. The original HEIC bytes are not copied in. If you want a lossless still first, convert to PNG on HEIC to JPG and build the PDF from those files on Images to PDF.",
+          "The HEIC is decoded and then saved again as JPEG at quality 0.92, so there is a second lossy step. The original HEIC bytes are not copied in. If you want a lossless still first, convert to PNG on HEIC to JPG or HEIC to PNG and build the PDF from those files on Images to PDF.",
       },
       {
         question: "What if a file will not decode?",
         answer:
-          "The row shows why, the photo is left out of the PDF, and if nothing decoded, Create PDF stays off and nothing is downloaded. A damaged file, an unsupported HEIF variant, or a decoder that failed to start in this browser are the usual causes.",
+          "The row shows why, the photo is left out of the PDF, and if nothing decoded, Create PDF stays off and nothing is downloaded. The rest of a mixed batch still converts. A damaged file, an unsupported HEIF variant, or a decoder that failed to start in this browser are the usual causes.",
       },
       {
         question: "Are my photos uploaded to make the PDF?",
@@ -1951,10 +1967,13 @@ export const LANDING_PAGES: LandingPage[] = [
     ],
     related: [
       { path: "/heic-to-jpg", label: "HEIC to JPG", note: "The same decoder, saving each still as a JPEG or PNG" },
+      { path: "/heic-to-png", label: "HEIC to PNG", note: "Lossless stills from the same decoder" },
       { path: "/images-to-pdf", label: "Images to PDF", note: "Build a PDF from JPG, PNG or WebP you already have" },
       { path: "/jpg-to-pdf", label: "JPG to PDF", note: "Place existing JPEGs on pages without decoding HEIC" },
+      { path: "/png-to-pdf", label: "PNG to PDF", note: "Place existing PNGs on pages without decoding HEIC" },
       { path: "/image-tools", label: "All image tools", note: "Resize, compress and convert in the browser" },
       { path: "/pdf-tools", label: "All PDF tools", note: "Every PDF page on this site" },
+      { path: "/all-tools", label: "All tools", note: "The full catalogue, including this page" },
       { path: "/converter-tools", label: "All converter tools", note: "Other format conversions on this site" },
     ],
   },

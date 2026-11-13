@@ -1,9 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Download, Loader2, ShieldCheck, Upload, X } from "lucide-react";
+import { ChevronDown, ChevronUp, Download, GripVertical, Loader2, ShieldCheck, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import { markToolSuccess } from "@/lib/toolResult";
 import { DEFAULT_JPG_QUALITY, HEIC_SNIFF_BYTES, heicFileError } from "@/lib/image/heic";
-import { assembleImagesPdf, heicToPdfOutcome, heicToPdfOutputName } from "@/lib/image/heicToPdf";
+import {
+  assembleImagesPdf,
+  heicToPdfOutcome,
+  heicToPdfOutputName,
+  type PdfOrientation,
+  type PdfPageSize,
+} from "@/lib/image/heicToPdf";
 import type { HeicDecoder } from "@/lib/image/heicDecoder";
 
 type Status = "waiting" | "converting" | "done" | "error";
@@ -29,6 +37,16 @@ interface Item {
 
 const ACCEPT = ".heic,.heif,image/heic,image/heif";
 const OUTPUT_KEY = "jpg-0.92";
+const PAGE_SIZES: { value: PdfPageSize; label: string }[] = [
+  { value: "fit", label: "Fit image" },
+  { value: "a4", label: "A4" },
+  { value: "letter", label: "Letter" },
+];
+const ORIENTATIONS: { value: PdfOrientation; label: string }[] = [
+  { value: "auto", label: "Auto" },
+  { value: "portrait", label: "Portrait" },
+  { value: "landscape", label: "Landscape" },
+];
 
 function release(output: Output | null) {
   if (!output) return;
@@ -55,6 +73,10 @@ export function HeicToPdfTool() {
   const [items, setItems] = useState<Item[]>([]);
   const [building, setBuilding] = useState(false);
   const [buildError, setBuildError] = useState<string | null>(null);
+  const [pageSize, setPageSize] = useState<PdfPageSize>("fit");
+  const [orientation, setOrientation] = useState<PdfOrientation>("auto");
+  const [margin, setMargin] = useState(0);
+  const [draggedId, setDraggedId] = useState<number | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const itemsRef = useRef<Item[]>([]);
@@ -155,9 +177,38 @@ export function HeicToPdfTool() {
     setBuildError(null);
   };
 
+  const move = (id: number, direction: -1 | 1) => {
+    update((list) => {
+      const index = list.findIndex((entry) => entry.id === id);
+      const next = index + direction;
+      if (index < 0 || next < 0 || next >= list.length) return list;
+      const copy = [...list];
+      const [item] = copy.splice(index, 1);
+      copy.splice(next, 0, item);
+      return copy;
+    });
+  };
+
+  const onItemDragOver = (event: React.DragEvent, targetId: number) => {
+    event.preventDefault();
+    if (draggedId === null || draggedId === targetId) return;
+    update((list) => {
+      const from = list.findIndex((entry) => entry.id === draggedId);
+      const to = list.findIndex((entry) => entry.id === targetId);
+      if (from < 0 || to < 0 || from === to) return list;
+      const copy = [...list];
+      const [item] = copy.splice(from, 1);
+      copy.splice(to, 0, item);
+      return copy;
+    });
+  };
+
   const done = items.filter((item) => item.status === "done" && item.output);
-  const busy = items.some((item) => item.status === "waiting" || item.status === "converting");
+  const pending = items.filter((item) => item.status === "waiting" || item.status === "converting");
+  const busy = pending.length > 0;
   const failed = items.filter((item) => item.status === "error");
+  const settled = done.length + failed.length;
+  const convertingIndex = items.findIndex((item) => item.status === "converting");
 
   const createPdf = async () => {
     const ready = itemsRef.current.filter((item) => item.status === "done" && item.output);
@@ -176,7 +227,7 @@ export function HeicToPdfTool() {
           format: "jpeg" as const,
         })),
       );
-      const pdfBytes = await assembleImagesPdf(images);
+      const pdfBytes = await assembleImagesPdf(images, { pageSize, orientation, margin });
       if (!mounted.current) return;
       const blob = new Blob([pdfBytes], { type: "application/pdf" });
       save(blob, heicToPdfOutputName(ready.map((item) => item.file.name)));
@@ -190,10 +241,14 @@ export function HeicToPdfTool() {
     }
   };
 
-  const statusText = (() => {
+  const progressText = (() => {
+    if (building) return "Building PDF…";
     if (!items.length) return null;
+    if (busy) {
+      const current = convertingIndex >= 0 ? convertingIndex + 1 : settled + 1;
+      return `Decoding ${Math.min(current, items.length)} of ${items.length}…`;
+    }
     const parts = [`${done.length} ready`];
-    if (busy) parts.push(`${items.filter((item) => item.status === "waiting" || item.status === "converting").length} still decoding`);
     if (failed.length) parts.push(`${failed.length} could not be used`);
     return `${parts.join(", ")}.`;
   })();
@@ -202,18 +257,93 @@ export function HeicToPdfTool() {
     <div className="mt-6 space-y-6">
       <input ref={inputRef} type="file" accept={ACCEPT} multiple className="hidden" onChange={onChange} />
 
+      <div className="flex flex-wrap items-end gap-x-8 gap-y-4">
+        <div className="space-y-2">
+          <Label id="heic-pdf-page-size-label">Page size</Label>
+          <div className="flex flex-wrap gap-2" role="group" aria-labelledby="heic-pdf-page-size-label" data-heic-pdf-page-size={pageSize}>
+            {PAGE_SIZES.map((option) => (
+              <Button
+                key={option.value}
+                type="button"
+                size="sm"
+                variant={pageSize === option.value ? "default" : "outline"}
+                aria-pressed={pageSize === option.value}
+                data-heic-pdf-page-size={option.value}
+                onClick={() => setPageSize(option.value)}
+              >
+                {option.label}
+              </Button>
+            ))}
+          </div>
+        </div>
+        <div className="space-y-2">
+          <Label id="heic-pdf-orientation-label">Orientation</Label>
+          <div className="flex flex-wrap gap-2" role="group" aria-labelledby="heic-pdf-orientation-label" data-heic-pdf-orientation={orientation}>
+            {ORIENTATIONS.map((option) => (
+              <Button
+                key={option.value}
+                type="button"
+                size="sm"
+                variant={orientation === option.value ? "default" : "outline"}
+                aria-pressed={orientation === option.value}
+                data-heic-pdf-orientation={option.value}
+                onClick={() => setOrientation(option.value)}
+              >
+                {option.label}
+              </Button>
+            ))}
+          </div>
+        </div>
+        <div className="w-full space-y-3 sm:max-w-xs sm:flex-1">
+          <Label htmlFor="heic-pdf-margin" className="flex items-baseline gap-x-2">
+            <span>Margin</span>
+            <span className="font-mono text-muted-foreground whitespace-nowrap">{margin} pt</span>
+          </Label>
+          <Slider
+            id="heic-pdf-margin"
+            aria-label="Page margin in points"
+            data-heic-pdf-margin={margin}
+            value={[margin]}
+            onValueChange={([value]) => setMargin(value)}
+            min={0}
+            max={72}
+            step={6}
+          />
+        </div>
+      </div>
+      <p className="text-sm text-muted-foreground">
+        Fit image keeps each page the size of the photo. A4 and Letter scale the picture uniformly to sit inside the
+        sheet. Auto orientation follows the photo; margin shrinks the picture, not the page.
+      </p>
+
       <div className="flex flex-wrap items-center gap-3">
         <Button type="button" variant="outline" data-analytics-label="heic-to-pdf-add" onClick={() => inputRef.current?.click()}>
           <Upload className="mr-2 h-4 w-4" />
           Add HEIC photos
         </Button>
-        <p className="text-sm text-muted-foreground">HEIC or HEIF, including a batch. Each photo becomes one page, in the order you add them.</p>
+        <p className="text-sm text-muted-foreground">HEIC or HEIF, including a batch. Reorder the list to set the page order.</p>
       </div>
 
       {items.length > 0 && (
         <ul className="divide-y divide-border overflow-hidden rounded-lg border" aria-label="Photos for the PDF">
-          {items.map((item) => (
-            <li key={item.id} className="flex items-center gap-3 p-3">
+          {items.map((item, index) => (
+            <li
+              key={item.id}
+              className="flex items-center gap-2 p-3 sm:gap-3"
+              onDragOver={(event) => onItemDragOver(event, item.id)}
+              onDrop={(event) => event.preventDefault()}
+            >
+              <button
+                type="button"
+                className="hidden h-8 w-6 flex-none cursor-grab touch-none items-center justify-center text-muted-foreground sm:flex"
+                aria-label={`Drag to reorder ${item.file.name}`}
+                data-heic-pdf-grip
+                draggable
+                onDragStart={() => setDraggedId(item.id)}
+                onDragEnd={() => setDraggedId(null)}
+              >
+                <GripVertical className="h-4 w-4" />
+              </button>
               {item.output?.thumbUrl ? (
                 <img src={item.output.thumbUrl} alt="" width={56} height={56} className="h-14 w-14 rounded object-cover" />
               ) : (
@@ -237,16 +367,61 @@ export function HeicToPdfTool() {
                   </p>
                 )}
               </div>
-              <Button type="button" variant="ghost" size="icon" aria-label={`Remove ${item.file.name}`} onClick={() => remove(item.id)}>
-                <X className="h-4 w-4" />
-              </Button>
+              <div className="flex flex-none items-center gap-0.5">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  aria-label={`Move ${item.file.name} up`}
+                  data-heic-pdf-move-up
+                  disabled={index === 0}
+                  onClick={() => move(item.id, -1)}
+                >
+                  <ChevronUp className="h-4 w-4" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  aria-label={`Move ${item.file.name} down`}
+                  data-heic-pdf-move-down
+                  disabled={index === items.length - 1}
+                  onClick={() => move(item.id, 1)}
+                >
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+                <Button type="button" variant="ghost" size="icon" className="h-8 w-8" aria-label={`Remove ${item.file.name}`} onClick={() => remove(item.id)}>
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
             </li>
           ))}
         </ul>
       )}
 
-      <div role="status" aria-live="polite" className="space-y-1 text-sm" data-heic-pdf-status>
-        {statusText && <p className={failed.length ? "text-destructive" : "text-muted-foreground"}>{statusText}</p>}
+      <div role="status" aria-live="polite" className="space-y-2 text-sm" data-heic-pdf-status>
+        {items.length > 0 && (busy || building) && (
+          <div
+            className="h-1 overflow-hidden rounded-full bg-muted"
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={building ? 1 : items.length}
+            aria-valuenow={building ? 0 : settled}
+            aria-label={building ? "Building PDF" : "Decoding photos"}
+          >
+            <div
+              className="h-full bg-primary transition-[width] duration-300"
+              style={{ width: building ? "70%" : `${Math.min(100, (settled / Math.max(items.length, 1)) * 100)}%` }}
+            />
+          </div>
+        )}
+        {progressText && (
+          <p className={failed.length && !busy && !building ? "text-destructive" : "text-muted-foreground"} data-heic-pdf-progress>
+            {progressText}
+          </p>
+        )}
         {buildError && <p className="text-destructive">{buildError}</p>}
       </div>
 

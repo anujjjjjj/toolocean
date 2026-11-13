@@ -251,9 +251,10 @@ test("PDF output pages accept one PDF and render no format menu", () => {
 
 test("the image tool embeds by sniffed bytes, not by file.type", () => {
   const source = read("src/components/tools/implementations/pdf/ImagesToPdfTool.tsx");
-  assert.doesNotMatch(source, /file\.type === "image\/(png|jpeg|jpg)"\)\s*\{\s*image = await pdfDoc\.embed/);
-  assert.match(source, /sniffImageFormat\(uint8Array\) === "png"\) \{\s*image = await pdfDoc\.embedPng/);
-  assert.match(source, /sniffImageFormat\(uint8Array\) === "jpeg"\) \{\s*image = await pdfDoc\.embedJpg/);
+  assert.doesNotMatch(source, /file\.type === "image\/(png|jpeg|jpg)"/);
+  assert.match(source, /sniffImageFormat\(uint8Array\) === "png"\) \{\s*payloads\.push\(\{ name: imageFile\.name, bytes: uint8Array, format: "png" \}\)/);
+  assert.match(source, /sniffImageFormat\(uint8Array\) === "jpeg"\) \{\s*payloads\.push\(\{ name: imageFile\.name, bytes: uint8Array, format: "jpeg" \}\)/);
+  assert.match(source, /assembleImagesPdf\(payloads\)/);
   assert.match(source, /markToolSuccess\(blob\)/);
 });
 
