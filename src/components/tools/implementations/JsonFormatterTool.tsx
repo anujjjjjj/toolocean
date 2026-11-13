@@ -21,16 +21,8 @@ import { Toggle } from "@/components/ui/toggle";
 import { useToast } from "@/hooks/use-toast";
 import { markToolSuccess } from "@/lib/toolResult";
 import { subscribeToToolActions } from "@/lib/toolActions";
-import {
-  computeStats,
-  formatBytes,
-  indentToken,
-  parseJson,
-  sortKeysDeep,
-  type IndentStyle,
-  type JsonParseFailure,
-  type JsonStats,
-} from "@/lib/jsonUtils";
+import { formatBytes, indentToken, type IndentStyle, type JsonParseFailure, type JsonStats } from "@/lib/jsonUtils";
+import { astDepthAndKeys, parseJsonAst, sortKeysDeepAst, stringifyJsonAst } from "@/lib/jsonLossless";
 import { cn } from "@/lib/utils";
 
 /**
@@ -84,7 +76,7 @@ export function JsonFormatterTool() {
         return;
       }
 
-      const result = parseJson(source);
+      const result = parseJsonAst(source);
       if (result.status === "error") {
         setStatus({ kind: "invalid", error: result.error });
         // The previous good output is cleared deliberately, leaving stale output
@@ -93,13 +85,20 @@ export function JsonFormatterTool() {
         return;
       }
 
-      const value = sortKeys ? sortKeysDeep(result.value) : result.value;
+      const ast = sortKeys ? sortKeysDeepAst(result.ast) : result.ast;
       const serialised =
-        mode === "minify"
-          ? JSON.stringify(value)
-          : JSON.stringify(value, null, indentToken(indent));
+        mode === "minify" ? stringifyJsonAst(ast) : stringifyJsonAst(ast, indentToken(indent));
 
-      setStatus({ kind: "valid", stats: computeStats(serialised, value) });
+      const { keys, depth } = astDepthAndKeys(ast);
+      setStatus({
+        kind: "valid",
+        stats: {
+          bytes: new TextEncoder().encode(serialised).length,
+          lines: serialised.length === 0 ? 0 : serialised.split("\n").length,
+          keys,
+          depth,
+        },
+      });
       if (mode !== "validate") setOutput(serialised);
     },
     [indent, input, sortKeys],
