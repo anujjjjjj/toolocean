@@ -266,4 +266,32 @@ describe("palette and offline shell", () => {
     assert.equal(banner.includes("fixed "), false);
     assert.match(banner, /data-consent-banner/);
   });
+
+  it("lets the cookie notice sentence wrap instead of truncating", () => {
+    const banner = readFileSync(new URL("../src/components/analytics/ConsentBanner.tsx", import.meta.url), "utf8");
+    assert.equal(banner.includes("truncate"), false);
+    assert.equal(/[" ]h-11 [^"]*max-w-\[1120px\]/.test(banner), false);
+    assert.match(banner, /className="[^"]*\bmin-h-11\b[^"]*max-w-\[1120px\][^"]*"/);
+    assert.match(
+      banner,
+      /Accept lets Google Analytics set cookies to count visits\. Files never leave this device\./,
+    );
+  });
+
+  it("pads the cookie notice for the bottom safe area", () => {
+    const banner = readFileSync(new URL("../src/components/analytics/ConsentBanner.tsx", import.meta.url), "utf8");
+    assert.match(banner, /pb-\[env\(safe-area-inset-bottom,0px\)\]/);
+    assert.equal(/\b(fixed|sticky)\b/.test(banner.replace(/\/\*\*[\s\S]*?\*\//g, "")), false);
+  });
+
+  it("stacks the cookie notice buttons in two equal columns below sm", () => {
+    const banner = readFileSync(new URL("../src/components/analytics/ConsentBanner.tsx", import.meta.url), "utf8");
+    assert.match(banner, /className="[^"]*\bgrid-cols-2\b[^"]*\bsm:flex\b[^"]*"/);
+    const buttons = [...banner.matchAll(/<Button[^>]*className="([^"]*)"/g)].map((match) => match[1]);
+    assert.equal(buttons.length, 2);
+    for (const cls of buttons) assert.match(cls, /^(?=.*\bh-11\b)(?=.*\bsm:h-8\b)/);
+    const decline = banner.indexOf("Decline");
+    const accept = banner.indexOf("Accept\n");
+    assert.ok(decline > 0 && accept > decline, "Decline must render before Accept");
+  });
 });
