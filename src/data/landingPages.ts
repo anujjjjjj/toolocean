@@ -620,6 +620,92 @@ export const LANDING_PAGES: LandingPage[] = [
     ],
   },
   {
+    slug: "compress-pdf-to-50kb",
+    seo: {
+      title: "Compress PDF to 50 KB for Online Forms – No Upload",
+      description:
+        "Get a scanned ID, certificate or letter under 50 KB (50,000 bytes) in your browser. Aims at 49,152 bytes, prints the exact size, and says so when it can't fit.",
+      keywords: ["compress pdf to 50kb", "pdf under 50kb", "reduce pdf size to 50 kb", "scanned certificate pdf 50kb", "pdf 50kb for online form"],
+    },
+    h1: "Compress a PDF to 50 KB",
+    footerLabel: "PDF to 50 KB",
+    lede: "Portals that cap a document at 50 KB rarely say which kilobyte they mean, so this page reads 50 KB as 50,000 bytes, the stricter of the two. The size control opens on the 48 KB chip, which is 49,152 bytes and leaves 848 bytes of headroom. The note under the tool prints the result's exact byte count; only 50,000 bytes or fewer counts as a pass.",
+    tools: ["pdf-compress", "grayscale-pdf", "pdf-delete-pages"],
+    embed: { tool: "pdf-compress", targetBytes: 48 * 1024 },
+    howTo: {
+      name: "How to compress a PDF to 50 KB",
+      steps: [
+        { title: "Pick the PDF", body: "Choose the scan or document on this device. It is opened inside the tab; there is no upload." },
+        {
+          title: "Leave the 48 KB chip on",
+          body: "48 KB is 49,152 bytes, below 50,000, so the file passes whether the form counts a kilobyte as 1,000 or 1,024 bytes. A bigger chip can overshoot a 50 KB form.",
+        },
+        {
+          title: "Press Fit to size, then read the byte count",
+          body: "The note states the result in bytes. Anything at 50,000 bytes or below fits the form. If the note says the file is still over, nothing was downloaded.",
+        },
+      ],
+    },
+    sections: [
+      {
+        heading: "Why the tool aims at 49,152 bytes",
+        body: [
+          "A form that says 50 KB is checking a byte count, and its help text seldom says whether one kilobyte is 1,000 or 1,024 bytes. A file of 50,000 bytes or fewer meets both readings, so that is the line used here for a pass.",
+          "The tool works in 1,024-byte kilobytes. 49 KB would be 50,176 bytes, just over that line, so the page opens on 48 KB: 49,152 bytes, the largest whole-kilobyte step that stays under 50,000. If your portal is stricter still, type a smaller figure such as 45 KB in the custom box.",
+        ],
+      },
+      {
+        heading: "A one-page scan at 50 KB",
+        body: [
+          "A phone photo of an ID card, certificate or marksheet saved as a PDF is a single large picture, often a few megabytes. Rewriting the file losslessly cannot shrink that picture, so the tool redraws the page as a JPEG, searches for the highest quality under 49,152 bytes and, when no quality fits, makes the picture smaller and searches again.",
+          "At this budget the picture usually has to get smaller as well as more compressed. If it ends up below the page's own size, the note adds that small print may be hard to read. Either way, zoom in on the name, the numbers and the photo before you upload. A typed document whose lossless rewrite already fits keeps its selectable text, and the note says that instead.",
+        ],
+      },
+      {
+        heading: "When it can't reach 50 KB",
+        body: [
+          "If even the smallest copy is over 49,152 bytes, nothing is downloaded and the note shows the size it reached beside the target. For a scan, three changes move the number most. Convert it to greyscale with Grayscale PDF, because colour costs bytes in every picture. Keep only the one page the form asks for, using Delete PDF Pages. Or rescan, or photograph the paper again, at a lower resolution.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Does 50 KB mean 50,000 bytes here?",
+        answer:
+          "Yes. A result counts as a pass only at 50,000 bytes or fewer, because that satisfies a form whichever kilobyte it uses. The tool aims at 49,152 bytes, which is 48 KB of 1,024 bytes, to stay under that line.",
+      },
+      {
+        question: "Why does the selected chip say 48 KB?",
+        answer:
+          "The chips use 1,024-byte kilobytes, and 49 KB would be 50,176 bytes, over a 50,000-byte limit. 48 KB is the largest step that stays under it. For a stricter portal, type a smaller size such as 45 KB in the custom box and press Use.",
+      },
+      {
+        question: "Can a phone photo of a certificate get under 50 KB?",
+        answer:
+          "A single page can, but there is no promise. The page is redrawn as a JPEG picture and made smaller until it fits, so fine print can turn soft. If the note says it is still over, convert to greyscale, keep one page, or rescan at a lower resolution, then try again.",
+      },
+      {
+        question: "Will my text stay selectable?",
+        answer:
+          "Only when the lossless rewrite is already under 49,152 bytes. Otherwise the pages become pictures, and their words can no longer be searched or copied. The note says which path ran.",
+      },
+      {
+        question: "Does anything leave my device?",
+        answer:
+          "Your files aren't uploaded; the rewrite runs in this tab. Visit analytics are kept apart from files: a page view goes to Umami, and to Google Analytics if it is configured, which sets no cookies until you accept the banner. When a PDF is saved under the ceiling, Umami receives a tool-run event with just two fields, tool and slug, here pdf-compress and compress-pdf-to-50kb. File names, sizes and contents are never part of it.",
+      },
+    ],
+    related: [
+      { path: "/compress-pdf-to-100kb", label: "Compress a PDF to 100 KB", note: "Twice the room, for forms with a 100 KB cap." },
+      { path: "/compress-pdf-to-200kb", label: "Compress a PDF to 200 KB", note: "For portals with a 200 KB cap." },
+      { path: "/compress-pdf-to-500kb", label: "Compress a PDF to 500 KB", note: "For multi-page certificates and marksheets." },
+      { path: "/compress-pdf-to-1mb", label: "Compress a PDF to 1 MB", note: "For uploads that bundle several pages." },
+      { path: "/grayscale-pdf", label: "Grayscale PDF", note: "Drop the colour from a scan before you compress it." },
+      { path: "/pdf-compress", label: "Compress PDF", note: "The full tool, with every mode and ceiling." },
+      { path: "/pdf-tools", label: "All PDF tools", note: "Delete pages, split and the rest, all in the browser." },
+    ],
+  },
+  {
     slug: "compress-pdf-to-100kb",
     seo: {
       title: "Compress PDF to 100 KB – No Upload",
@@ -704,6 +790,7 @@ export const LANDING_PAGES: LandingPage[] = [
       },
     ],
     related: [
+      { path: "/compress-pdf-to-50kb", label: "Compress a PDF to 50 KB", note: "A 50,000-byte limit, aimed at 49,152 bytes." },
       {
         path: "/compress-pdf-to-200kb",
         label: "Compress a PDF to 200 KB",
@@ -762,6 +849,7 @@ export const LANDING_PAGES: LandingPage[] = [
       },
     ],
     related: [
+      { path: "/compress-pdf-to-50kb", label: "Compress a PDF to 50 KB", note: "For a scanned ID or certificate with a 50 KB cap." },
       { path: "/compress-pdf-to-100kb", label: "Compress a PDF to 100 KB", note: "A tighter 102,400-byte ceiling, with measured runs." },
       { path: "/compress-pdf-to-500kb", label: "Compress a PDF to 500 KB", note: "More room for a scanned certificate or marksheet." },
       { path: "/compress-pdf-to-1mb", label: "Compress a PDF to 1 MB", note: "For uploads that bundle several pages." },
@@ -845,6 +933,7 @@ export const LANDING_PAGES: LandingPage[] = [
       },
     ],
     related: [
+      { path: "/compress-pdf-to-50kb", label: "Compress a PDF to 50 KB", note: "The tightest preset, for a one-page scan." },
       { path: "/compress-pdf-to-100kb", label: "Compress a PDF to 100 KB", note: "For forms with a much tighter cap." },
       { path: "/compress-pdf-to-200kb", label: "Compress a PDF to 200 KB", note: "A 204,800-byte ceiling." },
       { path: "/compress-pdf-to-1mb", label: "Compress a PDF to 1 MB", note: "Twice the room, for longer documents." },
@@ -927,7 +1016,8 @@ export const LANDING_PAGES: LandingPage[] = [
       },
     ],
     related: [
-      { path: "/compress-pdf-to-100kb", label: "Compress a PDF to 100 KB", note: "The tightest preset, with measured runs." },
+      { path: "/compress-pdf-to-50kb", label: "Compress a PDF to 50 KB", note: "The tightest preset, for a one-page scan." },
+      { path: "/compress-pdf-to-100kb", label: "Compress a PDF to 100 KB", note: "A 102,400-byte ceiling, with measured runs." },
       { path: "/compress-pdf-to-200kb", label: "Compress a PDF to 200 KB", note: "For portals with a 200 KB cap." },
       { path: "/compress-pdf-to-500kb", label: "Compress a PDF to 500 KB", note: "Half this ceiling, for single certificates." },
       { path: "/merge-pdf-without-uploading", label: "Merge PDFs without uploading", note: "Combine the documents before compressing." },

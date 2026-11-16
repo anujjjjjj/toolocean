@@ -35,12 +35,13 @@ const IMAGE_TOOL = "src/components/tools/implementations/image/ImageCompressorTo
 const PDF_TOOL = "src/components/tools/implementations/pdf/PdfCompressTool.tsx";
 
 const NEW_PAGES = {
+  "compress-pdf-to-50kb": { tool: "pdf-compress", targetBytes: 49152 },
   "compress-pdf-to-500kb": { tool: "pdf-compress", targetBytes: 512000 },
   "compress-pdf-to-1mb": { tool: "pdf-compress", targetBytes: 1048576 },
   "compress-image-to-200kb": { tool: "image-compressor", targetBytes: 204800 },
   "compress-image-to-10kb": { tool: "image-compressor", targetBytes: 10240 },
 };
-const PDF_FAMILY = ["compress-pdf-to-100kb", "compress-pdf-to-200kb", "compress-pdf-to-500kb", "compress-pdf-to-1mb"];
+const PDF_FAMILY = ["compress-pdf-to-50kb", "compress-pdf-to-100kb", "compress-pdf-to-200kb", "compress-pdf-to-500kb", "compress-pdf-to-1mb"];
 const IMAGE_FAMILY = [
   "compress-image-to-10kb",
   "compress-image-to-20kb",
@@ -50,6 +51,7 @@ const IMAGE_FAMILY = [
 ];
 /** Decimal-portal alternative and the displayed ceiling, per new page. */
 const UNITS = {
+  "compress-pdf-to-50kb": ["48 KB", "49,152 bytes", "50,000 bytes"],
   "compress-pdf-to-500kb": ["488 KB", "499,712 bytes", "512,000 bytes"],
   "compress-pdf-to-1mb": ["976 KB", "999,424 bytes", "1,048,576 bytes"],
   "compress-image-to-200kb": ["195 KB", "199,680 bytes", "204,800 bytes"],
@@ -366,7 +368,7 @@ const text = (html) =>
 
 const titleOf = (route) => ssr.headForRoute(route).match(/<title>([^<]*)<\/title>/)?.[1]?.replace(/&amp;/g, "&");
 
-test("the four pages exist with exact targets, fit the length limits and have unique titles", () => {
+test("the new pages exist with exact targets, fit the length limits and have unique titles", () => {
   const others = new Map();
   for (const route of ssr.PRERENDER_ROUTES) others.set(titleOf(route), route);
   for (const [slug, embed] of Object.entries(NEW_PAGES)) {
@@ -441,7 +443,7 @@ test("hubs and parent tools link every size page", () => {
   assert.doesNotMatch(read("src/pages/PdfToolsPage.tsx"), /Two ceilings are preselected/);
 });
 
-test("the sitemap lists the four pages", () => {
+test("the sitemap lists the new pages", () => {
   execFileSync(process.execPath, [join(ROOT, "scripts/generate-sitemap.mjs")], { cwd: ROOT, stdio: "ignore" });
   const sitemap = read("public/sitemap.xml");
   for (const slug of Object.keys(NEW_PAGES)) assert.ok(sitemap.includes(`<loc>https://toolocean.co/${slug}</loc>`), slug);
@@ -451,7 +453,7 @@ test("units: binary ceilings in bytes, decimal alternatives in KB, never a bare 
   for (const [slug, [alternative, alternativeBytes, ceiling]] of Object.entries(UNITS)) {
     const visible = text(rendered.get(slug));
     for (const needle of [alternative, alternativeBytes, ceiling]) assert.ok(visible.includes(needle), `${slug} lacks ${needle}`);
-    assert.doesNotMatch(visible, /\b(?:500000|1000000|200000|10000)\b/, `${slug} shows a bare byte count`);
+    assert.doesNotMatch(visible, /\b(?:500000|1000000|200000|50000|10000)\b/, `${slug} shows a bare byte count`);
     assert.doesNotMatch(visible, /\b(?:type|enter)\s+(?:500,000|1,000,000|200,000|10,000)\b/i, slug);
   }
 });
@@ -514,4 +516,61 @@ test("prerendered HTML in dist matches, when a build is present", (t) => {
     assert.ok(html.includes(`<link rel="canonical" href="https://toolocean.co/${slug}" />`), slug);
     assert.ok(html.includes("paper-drop"), `${slug} prerender lacks the tool dropzone`);
   }
+});
+
+/* ------------------------------------------------------------------ */
+/* 50 KB: a 50,000-byte pass line                                      */
+/* ------------------------------------------------------------------ */
+
+/** A form's "50 KB" is read as 50,000 bytes, the stricter of the two readings. */
+const LIMIT_50KB = 50_000;
+
+test("50 KB page: aims under 50,000 bytes, and 50,001 to 51,200 bytes is never a pass", () => {
+  const target = page("compress-pdf-to-50kb").embed.targetBytes;
+  assert.equal(target, 49_152, "48 KB of 1,024 bytes");
+  assert.ok(target <= LIMIT_50KB, "the aim is under the limit");
+  assert.ok(target + 1024 > LIMIT_50KB, "48 KB is the largest whole-kilobyte step under 50,000 bytes");
+  // compressPdfToTarget reports withinTarget as bytes <= targetBytes; decidePdfOutcome gates the download on it.
+  const run = (outputBytes) =>
+    decidePdfOutcome({ originalBytes: 2_000_000, outputBytes, targetBytes: target, withinTarget: outputBytes <= target, mode: "raster", scale: 0.49 });
+  for (let bytes = LIMIT_50KB + 1; bytes <= 51_200; bytes++) {
+    const outcome = run(bytes);
+    assert.equal(outcome.success, false, `${bytes} bytes must not pass`);
+    assert.equal(outcome.deliver, false, `${bytes} bytes must not download`);
+  }
+  for (const bytes of [12_000, 48_000, target]) {
+    const outcome = run(bytes);
+    assert.equal(outcome.deliver, true, `${bytes} bytes is delivered`);
+    assert.ok(bytes <= LIMIT_50KB, `${bytes} bytes is within the 50,000-byte limit`);
+  }
+});
+
+test("50 KB page: copy uses 50,000 bytes and never the 1,024-byte reading of 50 KB", () => {
+  const entry = page("compress-pdf-to-50kb");
+  const json = JSON.stringify(entry);
+  assert.match(json, /50,000 bytes/);
+  assert.match(json, /49,152 bytes/);
+  assert.doesNotMatch(json, /51,?200/);
+  const html = rendered.get("compress-pdf-to-50kb");
+  assert.doesNotMatch(text(html), /51,?200/);
+  assert.match(text(html), /only 50,000 bytes or fewer counts as a pass/);
+  // The PDF chips include the 48 KB step the page opens on.
+  assert.equal(new Map(presetBytes(read(PDF_TOOL), "EXACT_PRESETS")).get("48 KB"), 49_152);
+});
+
+test("50 KB page: the miss tips fit a scan (greyscale, one page, lower resolution)", () => {
+  const source = read(PDF_TOOL);
+  const steps = source.slice(source.indexOf("function PdfNextSteps"), source.indexOf("const CHECK_PAGES"));
+  const branch = steps.indexOf("if (rescan)");
+  const rescan = steps.slice(branch, steps.indexOf("return (", steps.indexOf("return (", branch) + 1));
+  assert.match(rescan, /to="\/grayscale-pdf"/);
+  assert.match(rescan, /keep only the page the form asks for/);
+  assert.match(rescan, /to="\/pdf-delete-pages"/);
+  assert.match(rescan, /rescan at a lower resolution/);
+  // The miss branch uses the scan tips; the "bigger than the original" branch does not.
+  assert.match(source, /case "miss":[\s\S]*?<PdfNextSteps rescan \/>/);
+  assert.match(source, /<PdfNextSteps rescan=\{false\} \/>/);
+  const entry = JSON.stringify(page("compress-pdf-to-50kb").sections);
+  for (const tip of [/greyscale with Grayscale PDF/, /only the one page/, /lower resolution/]) assert.match(entry, tip);
+  assert.ok(page("compress-pdf-to-50kb").related.some((link) => link.path === "/grayscale-pdf"));
 });
