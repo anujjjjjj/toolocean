@@ -311,7 +311,7 @@ function Benchmark({ benchmark }: { benchmark: NonNullable<LandingPage["benchmar
 function PresetTool({ embed }: { embed: LandingEmbed }) {
   switch (embed.tool) {
     case "image-compressor":
-      return <ImageCompressorTool preset={{ targetBytes: embed.targetBytes }} />;
+      return <ImageCompressorTool preset={{ targetBytes: embed.targetBytes, jpegOnly: embed.jpegOnly, limitBytes: embed.limitBytes }} />;
     case "pdf-compress":
       return <PdfCompressTool preset={{ targetBytes: embed.targetBytes }} />;
     case "image-format-converter":

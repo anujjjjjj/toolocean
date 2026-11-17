@@ -24,6 +24,7 @@ import {
 const TARGETS = [
   { label: "10 KB", bytes: 10 * KILOBYTE },
   { label: "20 KB", bytes: 20 * KILOBYTE },
+  { label: "29 KB", bytes: 29 * KILOBYTE },
   { label: "50 KB", bytes: 50 * KILOBYTE },
   { label: "100 KB", bytes: 100 * KILOBYTE },
   { label: "200 KB", bytes: 200 * KILOBYTE },
@@ -42,6 +43,19 @@ interface ImageNote {
   height: number;
   formatChange: string | null;
   paddingBytes: number;
+  /** A JPEG already at or under the form's limit, left untouched on a JPG-only page. */
+  leftAsIs?: boolean;
+}
+
+/**
+ * Page-level options for a landing page. jpegOnly: the form takes only JPG, so the output is always JPEG and a
+ * conversion from PNG or WebP counts as the choice it is. limitBytes: the form's own limit; a JPEG already at or
+ * under it is left as it is rather than squeezed further, while the page's preset target is selected.
+ */
+export interface ImageCompressorPreset {
+  targetBytes: number;
+  jpegOnly?: boolean;
+  limitBytes?: number;
 }
 
 const linkClass = "text-primary underline";
@@ -66,7 +80,7 @@ function ResizeFirst() {
   );
 }
 
-function ImageNoteLine({ note }: { note: ImageNote }) {
+function ImageNoteLine({ note, jpegOnly }: { note: ImageNote; jpegOnly: boolean }) {
   const { outcome, originalBytes, outputBytes, targetBytes, width, height, formatChange, paddingBytes } = note;
   const headline = [
     `${note.name}: ${byteCount(originalBytes)} → ${byteCount(outputBytes)}`,
@@ -77,21 +91,24 @@ function ImageNoteLine({ note }: { note: ImageNote }) {
     .filter(Boolean)
     .join(" · ");
   const pad = paddingBytes > 0 ? ` ${paddingBytes} bytes are JPEG comment padding so the file clears the minimum.` : "";
+  const converted = jpegOnly && formatChange ? ` Converted to JPG (${formatChange}).` : "";
   let body: React.ReactNode;
   switch (outcome.kind) {
     case "fit":
-      body = `Under the target. Downloaded.${pad}`;
+      body = `Under the target. Downloaded.${converted}${pad}`;
       break;
     case "fit-scaled":
       body = (
         <>
-          Under the target after the tool reduced the pixel size to {width}×{height}. Downloaded.{pad} To choose the pixel size yourself,{" "}
+          Under the target after the tool reduced the pixel size to {width}×{height}. Downloaded.{converted}{pad} To choose the pixel size yourself,{" "}
           <ResizeFirst /> first, then compress.
         </>
       );
       break;
     case "converted-larger":
-      body = `Larger than the original, because it was converted to the format you picked. Downloaded.${pad}`;
+      body = jpegOnly
+        ? `Larger than the original, because the form needs a JPG and the original was not one. Still under the target. Downloaded.${converted}${pad}`
+        : `Larger than the original, because it was converted to the format you picked. Downloaded.${pad}`;
       break;
     case "smaller":
       body = "Smaller than the original. Downloaded.";
@@ -105,6 +122,10 @@ function ImageNoteLine({ note }: { note: ImageNote }) {
       );
       break;
     case "not-smaller":
+      if (note.leftAsIs) {
+        body = `Your JPG is already ${byteCount(originalBytes)}, within the limit, so it was left as it is and nothing was downloaded. Upload the original. If the form also sets a minimum, check the original clears it.`;
+        break;
+      }
       body = `Your original is already ${byteCount(originalBytes)}${targetBytes != null ? ", under the target," : ""} and the new copy was not smaller, so nothing was downloaded. Upload the original as it is.`;
       break;
     case "format-unsupported":
@@ -123,20 +144,29 @@ function ImageNoteLine({ note }: { note: ImageNote }) {
   );
 }
 
-function ImageNotes({ notes, summary }: { notes: ImageNote[]; summary: string | null }) {
+function ImageNotes({ notes, summary, jpegOnly = false }: { notes: ImageNote[]; summary: string | null; jpegOnly?: boolean }) {
   return (
     <div className="space-y-2 text-sm text-muted-foreground" role="status">
       {summary && <p>{summary}</p>}
       <ul className="space-y-2">
         {notes.map((note, index) => (
-          <ImageNoteLine key={`${note.name}-${index}`} note={note} />
+          <ImageNoteLine key={`${note.name}-${index}`} note={note} jpegOnly={jpegOnly} />
         ))}
       </ul>
     </div>
   );
 }
 
-export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number } } = {}) {
+export function ImageCompressorTool({ preset }: { preset?: ImageCompressorPreset } = {}) {
+  const jpegOnly = preset?.jpegOnly === true;
+  // With a form limit, the page states its own unit rule instead of the tool's 1024-byte kilobyte.
+  const unitRule =
+    preset?.limitBytes != null
+      ? `On this page ${preset.limitBytes / 1000} KB means ${byteCount(preset.limitBytes)}, and the ${preset.targetBytes / KILOBYTE} KB chip is ${byteCount(preset.targetBytes)}.`
+      : "1 KB = 1024 bytes.";
+  const sizeHint = preset?.limitBytes != null ? "" : " 1 KB = 1024 bytes.";
+  // The preset line ends after the presets when the page states its own rule in the exact-size paragraph.
+  const presetUnit = preset?.limitBytes != null ? "" : " 1 KB = 1024 bytes.";
   const [files, setFiles] = useState<File[]>([]);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [quality, setQuality] = useState(0.8);
@@ -145,8 +175,8 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
   const [customSize, setCustomSize] = useState("");
   const [minSize, setMinSize] = useState("");
   const [mime, setMime] = useState<TargetMime>("image/jpeg");
-  // Only a press on JPEG or WebP is a choice. The default JPEG is not.
-  const [formatExplicit, setFormatExplicit] = useState(false);
+  // Only a press on JPEG or WebP is a choice. The default JPEG is not, except on a JPG-only page.
+  const [formatExplicit, setFormatExplicit] = useState(jpegOnly);
   const [notes, setNotes] = useState<ImageNote[] | null>(null);
   const [summary, setSummary] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -282,7 +312,7 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
     if (!files.length) return;
     const minBytes = minSize.trim() ? parseSize(minSize) : undefined;
     if (minSize.trim() && !minBytes) {
-      toast({ title: "Unrecognised minimum", description: "Use KB, or a plain number of bytes. 1 KB = 1024 bytes.", variant: "destructive" });
+      toast({ title: "Unrecognised minimum", description: `Use KB, or a plain number of bytes.${sizeHint}`, variant: "destructive" });
       return;
     }
     if (minBytes && minBytes > targetBytes) {
@@ -305,6 +335,26 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
         continue;
       }
       const inputFormat = await sniffFile(file);
+      // On a JPG-only page, a JPEG already within the form's limit is not squeezed further.
+      const limit = preset?.limitBytes != null && targetBytes === preset.targetBytes ? preset.limitBytes : targetBytes;
+      if (jpegOnly && inputFormat === "jpeg" && file.size <= limit) {
+        const outcome: ImageOutcome = { kind: "not-smaller", deliver: false, success: false };
+        lines.push({
+          name: file.name,
+          outcome,
+          originalBytes: file.size,
+          outputBytes: file.size,
+          targetBytes,
+          width: bitmap.width,
+          height: bitmap.height,
+          formatChange: null,
+          paddingBytes: 0,
+          leftAsIs: true,
+        });
+        bitmap.close();
+        outputs.push({ name: file.name, outcome, bytes: new Uint8Array(0), format: outputFormat });
+        continue;
+      }
       let result: Awaited<ReturnType<typeof encodeImageToTarget>>;
       try {
         result = await encodeImageToTarget(bitmap, { targetBytes, minBytes: minBytes ?? undefined, mime });
@@ -400,9 +450,10 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
       <p className="text-sm text-muted-foreground">
         Preset ceilings: <Link className="text-primary underline" to="/compress-image-to-10kb">10 KB</Link>,{" "}
         <Link className="text-primary underline" to="/compress-image-to-20kb">20 KB</Link>,{" "}
+        <Link className="text-primary underline" to="/compress-image-to-30kb">30 KB</Link>,{" "}
         <Link className="text-primary underline" to="/compress-image-to-50kb">50 KB</Link>,{" "}
         <Link className="text-primary underline" to="/compress-image-to-100kb">100 KB</Link>,{" "}
-        <Link className="text-primary underline" to="/compress-image-to-200kb">200 KB</Link>. 1 KB = 1024 bytes.
+        <Link className="text-primary underline" to="/compress-image-to-200kb">200 KB</Link>.{presetUnit}
       </p>
 
       {files.length > 0 && mode === "quality" && (
@@ -433,7 +484,7 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
       {files.length > 0 && mode === "exact" && (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            1 KB = 1024 bytes. Transparency is flattened onto white. A JPEG that would land under the optional minimum is padded with comment bytes, and that padding is stated with the result. WebP is not padded. A file that misses the target, or comes out no smaller than the original, is not downloaded.
+            {unitRule} Transparency is flattened onto white. A JPEG that would land under the optional minimum is padded with comment bytes, and that padding is stated with the result.{jpegOnly ? "" : " WebP is not padded."} A file that misses the target, or comes out no smaller than the original, is not downloaded.
           </p>
           <p className="text-sm">{files.length} file{files.length === 1 ? "" : "s"} selected{files.length > 1 ? ". The ones that land under the target download as one ZIP." : "."}</p>
           <div className="flex flex-wrap gap-2">
@@ -471,7 +522,7 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
               onClick={() => {
                 const parsed = parseSize(customSize);
                 if (!parsed) {
-                  toast({ title: "Unrecognised size", description: "Use KB or MB, or a plain number of bytes. 1 KB = 1024 bytes.", variant: "destructive" });
+                  toast({ title: "Unrecognised size", description: `Use KB or MB, or a plain number of bytes.${sizeHint}`, variant: "destructive" });
                   return;
                 }
                 applyTarget(parsed);
@@ -480,6 +531,11 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
               Use
             </Button>
           </div>
+          {jpegOnly ? (
+            <p className="text-sm text-muted-foreground" data-jpeg-only>
+              Output is always JPG. A PNG or WebP is converted to JPG, and the note says so.
+            </p>
+          ) : (
           <div className="flex flex-wrap gap-2">
             <Button
               type="button"
@@ -510,6 +566,7 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
               WebP
             </Button>
           </div>
+          )}
           <div>
             <Label htmlFor="min-kb">Optional minimum (JPEG padding only)</Label>
             <input
@@ -524,7 +581,7 @@ export function ImageCompressorTool({ preset }: { preset?: { targetBytes: number
               className="mt-1 flex h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
             />
           </div>
-          {notes && <ImageNotes notes={notes} summary={summary} />}
+          {notes && <ImageNotes notes={notes} summary={summary} jpegOnly={jpegOnly} />}
           <Button onClick={() => guarded(compressExact)} disabled={busy} data-analytics-label="image-exact-size">
             {busy ? (
               working
