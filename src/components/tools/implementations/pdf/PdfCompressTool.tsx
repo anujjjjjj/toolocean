@@ -44,11 +44,20 @@ function exactToastTitle(outcome: PdfOutcome): string {
 const linkClass = "text-primary underline";
 
 function PdfNextSteps({ rescan }: { rescan: boolean }) {
+    if (rescan) {
+        // A miss is usually a scan: picture bytes, so colour, page count and resolution are what move the size.
+        return (
+            <>
+                {" "}Next: convert it to greyscale with <Link className={linkClass} to="/grayscale-pdf">Grayscale PDF</Link> and try again,
+                keep only the page the form asks for with <Link className={linkClass} to="/pdf-delete-pages">Delete PDF Pages</Link>,
+                rescan at a lower resolution, or check whether the form accepts a larger file.
+            </>
+        );
+    }
     return (
         <>
             {" "}Next: split it with <Link className={linkClass} to="/pdf-split">PDF Split</Link> and upload the parts,
-            remove pages with <Link className={linkClass} to="/pdf-delete-pages">Delete PDF Pages</Link>,
-            {rescan ? " rescan at a lower resolution or in greyscale," : ""} or check whether the form accepts a larger file.
+            remove pages with <Link className={linkClass} to="/pdf-delete-pages">Delete PDF Pages</Link>, or check whether the form accepts a larger file.
         </>
     );
 }
@@ -104,6 +113,7 @@ function ExactOutcomeNote({ note }: { note: ExactNote }) {
 }
 
 const EXACT_PRESETS = [
+    { label: "48 KB", bytes: 48 * KILOBYTE },
     { label: "100 KB", bytes: 100 * KILOBYTE },
     { label: "200 KB", bytes: 200 * KILOBYTE },
     { label: "500 KB", bytes: 500 * KILOBYTE },
