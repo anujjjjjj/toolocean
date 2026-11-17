@@ -252,7 +252,7 @@ export const imageCompressorContent: Partial<ToolPageContent> = {
     {
       question: "Is there a page already set to a size such as 10 KB?",
       answer:
-        "Yes. [10 KB](/compress-image-to-10kb), [20 KB](/compress-image-to-20kb), [50 KB](/compress-image-to-50kb), [100 KB](/compress-image-to-100kb) and [200 KB](/compress-image-to-200kb) each open this compressor in exact-size mode with that ceiling chosen. 1 KB is 1024 bytes there too, and a result that misses the ceiling, or is no smaller than your original, is not saved.",
+        "Yes. [10 KB](/compress-image-to-10kb), [20 KB](/compress-image-to-20kb), [50 KB](/compress-image-to-50kb), [100 KB](/compress-image-to-100kb) and [200 KB](/compress-image-to-200kb) each open this compressor in exact-size mode with that ceiling chosen. 1 KB is 1024 bytes there too, and a result that misses the ceiling, or is no smaller than your original, is not saved. [30 KB](/compress-image-to-30kb) is the exception in two ways: it aims at 29,696 bytes so the file is under 30,000, and it always saves a JPG.",
     },
     {
       question: "Why did compressing my screenshot make it look worse?",

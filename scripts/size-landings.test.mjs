@@ -39,11 +39,13 @@ const NEW_PAGES = {
   "compress-pdf-to-1mb": { tool: "pdf-compress", targetBytes: 1048576 },
   "compress-image-to-200kb": { tool: "image-compressor", targetBytes: 204800 },
   "compress-image-to-10kb": { tool: "image-compressor", targetBytes: 10240 },
+  "compress-image-to-30kb": { tool: "image-compressor", targetBytes: 29696, jpegOnly: true, limitBytes: 30000 },
 };
 const PDF_FAMILY = ["compress-pdf-to-100kb", "compress-pdf-to-200kb", "compress-pdf-to-500kb", "compress-pdf-to-1mb"];
 const IMAGE_FAMILY = [
   "compress-image-to-10kb",
   "compress-image-to-20kb",
+  "compress-image-to-30kb",
   "compress-image-to-50kb",
   "compress-image-to-100kb",
   "compress-image-to-200kb",
@@ -54,6 +56,7 @@ const UNITS = {
   "compress-pdf-to-1mb": ["976 KB", "999,424 bytes", "1,048,576 bytes"],
   "compress-image-to-200kb": ["195 KB", "199,680 bytes", "204,800 bytes"],
   "compress-image-to-10kb": ["9 KB", "9,216 bytes", "10,240 bytes"],
+  "compress-image-to-30kb": ["29 KB", "29,696 bytes", "30,000 bytes"],
 };
 
 /* ------------------------------------------------------------------ */
@@ -451,7 +454,7 @@ test("units: binary ceilings in bytes, decimal alternatives in KB, never a bare 
   for (const [slug, [alternative, alternativeBytes, ceiling]] of Object.entries(UNITS)) {
     const visible = text(rendered.get(slug));
     for (const needle of [alternative, alternativeBytes, ceiling]) assert.ok(visible.includes(needle), `${slug} lacks ${needle}`);
-    assert.doesNotMatch(visible, /\b(?:500000|1000000|200000|10000)\b/, `${slug} shows a bare byte count`);
+    assert.doesNotMatch(visible, /\b(?:500000|1000000|200000|30000|10000)\b/, `${slug} shows a bare byte count`);
     assert.doesNotMatch(visible, /\b(?:type|enter)\s+(?:500,000|1,000,000|200,000|10,000)\b/i, slug);
   }
 });
@@ -514,4 +517,67 @@ test("prerendered HTML in dist matches, when a build is present", (t) => {
     assert.ok(html.includes(`<link rel="canonical" href="https://toolocean.co/${slug}" />`), slug);
     assert.ok(html.includes("paper-drop"), `${slug} prerender lacks the tool dropzone`);
   }
+});
+
+/* ------------------------------------------------------------------ */
+/* 30 KB image: a 30,000-byte pass line, JPG only                      */
+/* ------------------------------------------------------------------ */
+
+/** A form's "30 KB" is read as 30,000 bytes, the stricter of the two readings. */
+const LIMIT_30KB = 30_000;
+
+test("30 KB page: aims under 30,000 bytes, and 30,001 bytes or more is never a pass", () => {
+  const { targetBytes, limitBytes, jpegOnly } = page("compress-image-to-30kb").embed;
+  assert.equal(targetBytes, 29_696, "29 KB of 1,024 bytes");
+  assert.equal(limitBytes, LIMIT_30KB);
+  assert.equal(jpegOnly, true);
+  assert.ok(targetBytes <= LIMIT_30KB && targetBytes + 1024 > LIMIT_30KB, "the largest whole-kilobyte step under 30,000 bytes");
+  // encodeImageToTarget reports withinTarget as bytes <= targetBytes; decideImageOutcome gates the download on it.
+  const run = (outputBytes, over = {}) =>
+    decideImageOutcome(
+      image({ originalBytes: 2_000_000, outputBytes, targetBytes, withinTarget: outputBytes <= targetBytes, scale: 0.42, formatExplicit: true, ...over }),
+    );
+  for (let bytes = LIMIT_30KB + 1; bytes <= 31_744; bytes++) {
+    const outcome = run(bytes);
+    assert.equal(outcome.success, false, `${bytes} bytes must not pass`);
+    assert.equal(outcome.deliver, false, `${bytes} bytes must not download`);
+  }
+  for (const bytes of [10_500, 29_000, targetBytes]) {
+    assert.equal(run(bytes).deliver, true, `${bytes} bytes is delivered`);
+    assert.ok(bytes <= LIMIT_30KB);
+  }
+});
+
+test("30 KB page: a PNG signature is still saved as a JPG when the JPG is larger, because the page chose JPG", () => {
+  const png = { inputFormat: "png", outputFormat: "jpeg", originalBytes: 6_000, outputBytes: 9_000, targetBytes: 29_696, scale: 1 };
+  assert.deepEqual(decideImageOutcome(image({ ...png, formatExplicit: true })), { kind: "converted-larger", deliver: true, success: true });
+  // Without the page's choice the same run would be withheld, which is why jpegOnly starts formatExplicit at true.
+  assert.equal(decideImageOutcome(image({ ...png, formatExplicit: false })).deliver, false);
+  const source = read(IMAGE_TOOL);
+  assert.match(source, /const \[formatExplicit, setFormatExplicit\] = useState\(jpegOnly\);/);
+  assert.match(source, /Converted to JPG \(\$\{formatChange\}\)/);
+  assert.match(source, /\{jpegOnly \? \([\s\S]*?Output is always JPG[\s\S]*?\) : \([\s\S]*?setMime\("image\/webp"\)/, "the WebP button only renders off JPG-only pages");
+});
+
+test("30 KB page: a JPG already within the limit is left as it is, before any encode", () => {
+  const source = read(IMAGE_TOOL);
+  const exact = source.slice(source.indexOf("const compressExact"), source.indexOf("const working"));
+  const guard = exact.indexOf('if (jpegOnly && inputFormat === "jpeg" && file.size <= limit) {');
+  assert.ok(guard > 0, "leave-as-is check present");
+  assert.ok(guard < exact.indexOf("encodeImageToTarget(bitmap"), "checked before encoding");
+  const branch = exact.slice(guard, exact.indexOf("continue;", guard));
+  assert.match(branch, /kind: "not-smaller", deliver: false, success: false/);
+  assert.match(branch, /leftAsIs: true/);
+  // The form's limit only applies while the page's own target is selected.
+  assert.match(exact, /const limit = preset\?\.limitBytes != null && targetBytes === preset\.targetBytes \? preset\.limitBytes : targetBytes;/);
+  assert.match(source, /Your JPG is already \$\{byteCount\(originalBytes\)\}, within the limit, so it was left as it is and nothing was downloaded/);
+});
+
+test("30 KB page: copy is about 30,000 bytes, JPG only and minimums, never the 1,024-byte reading", () => {
+  const entry = page("compress-image-to-30kb");
+  const json = JSON.stringify(entry);
+  for (const needle of [/30,000 bytes/, /29,696 bytes/, /JPG/, /minimum/, /signature/i, /PNG → JPEG/]) assert.match(json, needle);
+  assert.doesNotMatch(json, /30,?720/);
+  assert.doesNotMatch(text(rendered.get("compress-image-to-30kb")), /30,?720/);
+  assert.equal(new Map(presetBytes(read(IMAGE_TOOL), "TARGETS")).get("29 KB"), 29_696);
 });

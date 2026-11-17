@@ -39,7 +39,9 @@ export interface LandingComparisonRow {
 
 /** A working tool rendered at the top of the page, opened on a preset. */
 export type LandingEmbed =
-  | { tool: "image-compressor" | "pdf-compress"; targetBytes: number }
+  | { tool: "pdf-compress"; targetBytes: number }
+  /** jpegOnly and limitBytes: see ImageCompressorPreset. */
+  | { tool: "image-compressor"; targetBytes: number; jpegOnly?: true; limitBytes?: number }
   | { tool: "image-format-converter"; output: "image/jpeg" | "image/png" | "image/webp" }
   | { tool: "heic-to-jpg"; format: "jpg" | "png" }
   | { tool: "heic-to-pdf" }
@@ -1003,10 +1005,107 @@ export const LANDING_PAGES: LandingPage[] = [
       },
     ],
     related: [
+      { path: "/compress-image-to-30kb", label: "Compress an image to 30 KB", note: "A JPG under 30,000 bytes for forms." },
       { path: "/compress-image-to-10kb", label: "Compress an image to 10 KB", note: "For a scanned signature with a tighter cap." },
       { path: "/compress-image-to-50kb", label: "Compress an image to 50 KB", note: "A 51,200-byte ceiling." },
       { path: "/compress-image-to-100kb", label: "Compress an image to 100 KB", note: "A 102,400-byte ceiling." },
       { path: "/compress-image-to-200kb", label: "Compress an image to 200 KB", note: "For document photos and larger caps." },
+      { path: "/image-compressor", label: "Image Compressor", note: "The parent tool, with quality and exact-size modes." },
+      { path: "/image-tools", label: "All image tools", note: "Resize, crop and convert in the browser." },
+    ],
+  },
+  {
+    slug: "compress-image-to-30kb",
+    seo: {
+      title: "Compress Image to 30 KB – JPG for Exam Forms",
+      description:
+        "Make a photo or signature a JPG under 30 KB (30,000 bytes) for exam and government forms. PNG becomes JPG, the exact byte count is shown, and nothing is uploaded.",
+      keywords: ["compress image to 30kb", "photo 30kb jpg", "signature 30kb", "jpg under 30 kb for form", "png signature to jpg 30kb"],
+    },
+    h1: "Compress an image to 30 KB",
+    footerLabel: "Image to 30 KB",
+    lede: "When a form asks for a photo or signature of 30 KB, it nearly always wants a JPG of 30,000 bytes or less. This page aims at 29,696 bytes, the 29 KB chip, always saves a JPG and prints the result's exact byte count. Only 30,000 bytes or fewer counts as a pass, and the picture never leaves this tab.",
+    tools: ["image-compressor", "image-resizer", "image-crop"],
+    embed: { tool: "image-compressor", targetBytes: 29 * 1024, jpegOnly: true, limitBytes: 30000 },
+    howTo: {
+      name: "How to compress an image to 30 KB",
+      steps: [
+        {
+          title: "Choose the photo or signature",
+          body: "JPG, PNG or WebP from this device. A PNG or WebP is redrawn as a JPG, with any transparent background painted white.",
+        },
+        {
+          title: "Keep the 29 KB chip",
+          body: "29 KB is 29,696 bytes, under 30,000, so the file passes whether the form counts a kilobyte as 1,000 or 1,024 bytes.",
+        },
+        {
+          title: "Set the form's minimum, then read the bytes",
+          body: "If the notice also asks for at least, say, 10 KB, type that in the minimum box first. The note gives the result in bytes and pixels.",
+        },
+      ],
+    },
+    sections: [
+      {
+        heading: "Why the tool aims at 29,696 bytes",
+        body: [
+          "A form that says 30 KB rarely says whether a kilobyte is 1,000 or 1,024 bytes. A file of 30,000 bytes or fewer satisfies both readings, so that is the pass line on this page.",
+          "The compressor's chips count 1,024 bytes to the kilobyte, and on that scale a 30 KB chip would overshoot a strict 30,000-byte limit. The 29 KB chip is 29,696 bytes, the largest whole-kilobyte step under the line, which leaves 304 bytes of headroom.",
+        ],
+      },
+      {
+        heading: "JPG only, and what happens to a PNG signature",
+        body: [
+          "Exam and government portals usually list JPG or JPEG as the only format they take, so this page offers no WebP option and always saves a .jpg. A signature drawn or scanned as a PNG is redrawn as a JPG: transparent areas turn white, and the note shows PNG → JPEG beside the byte counts.",
+          "Clean black strokes on a plain background can make a very small PNG, and the JPG made from it is sometimes larger. The JPG is still saved in that case, because the form needs one, and the note says it grew while staying under the target.",
+        ],
+      },
+      {
+        heading: "Minimum sizes, and no squeezing past the target",
+        body: [
+          "Many forms also set a floor and refuse a file below it. The tool keeps the highest JPEG quality that still fits under 29,696 bytes, so a photo lands close to the target rather than as small as it could go. A tightly cropped signature can still come out under a 10 KB floor at the top quality; type the floor into the minimum box and the JPG is padded with comment bytes, which the note counts.",
+          "A JPG that is already within 30,000 bytes is left as it is. The note says so, nothing is downloaded, and you upload the original after checking it clears any minimum.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: "Does 30 KB mean 30,000 bytes here?",
+        answer:
+          "Yes. A result counts as a pass only at 30,000 bytes or fewer, which satisfies a form whichever kilobyte it uses. The tool aims at 29,696 bytes to stay under that line, and the note prints the exact count.",
+      },
+      {
+        question: "Can I upload a PNG signature?",
+        answer:
+          "Yes. It comes out as a JPG, because most exam and government forms take only JPG. Transparent areas are painted white, and the note shows PNG → JPEG next to the sizes.",
+      },
+      {
+        question: "The form wants at least 10 KB. Will the signature end up too small?",
+        answer:
+          "It can. The tool aims as high as it can under 29,696 bytes, but a small, clean signature may land below 10 KB even at the top quality. Type 10 KB in the minimum box: the JPG is padded with comment bytes up to that floor, and the note says how many.",
+      },
+      {
+        question: "Why was my JPG not compressed?",
+        answer:
+          "It was already within 30,000 bytes, so the page left it alone instead of lowering its quality for nothing. Upload the original, once you have checked it clears any minimum the form sets.",
+      },
+      {
+        question: "What if the photo can't get under 30 KB?",
+        answer:
+          "Nothing is downloaded. The note gives the smallest size the tool reached and the pixel size it tried. Crop the photo, resize it to the form's pixel size with the Image Resizer, and run it again.",
+      },
+      {
+        question: "Is my photo uploaded anywhere?",
+        answer:
+          "No, your files aren't uploaded. The picture is decoded and saved as a JPG in this tab. The site does count visits: a page view in Umami, and in Google Analytics when configured, which stays cookieless unless you accept the banner. When a file is saved, Umami gets a tool-run event with only tool and slug, here image-compressor and compress-image-to-30kb.",
+      },
+    ],
+    related: [
+      { path: "/compress-image-to-10kb", label: "Compress an image to 10 KB", note: "For a signature with a tighter cap." },
+      { path: "/compress-image-to-20kb", label: "Compress an image to 20 KB", note: "For exam and form photos." },
+      { path: "/compress-image-to-50kb", label: "Compress an image to 50 KB", note: "A little more room for a photo." },
+      { path: "/compress-image-to-100kb", label: "Compress an image to 100 KB", note: "For larger photo caps." },
+      { path: "/compress-image-to-200kb", label: "Compress an image to 200 KB", note: "For document photos." },
+      { path: "/image-resizer", label: "Image Resizer", note: "Set the form's pixel size before compressing." },
       { path: "/image-compressor", label: "Image Compressor", note: "The parent tool, with quality and exact-size modes." },
       { path: "/image-tools", label: "All image tools", note: "Resize, crop and convert in the browser." },
     ],
@@ -1054,6 +1153,7 @@ export const LANDING_PAGES: LandingPage[] = [
     related: [
       { path: "/compress-image-to-10kb", label: "Compress an image to 10 KB", note: "The smallest preset, for signatures." },
       { path: "/compress-image-to-20kb", label: "Compress an image to 20 KB", note: "For exam and form photos." },
+      { path: "/compress-image-to-30kb", label: "Compress an image to 30 KB", note: "A JPG under 30,000 bytes for forms." },
       { path: "/compress-image-to-100kb", label: "Compress an image to 100 KB", note: "Twice this ceiling." },
       { path: "/compress-image-to-200kb", label: "Compress an image to 200 KB", note: "For document photos." },
       { path: "/image-compressor", label: "Image Compressor", note: "Every ceiling, plus a JPEG quality slider." },
@@ -1103,6 +1203,7 @@ export const LANDING_PAGES: LandingPage[] = [
     related: [
       { path: "/compress-image-to-10kb", label: "Compress an image to 10 KB", note: "For signatures and thumbnails." },
       { path: "/compress-image-to-20kb", label: "Compress an image to 20 KB", note: "For exam and form photos." },
+      { path: "/compress-image-to-30kb", label: "Compress an image to 30 KB", note: "A JPG under 30,000 bytes for forms." },
       { path: "/compress-image-to-50kb", label: "Compress an image to 50 KB", note: "Half this ceiling." },
       { path: "/compress-image-to-200kb", label: "Compress an image to 200 KB", note: "Twice this ceiling." },
       { path: "/image-compressor", label: "Image Compressor", note: "Every ceiling, plus a JPEG quality slider." },
@@ -1184,6 +1285,7 @@ export const LANDING_PAGES: LandingPage[] = [
     related: [
       { path: "/compress-image-to-10kb", label: "Compress an image to 10 KB", note: "For signatures." },
       { path: "/compress-image-to-20kb", label: "Compress an image to 20 KB", note: "For exam and form photos." },
+      { path: "/compress-image-to-30kb", label: "Compress an image to 30 KB", note: "A JPG under 30,000 bytes for forms." },
       { path: "/compress-image-to-50kb", label: "Compress an image to 50 KB", note: "A 51,200-byte ceiling." },
       { path: "/compress-image-to-100kb", label: "Compress an image to 100 KB", note: "Half this ceiling." },
       { path: "/image-compressor", label: "Image Compressor", note: "The parent tool, with quality and exact-size modes." },
@@ -1265,6 +1367,7 @@ export const LANDING_PAGES: LandingPage[] = [
     ],
     related: [
       { path: "/compress-image-to-20kb", label: "Compress an image to 20 KB", note: "For exam and form photos." },
+      { path: "/compress-image-to-30kb", label: "Compress an image to 30 KB", note: "A JPG under 30,000 bytes for forms." },
       { path: "/compress-image-to-50kb", label: "Compress an image to 50 KB", note: "A 51,200-byte ceiling." },
       { path: "/compress-image-to-100kb", label: "Compress an image to 100 KB", note: "A 102,400-byte ceiling." },
       { path: "/compress-image-to-200kb", label: "Compress an image to 200 KB", note: "For document photos." },
