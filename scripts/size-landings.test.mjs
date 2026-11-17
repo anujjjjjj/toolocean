@@ -582,18 +582,28 @@ test("30 KB page: copy is about 30,000 bytes, JPG only and minimums, never the 1
   assert.equal(new Map(presetBytes(read(IMAGE_TOOL), "TARGETS")).get("29 KB"), 29_696);
 });
 
-test("30 KB page: the tool states the page's 30,000-byte rule and makes no 1024-byte kilobyte claim", () => {
-  const visible = text(rendered.get("compress-image-to-30kb"));
+test("30 KB page: the tool states the page's 30,000-byte rule once and makes no 1024-byte kilobyte claim", () => {
+  const html = rendered.get("compress-image-to-30kb");
+  const visible = text(html);
   assert.doesNotMatch(visible, /1\s*KB\s*=\s*1,?024/, "no '1 KB = 1024 bytes' line");
   assert.doesNotMatch(visible, /\b1024 bytes\b/, "no '1024 bytes' claim");
-  assert.match(visible, /On this page 30 KB means 30,000 bytes, and the 29 KB chip is 29,696 bytes\./);
-  // Every other size page keeps the tool's own rule.
+  // The preset line ends right after the presets; the rule is not repeated there.
+  const presetLine = visible.match(/Preset ceilings:[^.]*200 KB \.([^.]*)/);
+  assert.ok(presetLine, "preset line rendered");
+  assert.doesNotMatch(presetLine[1], /On this page|1024|KB =/, "nothing after the presets");
+  assert.doesNotMatch(visible, /On this page 30 KB means/, "the rule is not in the prerendered preset line");
+  // Every other size page keeps the tool's own rule on its preset line.
   for (const slug of IMAGE_FAMILY.filter((other) => other !== "compress-image-to-30kb")) {
-    assert.match(text(rendered.get(slug)), /1 KB = 1024 bytes\./, slug);
+    assert.match(text(rendered.get(slug)), /200 KB \. 1 KB = 1024 bytes\./, slug);
   }
-  // The toasts and the exact-mode paragraph use the same page-level rule.
+  // The sentence lives once, at the start of the exact-size paragraph, which renders after a file is chosen.
   const source = read(IMAGE_TOOL);
-  assert.equal((source.match(/\{unitRule\}/g) ?? []).length, 2, "preset line and exact-mode paragraph");
+  assert.equal((source.match(/\{unitRule\}/g) ?? []).length, 1, "only the exact-size paragraph uses the page rule");
+  assert.match(source, /\{unitRule\} Transparency is flattened onto white\./);
+  assert.match(source, /200 KB<\/Link>\.\{presetUnit\}/);
+  assert.match(source, /const presetUnit = preset\?\.limitBytes != null \? "" : " 1 KB = 1024 bytes\.";/);
+  assert.match(source, /`On this page \$\{preset\.limitBytes \/ 1000\} KB means \$\{byteCount\(preset\.limitBytes\)\}, and the \$\{preset\.targetBytes \/ KILOBYTE\} KB chip is \$\{byteCount\(preset\.targetBytes\)\}\.`/);
+  // The toasts carry no hard-coded unit claim.
   assert.equal((source.match(/plain number of bytes\.\$\{sizeHint\}/g) ?? []).length, 2, "both size toasts");
-  assert.doesNotMatch(source, /"[^"]*1 KB = 1024 bytes\.[^"]*", variant/, "no hard-coded unit claim in a toast");
+  assert.doesNotMatch(source, /"[^"]*1 KB = 1024 bytes\.[^"]*", variant/);
 });

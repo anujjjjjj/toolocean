@@ -165,6 +165,8 @@ export function ImageCompressorTool({ preset }: { preset?: ImageCompressorPreset
       ? `On this page ${preset.limitBytes / 1000} KB means ${byteCount(preset.limitBytes)}, and the ${preset.targetBytes / KILOBYTE} KB chip is ${byteCount(preset.targetBytes)}.`
       : "1 KB = 1024 bytes.";
   const sizeHint = preset?.limitBytes != null ? "" : " 1 KB = 1024 bytes.";
+  // The preset line ends after the presets when the page states its own rule in the exact-size paragraph.
+  const presetUnit = preset?.limitBytes != null ? "" : " 1 KB = 1024 bytes.";
   const [files, setFiles] = useState<File[]>([]);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [quality, setQuality] = useState(0.8);
@@ -451,7 +453,7 @@ export function ImageCompressorTool({ preset }: { preset?: ImageCompressorPreset
         <Link className="text-primary underline" to="/compress-image-to-30kb">30 KB</Link>,{" "}
         <Link className="text-primary underline" to="/compress-image-to-50kb">50 KB</Link>,{" "}
         <Link className="text-primary underline" to="/compress-image-to-100kb">100 KB</Link>,{" "}
-        <Link className="text-primary underline" to="/compress-image-to-200kb">200 KB</Link>. {unitRule}
+        <Link className="text-primary underline" to="/compress-image-to-200kb">200 KB</Link>.{presetUnit}
       </p>
 
       {files.length > 0 && mode === "quality" && (
