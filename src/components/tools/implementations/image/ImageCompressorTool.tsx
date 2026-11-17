@@ -159,6 +159,12 @@ function ImageNotes({ notes, summary, jpegOnly = false }: { notes: ImageNote[]; 
 
 export function ImageCompressorTool({ preset }: { preset?: ImageCompressorPreset } = {}) {
   const jpegOnly = preset?.jpegOnly === true;
+  // With a form limit, the page states its own unit rule instead of the tool's 1024-byte kilobyte.
+  const unitRule =
+    preset?.limitBytes != null
+      ? `On this page ${preset.limitBytes / 1000} KB means ${byteCount(preset.limitBytes)}, and the ${preset.targetBytes / KILOBYTE} KB chip is ${byteCount(preset.targetBytes)}.`
+      : "1 KB = 1024 bytes.";
+  const sizeHint = preset?.limitBytes != null ? "" : " 1 KB = 1024 bytes.";
   const [files, setFiles] = useState<File[]>([]);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [quality, setQuality] = useState(0.8);
@@ -304,7 +310,7 @@ export function ImageCompressorTool({ preset }: { preset?: ImageCompressorPreset
     if (!files.length) return;
     const minBytes = minSize.trim() ? parseSize(minSize) : undefined;
     if (minSize.trim() && !minBytes) {
-      toast({ title: "Unrecognised minimum", description: "Use KB, or a plain number of bytes. 1 KB = 1024 bytes.", variant: "destructive" });
+      toast({ title: "Unrecognised minimum", description: `Use KB, or a plain number of bytes.${sizeHint}`, variant: "destructive" });
       return;
     }
     if (minBytes && minBytes > targetBytes) {
@@ -445,7 +451,7 @@ export function ImageCompressorTool({ preset }: { preset?: ImageCompressorPreset
         <Link className="text-primary underline" to="/compress-image-to-30kb">30 KB</Link>,{" "}
         <Link className="text-primary underline" to="/compress-image-to-50kb">50 KB</Link>,{" "}
         <Link className="text-primary underline" to="/compress-image-to-100kb">100 KB</Link>,{" "}
-        <Link className="text-primary underline" to="/compress-image-to-200kb">200 KB</Link>. 1 KB = 1024 bytes.
+        <Link className="text-primary underline" to="/compress-image-to-200kb">200 KB</Link>. {unitRule}
       </p>
 
       {files.length > 0 && mode === "quality" && (
@@ -476,7 +482,7 @@ export function ImageCompressorTool({ preset }: { preset?: ImageCompressorPreset
       {files.length > 0 && mode === "exact" && (
         <div className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            1 KB = 1024 bytes. Transparency is flattened onto white. A JPEG that would land under the optional minimum is padded with comment bytes, and that padding is stated with the result.{jpegOnly ? "" : " WebP is not padded."} A file that misses the target, or comes out no smaller than the original, is not downloaded.
+            {unitRule} Transparency is flattened onto white. A JPEG that would land under the optional minimum is padded with comment bytes, and that padding is stated with the result.{jpegOnly ? "" : " WebP is not padded."} A file that misses the target, or comes out no smaller than the original, is not downloaded.
           </p>
           <p className="text-sm">{files.length} file{files.length === 1 ? "" : "s"} selected{files.length > 1 ? ". The ones that land under the target download as one ZIP." : "."}</p>
           <div className="flex flex-wrap gap-2">
@@ -514,7 +520,7 @@ export function ImageCompressorTool({ preset }: { preset?: ImageCompressorPreset
               onClick={() => {
                 const parsed = parseSize(customSize);
                 if (!parsed) {
-                  toast({ title: "Unrecognised size", description: "Use KB or MB, or a plain number of bytes. 1 KB = 1024 bytes.", variant: "destructive" });
+                  toast({ title: "Unrecognised size", description: `Use KB or MB, or a plain number of bytes.${sizeHint}`, variant: "destructive" });
                   return;
                 }
                 applyTarget(parsed);
