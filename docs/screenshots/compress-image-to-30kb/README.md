@@ -9,9 +9,11 @@ Page-only viewport captures of `/compress-image-to-30kb` at 1280 px and 375 px w
 
 ## Provenance
 
-- **App code:** commit `051e7bf` ("Add a compress-to-30 KB image landing page"). The commit that adds this folder
-  changes only files under `docs/screenshots/compress-image-to-30kb/`, so the app it shows is the same.
-- **Build:** a production build of `051e7bf` (`npm run build`, all gates passing), served by
+- **App code:** commit `ad23188` ("State the 30,000-byte rule in the 30 KB page's tool text"). The commit that
+  refreshes this folder changes only files under `docs/screenshots/compress-image-to-30kb/`, so the app it shows is
+  the same. All ten captures were retaken after that commit, which replaced the tool's "1 KB = 1024 bytes" lines on
+  this page with "On this page 30 KB means 30,000 bytes, and the 29 KB chip is 29,696 bytes."
+- **Build:** a production build of `ad23188` (`npm run build`, all gates passing), served by
   `node scripts/serve-dist.mjs` on `127.0.0.1`.
 - **Browser:** Google Chrome 156, driven headless by Playwright with the light theme.
   - Every request to a host other than the local server was aborted, and `window.umami` was stubbed.
